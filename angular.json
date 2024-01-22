@@ -65,10 +65,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "SmartChart-UI:build:production"
+              "buildTarget": "SmartChart-UI:build:production"
             },
             "development": {
-              "browserTarget": "SmartChart-UI:build:development"
+              "buildTarget": "SmartChart-UI:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -76,7 +76,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "SmartChart-UI:build"
+            "buildTarget": "SmartChart-UI:build"
           }
         },
         "test": {
