@@ -1,0 +1,28 @@
+{
+  "resourceType": "Group",
+  "type": "patient",
+  "actual": true,
+  "name": "SC UI Demo Patients",
+  "member": [
+    {
+      "entity": {
+        "reference": "Patient/1"
+      }
+    },
+    {
+      "entity": {
+        "reference": "Patient/2"
+      }
+    },
+    {
+      "entity": {
+        "reference": "Patient/3"
+      }
+    },
+    {
+      "entity": {
+        "reference": "Patient/4"
+      }
+    }
+  ]
+}
