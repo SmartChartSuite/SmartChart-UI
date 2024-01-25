@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {ApplicationState} from "../../models/application-state";
 
@@ -9,9 +9,13 @@ import {ApplicationState} from "../../models/application-state";
   templateUrl: './callback.component.html',
   styleUrl: './callback.component.scss'
 })
-export class CallbackComponent {
+export class CallbackComponent implements OnInit {
 
   constructor(protected stateManagementService: StateManagementService) {}
+
+  ngOnInit(): void {
+        throw new Error('Method not implemented.');
+    }
 
   readState() {
     this.stateManagementService.getState().subscribe({

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {AuthService} from "@auth0/auth0-angular";
 
 @Component({
   selector: 'sc-standalone-login',
@@ -8,5 +9,7 @@ import { Component } from '@angular/core';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
+  constructor(public auth: AuthService) {
+  }
 
 }
