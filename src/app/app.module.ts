@@ -4,6 +4,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LoginComponent} from "./components/login/login.component";
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
@@ -20,12 +21,13 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
   declarations: [
     AppComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    LoginComponent,
-    HttpClientModule
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        LoginComponent,
+        BrowserAnimationsModule,
+        HttpClientModule
+    ],
   providers: [
     {
       provide: APP_INITIALIZER,
