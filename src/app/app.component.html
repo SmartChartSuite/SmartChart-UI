@@ -1,1 +1,10 @@
-<router-outlet></router-outlet>
+
+<!-- TODO: Update to @ngIf -->
+<div *ngIf="auth.isAuthenticated$ | async; else login;">
+  <router-outlet></router-outlet>
+</div>
+
+<ng-template #login>
+  <sc-standalone-login></sc-standalone-login>
+</ng-template>
+
