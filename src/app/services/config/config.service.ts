@@ -16,12 +16,10 @@ export class ConfigService {
 
   private http: HttpClient;
 
+  public apiUrl = "";
+
   constructor(handler: HttpBackend) {
     this.http = new HttpClient(handler);
-  }
-
-  getConfig(): Config {
-    return this.config;
   }
 
   loadConfig() {

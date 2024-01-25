@@ -9,6 +9,7 @@ import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {AuthModule} from "@auth0/auth0-angular";
+import config from "../assets/config/config.json";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -24,10 +25,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
   ],
   imports: [
     AuthModule.forRoot({
-      domain: 'dev-dk7cyfpkwowbtdbt.us.auth0.com',
-      clientId: 'fTlUrcK87D6tKT3dTwn3iC2xssoWJHPg',
+      domain: config.rcApiUrl, //'dev-dk7cyfpkwowbtdbt.us.auth0.com',
+      clientId: config.clientId, //'fTlUrcK87D6tKT3dTwn3iC2xssoWJHPg',
       authorizationParams: {
-        redirect_uri: 'https://localhost:4200/callback' // TODO: Change to dynamic handling.
+        redirect_uri: config.callbackUrl // TODO: Change to dynamic handling.
       }
     }),
     BrowserModule,
@@ -53,4 +54,6 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
   bootstrap: [AppComponent]
 })
 export class AppModule {
+  constructor(public configService: ConfigService) {
+  }
 }
