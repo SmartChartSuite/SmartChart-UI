@@ -25,7 +25,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
   ],
   imports: [
     AuthModule.forRoot({
-      domain: config.rcApiUrl, //'dev-dk7cyfpkwowbtdbt.us.auth0.com',
+      domain: config.domain, //'dev-dk7cyfpkwowbtdbt.us.auth0.com',
       clientId: config.clientId, //'fTlUrcK87D6tKT3dTwn3iC2xssoWJHPg',
       authorizationParams: {
         redirect_uri: config.callbackUrl // TODO: Change to dynamic handling.

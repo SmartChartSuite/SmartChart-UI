@@ -5,6 +5,7 @@ export class Config {
   version: string = "";
   title: string = "";
   rcApiUrl: string = "";
+  domain: string = "";
   clientId: string = "";
   callbackUrl: string = "";
 }

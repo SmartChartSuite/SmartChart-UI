@@ -2,6 +2,7 @@
   "version": "",
   "title": "SmartChart",
   "rcApiUrl": "http://127.0.0.1:8000",
+  "domain": "dev-dk7cyfpkwowbtdbt.us.auth0.com",
   "clientId": "fTlUrcK87D6tKT3dTwn3iC2xssoWJHPg",
   "callbackUrl": "https://localhost:4200/callback"
 }
