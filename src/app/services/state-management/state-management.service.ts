@@ -17,7 +17,7 @@ export class StateManagementService {
     this.applicationState$ = new BehaviorSubject<ApplicationState>(this.defaultState);
   }
 
-  // Initialize from the stateFactory or re-initalize in case of error.
+  // Initialize from the stateFactory or re-initialize in case of error.
   initializeState() {
     const sessionState = this.readFromSession();
     if (sessionState) {

@@ -1,6 +1,10 @@
 <p>content-root works!</p>
 
-<button mat-raised-button
-        (click)="auth.logout({ logoutParams: { returnTo: 'https://localhost:4200' } })">
+@if (auth.user$ | async) {
+  <div>{{ (auth.user$ | async)?.name }}</div>
+  <div>{{ (auth.user$ | async)?.email }}</div>
+}
+
+<button mat-raised-button (click)="auth.logout({ logoutParams: { returnTo: 'https://localhost:4200' } })">
   Sign Out
 </button>
