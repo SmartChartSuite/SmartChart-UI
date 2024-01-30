@@ -1,23 +1,20 @@
-import {Component, OnChanges, OnInit} from '@angular/core';
-import {AuthService} from "@auth0/auth0-angular";
+import {Component, OnInit} from '@angular/core';
 import {ConfigService} from "./services/config/config.service";
-import {skipWhile} from "rxjs";
+import {OAuthService} from "angular-oauth2-oidc";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = '';
-  authorized: boolean = false;
 
-  constructor(public auth: AuthService, config: ConfigService) {
+  constructor(
+    config: ConfigService,
+    public oauthService: OAuthService
+  ) {
     this.title = config.config.title;
   }
-
-  ngOnInit(): void {
-  }
-
 
 }

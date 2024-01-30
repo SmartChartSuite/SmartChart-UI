@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {AuthService} from "@auth0/auth0-angular";
 import {MatButton} from "@angular/material/button";
-import {AsyncPipe} from "@angular/common";
+import {AsyncPipe, JsonPipe} from "@angular/common";
+import {OAuthService} from "angular-oauth2-oidc";
 
 @Component({
   selector: 'app-content-root',
@@ -10,6 +10,7 @@ import {AsyncPipe} from "@angular/common";
   imports: [
     MatButton,
     AsyncPipe,
+    JsonPipe,
   ],
   templateUrl: './content-root.component.html',
   styleUrl: './content-root.component.scss'
@@ -18,7 +19,7 @@ export class ContentRootComponent {
 
   constructor(
     protected stateManagementService: StateManagementService,
-    public auth: AuthService) {}
+    public oauthService: OAuthService) {}
 
   setState(currentComponent: string) {
     this.stateManagementService.setState({"currentComponent": currentComponent});

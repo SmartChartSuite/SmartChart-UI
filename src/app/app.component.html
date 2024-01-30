@@ -1,6 +1,6 @@
 
 <!-- TODO: Update to @ngIf -->
-<div *ngIf="auth.isAuthenticated$ | async; else login;">
+<div *ngIf="oauthService.hasValidAccessToken(); else login;">
   <router-outlet></router-outlet>
 </div>
 

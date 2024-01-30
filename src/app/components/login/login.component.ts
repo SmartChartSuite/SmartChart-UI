@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {AuthService} from "@auth0/auth0-angular";
-
+import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
+import {authCodeFlowConfig} from "../../../assets/config/auth-code-flow-config";
 @Component({
   selector: 'sc-standalone-login',
   standalone: true,
@@ -9,7 +9,14 @@ import {AuthService} from "@auth0/auth0-angular";
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  constructor(public auth: AuthService) {
+  constructor(public oauthService: OAuthService) {
+    this.configure();
   }
 
+  private configure() {
+    // Load information from Auth0 (could also be configured manually)
+    this.oauthService.configure(authCodeFlowConfig);
+    this.oauthService.tokenValidationHandler = new JwksValidationHandler();
+    this.oauthService.loadDiscoveryDocumentAndTryLogin();
+  }
 }

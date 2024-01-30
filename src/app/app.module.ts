@@ -8,8 +8,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
-import {AuthModule} from "@auth0/auth0-angular";
-import config from "../assets/config/config.json";
+import {OAuthModule} from "angular-oauth2-oidc";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -24,13 +23,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     AppComponent
   ],
   imports: [
-    AuthModule.forRoot({
-      domain: config.domain, //'dev-dk7cyfpkwowbtdbt.us.auth0.com',
-      clientId: config.clientId, //'fTlUrcK87D6tKT3dTwn3iC2xssoWJHPg',
-      authorizationParams: {
-        redirect_uri: config.callbackUrl // TODO: Change to dynamic handling.
-      }
-    }),
+    HttpClientModule,
+    OAuthModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
     LoginComponent,
