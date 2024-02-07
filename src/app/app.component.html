@@ -1,7 +1,12 @@
 
 <!-- TODO: Update to @ngIf -->
 <div *ngIf="oauthService.hasValidAccessToken(); else login;">
-  <router-outlet></router-outlet>
+  <div #collapsableLeftMenu>
+
+  </div>
+  <div #content>
+    <router-outlet></router-outlet>
+  </div>
 </div>
 
 <ng-template #login>
