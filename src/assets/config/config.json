@@ -2,7 +2,9 @@
   "version": "",
   "title": "SmartChart",
   "rcApiUrl": "http://127.0.0.1:8000",
-  "domain": "dev-dk7cyfpkwowbtdbt.us.auth0.com",
+  "issuer": "https://dev-dk7cyfpkwowbtdbt.us.auth0.com",
+  "logoutUrl": "https://dev-dk7cyfpkwowbtdbt.us.auth0.com/v2/logout",
   "clientId": "fTlUrcK87D6tKT3dTwn3iC2xssoWJHPg",
+  "scope": "openid email profile",
   "callbackUrl": "https://localhost:4200/callback"
 }

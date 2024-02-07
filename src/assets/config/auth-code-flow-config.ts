@@ -2,12 +2,12 @@ import {AuthConfig} from "angular-oauth2-oidc";
 import config from "../config/config.json";
 
 export const authCodeFlowConfig: AuthConfig = {
-  issuer: `https://${config.domain}/`,
-  redirectUri: "https://localhost:4200/callback",
+  issuer: config.issuer,
+  redirectUri: config.callbackUrl,
   clientId: config.clientId,
   responseType: 'code',
-  scope: "openid email profile",
+  scope: config.scope,
   showDebugInformation: true,
   requireHttps: false,
-  logoutUrl: `${config.domain}/v2/logout`
+  logoutUrl: config.logoutUrl
 };
