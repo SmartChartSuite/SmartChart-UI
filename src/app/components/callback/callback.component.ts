@@ -13,9 +13,7 @@ export class CallbackComponent implements OnInit {
 
   constructor(protected stateManagementService: StateManagementService) {}
 
-  ngOnInit(): void {
-        throw new Error('Method not implemented.');
-    }
+  ngOnInit(): void {}
 
   readState() {
     this.stateManagementService.getState().subscribe({
