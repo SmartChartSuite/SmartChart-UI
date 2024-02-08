@@ -73,3 +73,9 @@
   min-width: 256px;
   min-height: 128px;
 }
+
+.centered-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

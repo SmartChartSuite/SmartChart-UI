@@ -1,43 +1,16 @@
 @if (isLocatedInMainMenu) {
   <div class="user-profile-header">
-    <ng-container *ngIf="oauthService.hasValidAccessToken(); else loggedOut" class="profile-wrapper">
-    </ng-container>
-    <ng-template #loggedOut>
-      <button mat-icon-button
-              (click)="oauthService.initImplicitFlow()"
-              class="login-button">
-        <mat-icon>login</mat-icon>
-      </button>
-    </ng-template>
+    <ng-container *ngIf="oauthService.hasValidAccessToken();" class="profile-wrapper"></ng-container>
     <div *ngIf="oauthService.getIdentityClaims() as user">
       <img
         [src]="user?.['picture'] ? user?.['picture'] : '/assets/portrait_placeholder.png'"
         referrerpolicy="no-referrer"
         class="profile-image">
-      <mat-menu #userMenu="matMenu" style="width: 250px;">
-        <div mat-menu-item>
-          <div class="user-card">
-            <img
-              [src]="user?.['picture']"
-              referrerpolicy="no-referrer"
-              class="profile-image"
-            >
-            <div class="details" *ngIf="oauthService.getIdentityClaims() as user">
-              <div class="name">{{ user?.['given_name'] }}</div>
-              <div class="email">{{ user?.['email'] }}</div>
-            </div>
-          </div>
-        </div>
-        <button mat-menu-item
-                (click)="oauthService.logOut()">
-          <mat-icon>logout</mat-icon>
-          Sign Out
-        </button>
-      </mat-menu>
     </div>
   </div>
-} @else {
-  <div style="margin: auto">
+}
+@else {
+  <div class="centered-card">
     <mat-card class="login-card">
       <mat-card-header>
         <mat-card-title>
@@ -56,3 +29,4 @@
     </mat-card>
   </div>
 }
+

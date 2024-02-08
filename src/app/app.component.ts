@@ -9,7 +9,7 @@ import {OAuthService} from "angular-oauth2-oidc";
 })
 export class AppComponent {
   title = '';
-  isExpanded = false;
+  expanded: boolean = false;
 
   constructor(
     config: ConfigService,
@@ -17,5 +17,5 @@ export class AppComponent {
   ) {
     this.title = config.config.title;
   }
-
 }
+

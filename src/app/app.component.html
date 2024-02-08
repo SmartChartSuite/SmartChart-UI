@@ -1,33 +1,75 @@
-<nav class="nav" #collapsableLeftMenu  [ngClass]="{'expanded': isExpanded}">
-  <ul>
-    <li>
-      <a href="#" (click)="isExpanded = !isExpanded">
-        @if(isExpanded){
-          <mat-icon>chevron_left</mat-icon>
-          <span class="nav-text">Collapse</span>
-        }
-        @else{
-          <mat-icon>chevron_right</mat-icon>
-        }
-      </a>
-    </li>
-    <li>
-        <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login>
-    </li>
-    <li>
-      <a href="#">
-        <mat-icon>perm_identity</mat-icon>
-        <span class="nav-text">Profile</span>
-      </a>
-    </li>
-    <!-- add more items as you need -->
-  </ul>
-</nav>
-<div #content class="content">
-  <div *ngIf="oauthService.hasValidAccessToken(); else login;">
-    <router-outlet></router-outlet>
-  </div>
-  <ng-template #login>
-    <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
-  </ng-template>
+<div class="wrapper">
+  <nav class="main-menu" [ngClass]="{'expanded': expanded}">
+    <ul>
+      @if (oauthService.hasValidAccessToken()) {
+        <li>
+          <span class="icon"> <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login></span>
+        </li>
+      }
+      @else{
+        <li>
+          <a href="#" (click)="expanded = !expanded; this.oauthService.initLoginFlow();">
+            <span class="icon"><mat-icon>login</mat-icon></span>
+            @if (expanded) {
+              <span class="nav-text">Login</span>
+            }
+          </a>
+        </li>
+      }
+      <!-- Open/Close nav menu -->
+      <li>
+        <a href="#" (click)="expanded = !expanded">
+          @if (expanded) {
+            <span class="icon"><mat-icon>chevron_left</mat-icon></span>
+            <span class="nav-text">Close Menu</span>
+          }
+          @else {
+            <span class="icon"><mat-icon>chevron_right</mat-icon></span>
+          }
+        </a>
+      </li>
+
+      @if (oauthService.hasValidAccessToken()) {
+        <li>
+          <a href="#">
+        <span class="icon">
+          <mat-icon>home</mat-icon> </span>
+            <span class="nav-text">
+          Home
+        </span>
+          </a>
+        </li>
+      }
+      @else {
+        <!-- render anything here for which the user is not logged in-->
+      }
+    </ul>
+
+    <!-- render a logout button at the bottom of the menu -->
+    @if (oauthService.hasValidAccessToken()) {
+      <ul class="logout">
+        <li>
+          <a href="#" (click)="oauthService.logOut()" >
+            <span class="icon"><mat-icon>logout</mat-icon> </span>
+            @if (expanded) {
+              <span class="nav-text">Logout</span>
+            }
+          </a>
+        </li>
+      </ul>
+    }
+  </nav>
+
 </div>
+
+<div class="area" [ngClass]="{'expanded': expanded}">
+  @if(oauthService.hasValidAccessToken()){
+    <router-outlet></router-outlet>
+  }
+  @else {
+    <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
+  }
+</div>
+
+
+
