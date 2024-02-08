@@ -1,15 +1,33 @@
-
-<!-- TODO: Update to @ngIf -->
-<div *ngIf="oauthService.hasValidAccessToken(); else login;">
-  <div #collapsableLeftMenu>
-
-  </div>
-  <div #content>
+<nav class="nav" #collapsableLeftMenu  [ngClass]="{'expanded': isExpanded}">
+  <ul>
+    <li>
+      <a href="#" (click)="isExpanded = !isExpanded">
+        @if(isExpanded){
+          <mat-icon>chevron_left</mat-icon>
+          <span class="nav-text">Collapse</span>
+        }
+        @else{
+          <mat-icon>chevron_right</mat-icon>
+        }
+      </a>
+    </li>
+    <li>
+        <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login>
+    </li>
+    <li>
+      <a href="#">
+        <mat-icon>perm_identity</mat-icon>
+        <span class="nav-text">Profile</span>
+      </a>
+    </li>
+    <!-- add more items as you need -->
+  </ul>
+</nav>
+<div #content class="content">
+  <div *ngIf="oauthService.hasValidAccessToken(); else login;">
     <router-outlet></router-outlet>
   </div>
+  <ng-template #login>
+    <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
+  </ng-template>
 </div>
-
-<ng-template #login>
-  <sc-standalone-login></sc-standalone-login>
-</ng-template>
-

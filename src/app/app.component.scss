@@ -1,0 +1,57 @@
+body {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.nav {
+  width: 90px;
+  background: #333;
+  &.expanded {
+    width: 200px;
+    transition: width 1s ease;
+  }
+
+  button {
+    border: none;
+    background: #333;
+    color: white;
+    padding: 32px;
+    cursor: pointer;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      padding: 16px 16px;
+
+      a {
+        padding: 0 16px;
+        color: white;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+
+        i {
+          margin-right: 16px;
+        }
+
+        .nav-text {
+          display: none;
+          transition: width 1s ease;
+        }
+      }
+    }
+  }
+
+  &.expanded ul li a .nav-text {
+    display: block;
+  }
+}
+
+.content {
+  overflow-y: auto;
+}
