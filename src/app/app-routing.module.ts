@@ -3,11 +3,16 @@ import { RouterModule, Routes } from '@angular/router';
 import {ContentRootComponent} from "./components/content-root/content-root.component";
 import {CallbackComponent} from "./components/callback/callback.component";
 import {LoginComponent} from "./components/login/login.component";
+import {JobsComponent} from "./components/jobs/jobs.component";
 
 const routes: Routes = [
   {
     path: '',
     component: ContentRootComponent
+  },
+  {
+    path: 'jobs',
+    component: JobsComponent
   },
   {
     path: 'callback',

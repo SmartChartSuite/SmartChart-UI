@@ -1,6 +1,11 @@
 export class ApplicationState {
   constructor() {
-    this.currentComponent = "";
+    this.currentRoute = RouteState.CONTENT_ROOT; // Default Route.
   }
-  currentComponent: string;
+  currentRoute: RouteState;
+}
+
+export enum RouteState {
+  CONTENT_ROOT,
+  JOBS
 }
