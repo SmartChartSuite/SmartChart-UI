@@ -17,7 +17,7 @@
 }
 
 nav.main-menu.expanded {
-  width:250px;
+  width:200px;
   overflow:visible;
 }
 
@@ -44,7 +44,7 @@ nav.main-menu.expanded {
 .main-menu li {
   position:relative;
   display:block;
-  width:250px;
+  width:200px;
 }
 
 .main-menu li>a {
@@ -76,7 +76,7 @@ nav.main-menu.expanded {
   position:relative;
   display:table-cell;
   vertical-align:middle;
-  width:190px;
+  width:140px;
   font-family: 'Titillium Web', sans-serif;
 }
 
@@ -127,5 +127,5 @@ nav ul,nav li {
 }
 
 .area.expanded{
-  padding-left: 250px;
+  padding-left: 200px;
 }
