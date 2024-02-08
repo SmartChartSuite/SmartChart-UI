@@ -10,6 +10,11 @@ import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {MatIcon} from "@angular/material/icon";
+import {PatientExplorerComponent} from "./components/patient-explorer/patient-explorer.component";
+import {PatientFinderComponent} from "./components/patient-finder/patient-finder.component";
+import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
+
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -21,7 +26,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PatientExplorerComponent,
+    PatientFinderComponent,
+    PatientSelectorComponent
   ],
   imports: [
     HttpClientModule,
@@ -31,7 +39,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     LoginComponent,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatIcon
+    MatIcon,
+    MatTabGroup,
+    MatTab,
   ],
   providers: [
     {
