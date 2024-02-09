@@ -4,6 +4,7 @@ import {ContentRootComponent} from "./components/content-root/content-root.compo
 import {CallbackComponent} from "./components/callback/callback.component";
 import {LoginComponent} from "./components/login/login.component";
 import {JobsComponent} from "./components/jobs/jobs.component";
+import {RcApiTestComponent} from "./TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
+  { // TODO: Delete
+    path: 'rcapitest',
+    component: RcApiTestComponent
+  }
 ];
 
 @NgModule({

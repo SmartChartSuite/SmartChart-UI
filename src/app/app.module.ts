@@ -9,6 +9,7 @@ import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
+import {RcApiTestComponent} from "./TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -29,7 +30,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     AppRoutingModule,
     LoginComponent,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    RcApiTestComponent // TODO: Delete
   ],
   providers: [
     {
