@@ -15,6 +15,7 @@ import {PatientExplorerComponent} from "./components/patient-explorer/patient-ex
 import {PatientFinderComponent} from "./components/patient-finder/patient-finder.component";
 import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import { SideNavComponent } from './components/side-nav/side-nav.component';
 
 
 export const configFactory = (configService: ConfigService) => {
@@ -30,7 +31,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     AppComponent,
     PatientExplorerComponent,
     PatientFinderComponent,
-    PatientSelectorComponent
+    PatientSelectorComponent,
+    SideNavComponent
   ],
   imports: [
     HttpClientModule,

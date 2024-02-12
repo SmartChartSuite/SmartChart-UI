@@ -1,0 +1,80 @@
+<nav class="main-menu" [ngClass]="{'expanded': expanded}">
+  <ul>
+
+    @if (oauthService.hasValidAccessToken()) {
+      <li>
+        <span class="icon"> <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login></span>
+      </li>
+    }
+    @else{
+      <li>
+        <a (click)="onExpandedStatusChanged(); this.oauthService.initLoginFlow();">
+          <span class="icon"><mat-icon>login</mat-icon></span>
+          @if (expanded) {
+            <span class="nav-text">Login</span>
+          }
+        </a>
+      </li>
+    }
+
+    <!-- Open/Close nav menu (always rendered) -->
+    <li>
+      <a (click)="onExpandedStatusChanged()">
+        @if (expanded) {
+          <span class="icon"><mat-icon>chevron_left</mat-icon></span>
+          <span class="nav-text">Close Menu</span>
+        }
+        @else {
+          <span class="icon"><mat-icon>chevron_right</mat-icon></span>
+        }
+      </a>
+    </li>
+
+    <!-- Menu options rendered if the user is logged in -->
+    @if (oauthService.hasValidAccessToken()) {
+      <li>
+        <a routerLink="/">
+          <span class="icon"><mat-icon>home</mat-icon></span>
+          @if (expanded) {
+            <span class="nav-text">Home</span>
+          }
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/jobs">
+          <span class="icon"><mat-icon>settings</mat-icon></span>
+          @if (expanded) {
+            <span class="nav-text">Active Jobs</span>
+          }
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/patient">
+          <span class="icon"><mat-icon>person_search</mat-icon></span>
+          @if (expanded) {
+            <span class="nav-text">Patients</span>
+          }
+        </a>
+      </li>
+    }
+    @else {
+      <!-- render anything here for which the user is not logged in-->
+    }
+  </ul>
+
+  <!-- render a logout button at the bottom of the menu -->
+  @if (oauthService.hasValidAccessToken()) {
+    <ul class="logout">
+      <li>
+        <a href="#" (click)="oauthService.logOut()" >
+          <span class="icon"><mat-icon>logout</mat-icon> </span>
+          @if (expanded) {
+            <span class="nav-text">Logout</span>
+          }
+        </a>
+      </li>
+    </ul>
+  }
+</nav>

@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {ConfigService} from "./services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "./services/state-management/state-management.service";
-import {ApplicationState, RouteState} from "./models/application-state";
+import {RouteState} from "./models/application-state";
 
 @Component({
   selector: 'app-root',
@@ -27,4 +27,7 @@ export class AppComponent {
     })
   }
 
+  onExpandedStatusChanged(expanded: boolean) {
+    this.expanded = expanded;
+  }
 }
