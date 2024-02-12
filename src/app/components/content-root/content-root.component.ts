@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {MatButton} from "@angular/material/button";
 import {AsyncPipe, JsonPipe} from "@angular/common";
 import {OAuthService} from "angular-oauth2-oidc";
 import {RouteState} from "../../models/application-state";
+import {window} from "rxjs";
 
 @Component({
   selector: 'app-content-root',
@@ -16,16 +17,15 @@ import {RouteState} from "../../models/application-state";
   templateUrl: './content-root.component.html',
   styleUrl: './content-root.component.scss'
 })
-export class ContentRootComponent {
+export class ContentRootComponent implements OnInit{
 
   constructor(
     protected stateManagementService: StateManagementService,
     public oauthService: OAuthService) {}
 
-  setState(currentComponent: string) {
-    // TODO: Call this in lifecycle, need to establish precisely when. Init is likely not right.
+  protected readonly window = window;
+
+  ngOnInit(): void {
     this.stateManagementService.setCurrentRoute(RouteState.CONTENT_ROOT);
   }
-
-  protected readonly window = window;
 }

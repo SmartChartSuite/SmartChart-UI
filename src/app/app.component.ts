@@ -30,4 +30,6 @@ export class AppComponent {
   onExpandedStatusChanged(expanded: boolean) {
     this.expanded = expanded;
   }
+
+  protected readonly RouteState = RouteState;
 }
