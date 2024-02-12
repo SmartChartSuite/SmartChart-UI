@@ -21,7 +21,7 @@ const routes: Routes = [
     component: CallbackComponent
   },
   {
-    path: 'patient',
+    path: 'patients',
     component: PatientsComponent
   },
   {
