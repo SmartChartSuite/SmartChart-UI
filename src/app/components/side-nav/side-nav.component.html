@@ -34,8 +34,7 @@
     @if (oauthService.hasValidAccessToken()) {
       <li>
         <a routerLink="/">
-          <span [ngClass]="{ selected: (stateManagementService.getState() | async).currentRoute
-                            == RouteState.CONTENT_ROOT}">
+          <span [class.selected]="(stateManagementService.getState() | async).currentRoute== RouteState.CONTENT_ROOT">
             <span class="icon"><mat-icon>home</mat-icon></span>
             @if (expanded) {
               <span class="nav-text">Home</span>
@@ -45,8 +44,7 @@
       </li>
       <li>
         <a routerLink="/jobs">
-          <span [ngClass]="{ selected: (stateManagementService.getState() | async).currentRoute
-                            == RouteState.JOBS}">
+          <span [class.selected]="(stateManagementService.getState() | async).currentRoute== RouteState.JOBS">
             <span class="icon"><mat-icon>settings</mat-icon></span>
             @if (expanded) {
               <span class="nav-text">Active Jobs</span>

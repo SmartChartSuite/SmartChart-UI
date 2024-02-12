@@ -11,7 +11,7 @@ import {StateManagementService} from "./services/state-management/state-manageme
 import {OAuthModule} from "angular-oauth2-oidc";
 import {RcApiTestComponent} from "./TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {MatIcon} from "@angular/material/icon";
-import {PatientExplorerComponent} from "./components/patient-explorer/patient-explorer.component";
+import {PatientsComponent} from "./components/patients/patients.component";
 import {PatientFinderComponent} from "./components/patient-finder/patient-finder.component";
 import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
@@ -29,7 +29,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
 @NgModule({
   declarations: [
     AppComponent,
-    PatientExplorerComponent,
+    PatientsComponent,
     PatientFinderComponent,
     PatientSelectorComponent,
     SideNavComponent
