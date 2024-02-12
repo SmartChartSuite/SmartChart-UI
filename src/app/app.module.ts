@@ -9,6 +9,7 @@ import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
+import {RcApiTestComponent} from "./TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {MatIcon} from "@angular/material/icon";
 import {PatientExplorerComponent} from "./components/patient-explorer/patient-explorer.component";
 import {PatientFinderComponent} from "./components/patient-finder/patient-finder.component";
@@ -38,10 +39,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     AppRoutingModule,
     LoginComponent,
     BrowserAnimationsModule,
-    HttpClientModule,
     MatIcon,
     MatTabGroup,
     MatTab,
+    RcApiTestComponent // TODO: Delete
   ],
   providers: [
     {
