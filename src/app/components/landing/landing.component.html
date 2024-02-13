@@ -1,0 +1,11 @@
+<div class="component-wrapper">
+  <div class="component-content">
+    <p>landing works!</p>
+
+    <div><pre>{{ oauthService.getIdentityClaims() | json }}</pre></div>
+
+    <button mat-raised-button (click)="oauthService.logOut()">
+      Sign Out
+    </button>
+  </div>
+</div>
