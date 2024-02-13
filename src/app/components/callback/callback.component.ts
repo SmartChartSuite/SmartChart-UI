@@ -22,7 +22,7 @@ export class CallbackComponent implements OnInit {
       next: (value: ApplicationState) => {
         const lastComponent = value.currentRoute;
         // TODO: Navigate to lastComponent
-        if (lastComponent === RouteState.CONTENT_ROOT) {
+        if (lastComponent === RouteState.LANDING) {
           this.router.navigateByUrl("")
         }
 

@@ -9,10 +9,10 @@ import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
-import {RcApiTestComponent} from "./TEMPORARY/rc-api-test-component/rc-api-test-component.component";
+import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {MatIcon} from "@angular/material/icon";
-import {PatientsComponent} from "./components/patients/patients.component";
-import {PatientFinderComponent} from "./components/patient-finder/patient-finder.component";
+import {FormsComponent} from "./components/forms/forms.component";
+import {PatientSearchComponent} from "./components/patient-search/patient-search.component";
 import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import { SideNavComponent } from './components/side-nav/side-nav.component';
@@ -29,10 +29,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
 @NgModule({
   declarations: [
     AppComponent,
-    PatientsComponent,
-    PatientFinderComponent,
+    FormsComponent,
+    PatientSearchComponent,
     PatientSelectorComponent,
-    SideNavComponent
+    SideNavComponent,
   ],
   imports: [
     HttpClientModule,

@@ -1,15 +1,12 @@
-<div class="wrapper">
-  <app-side-nav (expandedStatusChangedEvent)="onExpandedStatusChanged($event)"></app-side-nav>
+<div class="app-wrapper">
+  <app-side-nav #sidenav (expandedStatusChangedEvent)="onExpandedStatusChanged($event)"></app-side-nav>
+  <div #content class="app-content-wrapper">
+    @if (oauthService.hasValidAccessToken()) {
+      <router-outlet></router-outlet>
+    } @else {
+      <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
+    }
+  </div>
 </div>
-
-<div class="area" [ngClass]="{'expanded': expanded}">
-  @if(oauthService.hasValidAccessToken()){
-    <router-outlet></router-outlet>
-  }
-  @else {
-    <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
-  }
-</div>
-
 
 
