@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {RouteState} from "../../models/application-state";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-side-nav',
@@ -15,7 +15,8 @@ export class SideNavComponent{
 
   constructor(
     public oauthService: OAuthService,
-    public stateManagementService: StateManagementService
+    public stateManagementService: StateManagementService,
+    public router: Router
   ) {
     this.stateManagementService.getState().subscribe((value=> console.log(value)))
   }
@@ -25,5 +26,4 @@ export class SideNavComponent{
     this.expandedStatusChangedEvent.emit(this.expanded);
   }
 
-  protected readonly RouteState = RouteState;
 }

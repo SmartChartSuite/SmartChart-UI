@@ -16,6 +16,7 @@ import {PatientSearchComponent} from "./components/patient-search/patient-search
 import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import { SideNavComponent } from './components/side-nav/side-nav.component';
+import {MatButton} from "@angular/material/button";
 
 
 export const configFactory = (configService: ConfigService) => {
@@ -44,7 +45,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatIcon,
     MatTabGroup,
     MatTab,
-    RcApiTestComponent // TODO: Delete
+    RcApiTestComponent,
+    MatButton,
+    // TODO: Delete
   ],
   providers: [
     {
