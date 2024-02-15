@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class PatientSearchComponent {
 
+  // User fills out either identifier ** OR ** name/birthdate. These are mutually exclusive.
+  // Form gives query parameters. See src/app/models/rc-api/patient-search-parameters.ts.
+
 }
