@@ -10,7 +10,7 @@ export class StateManagementService {
   private applicationState$: BehaviorSubject<ApplicationState>;
 
   private defaultState: ApplicationState = {
-    currentRoute: RouteState.CONTENT_ROOT
+    currentRoute: RouteState.LANDING
   }
 
   constructor() {

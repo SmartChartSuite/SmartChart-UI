@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
-import {StartJobsPostResponse, StartJobsPostResponseKeys} from "../../models/rc-api/start-jobs-post-response";
-import {Parameters} from "../../models/rc-api/fhir.parameters.resource";
+import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
+import {StartJobsPostResponse, StartJobsPostResponseKeys} from "../../../models/rc-api/start-jobs-post-response";
+import {Parameters} from "../../../models/rc-api/fhir.parameters.resource";
 import {mergeMap} from "rxjs";
-import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
+import {FhirBaseResource} from "../../../models/rc-api/fhir.base.resource";
 
 @Component({
   selector: 'app-rc-api-test-component',

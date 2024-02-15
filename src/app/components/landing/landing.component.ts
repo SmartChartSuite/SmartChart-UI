@@ -7,17 +7,17 @@ import {RouteState} from "../../models/application-state";
 import {window} from "rxjs";
 
 @Component({
-  selector: 'app-content-root',
+  selector: 'app-landing',
   standalone: true,
   imports: [
     MatButton,
     AsyncPipe,
     JsonPipe,
   ],
-  templateUrl: './content-root.component.html',
-  styleUrl: './content-root.component.scss'
+  templateUrl: './landing.component.html',
+  styleUrl: './landing.component.scss'
 })
-export class ContentRootComponent implements OnInit{
+export class LandingComponent implements OnInit{
 
   constructor(
     protected stateManagementService: StateManagementService,
@@ -26,6 +26,6 @@ export class ContentRootComponent implements OnInit{
   protected readonly window = window;
 
   ngOnInit(): void {
-    this.stateManagementService.setCurrentRoute(RouteState.CONTENT_ROOT);
+    this.stateManagementService.setCurrentRoute(RouteState.LANDING);
   }
 }

@@ -1,22 +1,17 @@
 <nav class="main-menu" [ngClass]="{'expanded': expanded}">
+  @if (oauthService.hasValidAccessToken()) {
+    <span class="icon"> <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login></span>
+  }
+  @else{
+    <a (click)="onExpandedStatusChanged(); this.oauthService.initLoginFlow();">
+      <span class="icon"><mat-icon>login</mat-icon></span>
+      @if (expanded) {
+        <span class="nav-text">Login</span>
+      }
+    </a>
+  }
+
   <ul>
-
-    @if (oauthService.hasValidAccessToken()) {
-      <li>
-        <span class="icon"> <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login></span>
-      </li>
-    }
-    @else{
-      <li>
-        <a (click)="onExpandedStatusChanged(); this.oauthService.initLoginFlow();">
-          <span class="icon"><mat-icon>login</mat-icon></span>
-          @if (expanded) {
-            <span class="nav-text">Login</span>
-          }
-        </a>
-      </li>
-    }
-
     <!-- Open/Close nav menu (always rendered) -->
     <li>
       <a (click)="onExpandedStatusChanged()">
@@ -34,7 +29,7 @@
     @if (oauthService.hasValidAccessToken()) {
       <li>
         <a routerLink="/">
-          <span [class.selected]="(stateManagementService.getState() | async).currentRoute== RouteState.CONTENT_ROOT">
+          <span [class.selected]="(stateManagementService.getState() | async).currentRoute== RouteState.LANDING">
             <span class="icon"><mat-icon>home</mat-icon></span>
             @if (expanded) {
               <span class="nav-text">Home</span>
@@ -43,24 +38,25 @@
         </a>
       </li>
       <li>
+        <a routerLink="/forms">
+          <span class="icon"><mat-icon>person_search</mat-icon></span>
+          @if (expanded) {
+            <span class="nav-text">Forms</span>
+          }
+        </a>
+      </li>
+      <li>
         <a routerLink="/jobs">
           <span [class.selected]="(stateManagementService.getState() | async).currentRoute== RouteState.JOBS">
             <span class="icon"><mat-icon>settings</mat-icon></span>
             @if (expanded) {
-              <span class="nav-text">Active Jobs</span>
+              <span class="nav-text">Jobs</span>
             }
           </span>
         </a>
       </li>
 
-      <li>
-        <a routerLink="/patients">
-          <span class="icon"><mat-icon>person_search</mat-icon></span>
-          @if (expanded) {
-            <span class="nav-text">Patients</span>
-          }
-        </a>
-      </li>
+
     }
     @else {
       <!-- render anything here for which the user is not logged in-->
