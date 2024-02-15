@@ -4,6 +4,7 @@ import {StartJobsPostResponse, StartJobsPostResponseKeys} from "../../../models/
 import {Parameters} from "../../../models/rc-api/fhir.parameters.resource";
 import {mergeMap} from "rxjs";
 import {FhirBaseResource} from "../../../models/rc-api/fhir.base.resource";
+import {PatientSearchParameters} from "../../../models/rc-api/patient-search-parameters";
 
 @Component({
   selector: 'app-rc-api-test-component',
@@ -51,6 +52,23 @@ export class RcApiTestComponent implements OnInit {
     //     }
     //   }
     // )
+    this.createSearchParameter();
+  }
+
+  createSearchParameter() {
+    // let searchParam: PatientSearchParameters = new PatientSearchParameters();
+    // searchParam.setIdentifier({system: "MRN", value: "1234"});
+    // console.log(searchParam);
+    // searchParam.setNameAndBirthDate({given: ["Dave"], family: "Smith"}, new Date())
+
+    let searchParam2: PatientSearchParameters = new PatientSearchParameters();
+    searchParam2.setNameAndBirthDate({given: ["Dave"], family: "Smith"}, new Date())
+    console.log(searchParam2)
+
+    //searchParam2.setIdentifier({system: "MRN", value: "1234"});
+  }
+  createExampleNameSearchParameter() {
+
   }
 
 }
