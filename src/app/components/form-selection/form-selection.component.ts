@@ -9,7 +9,7 @@ import {FormType, formTypes} from "../../models/form-type";
 })
 export class FormSelectionComponent {
   @Output() formSelectedEvent = new EventEmitter<FormType>();
-  @Input() selectedForm: FormType;
+  @Input() selectedForm: FormType = FormType.SCD;
 
   formList: FormType[] = formTypes;
   onFormSelected(event: MatRadioChange) {

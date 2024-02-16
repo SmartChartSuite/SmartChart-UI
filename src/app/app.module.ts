@@ -16,16 +16,16 @@ import {PatientSearchComponent} from "./components/patient-search/patient-search
 import {PatientGroupsComponent} from "./components/patient-groups/patient-groups.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import { SideNavComponent } from './components/side-nav/side-nav.component';
-import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatError, MatFormField, MatFormFieldModule, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
-import {MatInput} from "@angular/material/input";
+import {MatInput, MatInputModule} from "@angular/material/input";
 import { ActiveChartsComponent } from './components/active-charts/active-charts.component';
 import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { FormSelectionComponent } from './components/form-selection/form-selection.component';
 import { PatientSummaryTableComponent } from './components/patient-summary-table/patient-summary-table.component';
 import {MatButton} from "@angular/material/button";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
   MatCell,
   MatCellDef,
@@ -36,6 +36,13 @@ import {
   MatTable
 } from "@angular/material/table";
 import {MatSort} from "@angular/material/sort";
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerModule,
+  MatDatepickerToggle
+} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
 
 
 export const configFactory = (configService: ConfigService) => {
@@ -90,6 +97,16 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatRowDef,
     MatNoDataRow,
     MatSort,
+    ReactiveFormsModule,
+    MatError,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatNativeDateModule,
+    MatDatepickerToggle,
+    MatHint,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule
     // TODO: Delete
   ],
   providers: [
