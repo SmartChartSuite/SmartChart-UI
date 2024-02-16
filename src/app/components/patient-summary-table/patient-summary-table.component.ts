@@ -16,9 +16,10 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class PatientSummaryTableComponent implements OnChanges {
 
-  @Input() patientSummaryData: PatientSummary[] = [];
-  @Output() patientSelectedEvent: EventEmitter<PatientSummary> = new EventEmitter<PatientSummary>();
   @Input() selectedPatient: PatientSummary | null;
+  @Input() patientSummaryData: PatientSummary[] = [];
+
+  @Output() patientSelectedEvent: EventEmitter<PatientSummary> = new EventEmitter<PatientSummary>();
 
   displayedColumns: string[] = [ "name", "gender", "birthDate"];
   dataSource: MatTableDataSource<PatientSummary>;
