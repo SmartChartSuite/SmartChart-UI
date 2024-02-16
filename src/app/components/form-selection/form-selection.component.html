@@ -1,1 +1,8 @@
-<p>form-selection works!</p>
+<label id="select-form-label">Select Form</label>
+<mat-radio-group aria-labelledby="select-form-label"
+  class="form-radio-group" (change) ="onFormSelected($event)"
+  [(ngModel)]="selectedForm">
+  @for ( form of formList; track form) {
+    <mat-radio-button  [value]="form">{{ form }}</mat-radio-button>
+  }
+</mat-radio-group>

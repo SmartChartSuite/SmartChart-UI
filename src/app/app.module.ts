@@ -24,6 +24,8 @@ import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { FormSelectionComponent } from './components/form-selection/form-selection.component';
 import { PatientSummaryTableComponent } from './components/patient-summary-table/patient-summary-table.component';
 import {MatButton} from "@angular/material/button";
+import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
+import {FormsModule} from "@angular/forms";
 
 
 export const configFactory = (configService: ConfigService) => {
@@ -63,6 +65,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatOption,
     MatInput,
     MatButton,
+    MatRadioGroup,
+    MatRadioButton,
+    FormsModule,
     // TODO: Delete
   ],
   providers: [

@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
 })
 export class NewChartComponent {
 
+  onFormSelected(event: string) {
+    console.log(event);
+  }
 }
