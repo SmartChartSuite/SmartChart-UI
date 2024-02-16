@@ -5,5 +5,5 @@
       <mat-option [value]="'mrn'">Group 1</mat-option>
     </mat-select>
   </mat-form-field>
-  <app-patient-summary-table></app-patient-summary-table>
+  <app-patient-summary-table [selectedPatient]="selectedPatient" (patientSelectedEvent)="onPatientSelected($event)"></app-patient-summary-table>
 </div>

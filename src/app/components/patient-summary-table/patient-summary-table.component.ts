@@ -1,10 +1,35 @@
-import { Component } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
+import {PatientSummary} from "../../models/patient-summary";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-patient-summary-table',
   templateUrl: './patient-summary-table.component.html',
   styleUrl: './patient-summary-table.component.scss'
 })
-export class PatientSummaryTableComponent {
+export class PatientSummaryTableComponent implements OnChanges {
+
+  @Input() patientSummaryData: PatientSummary[] = [];
+  @Output() patientSelectedEvent: EventEmitter<PatientSummary> = new EventEmitter<PatientSummary>();
+  @Input() selectedPatient: PatientSummary | null;
+
+  displayedColumns: string[] = [ "name", "gender", "birthDate"];
+  dataSource: MatTableDataSource<PatientSummary>;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['patientSummaryData']?.currentValue){
+      this.dataSource.data = this.patientSummaryData;
+    }
+  }
+  setSelectedPatient(patient: PatientSummary) {
+    this.patientSelectedEvent.emit(patient);
+  }
 
 }

@@ -26,6 +26,16 @@ import { PatientSummaryTableComponent } from './components/patient-summary-table
 import {MatButton} from "@angular/material/button";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {FormsModule} from "@angular/forms";
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow, MatHeaderRowDef, MatNoDataRow, MatRow, MatRowDef,
+  MatTable
+} from "@angular/material/table";
+import {MatSort} from "@angular/material/sort";
 
 
 export const configFactory = (configService: ConfigService) => {
@@ -68,6 +78,18 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatRadioGroup,
     MatRadioButton,
     FormsModule,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRow,
+    MatRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatNoDataRow,
+    MatSort,
     // TODO: Delete
   ],
   providers: [
