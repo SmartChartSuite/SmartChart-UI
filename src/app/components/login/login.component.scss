@@ -4,10 +4,8 @@
   color: white;
   display: flex;
   flex-direction: row;
-
+  justify-content: center;
   > * {
-    justify-self: center;
-    align-self: center;
     padding: 8px;
   }
 }
