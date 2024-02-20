@@ -1,7 +1,8 @@
 $menu-width: 200px;
+$dark-grey-color: #d3d0cf;
 
 nav.main-menu.expanded {
-  width:200px;
+  width:$menu-width;
   overflow:visible;
 }
 
@@ -33,8 +34,12 @@ nav ul,nav li {
   color: whitesmoke;
 }
 
+.mat-mdc-button:hover {
+  color: $dark-grey-color;
+}
+
 .expanded-menu-button{
-  width: 176px
+  width: ($menu-width - 24px);
 }
 
 button {
@@ -47,5 +52,10 @@ button {
    font-size: 24px;
    height: 24px;
    width: 24px;
+   border-radius: 0
+ }
+
+ .selected {
+  color: $dark-grey-color !important;
  }
 

@@ -13,13 +13,13 @@
     <!-- Open/Close nav menu (always rendered) -->
     <li>
       @if (expanded) {
-        <button mat-button color="menu-button" class="expanded-menu-button" (click)="onExpandedStatusChanged()">
+        <button mat-button class="expanded-menu-button" (click)="onExpandedStatusChanged()">
           <mat-icon class="icon-display">chevron_left</mat-icon>
           Close Menu
         </button>
       }
       @else {
-        <button mat-button color="menu-button" (click)="onExpandedStatusChanged()">
+        <button mat-button (click)="onExpandedStatusChanged()">
           <mat-icon class="icon-display">chevron_right</mat-icon>
         </button>
       }
@@ -28,21 +28,27 @@
     <!-- Menu options rendered if the user is logged in -->
     @if (oauthService.hasValidAccessToken()) {
       <li>
-        <button mat-button color="menu-button" class="expanded-menu-button" (click)="router.navigate(['/']);">
+        <button mat-button class="expanded-menu-button"
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LANDING"
+                (click)="router.navigate(['/']);">
           <mat-icon>home</mat-icon>
           @if (expanded) { Home }
         </button>
       </li>
 
       <li>
-        <button mat-button color="menu-button" class="expanded-menu-button" (click)="router.navigate(['/forms']);">
+        <button mat-button class="expanded-menu-button"
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORMS"
+                (click)="router.navigate(['/forms']);">
           <mat-icon>person_search</mat-icon>
           @if (expanded) { Forms }
         </button>
       </li>
 
       <li>
-        <button mat-button color="menu-button" class="expanded-menu-button" (click)="router.navigate(['/forms']);">
+        <button mat-button class="expanded-menu-button"
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.JOBS"
+                (click)="router.navigate(['/jobs']);">
           <mat-icon>settings</mat-icon>
           @if (expanded) { Jobs }
         </button>
