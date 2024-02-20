@@ -2,12 +2,13 @@ import {AuthConfig} from "angular-oauth2-oidc";
 import config from "../config/config.json";
 
 export const authCodeFlowConfig: AuthConfig = {
-  issuer: config.issuer,
-  redirectUri: config.callbackUrl,
-  clientId: config.clientId,
-  responseType: 'code',
-  scope: config.scope,
-  showDebugInformation: true,
-  requireHttps: false,
-  logoutUrl: config.logoutUrl
+  issuer: config.auth.issuer,
+  redirectUri: window.location.origin,
+  clientId: config.auth.clientId,
+  responseType: config.auth.responseType,
+  scope: config.auth.scope,
+  showDebugInformation: config.auth.showDebugInformation,
+  requireHttps: config.auth.requireHttps,
+  logoutUrl: config.auth.logoutUrl,
+  customQueryParams: config.auth.customQueryParams
 };
