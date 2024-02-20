@@ -6,7 +6,6 @@ import {LoginComponent} from "./components/login/login.component";
 import {FormsComponent} from "./components/forms/forms.component";
 import {JobsComponent} from "./components/jobs/jobs.component";
 import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
-import {AuthGuard} from "./guards/auth.guard";
 
 const routes: Routes = [
   {
@@ -16,17 +15,14 @@ const routes: Routes = [
   {
     path: 'forms',
     component: FormsComponent,
-    canActivate: [AuthGuard]
   },
   {
     path: 'jobs',
     component: JobsComponent,
-    canActivate: [AuthGuard]
   },
   {
     path: 'callback',
     component: CallbackComponent,
-    canActivate: [AuthGuard]
   },
   {
     path: 'login',

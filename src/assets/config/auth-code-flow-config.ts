@@ -3,12 +3,11 @@ import config from "../config/config.json";
 
 export const authCodeFlowConfig: AuthConfig = {
   issuer: config.auth.issuer,
-  redirectUri: window.location.origin,
+  redirectUri: config.callbackUrl,
   clientId: config.auth.clientId,
-  responseType: config.auth.responseType,
+  responseType: 'code',
   scope: config.auth.scope,
-  showDebugInformation: config.auth.showDebugInformation,
-  requireHttps: config.auth.requireHttps,
-  logoutUrl: config.auth.logoutUrl,
-  customQueryParams: config.auth.customQueryParams
+  showDebugInformation: true,
+  requireHttps: false,
+  logoutUrl: config.auth.logoutUrl
 };
