@@ -44,7 +44,6 @@ import {
 } from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 
-
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };

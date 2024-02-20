@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {OAuthService} from "angular-oauth2-oidc";
-import {JwksValidationHandler} from "angular-oauth2-oidc-jwks";
+import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
 import {authCodeFlowConfig} from "../../../assets/config/auth-code-flow-config";
 import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatCardModule} from "@angular/material/card";
