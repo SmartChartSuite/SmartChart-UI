@@ -4,8 +4,6 @@ import {RouteState} from "../../models/application-state";
 
 @Component({
   selector: 'app-jobs',
-  standalone: true,
-  imports: [],
   templateUrl: './jobs.component.html',
   styleUrl: './jobs.component.scss'
 })

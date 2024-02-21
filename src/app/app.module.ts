@@ -43,6 +43,10 @@ import {
   MatDatepickerToggle
 } from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
+import {JobsComponent} from "./components/jobs/jobs.component";
+import {CallbackComponent} from "./components/callback/callback.component";
+import {LandingComponent} from "./components/landing/landing.component";
+import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -63,13 +67,16 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     NewChartComponent,
     FormSelectionComponent,
     PatientSummaryTableComponent,
+    JobsComponent,
+    LoginComponent,
+    CallbackComponent,
+    LandingComponent,
   ],
   imports: [
     HttpClientModule,
     OAuthModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
-    LoginComponent,
     BrowserAnimationsModule,
     MatIcon,
     MatTabGroup,
@@ -105,7 +112,12 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatHint,
     MatFormFieldModule,
     MatInputModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatCard,
+    MatCardHeader,
+    MatCardContent,
+    MatCardActions,
+    MatCardModule
     // TODO: Delete
   ],
   providers: [
