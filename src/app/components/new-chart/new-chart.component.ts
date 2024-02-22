@@ -10,4 +10,8 @@ export class NewChartComponent {
   onFormSelected(event: string) {
     console.log(event);
   }
+
+  onStartJob() {
+    console.log("onStartJob");
+  }
 }

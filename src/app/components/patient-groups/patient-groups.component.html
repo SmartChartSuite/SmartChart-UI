@@ -1,9 +1,11 @@
-<div [style.background-color]="'pink'">
-  <mat-form-field>
+<div class="margin-md">
+  <mat-form-field appearance="outline">
     <mat-label>Group</mat-label>
     <mat-select>
       <mat-option [value]="'mrn'">Group 1</mat-option>
+      <mat-option [value]="'mrn'">Group 2</mat-option>
     </mat-select>
   </mat-form-field>
-  <app-patient-summary-table [selectedPatient]="selectedPatient" (patientSelectedEvent)="onPatientSelected($event)"></app-patient-summary-table>
+  <app-patient-summary-table [selectedPatient]="selectedPatient"
+                             (patientSelectedEvent)="onPatientSelected($event)"></app-patient-summary-table>
 </div>
