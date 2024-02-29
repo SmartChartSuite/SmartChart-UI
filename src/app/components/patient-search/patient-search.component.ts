@@ -48,6 +48,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
   }
 
   private constructForm(selectedSearchCriteria: SearchByType) {
+    this.searchForm.reset()
 
     if(selectedSearchCriteria == SearchByType.IDENTIFIER){
       this.searchForm = new FormGroup<any>({
@@ -73,6 +74,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
   }
 
   onSubmit() {
+    this.searchForm.markAllAsTouched(); //Trigger manual submit
     console.log(this.searchForm);
   }
 
