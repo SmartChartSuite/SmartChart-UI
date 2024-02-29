@@ -2,6 +2,9 @@ import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core'
 import {MatRadioChange} from "@angular/material/radio";
 import {SearchByType, searchByTypes} from "../../models/search-by-types";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {PatientSummary} from "../../models/patient-summary";
+import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
+import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
 
 @Component({
   selector: 'app-patient-search',
@@ -14,11 +17,15 @@ export class PatientSearchComponent implements OnChanges, OnInit {
   // Form gives query parameters. See src/app/models/rc-api/patient-search-parameters.ts.
   @Input() selectedSearchCriteria: SearchByType = SearchByType.IDENTIFIER;
 
+  protected readonly TYPE_SYSTEM_LIST: string[] = ['mrn', 'test'];
+
+  protected readonly SearchByType = SearchByType;
+
   searchTypeList: SearchByType[] = searchByTypes;
 
   searchForm: FormGroup = new FormGroup<any>({});
 
-  protected readonly TYPE_SYSTEM_LIST: string[] = ['mrn', 'test'];
+  patientSummaryData: PatientSummary[];
 
   // Search by Identifier controls
   identifierFc: FormControl = new FormControl(null, [Validators.required]);
@@ -31,6 +38,8 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   // Search by FHIR ID controls
   fhirIdFc: FormControl = new FormControl("", Validators.required);
+
+  constructor(private rcApiInterfaceService: RcApiInterfaceService){}
 
   onSearchBySelected($event: MatRadioChange) {
     console.log($event.value);
@@ -75,8 +84,18 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   onSubmit() {
     this.searchForm.markAllAsTouched(); //Trigger manual submit
-    console.log(this.searchForm);
+    if(this.searchForm.status == 'VALID'){
+      this.executeSearch(this.searchForm.value);
+    }
   }
 
-  protected readonly SearchByType = SearchByType;
+  private executeSearch(searchParams: PatientSearchParameters) {
+    this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
+      next: value => this.patientSummaryData = value,
+      error: err => {
+        //TODO add visual feedback for the user indicating that there was an error in the api
+        console.error(err);
+      }
+    });
+  }
 }
