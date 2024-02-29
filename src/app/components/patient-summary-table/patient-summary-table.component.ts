@@ -22,7 +22,7 @@ export class PatientSummaryTableComponent implements OnChanges {
   @Output() patientSelectedEvent: EventEmitter<PatientSummary> = new EventEmitter<PatientSummary>();
 
   displayedColumns: string[] = [ "name", "gender", "birthDate"];
-  dataSource: MatTableDataSource<PatientSummary>;
+  dataSource: MatTableDataSource<PatientSummary> = new MatTableDataSource<PatientSummary>([]);
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['patientSummaryData']?.currentValue){

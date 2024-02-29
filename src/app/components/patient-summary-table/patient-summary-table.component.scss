@@ -5,3 +5,7 @@ tr.patient-row:not(.selected-patient-row):hover {
 tr.selected-patient-row {
   background: whitesmoke;
 }
+
+.no-data {
+  padding: 16px;
+}

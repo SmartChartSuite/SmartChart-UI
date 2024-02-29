@@ -20,16 +20,16 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   protected readonly TYPE_SYSTEM_LIST: string[] = ['mrn', 'test'];
 
-  // search by Identifier controls
+  // Search by Identifier controls
   identifierFc: FormControl = new FormControl(null, [Validators.required]);
   typeSystemFc: FormControl = new FormControl(this.TYPE_SYSTEM_LIST[0], Validators.required);
 
-  // search by Name and DoB controls
+  // Search by Name and DoB controls
   givenFc: FormControl = new FormControl("", Validators.required);
   familyFc: FormControl = new FormControl("", Validators.required);
   dobFc: FormControl = new FormControl("", Validators.required);
 
-  // search by FHIR ID controls
+  // Search by FHIR ID controls
   fhirIdFc: FormControl = new FormControl("", Validators.required);
 
   onSearchBySelected($event: MatRadioChange) {
