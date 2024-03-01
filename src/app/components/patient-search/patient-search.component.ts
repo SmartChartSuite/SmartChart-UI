@@ -43,20 +43,20 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   onSearchBySelected($event: MatRadioChange) {
     console.log($event.value);
-    this.constructForm($event.value);
+    this.createSearchForm($event.value);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['selectedSearchCriteria']?.currentValue){
-      this.constructForm(this.selectedSearchCriteria);
+      this.createSearchForm(this.selectedSearchCriteria);
     }
   }
 
   ngOnInit(): void {
-    this.constructForm(this.selectedSearchCriteria);
+    this.createSearchForm(this.selectedSearchCriteria);
   }
 
-  private constructForm(selectedSearchCriteria: SearchByType) {
+  private createSearchForm(selectedSearchCriteria: SearchByType) {
     this.searchForm.reset()
 
     if(selectedSearchCriteria == SearchByType.IDENTIFIER){
