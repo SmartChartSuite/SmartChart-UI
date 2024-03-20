@@ -14,15 +14,15 @@ const routes: Routes = [
   },
   {
     path: 'forms',
-    component: FormsComponent
+    component: FormsComponent,
   },
   {
     path: 'jobs',
-    component: JobsComponent
+    component: JobsComponent,
   },
   {
     path: 'callback',
-    component: CallbackComponent
+    component: CallbackComponent,
   },
   {
     path: 'login',

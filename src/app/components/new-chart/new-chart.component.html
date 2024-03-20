@@ -1,7 +1,6 @@
-<div class="flex-row-simple border" [style.background-color]="'lime'">
-  <div class="border" [style.flex]="'1'">
-    <h3>Patient</h3>
-    <mat-tab-group>
+<div class="flex">
+  <div class="col-width-70" style="background-color: #fcfcf0;">
+    <mat-tab-group color="primary" mat-stretch-tabs="false">
       <mat-tab label="Patient Groups/Cohorts">
         <app-patient-groups></app-patient-groups>
       </mat-tab>
@@ -10,12 +9,14 @@
       </mat-tab>
     </mat-tab-group>
   </div>
-  <div class=""
-    <div class="border" [style.flex]="'1'">
-      <h3>Form Type Selection</h3>
-      <app-form-selection></app-form-selection>
+  <div class="col-width-30" style="background-color: #faf8f6">
+      <app-form-selection (formSelectedEvent)="onFormSelected($event)"></app-form-selection>
+    <div class="flex-row margin-sm start-job-button">
+      <button mat-raised-button color="primary" (click)="onStartJob()">
+        <mat-icon>start</mat-icon>
+        Start Job
+      </button>
     </div>
-    <div class="border" [style.flex]="'1'">
-      <button mat-raised-button>Start Job</button>
-    </div>
+  </div>
+
 </div>
