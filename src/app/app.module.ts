@@ -9,6 +9,14 @@ import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
+import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
+import {MatIcon} from "@angular/material/icon";
+import {FormsComponent} from "./components/forms/forms.component";
+import {PatientSearchComponent} from "./components/patient-search/patient-search.component";
+import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import { SideNavComponent } from './components/side-nav/side-nav.component';
+
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -20,7 +28,11 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    FormsComponent,
+    PatientSearchComponent,
+    PatientSelectorComponent,
+    SideNavComponent,
   ],
   imports: [
     HttpClientModule,
@@ -29,7 +41,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     AppRoutingModule,
     LoginComponent,
     BrowserAnimationsModule,
-    HttpClientModule
+    MatIcon,
+    MatTabGroup,
+    MatTab,
+    RcApiTestComponent // TODO: Delete
   ],
   providers: [
     {

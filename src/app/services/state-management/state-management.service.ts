@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, distinctUntilChanged, map, Observable} from "rxjs";
-import {ApplicationState} from "../../models/application-state";
+import {ApplicationState, RouteState} from "../../models/application-state";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class StateManagementService {
   private applicationState$: BehaviorSubject<ApplicationState>;
 
   private defaultState: ApplicationState = {
-    currentComponent: "content-root"
+    currentRoute: RouteState.LANDING
   }
 
   constructor() {
@@ -41,6 +41,14 @@ export class StateManagementService {
       ...newState,
     })
     this.writeToSession(this.applicationState$.value);
+  }
+
+  /**
+   * Helper function to streamline just updating the current route for callback URL.
+   * @param route RouteState
+   */
+  setCurrentRoute(route: RouteState) {
+    this.setState({currentRoute: route});
   }
 
   writeToSession(state: ApplicationState) {

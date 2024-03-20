@@ -1,15 +1,12 @@
-
-<!-- TODO: Update to @ngIf -->
-<div *ngIf="oauthService.hasValidAccessToken(); else login;">
-  <div #collapsableLeftMenu>
-
-  </div>
-  <div #content>
-    <router-outlet></router-outlet>
+<div class="app-wrapper">
+  <app-side-nav #sidenav (expandedStatusChangedEvent)="onExpandedStatusChanged($event)"></app-side-nav>
+  <div #content class="app-content-wrapper">
+    @if (oauthService.hasValidAccessToken()) {
+      <router-outlet></router-outlet>
+    } @else {
+      <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
+    }
   </div>
 </div>
 
-<ng-template #login>
-  <sc-standalone-login></sc-standalone-login>
-</ng-template>
 

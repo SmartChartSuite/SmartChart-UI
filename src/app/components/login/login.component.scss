@@ -1,0 +1,81 @@
+/** User Profile **/
+.user-profile-header {
+  height: 64px;
+  color: white;
+  display: flex;
+  flex-direction: row;
+
+  > * {
+    justify-self: center;
+    align-self: center;
+    padding: 8px;
+  }
+}
+
+.profile-image {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  justify-self: center;
+  align-self: center;
+  border: 0 solid black;
+  cursor: pointer;
+}
+
+.profile-image-lg {
+  @extend .profile-image;
+  width: 64px;
+  height: 64px;
+}
+
+.login-button {
+  margin-right: 8px;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  border-radius: 5px;
+
+  > .details {
+    margin-left: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    > * {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      line-height: 20px;
+    }
+
+    > .name {
+      font-weight: bold;
+      font-size: small;
+    }
+
+    > .email {
+      font-size: x-small;
+      font-style: italic;
+    }
+  }
+}
+
+.login-card {
+  margin-top: 64px;
+  max-width: 512px;
+  min-width: 256px;
+  min-height: 128px;
+}
+
+.centered-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -61,3 +61,34 @@ $lg: 24px;
   @extend .border-radius-xs;
   border: 1px solid #cdcdcd;
 }
+
+
+//** Component Wrappers **//
+// DO NOT USE THE FOLLOWING OUTSIDE OF app.component.html!!
+.app-wrapper { @extend .flex; @extend .full-screen; }
+.app-flex-wrapper { @extend .full-screen; @extend .flex-col; flex: 1; justify-content: stretch; align-items: stretch; }
+.app-content-wrapper {
+  @extend .flex-col;
+  @extend .app-flex-wrapper;
+  > * {
+    @extend .flex-col;
+    flex: 1;
+  }
+  > router-outlet {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}
+// Use the following for all router outlet level pages in a wrapping div.
+.component-wrapper {
+  @extend .flex-col-simple; // Sets a basic flex display so child will fill it.
+  flex: 1;                  // Stretches to fill app component.
+  align-content: stretch;   // More stretching.
+  align-items: stretch;     // More stretching to fill!
+  overflow-y: hidden;       // Sets up overflow so that the inner content can be scrollable.
+  > .component-content {
+    @extend .padding-md; // Sets default component padding.
+    @extend .scrollable; // Makes the content scrollable.
+    flex: 1;             // Stretches to fill wrapper.
+  }
+}

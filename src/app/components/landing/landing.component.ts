@@ -1,29 +1,31 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {MatButton} from "@angular/material/button";
 import {AsyncPipe, JsonPipe} from "@angular/common";
 import {OAuthService} from "angular-oauth2-oidc";
+import {RouteState} from "../../models/application-state";
+import {window} from "rxjs";
 
 @Component({
-  selector: 'app-content-root',
+  selector: 'app-landing',
   standalone: true,
   imports: [
     MatButton,
     AsyncPipe,
     JsonPipe,
   ],
-  templateUrl: './content-root.component.html',
-  styleUrl: './content-root.component.scss'
+  templateUrl: './landing.component.html',
+  styleUrl: './landing.component.scss'
 })
-export class ContentRootComponent {
+export class LandingComponent implements OnInit{
 
   constructor(
     protected stateManagementService: StateManagementService,
     public oauthService: OAuthService) {}
 
-  setState(currentComponent: string) {
-    this.stateManagementService.setState({"currentComponent": currentComponent});
-  }
-
   protected readonly window = window;
+
+  ngOnInit(): void {
+    this.stateManagementService.setCurrentRoute(RouteState.LANDING);
+  }
 }

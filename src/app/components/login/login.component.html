@@ -1,3 +1,32 @@
-<div class="border">
-  <button (click)="oauthService.initCodeFlow()">Log In</button>
-</div>
+@if (isLocatedInMainMenu) {
+  <div class="user-profile-header">
+    <ng-container *ngIf="oauthService.hasValidAccessToken();" class="profile-wrapper"></ng-container>
+    <div *ngIf="oauthService.getIdentityClaims() as user">
+      <img
+        [src]="user?.['picture'] ? user?.['picture'] : '/assets/portrait_placeholder.png'"
+        referrerpolicy="no-referrer"
+        class="profile-image">
+    </div>
+  </div>
+}
+@else {
+  <div class="centered-card">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>
+          Sign In Header
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        Temp content
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-raised-button (click)="oauthService.initImplicitFlow()">
+          <mat-icon>login</mat-icon>
+          Sign In
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+}
+
