@@ -13,9 +13,17 @@ import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/r
 import {MatIcon} from "@angular/material/icon";
 import {FormsComponent} from "./components/forms/forms.component";
 import {PatientSearchComponent} from "./components/patient-search/patient-search.component";
-import {PatientSelectorComponent} from "./components/patient-selector/patient-selector.component";
+import {PatientGroupsComponent} from "./components/patient-groups/patient-groups.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import { SideNavComponent } from './components/side-nav/side-nav.component';
+import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatInput} from "@angular/material/input";
+import { ActiveChartsComponent } from './components/active-charts/active-charts.component';
+import { NewChartComponent } from './components/new-chart/new-chart.component';
+import { FormSelectionComponent } from './components/form-selection/form-selection.component';
+import { PatientSummaryTableComponent } from './components/patient-summary-table/patient-summary-table.component';
+import {MatButton} from "@angular/material/button";
 
 
 export const configFactory = (configService: ConfigService) => {
@@ -31,8 +39,12 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     AppComponent,
     FormsComponent,
     PatientSearchComponent,
-    PatientSelectorComponent,
+    PatientGroupsComponent,
     SideNavComponent,
+    ActiveChartsComponent,
+    NewChartComponent,
+    FormSelectionComponent,
+    PatientSummaryTableComponent,
   ],
   imports: [
     HttpClientModule,
@@ -44,7 +56,14 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatIcon,
     MatTabGroup,
     MatTab,
-    RcApiTestComponent // TODO: Delete
+    RcApiTestComponent,
+    MatLabel,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatInput,
+    MatButton,
+    // TODO: Delete
   ],
   providers: [
     {

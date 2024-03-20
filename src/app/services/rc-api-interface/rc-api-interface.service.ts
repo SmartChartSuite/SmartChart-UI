@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {Observable, tap} from "rxjs";
+import {map, Observable, of, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
+import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
+import {PatientSummary} from "../../models/patient-summary";
+import {PatientGroup} from "../../models/patient-group";
 
 @Injectable({
   providedIn: 'root'
@@ -35,16 +38,61 @@ export class RcApiInterfaceService {
    * Search all Patient resources. FHIR pass through for SmartChart UI.
    * TODO: Implement Parameters.
    */
-  searchPatient(): Observable<FhirBaseResource> {
-    // TODO: Handle FHIR Params
-    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.patientEndpoint}`);
+  searchPatient(searchParameters?: PatientSearchParameters): Observable<PatientSummary[]> {
+    const searchPatientUrl = this.configService.config.rcApiUrl + `${this.patientEndpoint}`;
+    let patientSearch$ = new Observable();
+    if (!searchParameters) {
+      patientSearch$ = this.http.get<FhirBaseResource>(searchPatientUrl);
+    }
+    else {
+      patientSearch$ = this.http.get<FhirBaseResource>(searchPatientUrl, {params: searchParameters})
+    }
+
+    return patientSearch$.pipe(
+      map((value: any) => {
+        const entries = value["entry"];
+        let patientSummaries: PatientSummary[] = [];
+        // TODO Map entries to Patient Summaries and add to list.
+        return patientSummaries;
+      })
+    )
   }
 
   /**
    * Search all Group resources. FHIR pass through for SmartChart UI.
    */
-  searchGroup(): Observable<FhirBaseResource> {
-    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`);
+  searchGroup(): Observable<any> {
+    const groups$ = this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`).pipe(
+      map(searchSetBundle => {
+        const entries: any[] = searchSetBundle['entry'];
+        entries.forEach(value => {
+          this.readPatient(value.id)
+          // for each patient fetched build summary
+        })
+
+        return [{
+          "groupName": "Group 1",
+          "patients": [
+            {} // PATIENT SUMMARY OBJECT
+          ]
+        }]
+      })
+    );
+
+    const mockData: PatientGroup[] = [{
+      "groupName": "Group 1",
+      "members": [
+        {fhirId: "1", name: {given: ["Bob"], family: "Smith"}, birthDate: new Date("1960-07-12"), gender: "male"}, // PATIENT SUMMARY OBJECT
+        {fhirId: "2", name: {given: ["Sarah"], family: "Cubin"}, birthDate: new Date("1989-02-14"), gender: "female"} // PATIENT SUMMARY OBJECT
+      ]},
+      {
+        "groupName": "Group 2",
+        "members": [
+          {fhirId: "3", name: {given: ["Jeremy"], family: "Sanders"}, birthDate: new Date("2015-12-30"), gender: "male"}, // PATIENT SUMMARY OBJECT
+        ]}
+    ]
+    const groupsMock$ = of(mockData)
+    return groupsMock$;
   }
 
   /**
