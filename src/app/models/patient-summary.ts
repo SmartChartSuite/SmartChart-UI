@@ -1,11 +1,18 @@
-
 /**
  * Note: This is *NOT* intended to be representative of the FHIR Patient resource or complex Types. It is an internal to
  * the application data model summarizing the relevant patient information for both display and job management. Some data
  * structures may be roughly equivalent but simplified.
  */
+import {FhirBaseResource} from "./rc-api/fhir.base.resource";
+
 
 export class PatientSummary {
+  constructor(patientResource: FhirBaseResource) {
+    this.fhirId = patientResource.id // REQUIRED
+    this.birthDate = patientResource?.["birthDate"]
+    this.gender = patientResource?.["gender"]
+    this.name = new PatientName(patientResource?.["name"])
+  }
   fhirId: string;
   name?: PatientName; // Get from FHIR Official
   birthDate?: Date;
@@ -14,6 +21,13 @@ export class PatientSummary {
 }
 
 export class PatientName {
+  constructor(humanNameList: any) {
+    // Expects a list of FHIR Human Names. Official is prioritized, otherwise uses first in list.
+    let patientName = humanNameList.find((humanName: any) => humanName["use"] === HumanNameUse.official) ?? humanNameList[0]
+    this.use = patientName?.["use"];
+    this.family = patientName?.["family"];
+    this.given = patientName?.["given"]?.[0];
+  }
   use?: string;
   family?: string;
   given?: string[];
@@ -24,6 +38,15 @@ export class PatientIdentifier {
   value: string;
 }
 
+export enum HumanNameUse {
+  usual = "usual",
+  official = "official",
+  temp = "temp",
+  nickname = "nickname",
+  anonymous = "anonymous",
+  old = "old",
+  maiden = "maiden"
+}
 
 export const examplePatient: PatientSummary = {
   fhirId: "1234",

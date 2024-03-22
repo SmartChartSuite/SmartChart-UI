@@ -62,11 +62,12 @@ export class RcApiInterfaceService {
    * Search all Group resources. FHIR pass through for SmartChart UI.
    */
   searchGroup(): Observable<any> {
-    const groups$ = this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`).pipe(
-      map(searchSetBundle => {
-        const entries: any[] = searchSetBundle['entry'];
-        entries.forEach(value => {
-          this.readPatient(value.id)
+    const groups$ = this.http.get<any[]>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`).pipe(
+      map(groupList => {
+        groupList.forEach(value => {
+          console.log(value)
+          value.member.forEach((member: any) => console.log(member.entity.reference))
+          //this.readPatient(value.id)
           // for each patient fetched build summary
         })
 
@@ -79,20 +80,20 @@ export class RcApiInterfaceService {
       })
     );
 
-    const mockData: PatientGroup[] = [{
-      "groupName": "Group 1",
-      "members": [
-        {fhirId: "1", name: {given: ["Bob"], family: "Smith"}, birthDate: new Date("1960-07-12"), gender: "male"}, // PATIENT SUMMARY OBJECT
-        {fhirId: "2", name: {given: ["Sarah"], family: "Cubin"}, birthDate: new Date("1989-02-14"), gender: "female"} // PATIENT SUMMARY OBJECT
-      ]},
-      {
-        "groupName": "Group 2",
-        "members": [
-          {fhirId: "3", name: {given: ["Jeremy"], family: "Sanders"}, birthDate: new Date("2015-12-30"), gender: "male"}, // PATIENT SUMMARY OBJECT
-        ]}
-    ]
-    const groupsMock$ = of(mockData)
-    return groupsMock$;
+    // const mockData: PatientGroup[] = [{
+    //   "groupName": "Group 1",
+    //   "members": [
+    //     {fhirId: "1", name: {given: ["Bob"], family: "Smith"}, birthDate: new Date("1960-07-12"), gender: "male"}, // PATIENT SUMMARY OBJECT
+    //     {fhirId: "2", name: {given: ["Sarah"], family: "Cubin"}, birthDate: new Date("1989-02-14"), gender: "female"} // PATIENT SUMMARY OBJECT
+    //   ]},
+    //   {
+    //     "groupName": "Group 2",
+    //     "members": [
+    //       {fhirId: "3", name: {given: ["Jeremy"], family: "Sanders"}, birthDate: new Date("2015-12-30"), gender: "male"}, // PATIENT SUMMARY OBJECT
+    //     ]}
+    // ]
+    //const groupsMock$ = of(mockData)
+    return groups$;
   }
 
   /**
