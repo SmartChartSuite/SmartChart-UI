@@ -31,7 +31,7 @@ export class PatientSummaryTableComponent implements OnChanges, AfterViewInit {
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['patientSummaryData']?.currentValue){
       this.dataSource.data = this.patientSummaryData;
-      this.dataSource.paginator.firstPage();
+      this.dataSource.paginator?.firstPage();
     }
   }
   setSelectedPatient(patient: PatientSummary) {
