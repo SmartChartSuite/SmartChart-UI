@@ -1,15 +1,13 @@
 <div class="margin-md">
   <mat-form-field appearance="outline">
     <mat-label>Group</mat-label>
-    <mat-select (selectionChange)="onGroupSelected($event)">
-      @for (group of patientGroups$ | async; track group) {
+    <mat-select (selectionChange)="onGroupSelected($event)" [(value)]="selectedGroup">
+      @for (group of patientGroups; track group) {
         <mat-option [value]="group">{{ group.groupName }}</mat-option>
       }
     </mat-select>
   </mat-form-field>
   <app-patient-summary-table
-    [selectedPatient]="selectedPatient"
-    (patientSelectedEvent)="onPatientSelected($event)"
     [patientSummaryData]="patientSummaryData"
   />
 </div>

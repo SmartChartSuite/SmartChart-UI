@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, of, tap} from "rxjs";
+import {map, Observable, of, Subject} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
@@ -20,6 +20,12 @@ export class RcApiInterfaceService {
   startJobsEndpoint: string = `forms/start?asyncFlag=True`;
   getJobPackageEndpoint: string = `forms`;
 
+  private selectedPatient = new Subject<PatientSummary>();
+  selectedPatient$ = this.selectedPatient.asObservable();
+
+  setSelectedPatient(selectedPatient: PatientSummary){
+    this.selectedPatient.next(selectedPatient);
+  }
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
