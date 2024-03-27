@@ -8,8 +8,6 @@
     </mat-select>
   </mat-form-field>
   <app-patient-summary-table
-    [selectedPatient]="selectedPatient"
-    (patientSelectedEvent)="onPatientSelected($event)"
     [patientSummaryData]="patientSummaryData"
   />
 </div>

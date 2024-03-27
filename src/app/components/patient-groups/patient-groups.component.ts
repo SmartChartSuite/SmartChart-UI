@@ -10,16 +10,11 @@ import {MatSelectChange} from "@angular/material/select";
   styleUrl: './patient-groups.component.scss'
 })
 export class PatientGroupsComponent implements OnInit{
-
   constructor(private rcApiInterfaceService: RcApiInterfaceService){}
 
-  selectedPatient: PatientSummary | null;
   patientSummaryData: PatientSummary[];
   selectedGroup: PatientGroup;
   patientGroups: PatientGroup[];
-  onPatientSelected(patient: PatientSummary) {
-    this.selectedPatient = patient;
-  }
 
   ngOnInit(): void {
     this.rcApiInterfaceService.searchGroup().subscribe({
@@ -31,7 +26,7 @@ export class PatientGroupsComponent implements OnInit{
       error: err => {
         console.error(err);
       }
-    })
+    });
   }
 
   onGroupSelected(event: MatSelectChange) {
