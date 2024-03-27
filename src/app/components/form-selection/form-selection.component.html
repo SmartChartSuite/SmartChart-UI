@@ -1,1 +1,15 @@
-<p>form-selection works!</p>
+<div class="margin-md">
+  <mat-radio-group aria-labelledby="select-form-label"
+                   class="form-radio-group" (change)="onFormSelected($event)"
+                   [(ngModel)]="selectedForm">
+    @for (form of formList; track form) {
+      <mat-radio-button [value]="form">{{ form }}</mat-radio-button>
+    }
+  </mat-radio-group>
+  <div class="margin-md">
+    <mat-label class="margin-top-sm">Selected Patient:</mat-label>
+  </div>
+  <div class="margin-md">
+    <mat-label class="margin-top-sm">Selected Form:</mat-label>
+  </div>
+</div>

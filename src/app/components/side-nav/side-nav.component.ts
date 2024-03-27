@@ -1,6 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "../../services/state-management/state-management.service";
+import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 
 @Component({
@@ -12,10 +13,12 @@ export class SideNavComponent{
 
   @Output() expandedStatusChangedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
   expanded: boolean = false;
+  protected readonly RouteState = RouteState;
 
   constructor(
     public oauthService: OAuthService,
-    public stateManagementService: StateManagementService
+    public stateManagementService: StateManagementService,
+    public router: Router
   ) {
     this.stateManagementService.getState().subscribe((value=> console.log(value)))
   }
@@ -25,5 +28,4 @@ export class SideNavComponent{
     this.expandedStatusChangedEvent.emit(this.expanded);
   }
 
-  protected readonly RouteState = RouteState;
 }

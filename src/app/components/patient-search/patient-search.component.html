@@ -1,53 +1,79 @@
-
-<div>
-  <h2>By Identifier</h2>
-  <form class="search-by-identifier">
-    <mat-form-field>
-      <mat-label>Value</mat-label>
-      <input matInput>
-    </mat-form-field>
-
-    <mat-form-field>
-      <mat-label>Type/System</mat-label>
-      <mat-select>
-          <mat-option [value]="'mrn'">MRN</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
-</div>
-
-<div>
-  <h2>By Name and Date of Birth</h2>
-  <form class="search-by-namedob">
-    <mat-form-field>
-      <mat-label>Given</mat-label>
-      <input matInput>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Family</mat-label>
-      <input matInput>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Date of Birth</mat-label>
-      <input matInput>
-    </mat-form-field>
-  </form>
-</div>
-
-<div>
-  <h2>By FHIR ID</h2>
-  <form class="search-by-fhirid">
-    <mat-form-field>
-      <mat-label>FHIR ID</mat-label>
-      <input matInput>
-    </mat-form-field>
-
-  </form>
-</div>
+<div class="margin-md">
+  <div class="margin-bottom-md">
+  <mat-label id="select-form-label">Select Search:</mat-label>
+  <mat-radio-group aria-labelledby="select-form-label"
+                   type="button"
+                   class="form-radio-group" (change)="onSearchBySelected($event)"
+                   [(ngModel)]="selectedSearchCriteria">
+    @for (searchType of searchTypeList; track searchType) {
+      <mat-radio-button [value]="searchType" class="margin-right-md">{{ searchType }}</mat-radio-button>
+    }
+  </mat-radio-group>
+  </div>
 
 
-<div>
-  <h2>Results</h2>
-  <app-patient-summary-table></app-patient-summary-table>
+    @if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
+      <form [formGroup]="searchForm" class="margin-top-sm">
+      <!-- Identifier -->
+      <mat-form-field appearance="outline" class="margin-right-md">
+        <mat-label>Identifier:</mat-label>
+        <input matInput formControlName="identifier">
+        @if (searchForm.get('identifier')?.errors?.['required']) {
+          <mat-error>Identifier is required.</mat-error>
+        }
+      </mat-form-field>
 
+      <!-- Type/System -->
+      <mat-form-field appearance="outline">
+        <mat-label>Type/System</mat-label>
+        <mat-select formControlName="typeSystem" required>
+          @for (typeSystem of TYPE_SYSTEM_LIST; track typeSystem) {
+            <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      </form>
+    } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
+      <form [formGroup]="searchForm" class="margin-top-sm">
+      <!-- Given Name -->
+      <mat-form-field appearance="outline" class="margin-right-md">
+        <mat-label>Given:</mat-label>
+        <input matInput formControlName="given">
+      </mat-form-field>
+
+      <!-- Family Name -->
+      <mat-form-field appearance="outline" class="margin-right-md">
+        <mat-label>Family:</mat-label>
+        <input matInput formControlName="family">
+      </mat-form-field>
+
+      <!-- Date of Birth -->
+      <mat-form-field appearance="outline">
+        <mat-label>Date of Birth</mat-label>
+        <input matInput formControlName="dob" [matDatepicker]="picker">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-hint>MM/DD/YYYY</mat-hint>
+      </mat-form-field>
+      </form>
+
+    } @else if (selectedSearchCriteria == SearchByType.FHIR_ID) {
+      <form [formGroup]="searchForm" class="margin-top-sm">
+      <!-- FHIR ID -->
+      <mat-form-field appearance="outline">
+        <mat-label>FHIR ID:</mat-label>
+        <input matInput formControlName="fhirId">
+      </mat-form-field>
+      </form>
+    }
+
+    <div>
+      <button mat-raised-button (click)="onSubmit();"><mat-icon>search</mat-icon>Search</button>
+    </div>
+
+
+  <div class="margin-top-sm">
+    <h2>Results</h2>
+    <app-patient-summary-table [patientSummaryData]="patientSummaryData"></app-patient-summary-table>
+  </div>
 </div>

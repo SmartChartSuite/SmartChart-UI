@@ -80,20 +80,20 @@ export class RcApiInterfaceService {
       })
     );
 
-    // const mockData: PatientGroup[] = [{
-    //   "groupName": "Group 1",
-    //   "members": [
-    //     {fhirId: "1", name: {given: ["Bob"], family: "Smith"}, birthDate: new Date("1960-07-12"), gender: "male"}, // PATIENT SUMMARY OBJECT
-    //     {fhirId: "2", name: {given: ["Sarah"], family: "Cubin"}, birthDate: new Date("1989-02-14"), gender: "female"} // PATIENT SUMMARY OBJECT
-    //   ]},
-    //   {
-    //     "groupName": "Group 2",
-    //     "members": [
-    //       {fhirId: "3", name: {given: ["Jeremy"], family: "Sanders"}, birthDate: new Date("2015-12-30"), gender: "male"}, // PATIENT SUMMARY OBJECT
-    //     ]}
-    // ]
-    //const groupsMock$ = of(mockData)
-    return groups$;
+    const mockData: PatientGroup[] = [{
+      "groupName": "Group 1",
+      "members": [
+        {fhirId: "1", name: {given: ["Bob"], family: "Smith"}, birthDate: new Date("1960-07-12"), gender: "male"}, // PATIENT SUMMARY OBJECT
+        {fhirId: "2", name: {given: ["Sarah"], family: "Cubin"}, birthDate: new Date("1989-02-14"), gender: "female"} // PATIENT SUMMARY OBJECT
+      ]},
+      {
+        "groupName": "Group 2",
+        "members": [
+          {fhirId: "3", name: {given: ["Jeremy"], family: "Sanders"}, birthDate: new Date("2015-12-30"), gender: "male"}, // PATIENT SUMMARY OBJECT
+        ]}
+    ]
+    const groupsMock$ = of(mockData)
+    return groupsMock$.pipe();
   }
 
   /**

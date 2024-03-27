@@ -1,1 +1,37 @@
-<p>patient-summary-table works!</p>
+<table mat-table [dataSource]="dataSource" >
+
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> Name </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.name?.family + ' ' + patient.name?.given?.[0]  }} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="gender">
+    <th mat-header-cell *matHeaderCellDef> Gender </th>
+    <td mat-cell *matCellDef="let patient"> {{patient.gender}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="birthDate">
+    <th mat-header-cell *matHeaderCellDef> Date of Birth </th>
+    <td mat-cell *matCellDef="let patient"> {{ patient.birthDate | date}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+  <tr class="patient-row" mat-row *matRowDef="let row; columns: displayedColumns;"
+      [class.selected-patient-row]="selectedPatient === row"
+      (click)="setSelectedPatient(row)">
+  </tr>
+
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+      No records to display.
+    </td>
+  </tr>
+</table>
+
+<mat-paginator
+  [pageSizeOptions]="[5, 10, 25]"
+  aria-label="Select page patient search results"
+  [disabled]="dataSource.data.length <= 5"
+>
+</mat-paginator>
