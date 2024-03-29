@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, of, Subject} from "rxjs";
+import {map, Observable, of, Subject, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
