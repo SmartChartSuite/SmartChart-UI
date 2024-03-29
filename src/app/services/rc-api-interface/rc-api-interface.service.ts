@@ -19,6 +19,7 @@ export class RcApiInterfaceService {
   questionnaireEndpoint: string = `${this.base}/questionnaire`;
   startJobsEndpoint: string = `forms/start?asyncFlag=True`;
   getJobPackageEndpoint: string = `forms`;
+  getBatchJobsEndpoint: string = `${this.base}/batchjob`
 
   private selectedPatient = new Subject<PatientSummary>();
   selectedPatient$ = this.selectedPatient.asObservable();
@@ -105,8 +106,16 @@ export class RcApiInterfaceService {
   /**
    * Search all Questionnaire Resources. FHIR pass through for SmartChart UI.
    */
-  searchQuestionnaire(): Observable<FhirBaseResource> {
-    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`);
+  searchQuestionnaire(): Observable<any> {
+    //return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`);
+    const mockData = [
+      {
+        "name": "SETNETInfantFollowUp",
+        "title": "SETNET-InfantFollowUp"
+      }
+    ]
+    const mockData$ = of(mockData)
+    return mockData$.pipe(tap(value => console.log(value)))
   }
 
   /**
@@ -122,5 +131,13 @@ export class RcApiInterfaceService {
   startJobs(patientId: string, jobPackage: string, jobName: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage, jobName)
     return this.http.post<StartJobsPostResponse>(this.configService.config.rcApiUrl + this.startJobsEndpoint, postBody);
+  }
+
+  /**
+   * This will return all Batch Jobs, which is functionally the list of "active" (completed, in progress, and otherwise terminated) cases.
+   * This is returned as a flat list of FHIR Parameter JSON objects.
+   */
+  getBatchJobs() {
+    return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint)
   }
 }

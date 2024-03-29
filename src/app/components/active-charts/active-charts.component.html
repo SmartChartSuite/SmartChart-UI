@@ -1,1 +1,5 @@
-<p>active-charts works!</p>
+<ul>
+  @for (batchJob of batchJobs$ | async; track batchJob) {
+    <li>batchJob</li>
+  }
+</ul>
