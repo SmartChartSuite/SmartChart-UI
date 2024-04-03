@@ -35,7 +35,7 @@ export class RcApiTestComponent implements OnInit {
         console.log(value?.["extension"]);
         // Call each job in extension list.
         // Merge into single stream? Need to see best observable approach for this.
-        return this.rcApiInterface.startJobs(patientId, jobPackage, "demographics")
+        return this.rcApiInterface.startJobs(patientId, jobPackage)
       })
     ).subscribe({
       next: value => {},
