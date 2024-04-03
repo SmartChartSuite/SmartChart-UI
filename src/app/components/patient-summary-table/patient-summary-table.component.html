@@ -1,7 +1,7 @@
 <table mat-table [dataSource]="dataSource">
 
   <ng-container matColumnDef="selection">
-    <th mat-header-cell *matHeaderCellDef></th>
+    <th mat-header-cell *matHeaderCellDef>Selected</th>
     <td mat-cell *matCellDef="let patient">
       <mat-radio-group (change)="setSelectedPatient(patient)">
         <mat-radio-button [value]="patient" [checked]="(selectedPatient$ | async) === patient"></mat-radio-button>
