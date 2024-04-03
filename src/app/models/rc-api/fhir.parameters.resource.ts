@@ -12,7 +12,7 @@ export class Parameters implements FhirBaseResource {
     this.parameter.push(parameter)
   }
 
-  static getValue(parametersResource: Parameters, key: string): string {
+  static getValue(parametersResource: Parameters, key: string): string | FhirBaseResource {
     const keyParameter = parametersResource.parameter.find(parameter => parameter?.name === key);
     if (keyParameter !== undefined) {
       return this.findChoiceOfTypeValue(keyParameter);

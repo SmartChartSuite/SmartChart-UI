@@ -19,7 +19,6 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
 import {MatError, MatFormField, MatFormFieldModule, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatInput, MatInputModule} from "@angular/material/input";
-import { ActiveChartsComponent } from './components/active-charts/active-charts.component';
 import { NewChartComponent } from './components/new-chart/new-chart.component';
 import { FormSelectionComponent } from './components/form-selection/form-selection.component';
 import { PatientSummaryTableComponent } from './components/patient-summary-table/patient-summary-table.component';
@@ -48,6 +47,7 @@ import {CallbackComponent} from "./components/callback/callback.component";
 import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
 import {MatPaginator} from "@angular/material/paginator";
+import {ActiveFormsComponent} from "./components/active-forms/active-forms.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -64,7 +64,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     PatientSearchComponent,
     PatientGroupsComponent,
     SideNavComponent,
-    ActiveChartsComponent,
+    ActiveFormsComponent,
     NewChartComponent,
     FormSelectionComponent,
     PatientSummaryTableComponent,

@@ -1,3 +1,4 @@
+//TODO: Remove
 export enum FormType {
   SCD = "SCD",
   SET_NET = "SetNet",

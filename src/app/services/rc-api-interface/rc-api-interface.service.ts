@@ -6,8 +6,11 @@ import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
 import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
-import {PatientSummary} from "../../models/patient-summary";
+import {PatientIdentifier, PatientName, PatientSummary} from "../../models/patient-summary";
 import {PatientGroup} from "../../models/patient-group";
+import {FormSummary} from "../../models/form-summary";
+import {ActiveFormSummary} from "../../models/active-form-summary";
+import {Parameters} from "../../models/rc-api/fhir.parameters.resource";
 
 @Injectable({
   providedIn: 'root'
@@ -104,11 +107,11 @@ export class RcApiInterfaceService {
   }
 
   /**
-   * Search all Questionnaire Resources. FHIR pass through for SmartChart UI.
+   * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
    */
-  searchQuestionnaire(): Observable<any> {
+  getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
     //return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`);
-    const mockData = [
+    const mockData: FormSummary[] = [
       {
         "name": "SETNETInfantFollowUp",
         "title": "SETNET-InfantFollowUp"
@@ -138,6 +141,19 @@ export class RcApiInterfaceService {
    * This is returned as a flat list of FHIR Parameter JSON objects.
    */
   getBatchJobs() {
-    return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint)
+    return this.http.get<Parameters[]>(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + "?include_patient=True").pipe(
+      map((response: Parameters[]) => {
+        let activeJobList: ActiveFormSummary[] = [];
+        response.forEach(parametersResource => {
+          // TODO: Fetch Patient, need to setup as merge map? What is the right approach here? @Plamen
+          activeJobList.push(new ActiveFormSummary(parametersResource));
+        });
+        return activeJobList;
+      })
+    )
+  }
+
+  getBatchJob(id: string) {
+    return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
   }
 }

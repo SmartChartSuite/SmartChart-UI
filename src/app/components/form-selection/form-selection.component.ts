@@ -3,6 +3,7 @@ import {MatRadioChange} from "@angular/material/radio";
 import {FormType, formTypes} from "../../models/form-type";
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {Observable} from "rxjs";
+import {FormSummary} from "../../models/form-summary";
 
 @Component({
   selector: 'app-form-selection',
@@ -15,11 +16,11 @@ export class FormSelectionComponent implements OnInit {
 
   formList: FormType[] = formTypes;
 
-  formList$: Observable<any>;
+  formList$: Observable<FormSummary[]>;
 
   constructor(private rcApiInterfaceService: RcApiInterfaceService){}
   ngOnInit(): void {
-    this.formList$ = this.rcApiInterfaceService.searchQuestionnaire();
+    this.formList$ = this.rcApiInterfaceService.getSmartChartUiQuestionnaires();
   }
   onFormSelected(event: MatRadioChange) {
     this.formSelectedEvent.emit(event.value);
