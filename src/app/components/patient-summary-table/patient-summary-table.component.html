@@ -1,4 +1,12 @@
-<table mat-table [dataSource]="dataSource" >
+<table mat-table [dataSource]="dataSource">
+
+  <ng-container matColumnDef="selection">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let patient">
+      <mat-radio-group (change)="setSelectedPatient(patient)">
+        <mat-radio-button [value]="patient" [checked]="(selectedPatient$ | async) === patient"></mat-radio-button>
+      </mat-radio-group> </td>
+  </ng-container>
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef> Name </th>

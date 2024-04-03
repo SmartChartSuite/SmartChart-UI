@@ -29,7 +29,7 @@ export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, O
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = [ "name", "gender", "birthDate"];
+  displayedColumns: string[] = ["selection", "name", "gender", "birthDate"];
   dataSource: MatTableDataSource<PatientSummary> = new MatTableDataSource<PatientSummary>([]);
   selectedPatient$: Observable<PatientSummary>;
 
