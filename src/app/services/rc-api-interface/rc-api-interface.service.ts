@@ -26,9 +26,14 @@ export class RcApiInterfaceService {
 
   private selectedPatient = new Subject<PatientSummary>();
   selectedPatient$ = this.selectedPatient.asObservable();
+  setSelectedPatient(patientSummary: PatientSummary){
+    this.selectedPatient.next(patientSummary);
+  }
 
-  setSelectedPatient(selectedPatient: PatientSummary){
-    this.selectedPatient.next(selectedPatient);
+  private selectedForm= new Subject<FormSummary>();
+  selectedForm$ = this.selectedForm.asObservable();
+  setSelectedForm(formSummary: FormSummary){
+    this.selectedForm.next(formSummary);
   }
 
   constructor(private configService: ConfigService,

@@ -14,10 +14,6 @@ export class NewChartComponent implements OnInit{
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {
   }
 
-  onFormSelected(event: FormSummary) {
-    this.selectedForm = event;
-  }
-
   onStartJob() {
     //needs patient ID and form name
     console.log(this.selectedForm);
@@ -27,5 +23,8 @@ export class NewChartComponent implements OnInit{
   ngOnInit(): void {
     this.rcApiInterfaceService.selectedPatient$
       .subscribe(value => this.selectedPatient = value);
+
+    this.rcApiInterfaceService.selectedForm$
+      .subscribe(value => this.selectedForm = value);
   }
 }
