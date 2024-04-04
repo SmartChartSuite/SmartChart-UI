@@ -30,6 +30,7 @@ export class PatientGroupsComponent implements OnInit{
   }
 
   onGroupSelected(event: MatSelectChange) {
+    this.rcApiInterfaceService.setSelectedPatient(null);
     this.patientSummaryData = event.value.members;
   }
 }
