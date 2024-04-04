@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatRadioChange} from "@angular/material/radio";
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {Observable} from "rxjs";

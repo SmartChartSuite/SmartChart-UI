@@ -6,7 +6,7 @@ import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
 import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
-import {PatientIdentifier, PatientName, PatientSummary} from "../../models/patient-summary";
+import {PatientSummary} from "../../models/patient-summary";
 import {PatientGroup} from "../../models/patient-group";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
