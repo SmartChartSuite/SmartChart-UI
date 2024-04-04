@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSummary} from "../../models/patient-summary";
-import {FormType} from "../../models/form-type";
+import {FormSummary} from "../../models/form-summary";
 
 @Component({
   selector: 'app-new-chart',
@@ -10,11 +10,11 @@ import {FormType} from "../../models/form-type";
 })
 export class NewChartComponent implements OnInit{
   selectedPatient: PatientSummary;
-  selectedForm: FormType;
+  selectedForm: FormSummary;
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {
   }
 
-  onFormSelected(event: FormType) {
+  onFormSelected(event: FormSummary) {
     this.selectedForm = event;
   }
 
