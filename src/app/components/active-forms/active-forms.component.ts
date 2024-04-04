@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
-import {Observable} from "rxjs";
 import {ActiveFormSummary} from "../../models/active-form-summary";
+import {MatTableDataSource} from "@angular/material/table";
 
 @Component({
   selector: 'app-active-forms',
@@ -10,10 +10,19 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
 })
 export class ActiveFormsComponent implements OnInit {
 
-  batchJobs$: Observable<ActiveFormSummary[]>;
+  displayedColumns: string[] = ["formName", "started", "name", "gender" , 'dob'];
+  dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
+
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {}
   ngOnInit(): void {
-      this.batchJobs$ = this.rcApiInterfaceService.getBatchJobs()
+    this.rcApiInterfaceService.getBatchJobs().subscribe({
+      next: value => {
+        this.dataSource.data = value;
+      },
+      error: err => {
+        console.error(err);
+      }
+    })
   }
 
 }
