@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {MatRadioChange} from "@angular/material/radio";
-import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
+import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {Observable} from "rxjs";
-import {FormSummary} from "../../models/form-summary";
-import {PatientSummary} from "../../models/patient-summary";
+import {FormSummary} from "../../../../models/form-summary";
+import {PatientSummary} from "../../../../models/patient-summary";
+import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 
 @Component({
   selector: 'app-form-selection',
@@ -15,7 +16,9 @@ export class FormSelectionComponent implements OnInit {
   selectedPatient$: Observable<PatientSummary>;
   selectedForm: FormSummary;
 
-  constructor(private rcApiInterfaceService: RcApiInterfaceService){}
+  constructor(
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private formManagerService: FormManagerService){}
   ngOnInit(): void {
 
     this.rcApiInterfaceService.getSmartChartUiQuestionnaires().subscribe({
@@ -23,20 +26,20 @@ export class FormSelectionComponent implements OnInit {
         this.formList = value;
         if(this.formList.length == 1){
           this.selectedForm = this.formList[0];
-          this.rcApiInterfaceService.setSelectedForm(this.formList[0]);
+          this.formManagerService.setSelectedForm(this.formList[0]);
         }
       },
       error: err => console.error(err)
     });
 
-    this.selectedPatient$ = this.rcApiInterfaceService.selectedPatient$;
+    this.selectedPatient$ = this.formManagerService.selectedPatient$;
 
-    this.rcApiInterfaceService.selectedForm$.subscribe(value=> {
+    this.formManagerService.selectedForm$.subscribe(value=> {
       this.selectedForm = value;
     });
 
   }
   onFormSelected(event: MatRadioChange) {
-    this.rcApiInterfaceService.setSelectedForm(event.value);
+    this.formManagerService.setSelectedForm(event.value);
   }
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
-import {ActiveFormSummary} from "../../models/active-form-summary";
+import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
+import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {MatTableDataSource} from "@angular/material/table";
 
 @Component({

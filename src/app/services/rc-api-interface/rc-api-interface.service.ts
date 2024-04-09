@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, of, Subject, tap} from "rxjs";
+import {map, Observable, of, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
@@ -24,21 +24,8 @@ export class RcApiInterfaceService {
   getJobPackageEndpoint: string = `forms`;
   getBatchJobsEndpoint: string = `${this.base}/batchjob`
 
-  private selectedPatient = new Subject<PatientSummary>();
-  selectedPatient$ = this.selectedPatient.asObservable();
-  setSelectedPatient(patientSummary: PatientSummary){
-    this.selectedPatient.next(patientSummary);
-  }
-
-  private selectedForm= new Subject<FormSummary>();
-  selectedForm$ = this.selectedForm.asObservable();
-  setSelectedForm(formSummary: FormSummary){
-    this.selectedForm.next(formSummary);
-  }
-
   constructor(private configService: ConfigService,
               private http: HttpClient) {
-
   }
 
   /**
