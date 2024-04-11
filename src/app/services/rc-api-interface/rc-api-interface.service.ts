@@ -110,15 +110,17 @@ export class RcApiInterfaceService {
    * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
    */
   getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
-    //return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`);
-    const mockData: FormSummary[] = [
-      {
-        "name": "SETNETInfantFollowUp",
-        "title": "SETNET - Infant Follow Up"
-      }
-    ]
-    const mockData$ = of(mockData)
-    return mockData$.pipe(tap(value => console.log(value)))
+    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`).pipe(
+      map(value => {
+
+        return [
+          {
+            "name": "SETNETInfantFollowUp",
+            "title": "SETNET - Infant Follow Up"
+          }
+        ];
+      })
+    );
   }
 
   /**
