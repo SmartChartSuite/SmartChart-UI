@@ -2,23 +2,30 @@
   <div class="col-width-70" style="background-color: #fcfcf0;">
     <mat-tab-group color="primary" mat-stretch-tabs="false">
       <mat-tab label="Patient Groups/Cohorts">
-        <app-patient-groups></app-patient-groups>
+        <app-patient-groups/>
       </mat-tab>
       <mat-tab label="Patient Search">
-        <app-patient-search></app-patient-search>
+        <app-patient-search/>
       </mat-tab>
     </mat-tab-group>
   </div>
   <div class="col-width-30" style="background-color: #faf8f6">
-      <app-form-selection
-        [submitTriggered]="submitTriggered">
+      <app-form-selection>
       </app-form-selection>
     <div class="flex-row margin-sm start-job-button">
-      <button mat-raised-button color="primary"
-              (click)="onStartJob()">
-        <mat-icon>start</mat-icon>
-        Start Job
-      </button>
+      <div class="flex-row margin-sm start-job-button"
+           [matTooltip]="!selectedPatient && !selectedForm ? 'You must select a patient and a form to proceed' :
+                 (!selectedForm ? 'You must select a form to proceed'
+                    : (!selectedPatient ? 'You must select a patient to proceed': ''))">
+        <button
+          mat-raised-button color="primary"
+          [disabled]="!(selectedPatient && selectedForm)"
+          mat-button type="button" class="button"
+          (click)="onStartJob()">
+          <mat-icon>start</mat-icon>
+          Start Job
+        </button>
+      </div>
     </div>
   </div>
 

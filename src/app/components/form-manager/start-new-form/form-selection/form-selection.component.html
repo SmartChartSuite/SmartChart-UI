@@ -10,20 +10,9 @@
       }
     </mat-radio-group>
   }
-  @if (!selectedForm && submitTriggered) {
-    <div class="margin-left-md">
-      <mat-error>No Form Selected</mat-error>
-    </div>
-  }
-
   <div class="margin-md">
     <mat-label class="margin-top-sm">Selected Patient:</mat-label>
-    @if (selectedPatient?.name.given?.[0] && selectedPatient?.name.family) {
-      <div>{{ selectedPatient?.name.given?.[0] }} {{ selectedPatient?.name.family }}</div>
-    } @else if (submitTriggered) {
-      <mat-error>No Patient Selected</mat-error>
-    }
-
+    <div>{{ selectedPatient?.name.given?.[0] }} {{ selectedPatient?.name.family }}</div>
   </div>
 
 </div>

@@ -11,7 +11,6 @@ import {FormManagerService} from "../../../../services/form-manager/form-manager
   styleUrl: './form-selection.component.scss'
 })
 export class FormSelectionComponent implements OnInit {
-  @Input() submitTriggered: boolean = false;
   isLoading = false;
   formList: FormSummary[];
   selectedPatient: PatientSummary;

@@ -11,13 +11,11 @@ import {FormManagerService} from "../../../services/form-manager/form-manager.se
 export class StartNewFormComponent implements OnInit{
   selectedPatient: PatientSummary;
   selectedForm: FormSummary;
-  submitTriggered = false;
   constructor(private formManagerService: FormManagerService) {
   }
 
   onStartJob() {
     //needs patient ID and form name
-    this.submitTriggered = true;
     console.log(this.selectedForm);
     console.log(this.selectedPatient);
   }
