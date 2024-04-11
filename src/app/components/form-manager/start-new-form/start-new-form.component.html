@@ -10,9 +10,9 @@
     </mat-tab-group>
   </div>
   <div class="col-width-30" style="background-color: #faf8f6">
-      <app-form-selection (formSelectedEvent)="onFormSelected($event)"></app-form-selection>
+      <app-form-selection></app-form-selection>
     <div class="flex-row margin-sm start-job-button">
-      <button mat-raised-button color="primary" (click)="onStartJob()">
+      <button mat-raised-button color="primary" (click)="onStartJob()" [disabled]="!(selectedPatient && selectedForm)" >
         <mat-icon>start</mat-icon>
         Start Job
       </button>

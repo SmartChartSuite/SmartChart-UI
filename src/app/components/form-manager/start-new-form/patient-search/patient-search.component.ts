@@ -1,10 +1,10 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {MatRadioChange} from "@angular/material/radio";
-import {SearchByType, searchByTypes} from "../../models/search-by-types";
+import {SearchByType, searchByTypes} from "../../../../models/search-by-types";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {PatientSummary} from "../../models/patient-summary";
-import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
-import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
+import {PatientSummary} from "../../../../models/patient-summary";
+import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
+import {PatientSearchParameters} from "../../../../models/rc-api/patient-search-parameters";
 
 @Component({
   selector: 'app-patient-search',

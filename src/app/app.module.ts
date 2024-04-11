@@ -11,17 +11,17 @@ import {StateManagementService} from "./services/state-management/state-manageme
 import {OAuthModule} from "angular-oauth2-oidc";
 import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {MatIcon} from "@angular/material/icon";
-import {FormsComponent} from "./components/forms/forms.component";
-import {PatientSearchComponent} from "./components/patient-search/patient-search.component";
-import {PatientGroupsComponent} from "./components/patient-groups/patient-groups.component";
+import {FormManager} from "./components/form-manager/form-manager.component";
+import {PatientSearchComponent} from "./components/form-manager/start-new-form/patient-search/patient-search.component";
+import {PatientGroupsComponent} from "./components/form-manager/start-new-form/patient-groups/patient-groups.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import {MatError, MatFormField, MatFormFieldModule, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatInput, MatInputModule} from "@angular/material/input";
-import { NewChartComponent } from './components/new-chart/new-chart.component';
-import { FormSelectionComponent } from './components/form-selection/form-selection.component';
-import { PatientSummaryTableComponent } from './components/patient-summary-table/patient-summary-table.component';
+import { StartNewFormComponent } from './components/form-manager/start-new-form/start-new-form.component';
+import { FormSelectionComponent } from './components/form-manager/start-new-form/form-selection/form-selection.component';
+import { PatientSummaryTableComponent } from './components/form-manager/start-new-form/patient-summary-table/patient-summary-table.component';
 import {MatButton} from "@angular/material/button";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -47,7 +47,7 @@ import {CallbackComponent} from "./components/callback/callback.component";
 import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
 import {MatPaginator} from "@angular/material/paginator";
-import {ActiveFormsComponent} from "./components/active-forms/active-forms.component";
+import {ActiveFormsComponent} from "./components/form-manager/active-forms/active-forms.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -60,18 +60,19 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
 @NgModule({
   declarations: [
     AppComponent,
-    FormsComponent,
+    FormManager,
     PatientSearchComponent,
     PatientGroupsComponent,
     SideNavComponent,
     ActiveFormsComponent,
-    NewChartComponent,
+    StartNewFormComponent,
     FormSelectionComponent,
     PatientSummaryTableComponent,
     JobsComponent,
     LoginComponent,
     CallbackComponent,
     LandingComponent,
+    FormManager
   ],
     imports: [
         HttpClientModule,

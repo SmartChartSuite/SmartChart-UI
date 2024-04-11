@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import { PatientSummary } from 'src/app/models/patient-summary';
-import { PatientGroup } from 'src/app/models/patient-group';
-import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
+import { PatientSummary } from '../../../../models/patient-summary';
+import { PatientGroup } from '../../../../models/patient-group';
+import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {MatSelectChange} from "@angular/material/select";
+import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 
 @Component({
   selector: 'app-patient-groups',
@@ -10,7 +11,10 @@ import {MatSelectChange} from "@angular/material/select";
   styleUrl: './patient-groups.component.scss'
 })
 export class PatientGroupsComponent implements OnInit{
-  constructor(private rcApiInterfaceService: RcApiInterfaceService){}
+  constructor(
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private formManagerService: FormManagerService
+  ){}
 
   patientSummaryData: PatientSummary[];
   selectedGroup: PatientGroup;
@@ -30,6 +34,7 @@ export class PatientGroupsComponent implements OnInit{
   }
 
   onGroupSelected(event: MatSelectChange) {
+    this.formManagerService.setSelectedPatient(null);
     this.patientSummaryData = event.value.members;
   }
 }

@@ -1,5 +1,0 @@
-<ul>
-  @for (batchJob of batchJobs$ | async; track batchJob) {
-    <li>{{ batchJob.formName }} - {{ batchJob.started }} - {{ batchJob.patientSummary | json }}</li>
-  }
-</ul>

@@ -5,11 +5,12 @@ import {
   OnChanges, OnInit,
   SimpleChanges, ViewChild,
 } from '@angular/core';
-import {PatientSummary} from "../../models/patient-summary";
+import {PatientSummary} from "../../../../models/patient-summary";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
-import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
+import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {Observable} from "rxjs";
+import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 
 @Component({
   selector: 'app-patient-summary-table',
@@ -18,18 +19,18 @@ import {Observable} from "rxjs";
 })
 export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, OnInit {
 
-  constructor(private rcApiInterfaceService: RcApiInterfaceService) {
+  constructor(private formManagerService: FormManagerService) {
   }
 
   ngOnInit(): void {
-    this.selectedPatient$ = this.rcApiInterfaceService.selectedPatient$
+    this.selectedPatient$ = this.formManagerService.selectedPatient$
   }
 
   @Input() patientSummaryData: PatientSummary[] = [];
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = [ "name", "gender", "birthDate"];
+  displayedColumns: string[] = ["selection", "name", "gender", "birthDate"];
   dataSource: MatTableDataSource<PatientSummary> = new MatTableDataSource<PatientSummary>([]);
   selectedPatient$: Observable<PatientSummary>;
 
@@ -40,7 +41,7 @@ export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, O
     }
   }
   setSelectedPatient(patient: PatientSummary) {
-    this.rcApiInterfaceService.setSelectedPatient(patient);
+    this.formManagerService.setSelectedPatient(patient);
   }
 
   ngAfterViewInit(): void {
