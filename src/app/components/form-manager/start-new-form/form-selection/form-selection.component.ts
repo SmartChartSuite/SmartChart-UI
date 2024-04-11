@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MatRadioChange} from "@angular/material/radio";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {FormSummary} from "../../../../models/form-summary";
@@ -34,11 +34,13 @@ export class FormSelectionComponent implements OnInit {
   }
   ngOnInit(): void {
     this.getFormList();
-    this.formManagerService.selectedPatient$.subscribe(value=> this.selectedPatient = value)
 
-    this.formManagerService.selectedForm$.subscribe(value=> {
-      this.selectedForm = value;
-    });
+    this.formManagerService.selectedPatient$.subscribe(value=>
+      this.selectedPatient = value);
+
+    this.formManagerService.selectedForm$.subscribe(value=>
+      this.selectedForm = value
+    );
 
   }
   onFormSelected(event: MatRadioChange) {
