@@ -48,6 +48,7 @@ import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
 import {MatPaginator} from "@angular/material/paginator";
 import {ActiveFormsComponent} from "./components/form-manager/active-forms/active-forms.component";
+import {MatTooltip} from "@angular/material/tooltip";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -121,7 +122,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
         MatCardActions,
         MatCardModule,
         MatPaginator,
-        // TODO: Delete
+        MatTooltip,
     ],
   providers: [
     {

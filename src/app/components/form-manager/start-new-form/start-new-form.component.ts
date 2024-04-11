@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSummary} from "../../../models/patient-summary";
 import {FormSummary} from "../../../models/form-summary";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
@@ -12,11 +11,13 @@ import {FormManagerService} from "../../../services/form-manager/form-manager.se
 export class StartNewFormComponent implements OnInit{
   selectedPatient: PatientSummary;
   selectedForm: FormSummary;
+  submitTriggered = false;
   constructor(private formManagerService: FormManagerService) {
   }
 
   onStartJob() {
     //needs patient ID and form name
+    this.submitTriggered = true;
     console.log(this.selectedForm);
     console.log(this.selectedPatient);
   }

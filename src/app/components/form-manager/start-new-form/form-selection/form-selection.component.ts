@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {MatRadioChange} from "@angular/material/radio";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
-import {Observable} from "rxjs";
 import {FormSummary} from "../../../../models/form-summary";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
@@ -12,27 +11,31 @@ import {FormManagerService} from "../../../../services/form-manager/form-manager
   styleUrl: './form-selection.component.scss'
 })
 export class FormSelectionComponent implements OnInit {
+  @Input() submitTriggered: boolean = false;
+  isLoading = false;
   formList: FormSummary[];
-  selectedPatient$: Observable<PatientSummary>;
+  selectedPatient: PatientSummary;
   selectedForm: FormSummary;
-
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService){}
-  ngOnInit(): void {
 
+  getFormList(){
+    this.isLoading = true;
     this.rcApiInterfaceService.getSmartChartUiQuestionnaires().subscribe({
       next: value => {
         this.formList = value;
-        if(this.formList.length == 1){
-          this.selectedForm = this.formList[0];
-          this.formManagerService.setSelectedForm(this.formList[0]);
-        }
+        this.isLoading = false;
       },
-      error: err => console.error(err)
+      error: err => {
+        this.isLoading = false;
+        console.error(err);
+      }
     });
-
-    this.selectedPatient$ = this.formManagerService.selectedPatient$;
+  }
+  ngOnInit(): void {
+    this.getFormList();
+    this.formManagerService.selectedPatient$.subscribe(value=> this.selectedPatient = value)
 
     this.formManagerService.selectedForm$.subscribe(value=> {
       this.selectedForm = value;
