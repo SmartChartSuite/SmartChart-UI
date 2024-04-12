@@ -1,0 +1,16 @@
+<div class="component-wrapper">
+  <div class="component-content">
+    @if (temp_for_demo) {
+      <ul>
+        @for (item of temp_for_demo["item"]; track item) {
+          <li>{{ item["text"] }}
+            <ul>
+              @for (childItem of item["item"]; track childItem) {
+                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>
+              }
+            </ul>
+            }
+      </ul>
+    }
+  </div>
+</div>

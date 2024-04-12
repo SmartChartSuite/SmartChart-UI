@@ -1,7 +1,7 @@
 {
   "version": "",
   "title": "SmartChart",
-  "rcApiUrl": "http://127.0.0.1:8000",
+  "rcApiUrl": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
   "callbackUrl": "https://localhost:4200/callback",
   "auth": {
     "domain": "grady-temp.us.auth0.com",
