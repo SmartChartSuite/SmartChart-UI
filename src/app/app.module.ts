@@ -11,7 +11,7 @@ import {StateManagementService} from "./services/state-management/state-manageme
 import {OAuthModule} from "angular-oauth2-oidc";
 import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {MatIcon} from "@angular/material/icon";
-import {FormManager} from "./components/form-manager/form-manager.component";
+import {FormManagerComponent} from "./components/form-manager/form-manager.component";
 import {PatientSearchComponent} from "./components/form-manager/start-new-form/patient-search/patient-search.component";
 import {PatientGroupsComponent} from "./components/form-manager/start-new-form/patient-groups/patient-groups.component";
 import {MatTab, MatTabGroup} from "@angular/material/tabs";
@@ -48,6 +48,8 @@ import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
 import {MatPaginator} from "@angular/material/paginator";
 import {ActiveFormsComponent} from "./components/form-manager/active-forms/active-forms.component";
+import {FormViewerComponent} from "./components/form-viewer/form-viewer.component";
+import {MatTooltip} from "@angular/material/tooltip";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -60,7 +62,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
 @NgModule({
   declarations: [
     AppComponent,
-    FormManager,
+    FormManagerComponent,
     PatientSearchComponent,
     PatientGroupsComponent,
     SideNavComponent,
@@ -72,7 +74,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     LoginComponent,
     CallbackComponent,
     LandingComponent,
-    FormManager
+    FormViewerComponent
+
   ],
     imports: [
         HttpClientModule,
@@ -121,7 +124,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
         MatCardActions,
         MatCardModule,
         MatPaginator,
-        // TODO: Delete
+        MatTooltip,
     ],
   providers: [
     {

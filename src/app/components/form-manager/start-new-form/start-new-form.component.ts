@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSummary} from "../../../models/patient-summary";
 import {FormSummary} from "../../../models/form-summary";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";

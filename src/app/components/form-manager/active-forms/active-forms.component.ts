@@ -10,7 +10,7 @@ import {MatTableDataSource} from "@angular/material/table";
 })
 export class ActiveFormsComponent implements OnInit {
 
-  displayedColumns: string[] = ["formName", "started", "name", "gender" , 'dob'];
+  displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
   dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
 
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {}
