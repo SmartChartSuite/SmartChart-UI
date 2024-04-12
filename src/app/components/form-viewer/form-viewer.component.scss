@@ -1,0 +1,9 @@
+.col-width-20 {
+  flex: 0 0 20%; /* 0px growth, 0px shrink, 70% base width */
+  max-width: 70%;
+}
+
+.col-width-80 {
+  flex: 0 0 80%; /* 0px growth, 0px shrink, 30% base width */
+  max-width: 30%;
+}

@@ -1,16 +1,57 @@
 <div class="component-wrapper">
-  <div class="component-content">
-    @if (temp_for_demo) {
-      <ul>
-        @for (item of temp_for_demo["item"]; track item) {
-          <li>{{ item["text"] }}
-            <ul>
-              @for (childItem of item["item"]; track childItem) {
-                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>
-              }
-            </ul>
+  <div class="component-content flex">
+
+    <div class="col-width-20">
+    <mat-nav-list>
+      @for (item of temp_for_demo?.["item"]; track item) {
+        <div>
+          <button mat-flat-button (click)="selectQuestionerSection(item)">
+            {{ item["text"] }}
+          </button>
+        </div>
+      }
+    </mat-nav-list>
+
+    </div>
+    <div class="col-width-80">
+      @if (temp_for_demo) {
+        @for (item of temp_for_demo?.["item"]; track item) {
+          @if (item["selected"]) {
+            <div class="margin-top-md margin-bottom-sm"
+                 style="font-size: medium; font-weight: bold">{{ item["text"] }}
+            </div>
+            @for (childItem of item["item"]; track childItem) {
+              <div>
+                <mat-label>{{ childItem["text"] }} - {{ childItem["type"] }}</mat-label>
+              </div>
+              <div>
+                @if (childItem["type"] == QuestionWidgetType.CHECKBOX) {
+                  <mat-checkbox></mat-checkbox>
+                } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                  <mat-form-field appearance="outline">
+                    <input type="text" matInput>
+                  </mat-form-field>
+                }
+              </div>
             }
-      </ul>
-    }
+          }
+        }
+
+      }
+
+<!--    @if (temp_for_demo) {-->
+<!--      <ul>-->
+<!--        @for (item of temp_for_demo["item"]; track item) {-->
+<!--          <li>{{ item["text"] }}-->
+<!--            <ul>-->
+<!--              @for (childItem of item["item"]; track childItem) {-->
+<!--                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>-->
+<!--              }-->
+<!--            </ul>-->
+<!--            }-->
+<!--      </ul>-->
+<!--    }-->
+    </div>
+
   </div>
 </div>
