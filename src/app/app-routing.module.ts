@@ -6,6 +6,7 @@ import {LoginComponent} from "./components/login/login.component";
 import {FormManager} from "./components/form-manager/form-manager.component";
 import {JobsComponent} from "./components/jobs/jobs.component";
 import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
+import {FormViewerComponent} from "./components/form-viewer/form-viewer.component";
 
 const routes: Routes = [
   {
@@ -28,10 +29,9 @@ const routes: Routes = [
     path: 'login',
     component: LoginComponent
   },
-
-  { // TODO: Delete
-    path: 'rcapitest',
-    component: RcApiTestComponent
+  {
+    path: 'form-viewer',
+    component: FormViewerComponent
   }
 ];
 

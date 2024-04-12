@@ -48,6 +48,7 @@ import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
 import {MatPaginator} from "@angular/material/paginator";
 import {ActiveFormsComponent} from "./components/form-manager/active-forms/active-forms.component";
+import {FormViewerComponent} from "./components/form-viewer/form-viewer.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -72,7 +73,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     LoginComponent,
     CallbackComponent,
     LandingComponent,
-    FormManager
+    FormManager,
+    FormViewerComponent
   ],
     imports: [
         HttpClientModule,
