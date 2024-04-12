@@ -7,7 +7,7 @@ import {StateManagementService} from "../../services/state-management/state-mana
   templateUrl: './form-manager.component.html',
   styleUrl: './form-manager.component.scss'
 })
-export class FormManager implements OnInit{
+export class FormManagerComponent implements OnInit{
 
   constructor(private stateManagementService: StateManagementService){}
 

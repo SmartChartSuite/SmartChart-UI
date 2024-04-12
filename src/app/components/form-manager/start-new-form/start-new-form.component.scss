@@ -11,3 +11,9 @@
 .start-job-button {
   justify-content: center
 }
+
+.right-panel{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between
+}
