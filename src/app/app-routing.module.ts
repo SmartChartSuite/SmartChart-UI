@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import {LandingComponent} from "./components/landing/landing.component";
 import {CallbackComponent} from "./components/callback/callback.component";
 import {LoginComponent} from "./components/login/login.component";
-import {FormManager} from "./components/form-manager/form-manager.component";
+import {FormManagerComponent} from "./components/form-manager/form-manager.component";
 import {JobsComponent} from "./components/jobs/jobs.component";
 import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 
@@ -14,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: 'forms',
-    component: FormManager,
+    component: FormManagerComponent,
   },
   {
     path: 'jobs',
