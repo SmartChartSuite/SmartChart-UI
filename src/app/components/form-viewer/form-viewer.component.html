@@ -2,17 +2,18 @@
   <div class="component-content flex">
 
     <div class="col-width-20">
-    <mat-nav-list>
-      @for (item of temp_for_demo?.["item"]; track item) {
-        <div>
-          <button mat-flat-button (click)="selectQuestionerSection(item)">
-            {{ item["text"] }}
-          </button>
-        </div>
-      }
-    </mat-nav-list>
-
+      <mat-nav-list>
+        @for (item of temp_for_demo?.["item"]; track item) {
+          <div>
+            <button mat-flat-button (click)="selectQuestionerSection(item)">
+              {{ item["text"] }}
+            </button>
+          </div>
+        }
+      </mat-nav-list>
     </div>
+
+
     <div class="col-width-80">
       @if (temp_for_demo) {
         @for (item of temp_for_demo?.["item"]; track item) {
@@ -26,17 +27,17 @@
               </div>
               <div>
                 @if (childItem["type"] == QuestionWidgetType.CHECKBOX) {
-                  <mat-checkbox></mat-checkbox>
+                  <mat-checkbox [(ngModel)]="childItem['value']"></mat-checkbox>
                 } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
                   <mat-form-field appearance="outline">
-                    <input type="text" matInput>
+                    <input type="text" matInput [(ngModel)]="childItem['value']">
                   </mat-form-field>
                 }
               </div>
             }
           }
         }
-
+        <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
       }
 
 <!--    @if (temp_for_demo) {-->
