@@ -72,8 +72,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     JobsComponent,
     LoginComponent,
     CallbackComponent,
-    LandingComponent,
-    FormManagerComponent
+    LandingComponent
   ],
     imports: [
         HttpClientModule,
