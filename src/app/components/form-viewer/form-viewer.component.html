@@ -19,18 +19,18 @@
         @for (item of temp_for_demo?.["item"]; track item) {
           @if (item["selected"]) {
             <div class="margin-top-md margin-bottom-sm"
-                 style="font-size: medium; font-weight: bold">{{ item["text"] }}
+              style="font-size: medium; font-weight: bold">{{ item["text"] }}
             </div>
-            @for (childItem of item["item"]; track childItem) {
+            @for (childItem of item["item"]; track childItem; let  i = $index) {
               <div>
-                <mat-label>{{ childItem["text"] }} - {{ childItem["type"] }}</mat-label>
+                <mat-label>{{ i + 1 }}. {{ childItem["text"] }} - {{ childItem["type"] }}</mat-label>
               </div>
               <div>
                 @if (childItem["type"] == QuestionWidgetType.CHECKBOX) {
                   <mat-checkbox [(ngModel)]="childItem['value']"></mat-checkbox>
                 } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
                   <mat-form-field appearance="outline">
-                    <input type="text" matInput [(ngModel)]="childItem['value']">
+                    <input type="text" matInput [(ngModel)]="childItem['answer']">
                   </mat-form-field>
                 }
               </div>

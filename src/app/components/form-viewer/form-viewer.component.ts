@@ -25,7 +25,7 @@ export class FormViewerComponent implements OnInit {
     // TODO: Change this to not be static, once linked to the input should be based on the FormSummary name (NOT title)
     this.rcApiInterfaceService.getJobPackage("SETNETInfantFollowUp").subscribe({
       next: result => {
-        result['item'] = result['item']?.map((item: any) => {return {...item, value: null}});
+        result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });

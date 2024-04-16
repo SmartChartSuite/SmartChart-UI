@@ -1,9 +1,10 @@
 .col-width-20 {
-  flex: 0 0 20%; /* 0px growth, 0px shrink, 70% base width */
-  max-width: 70%;
+  flex: 0 0 20%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
-
 .col-width-80 {
-  flex: 0 0 80%; /* 0px growth, 0px shrink, 30% base width */
-  max-width: 30%;
+  flex: 0 0 80%;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
 }
