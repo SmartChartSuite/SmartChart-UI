@@ -3,6 +3,7 @@ import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-i
 import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
+import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 
 @Component({
   selector: 'app-active-forms',
@@ -17,7 +18,8 @@ export class ActiveFormsComponent implements OnInit {
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
-    private router: Router,
+    private formManagerService: FormManagerService,
+    private router: Router
   ) {}
   ngOnInit(): void {
     this.getBatchJobs();
@@ -38,7 +40,8 @@ export class ActiveFormsComponent implements OnInit {
     })
   }
 
-  onActiveFormSelected(activeForm: ActiveFormSummary) {
-    this.router.navigate([`/form-viewer/${activeForm.formName}`]);
+  onActiveFormSelected(activeFormSummary: ActiveFormSummary) {
+    this.formManagerService.setSelectedActiveFormSummary(activeFormSummary);
+    this.router.navigate([`/form-viewer`]);
   }
 }

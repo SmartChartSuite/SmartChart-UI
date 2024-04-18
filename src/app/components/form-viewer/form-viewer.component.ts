@@ -1,4 +1,6 @@
 //TODO: extract to proper location
+import {ActiveFormSummary} from "../../models/active-form-summary";
+
 export enum QuestionWidgetType{
   RADIO = 'choice',
   INPUT = 'string',
@@ -7,7 +9,8 @@ export enum QuestionWidgetType{
 
 import {Component, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
-import {ActivatedRoute} from "@angular/router";
+import {FormManagerService} from "../../services/form-manager/form-manager.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-form-viewer',
@@ -19,10 +22,12 @@ export class FormViewerComponent implements OnInit {
   temp_for_demo: any;
   QuestionWidgetType = QuestionWidgetType;
   showDrawer = false;
+  activeFormSummary: ActiveFormSummary;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
-    private route: ActivatedRoute,
+    private formManagerService: FormManagerService,
+    private router: Router
   ) {}
 
   getJobPackage(formName: string){
@@ -39,8 +44,14 @@ export class FormViewerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    let formName = this.route.snapshot.params['formName'];
-    this.getJobPackage(formName);
+    this.formManagerService.selectedActiveFormSummary$.subscribe(
+      value => {
+        this.activeFormSummary = value;
+        if(this.activeFormSummary){
+          this.getJobPackage(this.activeFormSummary.formName);
+        }
+      }
+    )
   }
 
   selectQuestionerSection(item: any) {
@@ -49,5 +60,9 @@ export class FormViewerComponent implements OnInit {
 
   onSubmit() {
     console.log(this.temp_for_demo)
+  }
+
+  selectPatientForm() {
+    this.router.navigate(['/forms']);
   }
 }

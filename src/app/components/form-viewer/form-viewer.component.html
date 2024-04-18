@@ -1,92 +1,98 @@
 <div class="viewer-container-wrapper">
   <div class="viewer-container-body">
-
-    <div class="">
-      <mat-nav-list>
-        @for (item of temp_for_demo?.["item"]; track item) {
-          <div>
-            <button mat-flat-button (click)="selectQuestionerSection(item)">
-              {{ item["text"] }}
-            </button>
-          </div>
-        }
-      </mat-nav-list>
-    </div>
-
-    <div class="viewer-container-body-content">
-      <button mat-raised-button (click)="showDrawer = true">Open Drawer</button>
-      @if (temp_for_demo) {
-        @for (item of temp_for_demo?.["item"]; track item) {
-          @if (item["selected"]) {
-            <div class="margin-top-md"
-                 style="font-size: medium; font-weight: bold">{{ item["text"] }}
+    @if (!activeFormSummary) {
+      No Patient Form Selected
+      <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
+    }
+    @else {
+      <div>
+        <mat-nav-list>
+          @for (item of temp_for_demo?.["item"]; track item) {
+            <div>
+              <button mat-flat-button (click)="selectQuestionerSection(item)">
+                {{ item["text"] }}
+              </button>
             </div>
-            @for (childItem of item["item"]; track childItem; let i = $index) {
+          }
+        </mat-nav-list>
+      </div>
 
-              <div class="margin-top-md">
-                <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
+      <div class="viewer-container-body-content">
+        <button mat-raised-button (click)="showDrawer = true">Open Drawer</button>
+        <pre>{{ activeFormSummary| json }}</pre>
+        @if (temp_for_demo) {
+          @for (item of temp_for_demo?.["item"]; track item) {
+            @if (item["selected"]) {
+              <div class="margin-top-md"
+                   style="font-size: medium; font-weight: bold">{{ item["text"] }}
               </div>
+              @for (childItem of item["item"]; track childItem; let i = $index) {
 
-              <div>
-                @if (childItem["type"] == QuestionWidgetType.RADIO) {
-                  @for (option of childItem?.['answerOption']; track option) {
-                    <mat-radio-group [(ngModel)]="childItem['value']">
-                      @if (childItem?.['answerOption'].length <= 3) {
-                        <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
-                        </mat-radio-button>
-                      } @else {
-                        <!-- There are too many options to render in the same line -->
-                        <div>
-                          <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
-                        </div>
-                      }
-                    </mat-radio-group>
+                <div class="margin-top-md">
+                  <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
+                </div>
+
+                <div>
+                  @if (childItem["type"] == QuestionWidgetType.RADIO) {
+                    @for (option of childItem?.['answerOption']; track option) {
+                      <mat-radio-group [(ngModel)]="childItem['value']">
+                        @if (childItem?.['answerOption'].length <= 3) {
+                          <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
+                          </mat-radio-button>
+                        } @else {
+                          <!-- There are too many options to render in the same line -->
+                          <div>
+                            <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
+                          </div>
+                        }
+                      </mat-radio-group>
+                    }
+                  } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                    <mat-form-field appearance="outline" class="margin-top-sm">
+                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+                    </mat-form-field>
                   }
-                } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
-                  <mat-form-field appearance="outline" class="margin-top-sm">
-                    <input type="text" matInput [(ngModel)]="childItem['answer']">
-                  </mat-form-field>
-                }
-              </div>
+                </div>
+              }
             }
           }
+          <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
         }
-        <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
-      }
-    </div>
-    <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
-         [hidden]="!showDrawer">
-      <div class="fhir-explorer-header">
+      </div>
+      <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
+           [hidden]="!showDrawer">
+        <div class="fhir-explorer-header">
         <span class="explorer-header-title">
           FHIR Explorer (Click decedent header to show Bundle)
         </span>
-        <span class="content-spacer"></span>
-        <mat-icon (click)="showDrawer = false;"
-                  aria-label="Close FHIR explorer"
-                  matTooltip="Close FHIR Explorer"
-                  class="pointer">
-          close
-        </mat-icon>
+          <span class="content-spacer"></span>
+          <mat-icon (click)="showDrawer = false;"
+                    aria-label="Close FHIR explorer"
+                    matTooltip="Close FHIR Explorer"
+                    class="pointer">
+            close
+          </mat-icon>
+        </div>
+
+        <div class="margin-md">
+          This is just a temp content. We need to change the style a bit also.
+        </div>
+
       </div>
+    }
 
-      <div class="margin-md">
-        This is just a temp content. We need to change the style a bit also.
-      </div>
-
-    </div>
-
-<!--    @if (temp_for_demo) {-->
-<!--      <ul>-->
-<!--        @for (item of temp_for_demo["item"]; track item) {-->
-<!--          <li>{{ item["text"] }}-->
-<!--            <ul>-->
-<!--              @for (childItem of item["item"]; track childItem) {-->
-<!--                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>-->
-<!--              }-->
-<!--            </ul>-->
-<!--            }-->
-<!--      </ul>-->
-<!--    }-->
+    <!--    @if (temp_for_demo) {-->
+    <!--      <ul>-->
+    <!--        @for (item of temp_for_demo["item"]; track item) {-->
+    <!--          <li>{{ item["text"] }}-->
+    <!--            <ul>-->
+    <!--              @for (childItem of item["item"]; track childItem) {-->
+    <!--                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>-->
+    <!--              }-->
+    <!--            </ul>-->
+    <!--            }-->
+    <!--      </ul>-->
+    <!--    }-->
 
   </div>
 </div>
