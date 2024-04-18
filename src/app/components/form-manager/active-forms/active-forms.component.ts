@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {MatTableDataSource} from "@angular/material/table";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-active-forms',
@@ -12,17 +13,32 @@ export class ActiveFormsComponent implements OnInit {
 
   displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
   dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
+  isLoading = false;
 
-  constructor(private rcApiInterfaceService: RcApiInterfaceService) {}
+  constructor(
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private router: Router,
+  ) {}
   ngOnInit(): void {
+    this.getBatchJobs();
+  }
+
+
+  private getBatchJobs() {
+    this.isLoading = true;
     this.rcApiInterfaceService.getBatchJobs().subscribe({
       next: value => {
         this.dataSource.data = value;
+        this.isLoading = false;
       },
       error: err => {
         console.error(err);
+        this.isLoading = false;
       }
     })
   }
 
+  onActiveFormSelected(activeForm: ActiveFormSummary) {
+    this.router.navigate([`/form-viewer/${activeForm.formName}`]);
+  }
 }

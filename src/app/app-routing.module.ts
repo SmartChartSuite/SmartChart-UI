@@ -5,7 +5,6 @@ import {CallbackComponent} from "./components/callback/callback.component";
 import {LoginComponent} from "./components/login/login.component";
 import {FormManagerComponent} from "./components/form-manager/form-manager.component";
 import {JobsComponent} from "./components/jobs/jobs.component";
-import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {FormViewerComponent} from "./components/form-viewer/form-viewer.component";
 
 const routes: Routes = [
@@ -30,7 +29,7 @@ const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'form-viewer',
+    path: 'form-viewer/:formName',
     component: FormViewerComponent
   }
 ];

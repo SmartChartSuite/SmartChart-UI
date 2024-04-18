@@ -1,5 +1,4 @@
-import {FormControl, FormGroup} from "@angular/forms";
-
+//TODO: extract to proper location
 export enum QuestionWidgetType{
   RADIO = 'choice',
   INPUT = 'string',
@@ -8,6 +7,7 @@ export enum QuestionWidgetType{
 
 import {Component, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-form-viewer',
@@ -20,11 +20,13 @@ export class FormViewerComponent implements OnInit {
   QuestionWidgetType = QuestionWidgetType;
   showDrawer = false;
 
-  constructor(private rcApiInterfaceService: RcApiInterfaceService) {}
+  constructor(
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private route: ActivatedRoute,
+  ) {}
 
-  ngOnInit(): void {
-    // TODO: Change this to not be static, once linked to the input should be based on the FormSummary name (NOT title)
-    this.rcApiInterfaceService.getJobPackage("SETNETInfantFollowUp").subscribe({
+  getJobPackage(formName: string){
+    this.rcApiInterfaceService.getJobPackage(formName).subscribe({
       next: result => {
         result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
@@ -36,8 +38,9 @@ export class FormViewerComponent implements OnInit {
     });
   }
 
-  buildFormFromItems(){
-
+  ngOnInit(): void {
+    let formName = this.route.snapshot.params['formName'];
+    this.getJobPackage(formName);
   }
 
   selectQuestionerSection(item: any) {
