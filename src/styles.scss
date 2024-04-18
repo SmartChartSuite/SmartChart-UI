@@ -92,3 +92,54 @@ $lg: 24px;
     flex: 1;             // Stretches to fill wrapper.
   }
 }
+
+.content-spacer{flex: 1 1 auto;}
+
+/*TODO: refactor copied code from raven */
+/** Record Viewer Container **/
+.viewer-container-wrapper {
+  @extend .full-screen;
+  @extend .flex-col-simple;
+  flex: 1;
+  align-content: stretch;
+  align-items: stretch;
+  overflow-y: hidden;
+  > .viewer-container-body {
+    @extend .padding-md;
+    @extend .flex-row-simple;
+    flex: 1;
+    scroll-behavior: smooth;
+    overflow-y: hidden;
+    align-content: stretch;
+    align-items: stretch;
+    > * {
+      @extend .scrollable;
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+    }
+    > .viewer-container-body-content {
+      flex: 1;
+    }
+    > .viewer-container-body-side-fhir-explorer {
+      width: 40%;
+      border: 3px solid darkorange;
+      > .fhir-explorer-header {
+        @extend .center-contents;
+        @extend .flex-row-simple;
+        @extend .padding-sm;
+        font-weight: bold;
+        font-size: larger;
+        background-color: darkorange;
+        > * {
+          @extend .center-contents;
+        }
+        > .explorer-header-title {
+          font-size: small;
+          color: black;
+          background-color: darkorange;
+        }
+      }
+    }
+  }
+}
+

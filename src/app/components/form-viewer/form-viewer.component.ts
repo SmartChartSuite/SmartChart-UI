@@ -1,8 +1,8 @@
 import {FormControl, FormGroup} from "@angular/forms";
 
 export enum QuestionWidgetType{
-  CHECKBOX = 'choice',
-  INPUT = 'string'
+  RADIO = 'choice',
+  INPUT = 'string',
 }
 
 
@@ -18,6 +18,7 @@ export class FormViewerComponent implements OnInit {
 
   temp_for_demo: any;
   QuestionWidgetType = QuestionWidgetType;
+  showDrawer = false;
 
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {}
 
