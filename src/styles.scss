@@ -104,6 +104,11 @@ $lg: 24px;
   align-content: stretch;
   align-items: stretch;
   overflow-y: hidden;
+  > .viewer-container-header {
+    margin-left: 16px;
+    margin-right: 16px;
+    min-height: 36px;
+  }
   > .viewer-container-body {
     @extend .padding-md;
     @extend .flex-row-simple;

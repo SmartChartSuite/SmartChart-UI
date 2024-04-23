@@ -42,7 +42,6 @@ import {
   MatDatepickerToggle
 } from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
-import {JobsComponent} from "./components/jobs/jobs.component";
 import {CallbackComponent} from "./components/callback/callback.component";
 import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
@@ -52,6 +51,7 @@ import {FormViewerComponent} from "./components/form-viewer/form-viewer.componen
 import {MatTooltip} from "@angular/material/tooltip";
 import {MatNavList} from "@angular/material/list";
 import {MatCheckbox} from "@angular/material/checkbox";
+import { PatientDetailsComponent } from './components/form-manager/start-new-form/patient-details/patient-details.component';
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -71,12 +71,11 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     StartNewFormComponent,
     FormSelectionComponent,
     PatientSummaryTableComponent,
-    JobsComponent,
     LoginComponent,
     CallbackComponent,
     LandingComponent,
-    FormViewerComponent
-
+    FormViewerComponent,
+    PatientDetailsComponent
   ],
     imports: [
         HttpClientModule,

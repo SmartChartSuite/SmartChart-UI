@@ -4,7 +4,6 @@ import {LandingComponent} from "./components/landing/landing.component";
 import {CallbackComponent} from "./components/callback/callback.component";
 import {LoginComponent} from "./components/login/login.component";
 import {FormManagerComponent} from "./components/form-manager/form-manager.component";
-import {JobsComponent} from "./components/jobs/jobs.component";
 import {FormViewerComponent} from "./components/form-viewer/form-viewer.component";
 
 const routes: Routes = [
@@ -15,10 +14,6 @@ const routes: Routes = [
   {
     path: 'forms',
     component: FormManagerComponent,
-  },
-  {
-    path: 'jobs',
-    component: JobsComponent,
   },
   {
     path: 'callback',

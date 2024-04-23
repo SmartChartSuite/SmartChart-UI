@@ -1,4 +1,20 @@
 <div class="viewer-container-wrapper">
+  <div class="viewer-container-header flex">
+    <div style="flex: 0 0 30%; background-color: lightcyan">
+      <span>
+        <button mat-button>
+          <mat-icon>chevron_left</mat-icon>
+          Back
+        </button>
+      </span>
+      <span class="margin-md">{{ activeFormSummary?.formName }}</span>
+    </div>
+    @if(activeFormSummary?.patientSummary){
+      <div style="flex: 0 0 70%; background-color: lightblue">
+        <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
+      </div>
+    }
+  </div>
   <div class="viewer-container-body">
     @if (!activeFormSummary) {
       No Patient Form Selected
@@ -51,6 +67,16 @@
                     <mat-form-field appearance="outline" class="margin-top-sm">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
+                  }
+
+                  @for(extension of childItem['extension']; track extension){
+                    @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask"){
+                      <div>NLPQL: {{ extension?.valueString }}</div>
+                    }
+
+                    @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask"){
+                      <div>CQL: {{ extension?.valueString }}</div>
+                    }
                   }
                 </div>
               }
