@@ -7,7 +7,7 @@ export enum QuestionWidgetType{
 }
 
 
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -19,19 +19,24 @@ import {StateManagementService} from "../../services/state-management/state-mana
   templateUrl: './form-viewer.component.html',
   styleUrl: './form-viewer.component.scss'
 })
-export class FormViewerComponent implements OnInit {
+export class FormViewerComponent implements OnInit, OnDestroy {
 
   temp_for_demo: any;
   QuestionWidgetType = QuestionWidgetType;
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
+  selectedMenuItemIndex = 0;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
-    private router: Router,
+    public router: Router,
     private stateManagementService: StateManagementService
   ) {}
+
+  ngOnDestroy(): void {
+    //TODO Maybe we need to save the current state of the form so the user can go back and forward?
+  }
 
   getJobPackage(formName: string){
     this.rcApiInterfaceService.getJobPackage(formName).subscribe({
@@ -58,7 +63,8 @@ export class FormViewerComponent implements OnInit {
     )
   }
 
-  selectQuestionerSection(item: any) {
+  selectQuestionerSection(item: any, index: number) {
+    this.selectedMenuItemIndex = index;
     this.temp_for_demo['item'] = this.temp_for_demo.item.map((element: any) => element == item ? {...element, selected: true}: {...element, selected: false});
   }
 
@@ -68,5 +74,10 @@ export class FormViewerComponent implements OnInit {
 
   selectPatientForm() {
     this.router.navigate(['/forms']);
+  }
+
+  onViewEvidence(childItem: any) {
+    //TODO wire show evidence here
+    console.log(childItem)
   }
 }

@@ -28,6 +28,15 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onActiveFormSelected(row)"></tr>
 
+
+  @if(isLoading){
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell padding-md loading" [attr.colspan]="displayedColumns.length">
+        Loading Records
+      </td>
+    </tr>
+  }
+
   @if(!isLoading){
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell padding-md" [attr.colspan]="displayedColumns.length">

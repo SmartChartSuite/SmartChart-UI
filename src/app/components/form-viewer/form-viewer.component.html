@@ -1,8 +1,8 @@
 <div class="viewer-container-wrapper">
   <div class="viewer-container-header flex">
-    <div style="flex: 0 0 30%; background-color: lightcyan">
+    <div class="form-name">
       <span>
-        <button mat-button>
+        <button mat-button (click)="router.navigate(['/forms']);">
           <mat-icon>chevron_left</mat-icon>
           Back
         </button>
@@ -10,7 +10,7 @@
       <span class="margin-md">{{ activeFormSummary?.formName }}</span>
     </div>
     @if(activeFormSummary?.patientSummary){
-      <div style="flex: 0 0 70%; background-color: lightblue">
+      <div class="patient-details">
         <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
       </div>
     }
@@ -21,25 +21,26 @@
       <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
     }
     @else {
-      <div>
-        <mat-nav-list>
-          @for (item of temp_for_demo?.["item"]; track item) {
+      <div class="padding-right-md">
+        <mat-nav-list class="side-nav">
+          @for (item of temp_for_demo?.["item"]; track item; let i = $index) {
             <div>
-              <button mat-flat-button (click)="selectQuestionerSection(item)">
+              <button
+                mat-flat-button
+                class="expanded-menu-button"
+                [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
+                (click)="selectQuestionerSection(item, i)">
                 {{ item["text"] }}
               </button>
             </div>
           }
         </mat-nav-list>
       </div>
-
       <div class="viewer-container-body-content">
         <button mat-raised-button (click)="showDrawer = !showDrawer">{{ showDrawer ? "Close" : "Open "}} Drawer</button>
-        @if (temp_for_demo) {
           @for (item of temp_for_demo?.["item"]; track item) {
             @if (item["selected"]) {
-              <div class="margin-top-md"
-                   style="font-size: medium; font-weight: bold">{{ item["text"] }}
+              <div class="margin-top-md item-text">{{ item["text"] }}
               </div>
               @for (childItem of item["item"]; track childItem; let i = $index) {
 
@@ -70,30 +71,34 @@
 
                   @for(extension of childItem['extension']; track extension){
                     @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask"){
-                      <div>NLPQL: Placeholder </div>
+                      <div>NLPQL: Suggestion Placeholder </div>
                     }
 
                     @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask"){
-                      <div>CQL: Placeholder</div>
+                      <div>CQL: Suggestion Placeholder</div>
                     }
                   }
+                  <button mat-raised-button
+                          appHasEvidence [extensionList]="childItem['extension']"
+                          (click)="onViewEvidence(childItem); showDrawer=true">
+                    View Evidence
+                  </button>
                 </div>
               }
             }
           }
           <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
-        }
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
            [hidden]="!showDrawer">
         <div class="fhir-explorer-header">
         <span class="explorer-header-title">
-          FHIR Explorer (Click decedent header to show Bundle)
+          Evidence
         </span>
           <span class="content-spacer"></span>
           <mat-icon (click)="showDrawer = false;"
-                    aria-label="Close FHIR explorer"
-                    matTooltip="Close FHIR Explorer"
+                    aria-label="Close Evidence Viewer"
+                    matTooltip="Close Evidence Viewer"
                     class="pointer">
             close
           </mat-icon>
