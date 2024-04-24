@@ -23,6 +23,7 @@ export class RcApiInterfaceService {
   startJobsEndpoint: string = `forms/start?asyncFlag=True`;
   getJobPackageEndpoint: string = `forms`;
   getBatchJobsEndpoint: string = `${this.base}/batchjob`
+  getResultsEndpoint: string = `${this.base}/results`
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
@@ -123,5 +124,9 @@ export class RcApiInterfaceService {
 
   getBatchJob(id: string) {
     return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
+  }
+
+  getBatchJobResults(id: string): Observable<any> {
+    return this.http.get(this.configService.config.rcApiUrl + this.getResultsEndpoint + `/${id}`)
   }
 }
