@@ -11,6 +11,8 @@ import {Component, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
+import {RouteState} from "../../models/application-state";
+import {StateManagementService} from "../../services/state-management/state-management.service";
 
 @Component({
   selector: 'app-form-viewer',
@@ -27,7 +29,8 @@ export class FormViewerComponent implements OnInit {
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
-    private router: Router
+    private router: Router,
+    private stateManagementService: StateManagementService
   ) {}
 
   getJobPackage(formName: string){
@@ -44,6 +47,7 @@ export class FormViewerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
     this.formManagerService.selectedActiveFormSummary$.subscribe(
       value => {
         this.activeFormSummary = value;

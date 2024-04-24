@@ -34,8 +34,7 @@
       </div>
 
       <div class="viewer-container-body-content">
-        <button mat-raised-button (click)="showDrawer = true">Open Drawer</button>
-        <pre>{{ activeFormSummary| json }}</pre>
+        <button mat-raised-button (click)="showDrawer = !showDrawer">{{ showDrawer ? "Close" : "Open "}} Drawer</button>
         @if (temp_for_demo) {
           @for (item of temp_for_demo?.["item"]; track item) {
             @if (item["selected"]) {
@@ -71,11 +70,11 @@
 
                   @for(extension of childItem['extension']; track extension){
                     @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask"){
-                      <div>NLPQL: {{ extension?.valueString }}</div>
+                      <div>NLPQL: Placeholder </div>
                     }
 
                     @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask"){
-                      <div>CQL: {{ extension?.valueString }}</div>
+                      <div>CQL: Placeholder</div>
                     }
                   }
                 </div>

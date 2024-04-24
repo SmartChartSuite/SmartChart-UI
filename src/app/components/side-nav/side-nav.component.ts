@@ -20,7 +20,6 @@ export class SideNavComponent{
     public stateManagementService: StateManagementService,
     public router: Router
   ) {
-    this.stateManagementService.getState().subscribe((value=> console.log(value)))
   }
 
   onExpandedStatusChanged(){

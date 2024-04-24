@@ -38,7 +38,7 @@
 
       <li>
         <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORMS"
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM"
                 (click)="router.navigate(['/form-viewer']);">
           <mat-icon>list_alt</mat-icon>
           @if (expanded) { Current Form }
@@ -47,7 +47,7 @@
 
       <li>
         <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORMS"
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LOAD_FORM"
                 (click)="router.navigate(['/forms']);">
           <mat-icon>person_search</mat-icon>
           @if (expanded) { Load Form }
