@@ -26,6 +26,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
+  selectedEvidenceIndex: number | null = null;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -76,8 +77,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.router.navigate(['/forms']);
   }
 
-  onViewEvidence(childItem: any) {
-    //TODO wire show evidence here
-    console.log(childItem)
+  onViewEvidence(childItem: any, index: number) {
+    this.selectedEvidenceIndex = index;
+    //TODO wire show evidence call here
   }
 }

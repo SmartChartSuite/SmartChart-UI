@@ -151,7 +151,7 @@ $lg: 24px;
 
 /** TODO add style for the class below*/
 .no-data-table-row {
-  margin: 16px;
+  @extend .margin-md
 }
 
 /** Begin Loading Data style. All the style does is adds ellipses after a text */

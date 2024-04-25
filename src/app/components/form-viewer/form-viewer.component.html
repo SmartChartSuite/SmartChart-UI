@@ -19,7 +19,9 @@
     @if (!activeFormSummary) {
       <div>
         <div class="margin-md">No Patient Form Selected.</div>
-        <div class="margin-md"><button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button></div>
+        <div class="margin-md">
+          <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
+        </div>
       </div>
     } @else {
       <div class="padding-right-md">
@@ -37,52 +39,56 @@
           }
         </mat-nav-list>
       </div>
+
+      <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
         @for (item of temp_for_demo?.["item"]; track item) {
           @if (item["selected"]) {
-            <div class="margin-top-md item-text">{{ item["text"] }}
-            </div>
+            <div class="margin-top-md item-text">{{ item["text"] }}</div>
+
             @for (childItem of item["item"]; track childItem; let i = $index) {
+              <div class="question-item"
+                   [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                <div class="question-label margin-top-md" style="font-weight: bold">
+                  <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
+                </div>
 
-              <div class="margin-top-md">
-                <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
-              </div>
-
-              <div>
-                @if (childItem["type"] == QuestionWidgetType.RADIO) {
-                  @for (option of childItem?.['answerOption']; track option) {
-                    <mat-radio-group [(ngModel)]="childItem['value']">
-                      @if (childItem?.['answerOption'].length <= 3) {
-                        <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
-                        </mat-radio-button>
-                      } @else {
-                        <!-- There are too many options to render in the same line -->
-                        <div>
-                          <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
-                        </div>
-                      }
-                    </mat-radio-group>
-                  }
-                } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
-                  <mat-form-field appearance="outline" class="margin-top-sm">
-                    <input type="text" matInput [(ngModel)]="childItem['answer']">
-                  </mat-form-field>
-                }
-
-                @for (extension of childItem['extension']; track extension) {
-                  @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
-                    <div class="margin-left-md margin-bottom-sm">NLPQL: Suggestion Placeholder</div>
+                <div>
+                  @if (childItem["type"] == QuestionWidgetType.RADIO) {
+                    @for (option of childItem?.['answerOption']; track option) {
+                      <mat-radio-group [(ngModel)]="childItem['value']">
+                        @if (childItem?.['answerOption'].length <= 3) {
+                          <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
+                          </mat-radio-button>
+                        } @else {
+                          <!-- There are too many options to render in the same line -->
+                          <div>
+                            <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
+                          </div>
+                        }
+                      </mat-radio-group>
+                    }
+                  } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                    <mat-form-field appearance="outline" class="margin-top-sm">
+                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+                    </mat-form-field>
                   }
 
-                  @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
-                    <div class="margin-left-md margin-bottom-sm">CQL: Suggestion Placeholder</div>
+                  @for (extension of childItem['extension']; track extension) {
+                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
+                      <div class="margin-left-md margin-bottom-sm">NLPQL: Suggestion Placeholder</div>
+                    }
+
+                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
+                      <div class="margin-left-md margin-bottom-sm">CQL: Suggestion Placeholder</div>
+                    }
                   }
-                }
-                <button mat-raised-button
-                        appHasEvidence [extensionList]="childItem['extension']"
-                        (click)="onViewEvidence(childItem); showDrawer=true">
-                  View Evidence
-                </button>
+                  <button mat-raised-button
+                          appHasEvidence [extensionList]="childItem['extension']"
+                          (click)="onViewEvidence(childItem, i); showDrawer=true">
+                    View Evidence
+                  </button>
+                </div>
               </div>
             }
           }
