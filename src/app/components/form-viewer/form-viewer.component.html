@@ -32,7 +32,7 @@
                 mat-flat-button
                 class="expanded-menu-button"
                 [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
-                (click)="selectQuestionerSection(item, i)">
+                (click)="selectQuestionerSection(item, i); this.selectedEvidenceIndex = null; showDrawer=false">
                 {{ item["text"] }}
               </button>
             </div>
@@ -76,7 +76,7 @@
 
                   @for (extension of childItem['extension']; track extension) {
                     @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">NLPQL: Suggestion Placeholder</div>
+                      <div class="margin-left-md margin-bottom-sm">NLP: Suggestion Placeholder</div>
                     }
 
                     @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
