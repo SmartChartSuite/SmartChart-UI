@@ -9,7 +9,7 @@
       </span>
       <span class="margin-md">{{ activeFormSummary?.formName }}</span>
     </div>
-    @if(activeFormSummary?.patientSummary){
+    @if (activeFormSummary?.patientSummary) {
       <div class="patient-details">
         <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
       </div>
@@ -19,8 +19,7 @@
     @if (!activeFormSummary) {
       No Patient Form Selected
       <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
-    }
-    @else {
+    } @else {
       <div class="padding-right-md">
         <mat-nav-list class="side-nav">
           @for (item of temp_for_demo?.["item"]; track item; let i = $index) {
@@ -37,57 +36,56 @@
         </mat-nav-list>
       </div>
       <div class="viewer-container-body-content">
-        <button mat-raised-button (click)="showDrawer = !showDrawer">{{ showDrawer ? "Close" : "Open "}} Drawer</button>
-          @for (item of temp_for_demo?.["item"]; track item) {
-            @if (item["selected"]) {
-              <div class="margin-top-md item-text">{{ item["text"] }}
+        @for (item of temp_for_demo?.["item"]; track item) {
+          @if (item["selected"]) {
+            <div class="margin-top-md item-text">{{ item["text"] }}
+            </div>
+            @for (childItem of item["item"]; track childItem; let i = $index) {
+
+              <div class="margin-top-md">
+                <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
               </div>
-              @for (childItem of item["item"]; track childItem; let i = $index) {
 
-                <div class="margin-top-md">
-                  <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
-                </div>
+              <div>
+                @if (childItem["type"] == QuestionWidgetType.RADIO) {
+                  @for (option of childItem?.['answerOption']; track option) {
+                    <mat-radio-group [(ngModel)]="childItem['value']">
+                      @if (childItem?.['answerOption'].length <= 3) {
+                        <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
+                        </mat-radio-button>
+                      } @else {
+                        <!-- There are too many options to render in the same line -->
+                        <div>
+                          <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
+                        </div>
+                      }
+                    </mat-radio-group>
+                  }
+                } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                  <mat-form-field appearance="outline" class="margin-top-sm">
+                    <input type="text" matInput [(ngModel)]="childItem['answer']">
+                  </mat-form-field>
+                }
 
-                <div>
-                  @if (childItem["type"] == QuestionWidgetType.RADIO) {
-                    @for (option of childItem?.['answerOption']; track option) {
-                      <mat-radio-group [(ngModel)]="childItem['value']">
-                        @if (childItem?.['answerOption'].length <= 3) {
-                          <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
-                          </mat-radio-button>
-                        } @else {
-                          <!-- There are too many options to render in the same line -->
-                          <div>
-                            <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
-                          </div>
-                        }
-                      </mat-radio-group>
-                    }
-                  } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
-                    <mat-form-field appearance="outline" class="margin-top-sm">
-                      <input type="text" matInput [(ngModel)]="childItem['answer']">
-                    </mat-form-field>
+                @for (extension of childItem['extension']; track extension) {
+                  @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
+                    <div>NLPQL: Suggestion Placeholder</div>
                   }
 
-                  @for(extension of childItem['extension']; track extension){
-                    @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask"){
-                      <div>NLPQL: Suggestion Placeholder </div>
-                    }
-
-                    @if(extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask"){
-                      <div>CQL: Suggestion Placeholder</div>
-                    }
+                  @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
+                    <div>CQL: Suggestion Placeholder</div>
                   }
-                  <button mat-raised-button
-                          appHasEvidence [extensionList]="childItem['extension']"
-                          (click)="onViewEvidence(childItem); showDrawer=true">
-                    View Evidence
-                  </button>
-                </div>
-              }
+                }
+                <button mat-raised-button
+                        appHasEvidence [extensionList]="childItem['extension']"
+                        (click)="onViewEvidence(childItem); showDrawer=true">
+                  View Evidence
+                </button>
+              </div>
             }
           }
-          <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
+        }
+        <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
            [hidden]="!showDrawer">
@@ -105,7 +103,7 @@
         </div>
 
         <div class="margin-md">
-          This is just a temp content. We need to change the style a bit also.
+          Evidence content.
         </div>
 
       </div>
