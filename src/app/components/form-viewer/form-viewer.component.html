@@ -17,8 +17,10 @@
   </div>
   <div class="viewer-container-body">
     @if (!activeFormSummary) {
-      No Patient Form Selected
-      <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
+      <div>
+        <div class="margin-md">No Patient Form Selected.</div>
+        <div class="margin-md"><button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button></div>
+      </div>
     } @else {
       <div class="padding-right-md">
         <mat-nav-list class="side-nav">
@@ -69,11 +71,11 @@
 
                 @for (extension of childItem['extension']; track extension) {
                   @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
-                    <div>NLPQL: Suggestion Placeholder</div>
+                    <div class="margin-left-md margin-bottom-sm">NLPQL: Suggestion Placeholder</div>
                   }
 
                   @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
-                    <div>CQL: Suggestion Placeholder</div>
+                    <div class="margin-left-md margin-bottom-sm">CQL: Suggestion Placeholder</div>
                   }
                 }
                 <button mat-raised-button
