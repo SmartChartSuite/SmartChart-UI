@@ -98,9 +98,9 @@
       <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
            [hidden]="!showDrawer">
         <div class="fhir-explorer-header">
-        <span class="explorer-header-title">
-          Evidence
-        </span>
+          <span class="explorer-header-title">
+            Evidence
+          </span>
           <span class="content-spacer"></span>
           <mat-icon (click)="showDrawer = false;"
                     aria-label="Close Evidence Viewer"
@@ -109,11 +109,7 @@
             close
           </mat-icon>
         </div>
-
-        <div class="margin-md">
-          Evidence content.
-        </div>
-
+        <app-evidence-details></app-evidence-details>
       </div>
     }
 

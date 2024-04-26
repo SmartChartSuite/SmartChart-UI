@@ -53,6 +53,10 @@ import {MatNavList} from "@angular/material/list";
 import {MatCheckbox} from "@angular/material/checkbox";
 import { PatientDetailsComponent } from './components/form-manager/start-new-form/patient-details/patient-details.component';
 import {HasEvidenceDirective} from "./directives/has-evidence.directive";
+import { EvidenceDetailsComponent } from './components/form-viewer/evidence-details/evidence-details.component';
+import {ModalComponent} from "./components/widgets/modal/modal.component";
+import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";
+import {ClipboardModule} from "@angular/cdk/clipboard";
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -76,7 +80,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     CallbackComponent,
     LandingComponent,
     FormViewerComponent,
-    PatientDetailsComponent
+    PatientDetailsComponent,
+    EvidenceDetailsComponent,
+    ModalComponent
   ],
   imports: [
     HttpClientModule,
@@ -128,7 +134,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatTooltip,
     MatNavList,
     MatCheckbox,
-    HasEvidenceDirective
+    HasEvidenceDirective,
+    MatDialogContent,
+    ClipboardModule,
+    MatDialogModule
   ],
   providers: [
     {

@@ -34,8 +34,8 @@ export class ActiveFormsComponent implements OnInit {
         this.isLoading = false;
       },
       error: err => {
-        console.error(err);
         this.isLoading = false;
+        console.error(err);
       }
     })
   }
