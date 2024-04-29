@@ -7,6 +7,6 @@ export class ApplicationState {
 
 export enum RouteState {
   LANDING,
-  FORMS,
-  JOBS
+  LOAD_FORM,
+  CURRENT_FORM,
 }

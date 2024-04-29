@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import {Subject} from "rxjs";
+import {BehaviorSubject, Subject} from "rxjs";
 import {PatientSummary} from "../../models/patient-summary";
 import {FormSummary} from "../../models/form-summary";
+import {ActiveFormSummary} from "../../models/active-form-summary";
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,12 @@ export class FormManagerService {
   selectedForm$ = this.selectedForm.asObservable();
   setSelectedForm(formSummary: FormSummary){
     this.selectedForm.next(formSummary);
+  }
+
+  private selectedActiveFormSummary= new BehaviorSubject<ActiveFormSummary>(null);
+  selectedActiveFormSummary$ = this.selectedActiveFormSummary.asObservable();
+  setSelectedActiveFormSummary(activeFormSummary: ActiveFormSummary){
+    this.selectedActiveFormSummary.next(activeFormSummary);
   }
 
   constructor() { }

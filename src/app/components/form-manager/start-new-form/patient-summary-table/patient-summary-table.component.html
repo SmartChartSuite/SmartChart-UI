@@ -11,7 +11,7 @@
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef> Name </th>
-    <td mat-cell *matCellDef="let patient"> {{  patient.name?.given?.[0] + ' ' +  patient.name?.family  }} </td>
+    <td mat-cell *matCellDef="let patient"> {{  patient.name?.given + ' ' +  patient.name?.family  }} </td>
   </ng-container>
 
   <ng-container matColumnDef="gender">
@@ -30,10 +30,10 @@
       [class.selected-patient-row]="(selectedPatient$ | async) === row"
       (click)="setSelectedPatient(row)">
   </tr>
-
+<!--  TODO: Render only after a search has been executed-->
   <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
-      No SmartChart Forms Found.
+    <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+      <span class="no-data-table-row">No records found</span>
     </td>
   </tr>
 </table>

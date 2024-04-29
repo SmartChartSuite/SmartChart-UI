@@ -1,16 +1,130 @@
-<div class="component-wrapper">
-  <div class="component-content">
-    @if (temp_for_demo) {
-      <ul>
-        @for (item of temp_for_demo["item"]; track item) {
-          <li>{{ item["text"] }}
-            <ul>
-              @for (childItem of item["item"]; track childItem) {
-                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>
-              }
-            </ul>
-            }
-      </ul>
+<div class="viewer-container-wrapper">
+  <div class="viewer-container-header flex">
+    <div class="form-name">
+      <span>
+        <button mat-button (click)="router.navigate(['/forms']);">
+          <mat-icon>chevron_left</mat-icon>
+          Back
+        </button>
+      </span>
+      <span class="margin-md">{{ activeFormSummary?.formName }}</span>
+    </div>
+    @if (activeFormSummary?.patientSummary) {
+      <div class="patient-details">
+        <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
+      </div>
     }
+  </div>
+  <div class="viewer-container-body">
+    @if (!activeFormSummary) {
+      <div>
+        <div class="margin-md">No Patient Form Selected.</div>
+        <div class="margin-md">
+          <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
+        </div>
+      </div>
+    } @else {
+      <div class="padding-right-md">
+        <mat-nav-list class="side-nav">
+          @for (item of temp_for_demo?.["item"]; track item; let i = $index) {
+            <div>
+              <button
+                mat-flat-button
+                class="expanded-menu-button"
+                [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
+                (click)="selectQuestionnaireSection(item, i); this.selectedEvidenceIndex = null; showDrawer=false">
+                {{ item["text"] }}
+              </button>
+            </div>
+          }
+        </mat-nav-list>
+      </div>
+
+      <!-- Begin actual form rendering -->
+      <div class="viewer-container-body-content">
+        @for (item of temp_for_demo?.["item"]; track item) {
+          @if (item["selected"]) {
+            <div class="margin-top-md item-text">{{ item["text"] }}</div>
+
+            @for (childItem of item["item"]; track childItem; let i = $index) {
+              <div class="question-item"
+                   [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                <div class="question-label margin-top-md">
+                  <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
+                </div>
+
+                <div>
+                  @if (childItem["type"] == QuestionWidgetType.RADIO) {
+                    @for (option of childItem?.['answerOption']; track option) {
+                      <mat-radio-group [(ngModel)]="childItem['value']">
+                        @if (childItem?.['answerOption'].length <= 3) {
+                          <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
+                          </mat-radio-button>
+                        } @else {
+                          <!-- There are too many options to render in the same line -->
+                          <div>
+                            <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
+                          </div>
+                        }
+                      </mat-radio-group>
+                    }
+                  } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                    <mat-form-field appearance="outline" class="margin-top-sm">
+                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+                    </mat-form-field>
+                  }
+
+                  @for (extension of childItem['extension']; track extension) {
+                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
+                      <div class="margin-left-md margin-bottom-sm">NLP: Suggestion Placeholder</div>
+                    }
+
+                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
+                      <div class="margin-left-md margin-bottom-sm">CQL: Suggestion Placeholder</div>
+                    }
+                  }
+                  <button mat-raised-button
+                          appHasEvidence [extensionList]="childItem['extension']"
+                          (click)="onViewEvidence(childItem, i); showDrawer=true">
+                    View Evidence
+                  </button>
+                </div>
+              </div>
+            }
+          }
+        }
+        <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
+      </div>
+      <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
+           [hidden]="!showDrawer">
+        <div class="fhir-explorer-header">
+          <span class="explorer-header-title">
+            Evidence
+          </span>
+          <span class="content-spacer"></span>
+          <mat-icon (click)="showDrawer = false;"
+                    aria-label="Close Evidence Viewer"
+                    matTooltip="Close Evidence Viewer"
+                    class="pointer">
+            close
+          </mat-icon>
+        </div>
+        <app-evidence-details></app-evidence-details>
+      </div>
+    }
+
+    <!--    @if (temp_for_demo) {-->
+    <!--      <ul>-->
+    <!--        @for (item of temp_for_demo["item"]; track item) {-->
+    <!--          <li>{{ item["text"] }}-->
+    <!--            <ul>-->
+    <!--              @for (childItem of item["item"]; track childItem) {-->
+    <!--                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>-->
+    <!--              }-->
+    <!--            </ul>-->
+    <!--            }-->
+    <!--      </ul>-->
+    <!--    }-->
+
   </div>
 </div>

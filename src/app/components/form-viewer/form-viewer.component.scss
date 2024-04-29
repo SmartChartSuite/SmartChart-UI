@@ -1,0 +1,56 @@
+$light-accent-color: #E0E0E0;
+
+.form-name {
+  flex: 0 0 30%; background-color: $light-accent-color;
+}
+
+.patient-details {
+  flex: 0 0 70%;
+  background-color: $light-accent-color;
+}
+
+.question-label {
+  font-weight: bold;
+}
+
+mat-form-field {
+  min-width: 70%;
+}
+
+/* Begin sidenav style */
+
+$menu-width: 300px;
+$sidenav-background-color: #212121;
+$selected-nave-menu-item-color: #424242;
+
+.side-nav {
+  background-color: $sidenav-background-color;
+  border-radius: 4px;
+}
+
+.selected-menu-item {
+  background-color: $selected-nave-menu-item-color !important;
+}
+
+.expanded-menu-button {
+  width: ($menu-width - 24px);
+  justify-content: flex-start;
+  background-color: $sidenav-background-color;
+  color: whitesmoke;
+}
+
+/* End sidenav style */
+
+.item-text {
+  font-size: medium; font-weight: bold
+}
+
+.question-item {
+  padding-left: 8px;
+  border-left: 4px solid transparent;;
+}
+
+.selected-evidence {
+  @extend .question-item;
+  border-color: $light-accent-color;
+}
