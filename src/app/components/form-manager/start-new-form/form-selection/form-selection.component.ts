@@ -4,6 +4,7 @@ import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-ap
 import {FormSummary} from "../../../../models/form-summary";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
+import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-form-selection',
@@ -17,7 +18,8 @@ export class FormSelectionComponent implements OnInit {
   selectedForm: FormSummary;
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
-    private formManagerService: FormManagerService){}
+    private formManagerService: FormManagerService,
+    private utilsService: UtilsService){}
 
   getFormList(){
     this.isLoading = true;
@@ -28,6 +30,7 @@ export class FormSelectionComponent implements OnInit {
       },
       error: err => {
         this.isLoading = false;
+        this.utilsService.showErrorMessage();
         console.error(err);
       }
     });

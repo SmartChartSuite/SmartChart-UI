@@ -14,6 +14,7 @@ import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {filter, mergeMap, Observable, tap} from "rxjs";
+import {UtilsService} from "../../services/utils/utils.service";
 
 @Component({
   selector: 'app-form-viewer',
@@ -34,7 +35,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
     public router: Router,
-    private stateManagementService: StateManagementService
+    private stateManagementService: StateManagementService,
+    private utilsService: UtilsService
   ) {}
 
   ngOnDestroy(): void {
@@ -57,6 +59,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       },
       error: err => {
         console.error(err);
+        this.utilsService.showErrorMessage();
       }
     });
   }

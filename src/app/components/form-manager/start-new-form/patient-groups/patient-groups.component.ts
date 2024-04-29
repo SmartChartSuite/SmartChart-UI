@@ -4,6 +4,7 @@ import { PatientGroup } from '../../../../models/patient-group';
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {MatSelectChange} from "@angular/material/select";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
+import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-patient-groups',
@@ -13,7 +14,8 @@ import {FormManagerService} from "../../../../services/form-manager/form-manager
 export class PatientGroupsComponent implements OnInit{
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
-    private formManagerService: FormManagerService
+    private formManagerService: FormManagerService,
+    private utilsService: UtilsService
   ){}
 
   patientSummaryData: PatientSummary[];
@@ -28,6 +30,7 @@ export class PatientGroupsComponent implements OnInit{
         this.patientSummaryData = this.selectedGroup?.members;
       },
       error: err => {
+        this.utilsService.showErrorMessage();
         console.error(err);
       }
     });

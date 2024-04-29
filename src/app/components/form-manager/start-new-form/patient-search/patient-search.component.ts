@@ -5,6 +5,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSearchParameters} from "../../../../models/rc-api/patient-search-parameters";
+import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-patient-search',
@@ -39,10 +40,12 @@ export class PatientSearchComponent implements OnChanges, OnInit {
   // Search by FHIR ID controls
   fhirIdFc: FormControl = new FormControl("", Validators.required);
 
-  constructor(private rcApiInterfaceService: RcApiInterfaceService){}
+  constructor(
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private utilsService: UtilsService
+    ){}
 
   onSearchBySelected($event: MatRadioChange) {
-    console.log($event.value);
     this.createSearchForm($event.value);
   }
 
@@ -93,8 +96,8 @@ export class PatientSearchComponent implements OnChanges, OnInit {
     this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
       next: value => this.patientSummaryData = value,
       error: err => {
-        //TODO add visual feedback for the user indicating that there was an error in the api
         console.error(err);
+        this.utilsService.showErrorMessage();
       }
     });
   }
