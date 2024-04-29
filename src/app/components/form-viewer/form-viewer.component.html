@@ -17,10 +17,10 @@
   </div>
   <div class="viewer-container-body">
     @if (!activeFormSummary) {
-      <div>
-        <div class="margin-md">No Patient Form Selected.</div>
+      <div class="viewer-container-body-content">
+        <div class="margin-md">No form has been selected, please load an active form through the Form Manager.</div>
         <div class="margin-md">
-          <button mat-raised-button (click)="selectPatientForm()">Select Patient Form</button>
+          <button mat-raised-button (click)="selectPatientForm()">Go to Form Manager</button>
         </div>
       </div>
     } @else {
