@@ -13,7 +13,7 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, mergeMap, Observable, switchMap, take, takeLast, tap} from "rxjs";
+import {filter, mergeMap, Observable, tap} from "rxjs";
 
 @Component({
   selector: 'app-form-viewer',
@@ -45,7 +45,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
     this.formManagerService.selectedActiveFormSummary$.pipe(
       tap(value => this.activeFormSummary = value),
-      filter(value => !!this.activeFormSummary),
+      filter(value => !!value),
       mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
     ).subscribe({
       next: result => {
