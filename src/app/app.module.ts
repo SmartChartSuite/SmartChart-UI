@@ -42,7 +42,6 @@ import {
   MatDatepickerToggle
 } from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
-import {JobsComponent} from "./components/jobs/jobs.component";
 import {CallbackComponent} from "./components/callback/callback.component";
 import {LandingComponent} from "./components/landing/landing.component";
 import {MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardModule} from "@angular/material/card";
@@ -50,7 +49,14 @@ import {MatPaginator} from "@angular/material/paginator";
 import {ActiveFormsComponent} from "./components/form-manager/active-forms/active-forms.component";
 import {FormViewerComponent} from "./components/form-viewer/form-viewer.component";
 import {MatTooltip} from "@angular/material/tooltip";
-
+import {MatNavList} from "@angular/material/list";
+import {MatCheckbox} from "@angular/material/checkbox";
+import { PatientDetailsComponent } from './components/form-manager/start-new-form/patient-details/patient-details.component';
+import {HasEvidenceDirective} from "./directives/has-evidence.directive";
+import { EvidenceDetailsComponent } from './components/form-viewer/evidence-details/evidence-details.component';
+import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";
+import {ClipboardModule} from "@angular/cdk/clipboard";
+import { DocumentViewerModalComponent } from './components/form-viewer/document-viewer-modal/document-viewer-modal.component';
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -70,62 +76,69 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     StartNewFormComponent,
     FormSelectionComponent,
     PatientSummaryTableComponent,
-    JobsComponent,
     LoginComponent,
     CallbackComponent,
     LandingComponent,
-    FormViewerComponent
-
+    FormViewerComponent,
+    PatientDetailsComponent,
+    EvidenceDetailsComponent,
+    DocumentViewerModalComponent
   ],
-    imports: [
-        HttpClientModule,
-        OAuthModule.forRoot(),
-        BrowserModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatIcon,
-        MatTabGroup,
-        MatTab,
-        RcApiTestComponent,
-        MatLabel,
-        MatFormField,
-        MatSelect,
-        MatOption,
-        MatInput,
-        MatButton,
-        MatRadioGroup,
-        MatRadioButton,
-        FormsModule,
-        MatTable,
-        MatColumnDef,
-        MatHeaderCell,
-        MatCell,
-        MatHeaderCellDef,
-        MatCellDef,
-        MatHeaderRow,
-        MatRow,
-        MatHeaderRowDef,
-        MatRowDef,
-        MatNoDataRow,
-        MatSort,
-        ReactiveFormsModule,
-        MatError,
-        MatDatepicker,
-        MatDatepickerInput,
-        MatNativeDateModule,
-        MatDatepickerToggle,
-        MatHint,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDatepickerModule,
-        MatCard,
-        MatCardHeader,
-        MatCardContent,
-        MatCardActions,
-        MatCardModule,
-        MatPaginator,
-        MatTooltip,
-    ],
+  imports: [
+    HttpClientModule,
+    OAuthModule.forRoot(),
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatIcon,
+    MatTabGroup,
+    MatTab,
+    RcApiTestComponent,
+    MatLabel,
+    MatFormField,
+    MatSelect,
+    MatOption,
+    MatInput,
+    MatButton,
+    MatRadioGroup,
+    MatRadioButton,
+    FormsModule,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderCellDef,
+    MatCellDef,
+    MatHeaderRow,
+    MatRow,
+    MatHeaderRowDef,
+    MatRowDef,
+    MatNoDataRow,
+    MatSort,
+    ReactiveFormsModule,
+    MatError,
+    MatDatepicker,
+    MatDatepickerInput,
+    MatNativeDateModule,
+    MatDatepickerToggle,
+    MatHint,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatCard,
+    MatCardHeader,
+    MatCardContent,
+    MatCardActions,
+    MatCardModule,
+    MatPaginator,
+    MatTooltip,
+    MatNavList,
+    MatCheckbox,
+    HasEvidenceDirective,
+    MatDialogContent,
+    ClipboardModule,
+    MatDialogModule
+  ],
   providers: [
     {
       provide: APP_INITIALIZER,

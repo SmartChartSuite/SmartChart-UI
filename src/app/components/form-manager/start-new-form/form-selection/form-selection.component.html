@@ -1,6 +1,7 @@
 <div class="margin-md">
+  Select form
   @if (!isLoading && !formList?.length) {
-    <mat-error>No Forms Found</mat-error>
+    <mat-error>No SmartChart Forms Found</mat-error>
   } @else {
     <mat-radio-group aria-labelledby="select-form-label"
                      class="form-radio-group" (change)="onFormSelected($event)"
@@ -12,7 +13,7 @@
   }
   <div class="margin-md">
     <mat-label class="margin-top-sm">Selected Patient:</mat-label>
-    <div>{{ selectedPatient?.name.given?.[0] }} {{ selectedPatient?.name.family }}</div>
+    <div>{{ selectedPatient?.name?.given }} {{ selectedPatient?.name?.family }}</div>
   </div>
 
 </div>

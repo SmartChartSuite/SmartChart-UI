@@ -12,6 +12,6 @@ export class FormManagerComponent implements OnInit{
   constructor(private stateManagementService: StateManagementService){}
 
   ngOnInit(): void {
-    this.stateManagementService.setCurrentRoute(RouteState.FORMS);
+    this.stateManagementService.setCurrentRoute(RouteState.LOAD_FORM);
   }
 }

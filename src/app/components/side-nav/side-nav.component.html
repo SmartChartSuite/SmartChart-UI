@@ -38,19 +38,19 @@
 
       <li>
         <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORMS"
-                (click)="router.navigate(['/forms']);">
-          <mat-icon>person_search</mat-icon>
-          @if (expanded) { Forms }
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM"
+                (click)="router.navigate(['/form-viewer']);">
+          <mat-icon>list_alt</mat-icon>
+          @if (expanded) { Current Form }
         </button>
       </li>
 
       <li>
         <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.JOBS"
-                (click)="router.navigate(['/jobs']);">
-          <mat-icon>settings</mat-icon>
-          @if (expanded) { Jobs }
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LOAD_FORM"
+                (click)="router.navigate(['/forms']);">
+          <mat-icon>person_search</mat-icon>
+          @if (expanded) { Load Form }
         </button>
       </li>
     }
