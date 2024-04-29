@@ -45,8 +45,10 @@ export function openModal(dialog: MatDialog, dialogData: any) {
 
   config.autoFocus = true;
   config.data = {
-    ...dialogData
+    ...dialogData,
   }
+  config.minWidth = dialogData.size?.minWidth;
+  config.minHeight = dialogData.size?.minHeight;
 
   const dialogRef = dialog.open(ModalComponent, config);
 

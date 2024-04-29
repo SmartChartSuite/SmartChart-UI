@@ -17,7 +17,11 @@ export class EvidenceDetailsComponent {
       {
         title: "Title",
         content: "Sample Content",
-        contentType: 'json',
+        contentType: 'text',
+        size: {
+          minWidth: "500px",
+          minHeight: "300px"
+        }
       })
       .subscribe();
   }
