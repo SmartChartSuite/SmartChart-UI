@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import {openModal} from "../../widgets/modal/modal.component";
 import {MatDialog} from "@angular/material/dialog";
+import {openDocumentViewerModal} from "../document-viewer-modal/document-viewer-modal.component";
 
 @Component({
   selector: 'app-evidence-details',
@@ -12,12 +12,11 @@ export class EvidenceDetailsComponent {
   }
 
   onExpandDocument() {
-    openModal(
+    openDocumentViewerModal(
       this.dialog,
       {
         title: "Title",
         content: "Sample Content",
-        contentType: 'text',
         size: {
           minWidth: "500px",
           minHeight: "300px"

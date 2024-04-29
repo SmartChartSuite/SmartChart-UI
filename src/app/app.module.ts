@@ -54,9 +54,9 @@ import {MatCheckbox} from "@angular/material/checkbox";
 import { PatientDetailsComponent } from './components/form-manager/start-new-form/patient-details/patient-details.component';
 import {HasEvidenceDirective} from "./directives/has-evidence.directive";
 import { EvidenceDetailsComponent } from './components/form-viewer/evidence-details/evidence-details.component';
-import {ModalComponent} from "./components/widgets/modal/modal.component";
 import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";
 import {ClipboardModule} from "@angular/cdk/clipboard";
+import { DocumentViewerModalComponent } from './components/form-viewer/document-viewer-modal/document-viewer-modal.component';
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -82,7 +82,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     FormViewerComponent,
     PatientDetailsComponent,
     EvidenceDetailsComponent,
-    ModalComponent
+    DocumentViewerModalComponent
   ],
   imports: [
     HttpClientModule,
