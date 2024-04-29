@@ -64,7 +64,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     )
   }
 
-  selectQuestionerSection(item: any, index: number) {
+  selectQuestionnaireSection(item: any, index: number) {
     this.selectedMenuItemIndex = index;
     this.temp_for_demo['item'] = this.temp_for_demo.item.map((element: any) => element == item ? {...element, selected: true}: {...element, selected: false});
   }
