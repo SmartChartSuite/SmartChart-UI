@@ -13,6 +13,7 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
+import {Observable, take, takeLast} from "rxjs";
 
 @Component({
   selector: 'app-form-viewer',
@@ -27,6 +28,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
+  selectedActiveFormSummary$: Observable<ActiveFormSummary>;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -46,22 +48,31 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
-        console.log(result);
         this.temp_for_demo = result;
+      },
+      error: err => {
+        console.error(err);
       }
     });
   }
 
   ngOnInit(): void {
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
-    this.formManagerService.selectedActiveFormSummary$.subscribe(
+
+    //TODO refactor code to remove nested subscription with getJobPackage
+    this.formManagerService.selectedActiveFormSummary$.pipe(
+      take(1)
+    ).subscribe(
       value => {
+        console.log(value);
         this.activeFormSummary = value;
         if(this.activeFormSummary){
           this.getJobPackage(this.activeFormSummary.formName);
         }
       }
     )
+
+
   }
 
   selectQuestionnaireSection(item: any, index: number) {
