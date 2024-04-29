@@ -13,7 +13,7 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {Observable, take, takeLast} from "rxjs";
+import {filter, mergeMap, Observable, switchMap, take, takeLast, tap} from "rxjs";
 
 @Component({
   selector: 'app-form-viewer',
@@ -41,8 +41,13 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     //TODO Maybe we need to save the current state of the form so the user can go back and forward?
   }
 
-  getJobPackage(formName: string){
-    this.rcApiInterfaceService.getJobPackage(formName).subscribe({
+  ngOnInit(): void {
+    this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
+    this.formManagerService.selectedActiveFormSummary$.pipe(
+      tap(value => this.activeFormSummary = value),
+      filter(value => !!this.activeFormSummary),
+      mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
+    ).subscribe({
       next: result => {
         result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
@@ -54,25 +59,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         console.error(err);
       }
     });
-  }
-
-  ngOnInit(): void {
-    this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
-
-    //TODO refactor code to remove nested subscription with getJobPackage
-    this.formManagerService.selectedActiveFormSummary$.pipe(
-      take(1)
-    ).subscribe(
-      value => {
-        console.log(value);
-        this.activeFormSummary = value;
-        if(this.activeFormSummary){
-          this.getJobPackage(this.activeFormSummary.formName);
-        }
-      }
-    )
-
-
   }
 
   selectQuestionnaireSection(item: any, index: number) {
