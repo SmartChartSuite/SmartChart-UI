@@ -60,6 +60,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.temp_for_demo = result;
+        // TODO : this code needs refactoring since it is using observable which is not
         this.results$ = this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId);
         this.results$.subscribe();
       },
