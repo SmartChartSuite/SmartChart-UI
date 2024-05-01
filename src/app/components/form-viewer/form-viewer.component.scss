@@ -1,7 +1,10 @@
 $light-accent-color: #E0E0E0;
+$dark-background-color: #212121;
 
 .form-name {
-  flex: 0 0 30%; background-color: $light-accent-color;
+  flex: 0 0 30%;
+  background-color: $dark-background-color;
+  color: whitesmoke;
 }
 
 .patient-details {
