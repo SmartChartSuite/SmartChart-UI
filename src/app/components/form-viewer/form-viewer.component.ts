@@ -4,6 +4,7 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
 export enum QuestionWidgetType{
   RADIO = 'choice',
   INPUT = 'string',
+  QUANTITY = "quantity"
 }
 
 

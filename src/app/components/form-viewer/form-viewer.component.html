@@ -68,6 +68,16 @@
                     <mat-form-field appearance="outline" class="margin-top-sm">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
+
+                  } @else if (childItem["type"] == QuestionWidgetType.QUANTITY){
+                    <mat-form-field appearance="outline" class="margin-top-sm">
+                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+                    </mat-form-field>
+                  }
+                  @else { <!-- We don't know the type of the question data and we hope that it can be rendered with an input-->
+                    <mat-form-field appearance="outline" class="margin-top-sm">
+                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+                    </mat-form-field>
                   }
 
                   @for (extension of childItem['extension']; track extension) {
