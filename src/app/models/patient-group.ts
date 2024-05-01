@@ -1,5 +1,5 @@
 import {PatientSummary} from "./patient-summary";
-import {FhirBaseResource} from "./rc-api/fhir.base.resource";
+import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
 export class PatientGroup {
   constructor(groupResource: FhirBaseResource, patientList: FhirBaseResource[]) {

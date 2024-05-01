@@ -13,6 +13,9 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
+import {Observable, take} from "rxjs";
+import {Results} from "../../models/results";
+import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 
 @Component({
   selector: 'app-form-viewer',
@@ -28,12 +31,15 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
 
+  results$: Observable<Results>;
+
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
     public router: Router,
     private stateManagementService: StateManagementService
-  ) {}
+  ) {
+  }
 
   ngOnDestroy(): void {
     //TODO Maybe we need to save the current state of the form so the user can go back and forward?
@@ -59,6 +65,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         this.activeFormSummary = value;
         if(this.activeFormSummary){
           this.getJobPackage(this.activeFormSummary.formName);
+          this.results$ = this.rcApiInterfaceService.getBatchJobResults(value.batchId);
+          this.results$.subscribe(); // TODO: add on destroy unsubscribe and handle new form selection issues
         }
       }
     )
@@ -77,7 +85,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.router.navigate(['/forms']);
   }
 
-  onViewEvidence(childItem: any, index: number) {
+  onViewEvidence(evidence: FhirBaseResource[], index: number) {
     this.selectedEvidenceIndex = index;
     //TODO wire show evidence call here
   }

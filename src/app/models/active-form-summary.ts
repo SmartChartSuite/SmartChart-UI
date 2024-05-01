@@ -1,6 +1,6 @@
 import {PatientSummary} from "./patient-summary";
-import {Parameters} from "./rc-api/fhir.parameters.resource";
-import {FhirBaseResource} from "./rc-api/fhir.base.resource";
+import {Parameters} from "./fhir/fhir.parameters.resource";
+import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
 export class ActiveFormSummary {
   constructor(parametersResource: Parameters) {
@@ -10,10 +10,12 @@ export class ActiveFormSummary {
         this.patientSummary = new PatientSummary(patientResource);
       }
     })
+    this.batchId = Parameters.getValue(parametersResource, "batchId") as string;
     this.formName = Parameters.getValue(parametersResource, "jobPackage") as string;
     this.started = Parameters.getValue(parametersResource, "jobStartDateTime") as string;
   }
 
+  batchId: string;
   patientSummary: PatientSummary;
   formName: string; // Equivalent to JobPackage in the Parameters.
   started: string; // TODO: Parse to DateTime

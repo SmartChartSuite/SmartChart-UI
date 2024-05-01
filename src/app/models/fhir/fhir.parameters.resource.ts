@@ -1,5 +1,5 @@
 import {FhirBaseResource} from "./fhir.base.resource";
-import {StartJobsPostResponseKeys} from "./start-jobs-post-response";
+import {StartJobsPostResponseKeys} from "../rc-api/start-jobs-post-response";
 
 /**
  * Note: This is a simplified abstraction of the FHIR Parameters resource and not a full implementation.

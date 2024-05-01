@@ -1,4 +1,4 @@
-import {Parameter, Parameters} from "./fhir.parameters.resource";
+import {Parameter, Parameters} from "../fhir/fhir.parameters.resource";
 
 /**
  *

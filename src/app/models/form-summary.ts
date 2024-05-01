@@ -1,4 +1,4 @@
-import {FhirBaseResource} from "./rc-api/fhir.base.resource";
+import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
 export class FormSummary {
   constructor(questionnaireResource: FhirBaseResource) {
