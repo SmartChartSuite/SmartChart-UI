@@ -1,6 +1,6 @@
-//TODO: extract to proper location
 import {ActiveFormSummary} from "../../models/active-form-summary";
 
+//TODO: extract to proper location
 export enum QuestionWidgetType{
   RADIO = 'choice',
   INPUT = 'string',
