@@ -59,3 +59,12 @@ button {
   color: $dark-grey-color !important;
  }
 
+.version{
+  margin-left: 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: whitesmoke;
+  font-size: small;
+}
