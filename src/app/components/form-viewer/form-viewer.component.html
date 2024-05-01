@@ -1,14 +1,16 @@
 <div class="viewer-container-wrapper">
-  <div class="viewer-container-header flex">
-    <div class="form-name">
-      <span class="margin-md">{{ activeFormSummary?.formName }}</span>
-    </div>
-    @if (activeFormSummary?.patientSummary) {
-      <div class="patient-details">
-        <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
+  @if (activeFormSummary) {
+    <div class="viewer-container-header flex">
+      <div class="form-name">
+        <span class="margin-md">{{ activeFormSummary?.formName }}</span>
       </div>
-    }
-  </div>
+      @if (activeFormSummary?.patientSummary) {
+        <div class="patient-details">
+          <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
+        </div>
+      }
+    </div>
+  }
   <div class="viewer-container-body">
     @if (!activeFormSummary) {
       <div class="viewer-container-body-content">

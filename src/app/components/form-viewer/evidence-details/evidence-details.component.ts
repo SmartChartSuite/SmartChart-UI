@@ -15,7 +15,7 @@ export class EvidenceDetailsComponent {
     openDocumentViewerModal(
       this.dialog,
       {
-        title: "Title",
+        title: "Document Content",
         content: "Sample Content",
         size: {
           minWidth: "500px",
