@@ -27,7 +27,7 @@
       <mat-form-field appearance="outline">
         <mat-label>Type/System</mat-label>
         <mat-select formControlName="typeSystem" required>
-          @for (typeSystem of TYPE_SYSTEM_LIST; track typeSystem) {
+          @for (typeSystem of SYSTEM_TYPE_LIST; track typeSystem) {
             <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>
           }
         </mat-select>
