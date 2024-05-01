@@ -3,7 +3,7 @@
  * the application data model summarizing the relevant patient information for both display and job management. Some data
  * structures may be roughly equivalent but simplified.
  */
-import {FhirBaseResource} from "./rc-api/fhir.base.resource";
+import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
 
 export class PatientSummary {

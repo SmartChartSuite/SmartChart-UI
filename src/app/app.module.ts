@@ -9,7 +9,6 @@ import {ConfigService} from "./services/config/config.service";
 import {HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
-import {RcApiTestComponent} from "./components/TEMPORARY/rc-api-test-component/rc-api-test-component.component";
 import {MatIcon} from "@angular/material/icon";
 import {FormManagerComponent} from "./components/form-manager/form-manager.component";
 import {PatientSearchComponent} from "./components/form-manager/start-new-form/patient-search/patient-search.component";
@@ -57,6 +56,7 @@ import { EvidenceDetailsComponent } from './components/form-viewer/evidence-deta
 import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import { DocumentViewerModalComponent } from './components/form-viewer/document-viewer-modal/document-viewer-modal.component';
+import {SetEvidenceDirective} from "./directives/set-evidence.directive";
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -93,7 +93,6 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatIcon,
     MatTabGroup,
     MatTab,
-    RcApiTestComponent,
     MatLabel,
     MatFormField,
     MatSelect,
@@ -137,7 +136,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     HasEvidenceDirective,
     MatDialogContent,
     ClipboardModule,
-    MatDialogModule
+    MatDialogModule,
+    SetEvidenceDirective
   ],
   providers: [
     {

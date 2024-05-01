@@ -14,6 +14,8 @@ import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {filter, mergeMap, Observable, tap} from "rxjs";
+import {Results} from "../../models/results";
+import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {UtilsService} from "../../services/utils/utils.service";
 
 @Component({
@@ -23,12 +25,14 @@ import {UtilsService} from "../../services/utils/utils.service";
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  temp_for_demo: any;   //TODO change type from any to a class and rename
+  temp_for_demo: any;
   QuestionWidgetType = QuestionWidgetType;
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
+
+  results$: Observable<Results>;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -36,7 +40,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     public router: Router,
     private stateManagementService: StateManagementService,
     private utilsService: UtilsService
-  ) {}
+  ) {
+  }
 
   ngOnDestroy(): void {
     //TODO Maybe we need to save the current state of the form so the user can go back and forward?
@@ -55,6 +60,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.temp_for_demo = result;
+        this.results$ = this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId);
+        this.results$.subscribe();
       },
       error: err => {
         console.error(err);
@@ -76,7 +83,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.router.navigate(['/forms']);
   }
 
-  onViewEvidence(childItem: any, index: number) {
+  onViewEvidence(evidence: FhirBaseResource[], index: number) {
     this.selectedEvidenceIndex = index;
     //TODO wire show evidence call here
   }

@@ -71,18 +71,17 @@
                   }
 
                   @for (extension of childItem['extension']; track extension) {
-                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">NLP: Suggestion Placeholder</div>
-                    }
-
-                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">CQL: Suggestion Placeholder</div>
+                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask" || extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
+                      <div class="margin-left-md margin-bottom-sm">
+                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.resource?.["valueString"] : "Pending"}}
+                      </div>
                     }
                   }
                   <button mat-raised-button
                           appHasEvidence [extensionList]="childItem['extension']"
-                          (click)="onViewEvidence(childItem, i); showDrawer=true">
-                    View Evidence
+                          appSetEvidence [evidenceList]="(this.results$ | async)?.['link' + childItem?.['linkId']]?.['evidence']"
+                          (click)="showDrawer=true">
+                    View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "Pending"}})
                   </button>
                 </div>
               </div>
