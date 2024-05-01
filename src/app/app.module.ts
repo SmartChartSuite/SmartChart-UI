@@ -57,6 +57,7 @@ import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";
 import {ClipboardModule} from "@angular/cdk/clipboard";
 import { DocumentViewerModalComponent } from './components/form-viewer/document-viewer-modal/document-viewer-modal.component';
 import {SetEvidenceDirective} from "./directives/set-evidence.directive";
+import {Base64stringPipe} from "./pipe/base64string.pipe";
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -137,7 +138,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatDialogContent,
     ClipboardModule,
     MatDialogModule,
-    SetEvidenceDirective
+    SetEvidenceDirective,
+    Base64stringPipe
   ],
   providers: [
     {

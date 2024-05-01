@@ -137,7 +137,7 @@ export class RcApiInterfaceService {
         const bundleEntries = batchResultsBundle.entry;
         const statusObservation = bundleEntries.shift();
         const patientResource = bundleEntries.shift();
-        const resultObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
+        const answerObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
         //console.log(resultObservationList)
         const evidenceList = bundleEntries.filter(bec => !this.isRcApiObservation(bec.resource));
         //console.log(evidenceList)
@@ -145,24 +145,38 @@ export class RcApiInterfaceService {
         const results: Results = new Results();
         results.subject = patientResource.resource;
         results.status = statusObservation?.resource?.["valueCodeableConcept"]?.["coding"]?.[0]?.["code"] || "error";
-        resultObservationList.forEach(bec => {
-          const resultSet = new ResultSet();
-          resultSet.resource = bec.resource;
-          const linkId: string = `link${resultSet.resource?.["code"]?.["coding"]?.[0]?.["code"]}`
+        answerObservationList.forEach(bec => {
+          const answerObservation = bec.resource;
+          const linkId: string = `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`
+          const isNlpqlAnswer = this.isNlpqlAnswer(answerObservation);
+          if (!(linkId in results)) {
+            results[linkId] = new ResultSet();
+            results[linkId].evidence = [];
+          }
 
-          if (resultSet.resource?.["focus"]) {
+          if (isNlpqlAnswer){
+            results[linkId].nlpAnswer = answerObservation;
+          }
+          else {
+            results[linkId].cqlAnswer = answerObservation;
+          }
+
+          if (answerObservation?.["focus"]) {
             const referenceList: string[] = [];
-            resultSet.resource?.["focus"]?.forEach((reference: any) => referenceList.push(reference["reference"]));
+            answerObservation?.["focus"]?.forEach((reference: any) => referenceList.push(reference["reference"]));
 
             let filteredEvidenceList: FhirBaseResource[] = [];
+            // TODO: Switch to filter.
             evidenceList?.forEach(bec => {
               if (referenceList?.includes(bec.fullUrl)) {
                 filteredEvidenceList?.push(bec.resource)
               }
             });
-            resultSet.evidence = filteredEvidenceList;
+
+            results[linkId].evidence.push(...filteredEvidenceList);
+            // TODO: leverage Set sooner to avoid this extra clean up call
+            results[linkId].evidence = [... new Set(results[linkId].evidence)];
           }
-          results[linkId] = resultSet;
         });
         console.log(results);
         return results;
@@ -176,6 +190,15 @@ export class RcApiInterfaceService {
     }
     else {
       return resource?.["code"]?.["coding"]?.[0]?.["system"]?.startsWith("urn:gtri:heat:form");
+    }
+  }
+
+  isNlpqlAnswer(resource: FhirBaseResource): boolean {
+    if (resource?.["focus"]?.[0]?.["reference"].startsWith("DocumentReference")) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 }

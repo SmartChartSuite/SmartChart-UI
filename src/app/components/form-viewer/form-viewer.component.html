@@ -76,17 +76,35 @@
 
                   @for (extension of childItem['extension']; track extension) {
                     @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask" || extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">
-                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.resource?.["valueString"] : "Pending"}}
-                      </div>
+<!--                      TODO: Handle status based scenarios per logic below                 -->
+<!--                      if hasLogic                                                         -->
+<!--                        if results[linkId} is found                                       -->
+<!--                          if cqlAnswer                                                    -->
+<!--                            show suggested answer                                         -->
+<!--                          if evidence                                                     -->
+<!--                            show evidence button                                          -->
+<!--                      else results[linkId] not found AND if results.status is in progress -->
+<!--                          show progress spinner                                           -->
+<!--                      else results[linkId] not found AND if results.status is complete    -->
+<!--                      show "No evidence found"                                            -->
+
+                      @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]){
+                        <div class="margin-left-md margin-bottom-sm">
+                          Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR"}}
+                        </div>
+                      }
+
+                      @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                        <button mat-raised-button
+                                appHasEvidence [extensionList]="childItem['extension']"
+                                appSetEvidence [evidenceList]="(this.results$ | async)?.['link' + childItem?.['linkId']]?.['evidence']"
+                                (click)="showDrawer=true">
+                          View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR"}})
+                        </button>
+                      }
                     }
                   }
-                  <button mat-raised-button
-                          appHasEvidence [extensionList]="childItem['extension']"
-                          appSetEvidence [evidenceList]="(this.results$ | async)?.['link' + childItem?.['linkId']]?.['evidence']"
-                          (click)="showDrawer=true">
-                    View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "Pending"}})
-                  </button>
+
                 </div>
               </div>
             }

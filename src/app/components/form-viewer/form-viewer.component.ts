@@ -15,7 +15,6 @@ import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {Observable, take} from "rxjs";
 import {Results} from "../../models/results";
-import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 
 @Component({
   selector: 'app-form-viewer',
@@ -83,10 +82,5 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   selectPatientForm() {
     this.router.navigate(['/forms']);
-  }
-
-  onViewEvidence(evidence: FhirBaseResource[], index: number) {
-    this.selectedEvidenceIndex = index;
-    //TODO wire show evidence call here
   }
 }
