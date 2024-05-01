@@ -23,13 +23,12 @@ import {UtilsService} from "../../services/utils/utils.service";
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  temp_for_demo: any;
+  temp_for_demo: any;   //TODO change type from any to a class and rename
   QuestionWidgetType = QuestionWidgetType;
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
-  selectedActiveFormSummary$: Observable<ActiveFormSummary>;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -50,7 +49,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       filter(value => !!value),
       mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
     ).subscribe({
-      next: result => {
+      next: result => { //TODO all properties should we accessed with '.' result.item instead of '[]'
         result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}

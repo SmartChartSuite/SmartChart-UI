@@ -87,7 +87,8 @@
             }
           }
         }
-        <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
+        <!-- TODO the following button is for testing only and we should remove it when we wire the API -->
+        <button mat-raised-button type="submit" (click)="onSubmit()">log form to console</button>
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
            [hidden]="!showDrawer">
