@@ -4,11 +4,13 @@ $dark-background-color: #212121;
 .form-name {
   display: flex;
   flex: 0 0 30%;
+  flex-wrap: wrap;
   background-color: $dark-background-color;
   color: whitesmoke;
   align-content: center;
   justify-content: center;
   font-size: large;
+  padding: 16px 0 16px 0;
 }
 
 .patient-details {
