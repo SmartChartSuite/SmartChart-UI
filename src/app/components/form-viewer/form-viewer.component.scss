@@ -2,9 +2,13 @@ $light-accent-color: #E0E0E0;
 $dark-background-color: #212121;
 
 .form-name {
+  display: flex;
   flex: 0 0 30%;
   background-color: $dark-background-color;
   color: whitesmoke;
+  align-content: center;
+  justify-content: center;
+  font-size: large;
 }
 
 .patient-details {
