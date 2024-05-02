@@ -137,7 +137,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatDialogContent,
     ClipboardModule,
     MatDialogModule,
-    SetEvidenceDirective
+    SetEvidenceDirective,
+    HasEvidenceDirective
   ],
   providers: [
     {

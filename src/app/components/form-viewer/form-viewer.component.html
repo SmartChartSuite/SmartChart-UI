@@ -79,7 +79,7 @@
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
                   }
-                  <ng-container appHasEvidence [extensionList]="childItem['extension']">
+                  <div *appHasEvidence="childItem['extension']">
                     <div class="margin-left-md margin-bottom-sm">
                       <div>Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.resource?.["valueString"] : "Pending"}}</div>
                       <button
@@ -89,7 +89,7 @@
                         View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "Pending"}})
                       </button>
                     </div>
-                  </ng-container>
+                  </div>
                 </div>
               </div>
             }
