@@ -20,15 +20,10 @@ $dark-background-color: #212121;
 
 .question-label {
   display: flex;
-  width: 70%;
   background-color: whitesmoke;
   border-radius: 4px;
   font-weight: bold;
   padding: 4px;
-}
-
-mat-form-field {
-  min-width: 70%;
 }
 
 /* Begin sidenav style */
@@ -60,6 +55,12 @@ $selected-nave-menu-item-color: #424242;
 
 .question-item {
   margin-bottom: 24px;
+  width: 70%;
+}
+
+.full-size-question-item {
+  @extend .question-item;
+  width: 98%;
 }
 
 .selected-evidence {
@@ -70,5 +71,21 @@ $selected-nave-menu-item-color: #424242;
 
 .question-input {
   margin-top: 8px;
+  margin-left: 4px;
   margin-bottom: -8px; //removes the space for input form hint
+  width: 100%;
+}
+
+.value-quantity-input {
+  @extend .question-input;
+  width: 30%;
+}
+
+.value-quantity-input-full-size {
+  @extend .question-input;
+  width: 40%;
+}
+
+.input-prefix {
+  font-size: small; padding: 4px; margin:4px;
 }

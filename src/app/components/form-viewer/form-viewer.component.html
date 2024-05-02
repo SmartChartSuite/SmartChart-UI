@@ -41,12 +41,12 @@
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
             @for (childItem of item["item"]; track childItem; let i = $index) {
-              <div class="question-item">
+              <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
                 <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
                   {{ i + 1 }}. <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
-                <div class="margin-left-md">
+                <div class="margin-left-md margin-right-sm">
                   @if (childItem["type"] == QuestionWidgetType.RADIO) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['value']">
@@ -67,9 +67,21 @@
                     </mat-form-field>
 
                   } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
-                    <mat-form-field appearance="outline" class="question-input">
-                      <input type="text" matInput [(ngModel)]="childItem['answer']">
-                    </mat-form-field>
+                    <!-- TODO: those will -->
+                    <div class="flex">
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input">
+                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                        <span matPrefix class="input-prefix">Value</span>
+                      </mat-form-field>
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input margin-left-md">
+                        <span matPrefix class="input-prefix">Unit</span>
+                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                      </mat-form-field>
+                    </div>
                   }
 
                   <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md" >
