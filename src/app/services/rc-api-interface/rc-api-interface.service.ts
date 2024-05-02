@@ -11,7 +11,7 @@ import {PatientGroup} from "../../models/patient-group";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
-import {Results, ResultSet} from "../../models/results";
+import {NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {stat} from "ng-packagr/lib/utils/fs";
 
@@ -155,15 +155,27 @@ export class RcApiInterfaceService {
           }
 
           if (isNlpqlAnswer){
-            results[linkId].nlpAnswer = answerObservation;
+            let nlpAnswer = new NlpAnswer();
+
+            nlpAnswer.term = answerObservation["valueString"];
+            nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
+            nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
+
+            let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList)
+            nlpAnswer.date = documentReference["date"]; // From DocumentReference
+            nlpAnswer.fullText = documentReference["content"][0]["attachment"]["data"];
+
+            if (!("nlpAnswers" in results[linkId])) {
+              results[linkId].nlpAnswers = [];
+            }
+            results[linkId].nlpAnswers.push(nlpAnswer);
           }
           else {
             results[linkId].cqlAnswer = answerObservation;
           }
 
           if (answerObservation?.["focus"]) {
-            const referenceList: string[] = [];
-            answerObservation?.["focus"]?.forEach((reference: any) => referenceList.push(reference["reference"]));
+            const referenceList: string[] = this.createReferenceList(answerObservation?.["focus"]);
 
             let filteredEvidenceList: FhirBaseResource[] = [];
             // TODO: Switch to filter.
@@ -182,6 +194,17 @@ export class RcApiInterfaceService {
         return results;
       })
     ).pipe(share())
+  }
+
+  createReferenceList(focusElement: []): string[] {
+    const referenceList: string[] = [];
+    focusElement?.forEach((reference: any) => referenceList.push(reference["reference"]));
+    return referenceList;
+  }
+
+  findDocumentReference(reference: string, evidenceBecList: BundleEntryComponent[]): FhirBaseResource {
+    const bec = evidenceBecList.find(bec => bec.fullUrl === reference);
+    return bec.resource;
   }
 
   isRcApiObservation(resource: FhirBaseResource): boolean {

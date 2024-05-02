@@ -97,7 +97,7 @@
                       @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                         <button mat-raised-button
                                 appHasEvidence [extensionList]="childItem['extension']"
-                                appSetEvidence [evidenceList]="(this.results$ | async)?.['link' + childItem?.['linkId']]?.['evidence']"
+                                appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
                                 (click)="showDrawer=true">
                           View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR"}})
                         </button>
