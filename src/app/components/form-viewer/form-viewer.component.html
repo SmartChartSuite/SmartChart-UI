@@ -1,13 +1,7 @@
 <div class="viewer-container-wrapper">
   <div class="viewer-container-header flex">
     <div class="form-name">
-      <span>
-        <button mat-button (click)="router.navigate(['/forms']);">
-          <mat-icon>chevron_left</mat-icon>
-          Back
-        </button>
-      </span>
-      <span class="margin-md">{{ activeFormSummary?.formName }}</span>
+      {{ activeFormSummary?.formName }}
     </div>
     @if (activeFormSummary?.patientSummary) {
       <div class="patient-details">
