@@ -36,18 +36,17 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of temp_for_demo?.["item"]; track item) {
+        @for (item of temp_for_demo?.["item"]; track item ; let sectionIndex = $index) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
             @for (childItem of item["item"]; track childItem; let i = $index) {
-              <div class="question-item"
-                   [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
-                <div class="question-label margin-top-md">
-                  <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
+              <div class="question-item">
+                <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                  {{ i + 1 }}. <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
-                <div>
+                <div class="margin-left-md">
                   @if (childItem["type"] == QuestionWidgetType.RADIO) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['value']">
@@ -63,17 +62,17 @@
                       </mat-radio-group>
                     }
                   } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
-                    <mat-form-field appearance="outline" class="margin-top-sm">
+                    <mat-form-field appearance="outline" class="question-input">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
 
                   } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
-                    <mat-form-field appearance="outline" class="margin-top-sm">
+                    <mat-form-field appearance="outline" class="question-input">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
                   }
 
-                  <div *appHasEvidence="childItem['extension']" class="margin-left-md margin-bottom-sm">
+                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md" >
                     <!--                      TODO: Handle status based scenarios per logic below                 -->
                     <!--                      if hasLogic                                                         -->
                     <!--                        if results[linkId} is found                                       -->
@@ -87,16 +86,15 @@
                     <!--                      show "No evidence found"                                            -->
 
                     @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
-                      <div class="margin-left-md margin-bottom-sm">
-                        Suggested
-                        Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
+                      <div class="margin-bottom-sm">
+                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
                       </div>
                     }
 
                     @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button mat-raised-button
                               appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
-                              (click)="showDrawer=true">
+                              (click)="showDrawer=true; selectedEvidenceIndex=i">
                         View Evidence
                         ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
                         )

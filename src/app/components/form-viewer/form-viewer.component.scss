@@ -19,7 +19,12 @@ $dark-background-color: #212121;
 }
 
 .question-label {
+  display: flex;
+  width: 70%;
+  background-color: whitesmoke;
+  border-radius: 4px;
   font-weight: bold;
+  padding: 4px;
 }
 
 mat-form-field {
@@ -49,17 +54,21 @@ $selected-nave-menu-item-color: #424242;
 }
 
 /* End sidenav style */
-
 .item-text {
-  font-size: medium; font-weight: bold
+  font-size: medium; font-weight: bold; margin-bottom: 16px;
 }
 
 .question-item {
-  padding-left: 8px;
-  border-left: 4px solid transparent;;
+  margin-bottom: 24px;
 }
 
 .selected-evidence {
-  @extend .question-item;
-  border-color: $light-accent-color;
+  @extend .question-label;
+  background-color: $dark-background-color;
+  color: whitesmoke;
+}
+
+.question-input {
+  margin-top: 8px;
+  margin-bottom: -8px; //removes the space for input form hint
 }
