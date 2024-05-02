@@ -73,7 +73,7 @@
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
 
-                  } @else if (childItem["type"] == QuestionWidgetType.QUANTITY){
+                  } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
                     <mat-form-field appearance="outline" class="margin-top-sm">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
@@ -93,9 +93,10 @@
                       <!--                      else results[linkId] not found AND if results.status is complete    -->
                       <!--                      show "No evidence found"                                            -->
 
-                      @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]){
+                      @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                         <div class="margin-left-md margin-bottom-sm">
-                          Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR"}}
+                          Suggested
+                          Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
                         </div>
                       }
 
@@ -103,12 +104,14 @@
                         <button mat-raised-button
                                 appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
                                 (click)="showDrawer=true">
-                          View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR"}})
+                          View Evidence
+                          ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
+                          )
                         </button>
                       }
+                    </div>
                   </div>
                 </div>
-              </div>
               </div>
             }
           }
