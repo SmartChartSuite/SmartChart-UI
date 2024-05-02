@@ -79,37 +79,35 @@
                     </mat-form-field>
                   }
 
-                  <div *appHasEvidence="childItem['extension']">
-                    <div class="margin-left-md margin-bottom-sm">
-                      <!--                      TODO: Handle status based scenarios per logic below                 -->
-                      <!--                      if hasLogic                                                         -->
-                      <!--                        if results[linkId} is found                                       -->
-                      <!--                          if cqlAnswer                                                    -->
-                      <!--                            show suggested answer                                         -->
-                      <!--                          if evidence                                                     -->
-                      <!--                            show evidence button                                          -->
-                      <!--                      else results[linkId] not found AND if results.status is in progress -->
-                      <!--                          show progress spinner                                           -->
-                      <!--                      else results[linkId] not found AND if results.status is complete    -->
-                      <!--                      show "No evidence found"                                            -->
+                  <div *appHasEvidence="childItem['extension']" class="margin-left-md margin-bottom-sm">
+                    <!--                      TODO: Handle status based scenarios per logic below                 -->
+                    <!--                      if hasLogic                                                         -->
+                    <!--                        if results[linkId} is found                                       -->
+                    <!--                          if cqlAnswer                                                    -->
+                    <!--                            show suggested answer                                         -->
+                    <!--                          if evidence                                                     -->
+                    <!--                            show evidence button                                          -->
+                    <!--                      else results[linkId] not found AND if results.status is in progress -->
+                    <!--                          show progress spinner                                           -->
+                    <!--                      else results[linkId] not found AND if results.status is complete    -->
+                    <!--                      show "No evidence found"                                            -->
 
-                      @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
-                        <div class="margin-left-md margin-bottom-sm">
-                          Suggested
-                          Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
-                        </div>
-                      }
+                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+                      <div class="margin-left-md margin-bottom-sm">
+                        Suggested
+                        Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
+                      </div>
+                    }
 
-                      @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
-                        <button mat-raised-button
-                                appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
-                                (click)="showDrawer=true">
-                          View Evidence
-                          ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
-                          )
-                        </button>
-                      }
-                    </div>
+                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                      <button mat-raised-button
+                              appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
+                              (click)="showDrawer=true">
+                        View Evidence
+                        ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
+                        )
+                      </button>
+                    }
                   </div>
                 </div>
               </div>
