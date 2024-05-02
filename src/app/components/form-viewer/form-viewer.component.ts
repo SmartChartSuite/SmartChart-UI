@@ -1,3 +1,4 @@
+//TODO: extract to proper location
 import {ActiveFormSummary} from "../../models/active-form-summary";
 
 //TODO: extract to proper location
@@ -16,7 +17,6 @@ import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {filter, mergeMap, Observable, tap} from "rxjs";
 import {Results} from "../../models/results";
-import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {UtilsService} from "../../services/utils/utils.service";
 
 @Component({
@@ -83,10 +83,5 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   selectPatientForm() {
     this.router.navigate(['/forms']);
-  }
-
-  onViewEvidence(evidence: FhirBaseResource[], index: number) {
-    this.selectedEvidenceIndex = index;
-    //TODO wire show evidence call here
   }
 }

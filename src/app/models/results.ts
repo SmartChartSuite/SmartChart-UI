@@ -7,6 +7,15 @@ export class Results {
 }
 
 export class ResultSet {
-  resource: FhirBaseResource;
-  evidence: FhirBaseResource[];
+  cqlAnswer?: FhirBaseResource;
+  nlpAnswers?: NlpAnswer[];
+  evidence?: FhirBaseResource[];
+}
+
+export class NlpAnswer {
+  term: string;
+  date: string;
+  fullText: string; // Base64
+  fragment: string;
+  evidenceReferenceList: string[]
 }

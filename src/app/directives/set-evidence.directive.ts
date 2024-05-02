@@ -1,6 +1,7 @@
 import {Directive, HostListener, Input} from '@angular/core';
 import {FhirBaseResource} from "../models/fhir/fhir.base.resource";
 import {EvidenceViewerService} from "../services/evidence-viewer.service";
+import {ResultSet} from "../models/results";
 
 @Directive({
   selector: '[appSetEvidence]',
@@ -8,13 +9,13 @@ import {EvidenceViewerService} from "../services/evidence-viewer.service";
 })
 export class SetEvidenceDirective {
 
-  @Input() evidenceList: FhirBaseResource[]
+  @Input() resultSet: ResultSet;
 
   constructor(private evidenceViewerService: EvidenceViewerService) { }
 
   @HostListener('click', ['$event']) onClick(event: any) {
-    if (this.evidenceList) {
-      this.evidenceViewerService.setEvidence(this.evidenceList);
+    if (this.resultSet) {
+      this.evidenceViewerService.setEvidence(this.resultSet);
     }
   }
 

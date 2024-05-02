@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject} from "rxjs";
 import {FhirBaseResource} from "../models/fhir/fhir.base.resource";
+import {ResultSet} from "../models/results";
 
 @Injectable({
   providedIn: 'root'
 })
 export class EvidenceViewerService {
 
-  private evidenceList: BehaviorSubject<FhirBaseResource[]> = new BehaviorSubject<FhirBaseResource[]>([])
-  evidenceList$ = this.evidenceList.asObservable();
+  private resultSet: BehaviorSubject<ResultSet> = new BehaviorSubject<ResultSet>(new ResultSet())
+  resultSet$ = this.resultSet.asObservable();
 
   constructor() { }
 
-  setEvidence(evidenceList: FhirBaseResource[]) {
-    this.evidenceList.next(evidenceList);
+  setEvidence(resultSet: ResultSet) {
+    this.resultSet.next(resultSet);
   }
 }
