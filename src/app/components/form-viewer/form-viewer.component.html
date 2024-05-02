@@ -79,20 +79,17 @@
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
                   }
-
-                  @for (extension of childItem['extension']; track extension) {
-                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask" || extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">
-                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.resource?.["valueString"] : "Pending"}}
-                      </div>
-                    }
-                  }
-                  <button mat-raised-button
-                          appHasEvidence [extensionList]="childItem['extension']"
-                          appSetEvidence [evidenceList]="(this.results$ | async)?.['link' + childItem?.['linkId']]?.['evidence']"
-                          (click)="showDrawer=true">
-                    View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "Pending"}})
-                  </button>
+                  <ng-container appHasEvidence [extensionList]="childItem['extension']">
+                    <div class="margin-left-md margin-bottom-sm">
+                      <div>Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.resource?.["valueString"] : "Pending"}}</div>
+                      <button
+                        mat-raised-button class="margin-top-sm"
+                        appSetEvidence [evidenceList]="(this.results$ | async)?.['link' + childItem?.['linkId']]?.['evidence']"
+                        (click)="showDrawer=true">
+                        View Evidence ({{(this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "Pending"}})
+                      </button>
+                    </div>
+                  </ng-container>
                 </div>
               </div>
             }
