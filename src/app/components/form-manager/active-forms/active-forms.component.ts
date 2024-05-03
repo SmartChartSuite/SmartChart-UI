@@ -4,6 +4,7 @@ import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
+import {UtilsService} from "../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-active-forms',
@@ -19,7 +20,8 @@ export class ActiveFormsComponent implements OnInit {
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
-    private router: Router
+    private router: Router,
+    private utilsService: UtilsService
   ) {}
   ngOnInit(): void {
     this.getBatchJobs();
@@ -36,6 +38,7 @@ export class ActiveFormsComponent implements OnInit {
       error: err => {
         this.isLoading = false;
         console.error(err);
+        this.utilsService.showErrorMessage();
       }
     })
   }
