@@ -28,21 +28,16 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onActiveFormSelected(row)"></tr>
 
-
-  @if(isLoading){
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell padding-md loading" [attr.colspan]="displayedColumns.length">
-        Loading Records
+  <tr class="mat-row" *matNoDataRow>
+    @if (isLoading) {
+      <td *ngIf="isLoading" class="mat-cell padding-md loading" [attr.colspan]="displayedColumns.length">
+        Loading Records {{ isLoading }}
       </td>
-    </tr>
-  }
-
-  @if(!isLoading){
-    <tr class="mat-row" *matNoDataRow>
+    } @else {
       <td class="mat-cell padding-md" [attr.colspan]="displayedColumns.length">
         No records to display.
       </td>
-    </tr>
-  }
+    }
+  </tr>
 
 </table>
