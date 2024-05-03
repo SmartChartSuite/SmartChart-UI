@@ -63,6 +63,15 @@ $selected-nave-menu-item-color: #424242;
   width: 98%;
 }
 
+.question-item {
+  margin-bottom: 24px;
+  width: 70%;
+
+  &.full-size-question-item {
+    width: 98%;
+  }
+}
+
 .selected-evidence {
   @extend .question-label;
   background-color: $dark-background-color;
@@ -74,11 +83,9 @@ $selected-nave-menu-item-color: #424242;
   margin-left: 4px;
   margin-bottom: -8px; //removes the space for input form hint
   width: 100%;
-}
-
-.value-quantity-input {
-  @extend .question-input;
-  width: 30%;
+  & .value-quantity-input {
+    width: 30%;
+  }
 }
 
 .value-quantity-input-full-size {

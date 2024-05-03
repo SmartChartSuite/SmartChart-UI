@@ -14,7 +14,7 @@
     @for (nlpAnswer of this.nlpAnswers; track nlpAnswer) {
       <div class="border">
         <p>
-          <strong>Document Date:</strong> {{ nlpAnswer.date }}
+          <strong>Document Date:</strong> {{ nlpAnswer.date | date}}
         </p>
         <!-- Highlight based on nlpAnswer.term -->
         {{ nlpAnswer.fragment }}
