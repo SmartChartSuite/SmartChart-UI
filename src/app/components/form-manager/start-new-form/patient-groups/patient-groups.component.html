@@ -1,5 +1,5 @@
 <div class="margin-md">
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" class="group-select">
     <mat-label>Group</mat-label>
     <mat-select (selectionChange)="onGroupSelected($event)" [(value)]="selectedGroup">
       @for (group of patientGroups; track group) {

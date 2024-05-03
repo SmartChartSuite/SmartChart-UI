@@ -1,9 +1,11 @@
 //TODO: extract to proper location
 import {ActiveFormSummary} from "../../models/active-form-summary";
 
+//TODO: extract to proper location
 export enum QuestionWidgetType{
   RADIO = 'choice',
   INPUT = 'string',
+  QUANTITY = "quantity"
 }
 
 
@@ -13,6 +15,9 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
+import {filter, mergeMap, Observable, tap} from "rxjs";
+import {Results} from "../../models/results";
+import {UtilsService} from "../../services/utils/utils.service";
 
 @Component({
   selector: 'app-form-viewer',
@@ -28,45 +33,49 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
 
+  results$: Observable<Results>;
+
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
     public router: Router,
-    private stateManagementService: StateManagementService
-  ) {}
+    private stateManagementService: StateManagementService,
+    private utilsService: UtilsService
+  ) {
+  }
 
   ngOnDestroy(): void {
     //TODO Maybe we need to save the current state of the form so the user can go back and forward?
   }
 
-  getJobPackage(formName: string){
-    this.rcApiInterfaceService.getJobPackage(formName).subscribe({
-      next: result => {
+  ngOnInit(): void {
+    this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
+    this.formManagerService.selectedActiveFormSummary$.pipe(
+      tap(value => this.activeFormSummary = value),
+      filter(value => !!value),
+      mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
+    ).subscribe({
+      next: result => { //TODO all properties should we accessed with '.' result.item instead of '[]'
         result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
-        console.log(result);
         this.temp_for_demo = result;
+        // TODO : this code needs refactoring since it is using observable which is not
+        this.results$ = this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId);
+        this.results$.subscribe();
+      },
+      error: err => {
+        console.error(err);
+        this.utilsService.showErrorMessage();
       }
     });
-  }
-
-  ngOnInit(): void {
-    this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
-    this.formManagerService.selectedActiveFormSummary$.subscribe(
-      value => {
-        this.activeFormSummary = value;
-        if(this.activeFormSummary){
-          this.getJobPackage(this.activeFormSummary.formName);
-        }
-      }
-    )
   }
 
   selectQuestionnaireSection(item: any, index: number) {
     this.selectedMenuItemIndex = index;
     this.temp_for_demo['item'] = this.temp_for_demo.item.map((element: any) => element == item ? {...element, selected: true}: {...element, selected: false});
+    //TODO implement scroll to top when new question is selected
   }
 
   onSubmit() {
@@ -75,10 +84,5 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   selectPatientForm() {
     this.router.navigate(['/forms']);
-  }
-
-  onViewEvidence(childItem: any, index: number) {
-    this.selectedEvidenceIndex = index;
-    //TODO wire show evidence call here
   }
 }

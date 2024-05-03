@@ -1,10 +1,11 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {MatRadioChange} from "@angular/material/radio";
-import {SearchByType, searchByTypes} from "../../../../models/search-by-types";
+import {searchByType, searchByTypes} from "../../../../models/search-by-types";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSearchParameters} from "../../../../models/rc-api/patient-search-parameters";
+import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-patient-search',
@@ -15,13 +16,13 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   // User fills out either identifier ** OR ** name/birthdate. These are mutually exclusive.
   // Form gives query parameters. See src/app/models/rc-api/patient-search-parameters.ts.
-  @Input() selectedSearchCriteria: SearchByType = SearchByType.IDENTIFIER;
+  @Input() selectedSearchCriteria: searchByType = searchByType.IDENTIFIER;
 
-  protected readonly TYPE_SYSTEM_LIST: string[] = ['mrn', 'test'];
+  protected readonly SYSTEM_TYPE_LIST: string[] = ['mrn', 'test'];
 
-  protected readonly SearchByType = SearchByType;
+  protected readonly SearchByType = searchByType;
 
-  searchTypeList: SearchByType[] = searchByTypes;
+  searchTypeList: searchByType[] = searchByTypes;
 
   searchForm: FormGroup = new FormGroup<any>({});
 
@@ -29,7 +30,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   // Search by Identifier controls
   identifierFc: FormControl = new FormControl(null, [Validators.required]);
-  typeSystemFc: FormControl = new FormControl(this.TYPE_SYSTEM_LIST[0], Validators.required);
+  typeSystemFc: FormControl = new FormControl(this.SYSTEM_TYPE_LIST[0], Validators.required);
 
   // Search by Name and DoB controls
   givenFc: FormControl = new FormControl("", Validators.required);
@@ -39,10 +40,12 @@ export class PatientSearchComponent implements OnChanges, OnInit {
   // Search by FHIR ID controls
   fhirIdFc: FormControl = new FormControl("", Validators.required);
 
-  constructor(private rcApiInterfaceService: RcApiInterfaceService){}
+  constructor(
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private utilsService: UtilsService
+    ){}
 
   onSearchBySelected($event: MatRadioChange) {
-    console.log($event.value);
     this.createSearchForm($event.value);
   }
 
@@ -56,23 +59,23 @@ export class PatientSearchComponent implements OnChanges, OnInit {
     this.createSearchForm(this.selectedSearchCriteria);
   }
 
-  private createSearchForm(selectedSearchCriteria: SearchByType) {
+  private createSearchForm(selectedSearchCriteria: searchByType) {
     this.searchForm.reset()
 
-    if(selectedSearchCriteria == SearchByType.IDENTIFIER){
+    if(selectedSearchCriteria == searchByType.IDENTIFIER){
       this.searchForm = new FormGroup<any>({
         identifier: this.identifierFc,
         typeSystem: this.typeSystemFc
       });
     }
-    else if(selectedSearchCriteria == SearchByType.NAME_AND_DOB){
+    else if(selectedSearchCriteria == searchByType.NAME_AND_DOB){
       this.searchForm = new FormGroup<any>({
         given: this.givenFc,
         family: this.familyFc,
         dob: this.dobFc
       });
     }
-    else if (selectedSearchCriteria == SearchByType.FHIR_ID){
+    else if (selectedSearchCriteria == searchByType.FHIR_ID){
       this.searchForm = new FormGroup<any>({
         fhirId: this.fhirIdFc,
       });
@@ -93,8 +96,8 @@ export class PatientSearchComponent implements OnChanges, OnInit {
     this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
       next: value => this.patientSummaryData = value,
       error: err => {
-        //TODO add visual feedback for the user indicating that there was an error in the api
         console.error(err);
+        this.utilsService.showErrorMessage();
       }
     });
   }

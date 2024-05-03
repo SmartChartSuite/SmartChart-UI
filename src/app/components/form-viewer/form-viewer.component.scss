@@ -1,7 +1,16 @@
 $light-accent-color: #E0E0E0;
+$dark-background-color: #212121;
 
 .form-name {
-  flex: 0 0 30%; background-color: $light-accent-color;
+  display: flex;
+  flex: 0 0 30%;
+  flex-wrap: wrap;
+  background-color: $dark-background-color;
+  color: whitesmoke;
+  align-content: center;
+  justify-content: center;
+  font-size: large;
+  padding: 16px 0 16px 0;
 }
 
 .patient-details {
@@ -10,11 +19,11 @@ $light-accent-color: #E0E0E0;
 }
 
 .question-label {
+  display: flex;
+  background-color: whitesmoke;
+  border-radius: 4px;
   font-weight: bold;
-}
-
-mat-form-field {
-  min-width: 70%;
+  padding: 4px;
 }
 
 /* Begin sidenav style */
@@ -40,17 +49,50 @@ $selected-nave-menu-item-color: #424242;
 }
 
 /* End sidenav style */
-
 .item-text {
-  font-size: medium; font-weight: bold
+  font-size: medium; font-weight: bold; margin-bottom: 16px;
 }
 
 .question-item {
-  padding-left: 8px;
-  border-left: 4px solid transparent;;
+  margin-bottom: 24px;
+  width: 70%;
+}
+
+.full-size-question-item {
+  @extend .question-item;
+  width: 98%;
+}
+
+.question-item {
+  margin-bottom: 24px;
+  width: 70%;
+
+  &.full-size-question-item {
+    width: 98%;
+  }
 }
 
 .selected-evidence {
-  @extend .question-item;
-  border-color: $light-accent-color;
+  @extend .question-label;
+  background-color: $dark-background-color;
+  color: whitesmoke;
+}
+
+.question-input {
+  margin-top: 8px;
+  margin-left: 4px;
+  margin-bottom: -8px; //removes the space for input form hint
+  width: 100%;
+  & .value-quantity-input {
+    width: 30%;
+  }
+}
+
+.value-quantity-input-full-size {
+  @extend .question-input;
+  width: 40%;
+}
+
+.input-prefix {
+  font-size: small; padding: 4px; margin:4px;
 }

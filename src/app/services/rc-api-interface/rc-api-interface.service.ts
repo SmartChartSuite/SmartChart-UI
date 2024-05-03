@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable} from "rxjs";
+import {map, Observable, share, take} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {FhirBaseResource} from "../../models/rc-api/fhir.base.resource";
+import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
 import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
@@ -10,7 +10,10 @@ import {PatientSummary} from "../../models/patient-summary";
 import {PatientGroup} from "../../models/patient-group";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Parameters} from "../../models/rc-api/fhir.parameters.resource";
+import {Parameters} from "../../models/fhir/fhir.parameters.resource";
+import {NlpAnswer, Results, ResultSet} from "../../models/results";
+import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
+import {stat} from "ng-packagr/lib/utils/fs";
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +26,7 @@ export class RcApiInterfaceService {
   startJobsEndpoint: string = `forms/start?asyncFlag=True`;
   getJobPackageEndpoint: string = `forms`;
   getBatchJobsEndpoint: string = `${this.base}/batchjob`
+  getResultsEndpoint: string = `${this.base}/results`
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
@@ -91,7 +95,7 @@ export class RcApiInterfaceService {
   /**
    * Get a JobPackage questionnaire by the name of the Job Package using the standard RC API Endpoint.
    */
-  getJobPackage(jobPackage: string) {
+  getJobPackage(jobPackage: string): Observable<any> {
     return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}/${jobPackage}`);
   }
 
@@ -123,5 +127,101 @@ export class RcApiInterfaceService {
 
   getBatchJob(id: string) {
     return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
+  }
+
+  getBatchJobResults(id: string): Observable<Results> {
+    return this.http.get<Bundle>(this.configService.config.rcApiUrl + this.getResultsEndpoint + `/${id}`).pipe(
+      map((batchResultsBundle: Bundle) => {
+        // TODO: Add validation if not bundle or structure is not as expected (e.g. location of statusObservation/patientResource)
+        // TODO: Simplify/condense code once confirmed working
+        const bundleEntries = batchResultsBundle.entry;
+        const statusObservation = bundleEntries.shift();
+        const patientResource = bundleEntries.shift();
+        const answerObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
+        //console.log(resultObservationList)
+        const evidenceList = bundleEntries.filter(bec => !this.isRcApiObservation(bec.resource));
+        //console.log(evidenceList)
+
+        const results: Results = new Results();
+        results.subject = patientResource.resource;
+        results.status = statusObservation?.resource?.["valueCodeableConcept"]?.["coding"]?.[0]?.["code"] || "error";
+        answerObservationList.forEach(bec => {
+          const answerObservation = bec.resource;
+          const linkId: string = `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`
+          const isNlpqlAnswer = this.isNlpqlAnswer(answerObservation);
+          if (!(linkId in results)) {
+            results[linkId] = new ResultSet();
+            results[linkId].evidence = [];
+          }
+
+          if (isNlpqlAnswer){
+            let nlpAnswer = new NlpAnswer();
+
+            nlpAnswer.term = answerObservation["valueString"];
+            nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
+            nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
+
+            let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList)
+            nlpAnswer.date = documentReference["date"]; // From DocumentReference
+            nlpAnswer.fullText = documentReference["content"][0]["attachment"]["data"];
+
+            if (!("nlpAnswers" in results[linkId])) {
+              results[linkId].nlpAnswers = [];
+            }
+            results[linkId].nlpAnswers.push(nlpAnswer);
+          }
+          else {
+            results[linkId].cqlAnswer = answerObservation;
+          }
+
+          if (answerObservation?.["focus"]) {
+            const referenceList: string[] = this.createReferenceList(answerObservation?.["focus"]);
+
+            let filteredEvidenceList: FhirBaseResource[] = [];
+            // TODO: Switch to filter.
+            evidenceList?.forEach(bec => {
+              if (referenceList?.includes(bec.fullUrl)) {
+                filteredEvidenceList?.push(bec.resource)
+              }
+            });
+
+            results[linkId].evidence.push(...filteredEvidenceList);
+            // TODO: leverage Set sooner to avoid this extra clean up call
+            results[linkId].evidence = [... new Set(results[linkId].evidence)];
+          }
+        });
+        console.log(results);
+        return results;
+      })
+    ).pipe(share())
+  }
+
+  createReferenceList(focusElement: []): string[] {
+    const referenceList: string[] = [];
+    focusElement?.forEach((reference: any) => referenceList.push(reference["reference"]));
+    return referenceList;
+  }
+
+  findDocumentReference(reference: string, evidenceBecList: BundleEntryComponent[]): FhirBaseResource {
+    const bec = evidenceBecList.find(bec => bec.fullUrl === reference);
+    return bec.resource;
+  }
+
+  isRcApiObservation(resource: FhirBaseResource): boolean {
+    if (resource.resourceType !== "Observation"){
+      return false;
+    }
+    else {
+      return resource?.["code"]?.["coding"]?.[0]?.["system"]?.startsWith("urn:gtri:heat:form");
+    }
+  }
+
+  isNlpqlAnswer(resource: FhirBaseResource): boolean {
+    if (resource?.["focus"]?.[0]?.["reference"].startsWith("DocumentReference")) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }

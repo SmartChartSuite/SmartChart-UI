@@ -57,14 +57,29 @@
   </ul>
 
   <!-- render a logout button at the bottom of the menu -->
-  @if (oauthService.hasValidAccessToken()) {
-    <ul class="logout">
+
+  <ul class="logout">
+
+    @if (oauthService.hasValidAccessToken()) {
       <li>
         <button mat-button color="menu-button" class="expanded-menu-button" (click)="oauthService.logOut()">
           <mat-icon>logout</mat-icon>
-          @if (expanded) { Logout }
+          @if (expanded) {
+            Logout
+          }
         </button>
       </li>
-    </ul>
-  }
+    }
+    @if (version) {
+      <li>
+        <div class="version">
+          <mat-icon [matTooltip]=" expanded? '' : 'v '+ version">info</mat-icon>
+          @if (expanded) {
+            <span class="margin-sm">Version: v {{ version }}</span>
+          }
+        </div>
+      </li>
+    }
+  </ul>
+
 </nav>

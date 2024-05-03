@@ -1,13 +1,7 @@
 <div class="viewer-container-wrapper">
   <div class="viewer-container-header flex">
     <div class="form-name">
-      <span>
-        <button mat-button (click)="router.navigate(['/forms']);">
-          <mat-icon>chevron_left</mat-icon>
-          Back
-        </button>
-      </span>
-      <span class="margin-md">{{ activeFormSummary?.formName }}</span>
+      {{ activeFormSummary?.formName }}
     </div>
     @if (activeFormSummary?.patientSummary) {
       <div class="patient-details">
@@ -42,18 +36,17 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of temp_for_demo?.["item"]; track item) {
+        @for (item of temp_for_demo?.["item"]; track item ; let sectionIndex = $index) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
             @for (childItem of item["item"]; track childItem; let i = $index) {
-              <div class="question-item"
-                   [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
-                <div class="question-label margin-top-md">
-                  <mat-label>{{ i + 1 }}. {{ childItem["text"] }}</mat-label>
+              <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
+                <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                  {{ i + 1 }}. <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
-                <div>
+                <div class="margin-left-md margin-right-sm">
                   @if (childItem["type"] == QuestionWidgetType.RADIO) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['value']">
@@ -69,31 +62,64 @@
                       </mat-radio-group>
                     }
                   } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
-                    <mat-form-field appearance="outline" class="margin-top-sm">
+                    <mat-form-field appearance="outline" class="question-input">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
+
+                  } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
+                    <!-- TODO: those will -->
+                    <div class="flex">
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input">
+                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                        <span matPrefix class="input-prefix">Value</span>
+                      </mat-form-field>
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input margin-left-md">
+                        <span matPrefix class="input-prefix">Unit</span>
+                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                      </mat-form-field>
+                    </div>
                   }
 
-                  @for (extension of childItem['extension']; track extension) {
-                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/nlpqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">NLP: Suggestion Placeholder</div>
+                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md" >
+                    <!--                      TODO: Handle status based scenarios per logic below                 -->
+                    <!--                      if hasLogic                                                         -->
+                    <!--                        if results[linkId} is found                                       -->
+                    <!--                          if cqlAnswer                                                    -->
+                    <!--                            show suggested answer                                         -->
+                    <!--                          if evidence                                                     -->
+                    <!--                            show evidence button                                          -->
+                    <!--                      else results[linkId] not found AND if results.status is in progress -->
+                    <!--                          show progress spinner                                           -->
+                    <!--                      else results[linkId] not found AND if results.status is complete    -->
+                    <!--                      show "No evidence found"                                            -->
+
+                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+                      <div class="margin-bottom-sm">
+                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
+                      </div>
                     }
 
-                    @if (extension?.url == "http://gtri.gatech.edu/fakeFormIg/cqlTask") {
-                      <div class="margin-left-md margin-bottom-sm">CQL: Suggestion Placeholder</div>
+                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                      <button mat-raised-button
+                              appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
+                              (click)="showDrawer=true; selectedEvidenceIndex=i">
+                        View Evidence
+                        ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
+                        )
+                      </button>
                     }
-                  }
-                  <button mat-raised-button
-                          appHasEvidence [extensionList]="childItem['extension']"
-                          (click)="onViewEvidence(childItem, i); showDrawer=true">
-                    View Evidence
-                  </button>
+                  </div>
                 </div>
               </div>
             }
           }
         }
-        <button mat-raised-button type="submit" (click)="onSubmit()">Submit</button>
+        <!-- TODO the following button is for testing only and we should remove it when we wire the API -->
+        <button mat-raised-button type="submit" (click)="onSubmit()">log form to console</button>
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-fhir-explorer"
            [hidden]="!showDrawer">
