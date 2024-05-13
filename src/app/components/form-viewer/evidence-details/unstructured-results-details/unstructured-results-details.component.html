@@ -5,12 +5,7 @@
     </mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <div>
-    {{ nlpAnswer.fragment }}
-    </div>
-    <div>
-      {{ nlpAnswer.term }}
-    </div>
+    <div [innerHTML]="safeHtmlFragment"></div>
   </mat-card-content>
   <mat-card-actions>
     <button mat-stroked-button (click)="onExpandDocument()">

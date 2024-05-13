@@ -1,5 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import {SafeHtml} from "@angular/platform-browser";
 
 
 @Component({
@@ -11,6 +12,7 @@ export class DocumentViewerModalComponent implements OnInit{
 
   content: any; // The content of the modal (the modal should render html)
   title: string = null; // The title of the modal
+  htmlContent: SafeHtml;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: any
@@ -19,6 +21,7 @@ export class DocumentViewerModalComponent implements OnInit{
   ngOnInit(): void {
     this.content = this.dialogData.content;
     this.title = this.dialogData.title;
+    this.htmlContent = this.dialogData.htmlContent
   }
 }
 
