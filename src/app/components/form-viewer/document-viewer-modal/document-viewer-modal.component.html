@@ -1,6 +1,6 @@
 <div mat-dialog-title>{{ title }}</div>
 <mat-dialog-content class="mat-typography">
-    <div> {{ content }}</div>
+  <div> {{ content | base64string }}</div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-raised-button mat-dialog-close cdkFocusInitial>

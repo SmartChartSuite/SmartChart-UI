@@ -1,27 +1,30 @@
-<div class="margin-sm">
-  <!-- TODO: Extract the style to CSS-->
-  <div style="margin-bottom: 64px">
-    <h2>Structured Resources</h2>
+<mat-card class="margin-sm">
+  <mat-card-header>
+    <mat-card-title>Structured Resources</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
     @for (resource of this.cqlResources; track resource) {
       <div class="border">
         {{ resource.resourceType }}/{{ resource.id }}
       </div>
     }
-
     <app-structured-results-details
       [structuredResults]="simpleObservations">
     </app-structured-results-details>
+  </mat-card-content>
+</mat-card>
 
+<mat-card class="margin-sm">
+  <mat-card-header>
+    <mat-card-title>Documents</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @for (nlpAnswer of this.nlpAnswers; track nlpAnswer) {
+      <app-unstructured-results-details
+        class="padding-md"
 
-  </div>
-  <div style="margin-bottom: 64px">
-    <app-unstructured-results-details
-      [nlpAnswers]="nlpAnswers"
-      [nlpResources]="nlpResources"
-    >
-    </app-unstructured-results-details>
-
-  </div>
-
-
-</div>
+        [nlpAnswer]="nlpAnswer">
+      </app-unstructured-results-details>
+    }
+  </mat-card-content>
+</mat-card>
