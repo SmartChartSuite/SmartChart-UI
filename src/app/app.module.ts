@@ -59,6 +59,7 @@ import { DocumentViewerModalComponent } from './components/form-viewer/document-
 import {SetEvidenceDirective} from "./directives/set-evidence.directive";
 import {Base64stringPipe} from "./pipe/base64string.pipe";
 import { StructuredResultsDetailsComponent } from './components/form-viewer/evidence-details/structured-results-details/structured-results-details.component';
+import { UnstructuredResultsDetailsComponent } from './components/form-viewer/evidence-details/unstructured-results-details/unstructured-results-details.component';
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -85,7 +86,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     PatientDetailsComponent,
     EvidenceDetailsComponent,
     DocumentViewerModalComponent,
-    StructuredResultsDetailsComponent
+    StructuredResultsDetailsComponent,
+    UnstructuredResultsDetailsComponent
   ],
   imports: [
     HttpClientModule,

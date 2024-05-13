@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import {openDocumentViewerModal} from "../document-viewer-modal/document-viewer-modal.component";
 import {EvidenceViewerService} from "../../../services/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
@@ -31,7 +30,7 @@ export class EvidenceDetailsComponent implements OnInit {
   simpleConditions: SimpleCondition[] = [];
   simpleProcedures: SimpleProcedure[] = [];
 
-  constructor(private dialog: MatDialog, private evidenceViewerService: EvidenceViewerService) {
+  constructor(private evidenceViewerService: EvidenceViewerService) {
   }
   ngOnInit(): void {
     this.evidenceViewerService.resultSet$.subscribe({
@@ -53,19 +52,6 @@ export class EvidenceDetailsComponent implements OnInit {
         console.log(this.nlpAnswers);
       }
     })
-  }
-  onExpandDocument() {
-    openDocumentViewerModal(
-      this.dialog,
-      {
-        title: "Document Content",
-        content: "Sample Content",
-        size: {
-          minWidth: "500px",
-          minHeight: "300px"
-        }
-      })
-      .subscribe();
   }
 
   //TODO We may want to refactor this code from having a side effect to a pure function
