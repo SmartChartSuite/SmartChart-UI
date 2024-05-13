@@ -58,6 +58,7 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
 import { DocumentViewerModalComponent } from './components/form-viewer/document-viewer-modal/document-viewer-modal.component';
 import {SetEvidenceDirective} from "./directives/set-evidence.directive";
 import {Base64stringPipe} from "./pipe/base64string.pipe";
+import { StructuredResultsComponent } from './components/form-viewer/evidence-details/structured-results/structured-results.component';
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -83,7 +84,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     FormViewerComponent,
     PatientDetailsComponent,
     EvidenceDetailsComponent,
-    DocumentViewerModalComponent
+    DocumentViewerModalComponent,
+    StructuredResultsComponent
   ],
   imports: [
     HttpClientModule,

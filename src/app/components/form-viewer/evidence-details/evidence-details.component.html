@@ -1,13 +1,17 @@
 <div class="margin-sm">
   <!-- TODO: Extract the style to CSS-->
-  <h1>Evidence</h1>
   <div style="margin-bottom: 64px">
     <h2>Structured Resources</h2>
     @for (resource of this.cqlResources; track resource) {
       <div class="border">
-        {{resource.resourceType}}/{{resource.id}}
+        {{ resource.resourceType }}/{{ resource.id }}
       </div>
     }
+
+    <app-structured-results
+      [structuredResults]="simpleObservations">
+    </app-structured-results>
+
   </div>
   <div style="margin-bottom: 64px">
     <h2>Documents</h2>

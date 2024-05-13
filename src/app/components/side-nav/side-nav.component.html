@@ -5,7 +5,7 @@
   @else {
     <button mat-button color="menu-button" class="expanded-menu-button" (click)="this.oauthService.initLoginFlow();">
       <mat-icon>login</mat-icon>
-      @if (expanded) { Login }
+      @if (expanded) { Sign In }
     </button>
   }
 
@@ -65,7 +65,7 @@
         <button mat-button color="menu-button" class="expanded-menu-button" (click)="oauthService.logOut()">
           <mat-icon>logout</mat-icon>
           @if (expanded) {
-            Logout
+            Sign Out
           }
         </button>
       </li>
