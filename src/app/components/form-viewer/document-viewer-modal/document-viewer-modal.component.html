@@ -1,7 +1,7 @@
 <div mat-dialog-title>{{ title }}</div>
 <mat-dialog-content class="mat-typography">
   @if (htmlContent) {
-    <div [innerHTML]="htmlContent"></div>
+    <pre [innerHTML]="htmlContent"></pre>
   } @else {
     <div>{{ content }}</div>
   }

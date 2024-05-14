@@ -41,7 +41,8 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
       const htmlStringFragment = this.highlightText(this.nlpAnswer.fragment, this.nlpAnswer.term);
       this.safeHtmlFragment = this.sanitized.bypassSecurityTrustHtml(htmlStringFragment);
 
-      const fullTextStr = atob(this.nlpAnswer.fullText).replace(/\n/g, '<p>');
+    //  const fullTextStr = atob(this.nlpAnswer.fullText).replace(/\n/g, '<p>');
+      const fullTextStr = atob(this.nlpAnswer.fullText)
       const htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.term);
       this.safeHtmlFullText = this.sanitized.bypassSecurityTrustHtml(htmlStringFullText);
     }
