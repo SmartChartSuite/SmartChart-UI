@@ -2,15 +2,22 @@
   <mat-card-header>
     <mat-card-title>Structured Resources</mat-card-title>
   </mat-card-header>
-  <mat-card-content>
-    @for (resource of this.cqlResources; track resource) {
-      <div class="border">
-        {{ resource.resourceType }}/{{ resource.id }}
-      </div>
+  <mat-card-content style="overflow: auto">
+
+    <!--TODO Remove the for loop once the parsing of all structured resources is implemented -->
+    @if (this.cqlResources?.length > 0) {
+      @for (resource of this.cqlResources; track resource) {
+        <div class="border">
+          {{ resource.resourceType }}/{{ resource.id }}
+        </div>
+      }
+      <app-structured-results-details
+        [structuredResults]="simpleObservations">
+      </app-structured-results-details>
     }
-    <app-structured-results-details
-      [structuredResults]="simpleObservations">
-    </app-structured-results-details>
+    @else {
+      No Structured Evidence Found
+    }
   </mat-card-content>
 </mat-card>
 
@@ -24,6 +31,8 @@
         class="padding-md"
         [nlpAnswer]="nlpAnswer">
       </app-unstructured-results-details>
+    } @empty {
+      No Unstructured Evidence Found
     }
   </mat-card-content>
 </mat-card>
