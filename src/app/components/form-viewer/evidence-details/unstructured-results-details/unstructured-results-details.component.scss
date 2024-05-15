@@ -2,3 +2,11 @@
   font-size: medium;
   font-weight: bold;
 }
+
+.card-action-buttons{
+  justify-content: flex-end;
+}
+
+.full-text-content{
+  max-height: 320px; overflow-x: auto;
+}

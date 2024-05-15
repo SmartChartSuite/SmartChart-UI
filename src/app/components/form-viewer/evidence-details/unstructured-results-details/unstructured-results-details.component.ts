@@ -13,6 +13,7 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
   @Input() nlpAnswer: NlpAnswer;
   safeHtmlFragment: SafeHtml;
   safeHtmlFullText: SafeHtml;
+  fullTextVisible: boolean = false;
   constructor(private dialog: MatDialog, private sanitized: DomSanitizer){}
 
   highlightText(text : string, query: string): string{
@@ -21,7 +22,7 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
     return text.replace(re, '<span style="background-color: #fff59d">' + query + '</span>')
   }
 
-  onExpandDocument() {
+  onOpenInModal() {
     openDocumentViewerModal(
       this.dialog,
       {
@@ -41,11 +42,9 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
       const htmlStringFragment = this.highlightText(this.nlpAnswer.fragment, this.nlpAnswer.term);
       this.safeHtmlFragment = this.sanitized.bypassSecurityTrustHtml(htmlStringFragment);
 
-    //  const fullTextStr = atob(this.nlpAnswer.fullText).replace(/\n/g, '<p>');
       const fullTextStr = atob(this.nlpAnswer.fullText)
       const htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.term);
       this.safeHtmlFullText = this.sanitized.bypassSecurityTrustHtml(htmlStringFullText);
     }
   }
-
 }
