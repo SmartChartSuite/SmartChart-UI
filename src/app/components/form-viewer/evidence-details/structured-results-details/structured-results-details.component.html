@@ -1,30 +1,14 @@
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
 
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef> Date </th>
-    <td mat-cell *matCellDef="let result"> {{result.date}} </td>
+  <ng-container [matColumnDef]="column" *ngFor="let column of columns">
+    <th mat-header-cell *matHeaderCellDef> {{ column | camelCaseToTitleCase }}</th>
+    <td mat-cell *matCellDef="let element">
+      {{ (element[column] | isValidDate) ? (element[column] | date) : element[column] }}
+    </td>
   </ng-container>
 
-  <ng-container matColumnDef="code">
-    <th mat-header-cell *matHeaderCellDef> Code </th>
-    <td mat-cell *matCellDef="let result"> {{result.code}} </td>
-  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns;"></tr>
 
-  <ng-container matColumnDef="system">
-    <th mat-header-cell *matHeaderCellDef> System </th>
-    <td mat-cell *matCellDef="let result"> {{result.system}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="conceptName">
-    <th mat-header-cell *matHeaderCellDef> Concept Name </th>
-    <td mat-cell *matCellDef="let result"> {{result.conceptName}} </td>
-  </ng-container>
-
-  <ng-container matColumnDef="value">
-    <th mat-header-cell *matHeaderCellDef> Value </th>
-    <td mat-cell *matCellDef="let result"> {{result.value}} </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
+
