@@ -45,7 +45,6 @@ export class EvidenceDetailsComponent implements OnInit {
         this.nlpAnswers = resultSet.nlpAnswers;
 
         this.mapStructuredEvidence(cqlResources);
-        console.log(this.simpleObservations);
 
         console.log(this.cqlResources);
         console.log(this.nlpResources);
