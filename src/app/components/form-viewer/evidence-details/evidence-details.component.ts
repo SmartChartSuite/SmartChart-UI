@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {EvidenceViewerService} from "../../../services/evidence-viewer.service";
+import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
 import {

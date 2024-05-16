@@ -1,6 +1,5 @@
 import {Directive, HostListener, Input} from '@angular/core';
-import {FhirBaseResource} from "../models/fhir/fhir.base.resource";
-import {EvidenceViewerService} from "../services/evidence-viewer.service";
+import {EvidenceViewerService} from "../services/evidence-viewer/evidence-viewer.service";
 import {ResultSet} from "../models/results";
 
 @Directive({

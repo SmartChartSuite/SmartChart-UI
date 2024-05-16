@@ -127,7 +127,7 @@ $lg: 24px;
     > .viewer-container-body-content {
       flex: 1;
     }
-    > .viewer-container-body-side-fhir-explorer {
+    > .viewer-container-body-side-explorer {
       animation-name: open-explorer;
       animation-duration: 0.1s;
       width: 30%;
@@ -145,10 +145,15 @@ $lg: 24px;
           @extend .center-contents;
         }
         > .explorer-header-title {
-          font-size: small;
+          @extend .margin-left-md;
+          font-size: medium;
           background-color: #212121;
         }
       }
+    }
+    > .viewer-container-body-side-explorer-expanded {
+      @extend .viewer-container-body-side-explorer;
+      width: 45%
     }
   }
 }
