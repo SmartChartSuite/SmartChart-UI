@@ -3,26 +3,13 @@ import {FhirBaseResource} from "./fhir/fhir.base.resource";
 export enum StructuredResultType {
   OBSERVATION = 'Observation',
   MEDICATION_REQUEST = 'MedicationRequest',
-  CONDITION = 'Conditions',
-  ENCOUNTER = 'Encounters',
+  CONDITION = 'Condition',
+  ENCOUNTER = 'Encounter',
   PROCEDURE = 'Procedure'
 }
 
-export class SimpleObservation {
-  date: string;
-  code: string;
-  system: string;
-  conceptName: string;
-  value: string;
-
-  constructor(observation: FhirBaseResource){
-    this.date = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
-    const code = this.getCode(observation);
-    this.code = code?.code;
-    this.system = code?.system;
-    this.conceptName = observation?.["code"]?.["text"] || code?.display;
-    this.value = this.getObservationValue(observation);
-  }
+export class SimpleStructuredEvidence {
+  [key: string]: any;
 
   getCode(observation, preferredSystems? : string[]) {
     if (!preferredSystems) return observation?.code?.coding?.[0] || undefined;
@@ -30,25 +17,53 @@ export class SimpleObservation {
     if (!coding) return this.getCode(observation, preferredSystems.splice(1, preferredSystems.length));
   }
 
-  private getObservationValue(observation: FhirBaseResource) {
-    //TODO This function needs implementation
-    return "Placeholder Value";
+}
+
+export class SimpleObservation extends SimpleStructuredEvidence {
+  date: string;
+  code: string;
+  system: string;
+  conceptName: string;
+  value: string;
+
+  constructor(evidence: FhirBaseResource){
+    super();
+    this.date = evidence?.["effectiveDateTime"] || evidence?.["effectivePeriod"]?.["start"] || undefined;
+    const code = super.getCode(evidence);
+    this.code = code?.code;
+    this.system = code?.system;
+    this.conceptName = evidence?.["code"]?.["text"] || code?.display;
+    this.value = "Temp Value";
   }
 }
 
-export class SimpleProcedure {
+export class SimpleCondition extends SimpleStructuredEvidence {
+  date: string;
+  code: string;
+  system: string;
+  conceptName: string;
+  onset: string;
+  abatement: string;
+  constructor(condition: FhirBaseResource){
+    super();
+    this.date = condition["recordedDate"];
+    const code = super.getCode(condition);
+    this.code = code?.code;
+    this.system = code?.system;
+    this.conceptName = condition?.["code"]?.["text"] || code?.display;
+    this.onset = condition["onsetDateTime"] || condition["onsetPeriod"]?.["start"];
+    this.abatement = condition["abatementDateTime"];
+  }
+}
+
+export class SimpleProcedure extends SimpleStructuredEvidence {
   constructor(observation: FhirBaseResource){
-    // TODO: Implement the Constructor
+    super();
     return null;
   }
 }
 
-export class SimpleCondition {
-  constructor(observation: FhirBaseResource){
-    // TODO: Implement the Constructor
-    return null;
-  }
-}
+
 
 export class SimpleEncounter {
   constructor(observation: FhirBaseResource){

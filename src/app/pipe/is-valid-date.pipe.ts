@@ -15,6 +15,9 @@ export class IsValidDatePipe implements PipeTransform {
   }
 
   private isValidISODate(dateString: string): boolean {
+    if(!dateString){
+      return false;
+    }
     const dateParts = dateString.split('-');
     const year = parseInt(dateParts[0], 10);
     const month = parseInt(dateParts[1], 10);
