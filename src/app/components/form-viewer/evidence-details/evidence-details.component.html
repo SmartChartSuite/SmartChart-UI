@@ -11,12 +11,26 @@
           {{ resource.resourceType }}/{{ resource.id }}
         </div>
       }
-      <app-structured-results-details
-        [structuredResults]="simpleObservations">
-      </app-structured-results-details>
-      <app-structured-results-details
-        [structuredResults]="simpleConditions">
-      </app-structured-results-details>
+      @if(simpleObservations.length > 0){
+        <app-structured-results-details
+          [structuredResults]="simpleObservations">
+        </app-structured-results-details>
+      }
+      @if(simpleConditions.length > 0){
+        <app-structured-results-details
+          [structuredResults]="simpleConditions">
+        </app-structured-results-details>
+      }
+      @if(simpleEncounters.length > 0){
+        <app-structured-results-details
+          [structuredResults]="simpleEncounters">
+        </app-structured-results-details>
+      }
+      @if(simpleMedicationRequests.length > 0){
+        <app-structured-results-details
+          [structuredResults]="simpleMedicationRequests">
+        </app-structured-results-details>
+      }
     }
     @else {
       No Structured Evidence Found

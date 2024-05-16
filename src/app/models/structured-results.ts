@@ -64,16 +64,29 @@ export class SimpleProcedure extends SimpleStructuredEvidence {
 }
 
 
-
-export class SimpleEncounter {
-  constructor(observation: FhirBaseResource){
-    // TODO: Implement the Constructor
-    return null;
+export class SimpleEncounter extends SimpleStructuredEvidence {
+  periodStart: string;
+  periodEnd: string;
+  encounterType: string;
+  reasonCode: string;
+  reasonSystem: string;
+  reasonConceptName: string;
+  constructor(encounter: FhirBaseResource){
+    console.log(encounter);
+    super();
+    this.periodStart = encounter["period"]?.["start"];
+    this.periodEnd = encounter["period"]?.["end"];
+    this.encounterType = encounter["type"]?.["text"] || encounter["type"]?.["coding"] ?.[0]?.display
+    const code = "Not Implemented" //TODO add priority here
+    this.reasonCode = "Not Implemented"; //TODO implement
+    this.reasonSystem = "Not Implemented"; //TODO implement
+    this.reasonConceptName = "Not Implemented"; //TODO implement
   }
 }
 
-export class SimpleMedicationRequest {
-  constructor(observation: FhirBaseResource){
+export class SimpleMedicationRequest  extends SimpleStructuredEvidence {
+  constructor(medicationRequest: FhirBaseResource){
+    super()
     // TODO: Implement the Constructor
     return null;
   }
