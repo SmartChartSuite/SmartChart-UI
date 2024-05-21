@@ -3,10 +3,25 @@
   font-weight: bold;
 }
 
-.card-action-buttons{
+.card-action-buttons {
   justify-content: flex-end;
 }
 
-.full-text-content{
-  max-height: 320px; overflow-x: auto;
+.full-text-content {
+  max-height: 320px;
+  overflow-x: auto;
+}
+
+.highlight {
+  padding: 2px 8px 2px 8px;
+/*  generated css code below */
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(255, 214, 61, 0) 1%, #ffd63d 3%,
+      rgba(255, 214, 61, .6) 7%,
+      rgba(255, 214, 61, .4) 93%,
+      rgba(255, 214, 61, .8) 96%,
+      rgba(255, 214, 61, 0) 98%),
+    linear-gradient(185deg, rgba(255, 214, 61, 0), rgba(255, 214, 61, .6) 8%, rgba(255, 214, 61, 0) 15%);
 }
