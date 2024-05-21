@@ -8,13 +8,27 @@ export enum StructuredResultType {
   PROCEDURE = 'Procedure'
 }
 
+export enum System {
+  LOINC = 'http://loinc.org',
+  ICD_10 = 'http://hl7.org/fhir/sid/icd-10-cm',
+  SNOMED = 'http://snomed.info/sct'
+}
+
 export class SimpleStructuredEvidence {
   [key: string]: any;
 
-  getCode(observation, preferredSystems? : string[]) {
-    if (!preferredSystems) return observation?.code?.coding?.[0] || undefined;
-    let coding = observation?.code?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);
-    if (!coding) return this.getCode(observation, preferredSystems.splice(1, preferredSystems.length));
+  getCode(evidence, preferredSystems? : string[]) {
+    if (!preferredSystems) return evidence?.code?.coding?.[0] || undefined;
+    let coding = evidence?.code?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);
+    if (!coding) return this.getCode(evidence, preferredSystems.splice(1, preferredSystems.length));
+    else return coding;
+  }
+
+  getReasonCode(evidence, preferredSystems? : string[]) {
+    if (!preferredSystems) return evidence?.reasonCode?.[0]?.coding?.[0] || undefined;
+    let coding = evidence?.reasonCode?.[0]?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);
+    if (!coding) return this.getCode(evidence, preferredSystems.splice(1, preferredSystems.length));
+    else return coding;
   }
 
 }
@@ -26,14 +40,14 @@ export class SimpleObservation extends SimpleStructuredEvidence {
   conceptName: string;
   value: string;
 
-  constructor(evidence: FhirBaseResource){
+  constructor(observation: FhirBaseResource){
     super();
-    this.date = evidence?.["effectiveDateTime"] || evidence?.["effectivePeriod"]?.["start"] || undefined;
-    const code = super.getCode(evidence);
+    this.date = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
+    const code = super.getCode(observation,  [System.LOINC]);
     this.code = code?.code;
     this.system = code?.system;
-    this.conceptName = evidence?.["code"]?.["text"] || code?.display;
-    this.value = "Temp Value";
+    this.conceptName = observation?.["code"]?.["text"] || code?.display;
+    this.value = "Temp Value"; //TODO presently not specified
   }
 }
 
@@ -47,7 +61,7 @@ export class SimpleCondition extends SimpleStructuredEvidence {
   constructor(condition: FhirBaseResource){
     super();
     this.date = condition["recordedDate"];
-    const code = super.getCode(condition);
+    const code = super.getCode(condition, [System.ICD_10, System.SNOMED]);
     this.code = code?.code;
     this.system = code?.system;
     this.conceptName = condition?.["code"]?.["text"] || code?.display;
@@ -72,15 +86,14 @@ export class SimpleEncounter extends SimpleStructuredEvidence {
   reasonSystem: string;
   reasonConceptName: string;
   constructor(encounter: FhirBaseResource){
-    console.log(encounter);
     super();
     this.periodStart = encounter["period"]?.["start"];
     this.periodEnd = encounter["period"]?.["end"];
-    this.encounterType = encounter["type"]?.["text"] || encounter["type"]?.["coding"] ?.[0]?.display
-    const code = "Not Implemented" //TODO add priority here
-    this.reasonCode = "Not Implemented"; //TODO implement
-    this.reasonSystem = "Not Implemented"; //TODO implement
-    this.reasonConceptName = "Not Implemented"; //TODO implement
+    this.encounterType = encounter["type"]?.[0]?.["text"] || encounter["type"]?.[0]?.["coding"] ?.[0]?.display
+    const reasonCode = super.getReasonCode(encounter, [System.ICD_10, System.SNOMED]);
+    this.reasonCode = reasonCode?.code;
+    this.reasonSystem = reasonCode?.system;
+    this.reasonConceptName = reasonCode?.display;
   }
 }
 
