@@ -48,7 +48,7 @@
                   {{ i + 1 }}. <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
-                <div class="margin-left-md margin-right-sm">
+                <div class="margin-left-md margin-right-sm margin-top-xs">
                   @if (childItem["type"] == QuestionWidgetType.RADIO) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['value']">

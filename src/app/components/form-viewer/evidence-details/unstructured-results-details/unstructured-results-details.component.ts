@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
 import {openDocumentViewerModal} from "../../document-viewer-modal/document-viewer-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {NlpAnswer} from "../../../../models/results";
@@ -7,7 +7,8 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 @Component({
   selector: 'app-unstructured-results-details',
   templateUrl: './unstructured-results-details.component.html',
-  styleUrl: './unstructured-results-details.component.scss'
+  styleUrl: './unstructured-results-details.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class UnstructuredResultsDetailsComponent implements OnChanges{
   @Input() nlpAnswer: NlpAnswer;
@@ -19,7 +20,7 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
   highlightText(text : string, query: string): string{
     let re = new RegExp(query, 'gi')
     // Angular refused to apply class, so I had to go with style tage here. I wonder why.
-    return text.replace(re, '<span style="background-color: #fff59d">' + query + '</span>')
+    return text.replace(re, `<span class="highlight">${query}</span>`)
   }
 
   onOpenInModal() {
