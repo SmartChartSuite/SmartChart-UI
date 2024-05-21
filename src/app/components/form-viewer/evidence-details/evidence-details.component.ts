@@ -10,7 +10,7 @@ import {
   SimpleProcedure,
   StructuredResultType
 } from "../../../models/structured-results";
-import {filter} from "rxjs";
+import {filter, tap} from "rxjs";
 
 
 @Component({
@@ -35,7 +35,7 @@ export class EvidenceDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.evidenceViewerService.resultSet$
       .pipe(
-        filter(value=> !value))
+        filter(value=> Object.keys(value).length !== 0))
       .subscribe({
       next: (resultSet: ResultSet) => {
         const evidenceList = resultSet.evidence;
