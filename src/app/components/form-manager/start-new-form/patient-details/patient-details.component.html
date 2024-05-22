@@ -4,5 +4,5 @@
     Patient Name: {{ patientSummary.name.given }} {{ patientSummary.name.family }}
   </div>
   <div class="patient-details">Gender: {{ patientSummary.gender }}</div>
-  <div class="patient-details">DOB: {{ patientSummary.birthDate }}</div>
+  <div class="patient-details">DOB: {{ patientSummary.birthDate | date }}</div>
 </div>
