@@ -42,12 +42,13 @@ export class SimpleObservation extends SimpleStructuredEvidence {
 
   constructor(observation: FhirBaseResource){
     super();
+    console.log(observation); //TODO: Remove console.log
     this.date = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
     const code = super.getCode(observation,  [System.LOINC]);
     this.code = code?.code;
     this.system = code?.system;
     this.conceptName = observation?.["code"]?.["text"] || code?.display;
-    this.value = "Temp Value"; //TODO presently not specified
+    this.value = "Not Implemented"; //TODO presently not specified
   }
 }
 
@@ -60,6 +61,7 @@ export class SimpleCondition extends SimpleStructuredEvidence {
   abatement: string;
   constructor(condition: FhirBaseResource){
     super();
+    console.log(condition); //TODO: Remove console.log
     this.date = condition["recordedDate"];
     const code = super.getCode(condition, [System.ICD_10, System.SNOMED]);
     this.code = code?.code;
@@ -71,9 +73,17 @@ export class SimpleCondition extends SimpleStructuredEvidence {
 }
 
 export class SimpleProcedure extends SimpleStructuredEvidence {
-  constructor(observation: FhirBaseResource){
+  datePerformed: string;
+  code: string;
+  system : string;
+  conceptName: string;
+  constructor(procedure: FhirBaseResource){
+    console.log(procedure) //TODO: Remove console.log
     super();
-    return null;
+    const code = super.getCode(procedure); //TODO implement when the requirement is known
+    this.code = code?.code || "Not Implemented"; //TODO implement when the requirement is known
+    this.system = code?.system || "Not Implemented"; //TODO implement when the requirement is known
+    this.conceptName = procedure["code"]?.["text"] || procedure["code"]?.["coding"]?.["display"];
   }
 }
 
@@ -87,6 +97,7 @@ export class SimpleEncounter extends SimpleStructuredEvidence {
   reasonConceptName: string;
   constructor(encounter: FhirBaseResource){
     super();
+    console.log(encounter); //TODO: Remove console.log
     this.periodStart = encounter["period"]?.["start"];
     this.periodEnd = encounter["period"]?.["end"];
     this.encounterType = encounter["type"]?.[0]?.["text"] || encounter["type"]?.[0]?.["coding"] ?.[0]?.display
@@ -98,9 +109,22 @@ export class SimpleEncounter extends SimpleStructuredEvidence {
 }
 
 export class SimpleMedicationRequest  extends SimpleStructuredEvidence {
+  dateAuthored: string;
+  code: string;
+  system: string;
+  conceptName: string;
+  dose: string;
+  frequency: string;
   constructor(medicationRequest: FhirBaseResource){
-    super()
-    // TODO: Implement the Constructor
-    return null;
+    super();
+    console.log(medicationRequest); //TODO: Remove console.log
+    this.dateAuthored = medicationRequest["authoredOn"];
+    const code = super.getCode(medicationRequest); //TODO implement when the requirement is known
+    this.code = code?.code || "Not Implemented"; //TODO implement when the requirement is known
+    this.system = code?.system || "Not Implemented"; //TODO implement when the requirement is known
+    this.conceptName = medicationRequest["medicationCodeableConcept"]?.["text"]
+      || medicationRequest["medicationCodeableConcept"]?.["coding"]?.[0]?.["display"]; //TODO verify with documentation, when the documentation is ready
+    this.dose = "Not Implemented";
+    this.frequency = "Not Implemented"; //TODO implement when the requirement is known
   }
 }
