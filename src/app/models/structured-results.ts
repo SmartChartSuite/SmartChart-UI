@@ -23,7 +23,7 @@ export class SimpleStructuredEvidence {
     if (!coding) return this.getCode(evidence, preferredSystems.splice(1, preferredSystems.length));
     else return coding;
   }
-
+  //TODO :  Find a way to integrate this function with the function above (getCode). We may be able to implement only one function when we know the requirements
   getReasonCode(evidence, preferredSystems? : string[]) {
     if (!preferredSystems) return evidence?.reasonCode?.[0]?.coding?.[0] || undefined;
     let coding = evidence?.reasonCode?.[0]?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);
@@ -89,7 +89,7 @@ export class SimpleProcedure extends SimpleStructuredEvidence {
 
 
 export class SimpleEncounter extends SimpleStructuredEvidence {
-  periodStart: string;
+  periodStart: string; //TODO: verify the criteria with the rest of the team.
   periodEnd: string;
   encounterType: string;
   reasonCode: string;
