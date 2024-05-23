@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import { SimpleStructuredEvidence} from "../../../../models/structured-results";
+import {StructuredEvidenceDTO} from "../../../../models/structured-evidence-dto.ts/structured-evidence-dto";
 
 @Component({
   selector: 'app-structured-results-details',
@@ -8,21 +8,21 @@ import { SimpleStructuredEvidence} from "../../../../models/structured-results";
   styleUrl: './structured-results-details.component.scss'
 })
 export class StructuredResultsDetailsComponent implements OnChanges{
-  @Input() structuredResults: SimpleStructuredEvidence[] = [];
+  @Input() structuredEvidenceDto: StructuredEvidenceDTO[] = [];
   @Input() displayedColumns: string[] = []; // Allows the user to enter the table columns of their choice in the order they need
 
   columns: string[];
-  dataSource = new MatTableDataSource<SimpleStructuredEvidence>([]);
+  dataSource = new MatTableDataSource<StructuredEvidenceDTO>([]);
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.structuredResults);
-    if(this.structuredResults){
-      this.dataSource.data = this.structuredResults;
+    console.log(this.structuredEvidenceDto);
+    if(this.structuredEvidenceDto){
+      this.dataSource.data = this.structuredEvidenceDto;
       if(this.displayedColumns?.length > 0){
         this.columns = this.displayedColumns;
       }
-      else if(this.structuredResults?.[0]){
-        this.columns = Object?.keys(this.structuredResults?.[0]);
+      else if(this.structuredEvidenceDto?.[0]){
+        this.columns = Object?.keys(this.structuredEvidenceDto?.[0]);
       }
     }
   }

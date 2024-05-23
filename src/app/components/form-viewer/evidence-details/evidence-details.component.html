@@ -13,22 +13,22 @@
       }
       @if(simpleObservations.length > 0){
         <app-structured-results-details
-          [structuredResults]="simpleObservations">
+          [structuredEvidenceDto]="simpleObservations">
         </app-structured-results-details>
       }
       @if(simpleConditions.length > 0){
         <app-structured-results-details
-          [structuredResults]="simpleConditions">
+          [structuredEvidenceDto]="simpleConditions">
         </app-structured-results-details>
       }
       @if(simpleEncounters.length > 0){
         <app-structured-results-details
-          [structuredResults]="simpleEncounters">
+          [structuredEvidenceDto]="simpleEncounters">
         </app-structured-results-details>
       }
       @if(simpleMedicationRequests.length > 0){
         <app-structured-results-details
-          [structuredResults]="simpleMedicationRequests">
+          [structuredEvidenceDto]="simpleMedicationRequests">
         </app-structured-results-details>
       }
     }

@@ -2,15 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
-import {
-  SimpleCondition,
-  SimpleEncounter,
-  SimpleMedicationRequest,
-  SimpleObservation,
-  SimpleProcedure,
-  StructuredResultType
-} from "../../../models/structured-results";
 import {filter, tap} from "rxjs";
+import {ResourceType} from "../../../models/structured-evidence-dto.ts/resource-type";
+import {ObservationDTO} from "../../../models/structured-evidence-dto.ts/observation-dto";
+import {ConditionDTO} from "../../../models/structured-evidence-dto.ts/condition-dto";
+import {ProcedureDTO} from "../../../models/structured-evidence-dto.ts/procedure-dto";
+import {EncounterDTO} from "../../../models/structured-evidence-dto.ts/encounter-dto";
+import {MedicationRequestDTO} from "../../../models/structured-evidence-dto.ts/medication-request-dto";
 
 
 @Component({
@@ -24,11 +22,11 @@ export class EvidenceDetailsComponent implements OnInit {
   nlpResources: FhirBaseResource[] = [];
   nlpAnswers: NlpAnswer[];
 
-  simpleObservations: SimpleObservation[] = [];
-  simpleMedicationRequests: SimpleMedicationRequest[] = [];
-  simpleEncounters: SimpleEncounter[] = [];
-  simpleConditions: SimpleCondition[] = [];
-  simpleProcedures: SimpleProcedure[] = [];
+  simpleObservations: ObservationDTO[] = [];
+  simpleMedicationRequests: MedicationRequestDTO[] = [];
+  simpleEncounters: EncounterDTO[] = [];
+  simpleConditions: ConditionDTO[] = [];
+  simpleProcedures: ProcedureDTO[] = [];
 
   constructor(private evidenceViewerService: EvidenceViewerService) {
   }
@@ -60,23 +58,23 @@ export class EvidenceDetailsComponent implements OnInit {
   private mapStructuredEvidence(cqlResources: FhirBaseResource[]) {
 
     this.simpleObservations = cqlResources
-      .filter(resource => resource.resourceType == StructuredResultType.OBSERVATION)
-      .map(resource => new SimpleObservation(resource));
+      .filter(resource => resource.resourceType == ResourceType.OBSERVATION)
+      .map(resource => new ObservationDTO(resource));
 
     this.simpleEncounters = cqlResources
-      .filter(resource => resource.resourceType == StructuredResultType.ENCOUNTER)
-      .map(resource => new SimpleEncounter(resource));
+      .filter(resource => resource.resourceType == ResourceType.ENCOUNTER)
+      .map(resource => new EncounterDTO(resource));
 
     this.simpleMedicationRequests = cqlResources
-      .filter(resource => resource.resourceType == StructuredResultType.MEDICATION_REQUEST)
-      .map(resource => new SimpleMedicationRequest(resource));
+      .filter(resource => resource.resourceType == ResourceType.MEDICATION_REQUEST)
+      .map(resource => new MedicationRequestDTO(resource));
 
     this.simpleConditions = cqlResources
-      .filter(resource => resource.resourceType == StructuredResultType.CONDITION)
-      .map(resource => new SimpleCondition(resource));
+      .filter(resource => resource.resourceType == ResourceType.CONDITION)
+      .map(resource => new ConditionDTO(resource));
 
     this.simpleProcedures = cqlResources
-      .filter(resource => resource.resourceType == StructuredResultType.PROCEDURE)
-      .map(resource => new SimpleProcedure(resource));
+      .filter(resource => resource.resourceType == ResourceType.PROCEDURE)
+      .map(resource => new ProcedureDTO(resource));
   }
 }
