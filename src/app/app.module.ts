@@ -6,7 +6,7 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from "./components/login/login.component";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ConfigService} from "./services/config/config.service";
-import {HttpClientModule} from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {MatIcon} from "@angular/material/icon";
@@ -86,7 +86,6 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     DocumentViewerModalComponent
   ],
   imports: [
-    HttpClientModule,
     OAuthModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
@@ -154,7 +153,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
       useFactory: stateFactory,
       deps: [StateManagementService],
       multi: true
-    }
+    },
+    provideHttpClient(withInterceptorsFromDi()),
   ],
   bootstrap: [AppComponent]
 })
