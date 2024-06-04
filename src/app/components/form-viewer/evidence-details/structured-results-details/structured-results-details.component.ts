@@ -13,6 +13,7 @@ export class StructuredResultsDetailsComponent implements OnChanges{
 
   columns: string[];
   dataSource = new MatTableDataSource<StructuredEvidenceDTO>([]);
+  readonly MAX_STR_LENGTH = 12;
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(this.structuredEvidenceDto);

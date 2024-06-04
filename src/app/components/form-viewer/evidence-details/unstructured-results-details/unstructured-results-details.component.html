@@ -1,30 +1,37 @@
 <mat-card>
-  <mat-card-header>
-    <mat-card-title class="mat-card-title-text">
-      Document Date: {{ nlpAnswer.date | date }}
-    </mat-card-title>
-  </mat-card-header>
   <mat-card-content>
-    <div [innerHTML]="safeHtmlFragment"></div>
+
+    <div class="flex margin-bottom-sm">
+      <div class="flex-col label-text margin-right-md">
+        <div class="margin-bottom-sm">Document Date:</div>
+        <div>Term:</div>
+      </div>
+      <div class="flex-col-simple">
+        <div class="margin-bottom-sm">{{ nlpAnswer.date | date: 'dd/MM/yyyy' }}</div>
+        <div>{{ nlpAnswer?.term }}</div>
+      </div>
+    </div>
+
+    <div class="label-text margin-bottom-sm">Text Fragment:</div>
+    <div class="padding-left-sm" [innerHTML]="safeHtmlFragment"></div>
+
   </mat-card-content>
+
   <mat-card-actions class="card-action-buttons">
-      @if (fullTextVisible) {
-        <button mat-stroked-button (click)="fullTextVisible=false">
-          <mat-icon>unfold_less</mat-icon>
-          Collapse Content
-        </button>
-      } @else {
-        <button mat-stroked-button (click)="fullTextVisible=true" class="margin-left-sm">
-          <mat-icon>unfold_more</mat-icon>
-          Expand Content
-        </button>
-      }
-      <button mat-stroked-button (click)="onOpenInModal()" class="margin-left-sm">
-        <mat-icon>open_in_full</mat-icon>
-        View Full Document
+    @if (fullTextVisible) {
+      <button mat-icon-button (click)="fullTextVisible=false" matTooltip="Collapse Content">
+        <mat-icon>unfold_less</mat-icon>
       </button>
+    } @else {
+      <button mat-icon-button (click)="fullTextVisible=true" matTooltip="Expand Content">
+        <mat-icon>unfold_more</mat-icon>
+      </button>
+    }
+    <button mat-icon-button (click)="onOpenInModal()" matTooltip="View Full Document">
+      <mat-icon>open_in_full</mat-icon>
+    </button>
   </mat-card-actions>
-  @if(fullTextVisible){
+  @if (fullTextVisible) {
     <mat-card-content>
       <pre class="full-text-content" [innerHTML]="safeHtmlFullText"></pre>
     </mat-card-content>

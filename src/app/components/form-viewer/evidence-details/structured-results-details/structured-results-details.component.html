@@ -2,8 +2,17 @@
 
   <ng-container [matColumnDef]="column" *ngFor="let column of columns">
     <th mat-header-cell *matHeaderCellDef> {{ column | camelCaseToTitleCase }}</th>
-    <td mat-cell *matCellDef="let element">
-      {{ (element[column] | isValidDate) ? (element[column] | date) : element[column] }}
+    <td mat-cell *matCellDef="let element"
+        [matTooltip]="element[column]?.length > MAX_STR_LENGTH ? element[column] : ''">
+      @if(element[column] | isValidDate){
+        {{ element[column] | date: 'dd/MM/yyyy' }}
+      }
+      @else if(element[column]?.length > MAX_STR_LENGTH){
+        {{ (element[column].slice(0, MAX_STR_LENGTH) + '...') }}
+      }
+      @else {
+        {{ element[column] }}
+      }
     </td>
   </ng-container>
 

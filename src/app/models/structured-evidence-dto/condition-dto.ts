@@ -15,7 +15,7 @@ export class ConditionDTO extends StructuredEvidenceDTO {
     this.date = condition["recordedDate"];
     const code = super.getCode(condition, [System.ICD_10, System.SNOMED]);
     this.code = code?.code;
-    this.system = code?.system;
+    this.system  = super.getSystemFromEnum(code?.system);
     this.conceptName = condition?.["code"]?.["text"] || code?.display;
     this.onset = condition["onsetDateTime"] || condition["onsetPeriod"]?.["start"];
     this.abatement = condition["abatementDateTime"];

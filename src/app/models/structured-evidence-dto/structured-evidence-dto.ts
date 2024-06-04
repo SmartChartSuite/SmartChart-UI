@@ -1,3 +1,5 @@
+import {System} from "./system";
+
 export class StructuredEvidenceDTO {
   [key: string]: any;
 
@@ -13,6 +15,13 @@ export class StructuredEvidenceDTO {
     let coding = evidence?.reasonCode?.[0]?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);
     if (!coding) return this.getCode(evidence, preferredSystems.splice(1, preferredSystems.length));
     else return coding;
+  }
+  getSystemFromEnum(system: System){
+    if(system == System.LOINC) return "Loinc";
+    else if(system == System.ICD_10) return "ICD-10";
+    else if(system == System.SNOMED) return "SNOMED CT";
+    else if(system) return system; //We don't know what system it was passed, but we know that a system was passed, and we want to return it
+    else return "";
   }
 
 }
