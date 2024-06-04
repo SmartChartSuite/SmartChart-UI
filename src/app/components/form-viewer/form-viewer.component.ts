@@ -34,6 +34,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedEvidenceIndex: number | null = null;
 
   results$: Observable<Results>;
+  evidenceViewerExpanded: boolean = false;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,

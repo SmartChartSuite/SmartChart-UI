@@ -1,9 +1,8 @@
 <!--TODO extract the style to css -->
 <div class="flex">
   <div class="patient-name">
-    <span class="label">Patient Name:</span>
-    <span class="value">{{ patientSummary.name.given }} {{ patientSummary.name.family }}</span>
+    Patient Name: {{ patientSummary.name.given }} {{ patientSummary.name.family }}
   </div>
-  <div style="flex: 0 0 25%;">Gender: {{ patientSummary.gender }}</div>
-  <div style="flex: 0 0 25%;">DOB: {{ patientSummary.birthDate }}</div>
+  <div class="patient-details">Gender: {{ patientSummary.gender }}</div>
+  <div class="patient-details">DOB: {{ patientSummary.birthDate | date }}</div>
 </div>

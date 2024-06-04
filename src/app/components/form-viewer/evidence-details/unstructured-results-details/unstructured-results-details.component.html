@@ -1,0 +1,32 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title class="mat-card-title-text">
+      Document Date: {{ nlpAnswer.date | date }}
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div [innerHTML]="safeHtmlFragment"></div>
+  </mat-card-content>
+  <mat-card-actions class="card-action-buttons">
+      @if (fullTextVisible) {
+        <button mat-stroked-button (click)="fullTextVisible=false">
+          <mat-icon>unfold_less</mat-icon>
+          Collapse Content
+        </button>
+      } @else {
+        <button mat-stroked-button (click)="fullTextVisible=true" class="margin-left-sm">
+          <mat-icon>unfold_more</mat-icon>
+          Expand Content
+        </button>
+      }
+      <button mat-stroked-button (click)="onOpenInModal()" class="margin-left-sm">
+        <mat-icon>open_in_full</mat-icon>
+        View Full Document
+      </button>
+  </mat-card-actions>
+  @if(fullTextVisible){
+    <mat-card-content>
+      <pre class="full-text-content" [innerHTML]="safeHtmlFullText"></pre>
+    </mat-card-content>
+  }
+</mat-card>

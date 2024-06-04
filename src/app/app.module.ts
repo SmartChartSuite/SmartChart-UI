@@ -58,6 +58,10 @@ import {ClipboardModule} from "@angular/cdk/clipboard";
 import { DocumentViewerModalComponent } from './components/form-viewer/document-viewer-modal/document-viewer-modal.component';
 import {SetEvidenceDirective} from "./directives/set-evidence.directive";
 import {Base64stringPipe} from "./pipe/base64string.pipe";
+import { StructuredResultsDetailsComponent } from './components/form-viewer/evidence-details/structured-results-details/structured-results-details.component';
+import { UnstructuredResultsDetailsComponent } from './components/form-viewer/evidence-details/unstructured-results-details/unstructured-results-details.component';
+import {IsValidDatePipe} from "./pipe/is-valid-date.pipe";
+import {CamelCaseToTitleCasePipe} from "./pipe/camel-case-to-title-case.pipe";
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
 };
@@ -83,7 +87,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     FormViewerComponent,
     PatientDetailsComponent,
     EvidenceDetailsComponent,
-    DocumentViewerModalComponent
+    DocumentViewerModalComponent,
+    StructuredResultsDetailsComponent,
+    UnstructuredResultsDetailsComponent
   ],
   imports: [
     HttpClientModule,
@@ -140,7 +146,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatDialogModule,
     SetEvidenceDirective,
     HasEvidenceDirective,
-    Base64stringPipe
+    Base64stringPipe,
+    IsValidDatePipe,
+    IsValidDatePipe,
+    CamelCaseToTitleCasePipe
   ],
   providers: [
     {

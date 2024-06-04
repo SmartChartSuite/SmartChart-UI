@@ -16,7 +16,7 @@ export class UtilsService {
     });
   }
 
-  showErrorMessage(messageStr: string = 'Serve error'){
+  showErrorMessage(messageStr: string = 'Server error'){
     this._snackBar.open(messageStr, 'X' ,{
       horizontalPosition: 'center',
       verticalPosition: 'top',
