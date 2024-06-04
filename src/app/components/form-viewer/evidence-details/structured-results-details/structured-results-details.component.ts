@@ -1,6 +1,6 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {StructuredEvidenceDTO} from "../../../../models/structured-evidence-dto.ts/structured-evidence-dto";
+import {StructuredEvidenceDTO} from "../../../../models/structured-evidence-dto/structured-evidence-dto";
 
 @Component({
   selector: 'app-structured-results-details',

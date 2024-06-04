@@ -2,13 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
-import {filter, tap} from "rxjs";
-import {ResourceType} from "../../../models/structured-evidence-dto.ts/resource-type";
-import {ObservationDTO} from "../../../models/structured-evidence-dto.ts/observation-dto";
-import {ConditionDTO} from "../../../models/structured-evidence-dto.ts/condition-dto";
-import {ProcedureDTO} from "../../../models/structured-evidence-dto.ts/procedure-dto";
-import {EncounterDTO} from "../../../models/structured-evidence-dto.ts/encounter-dto";
-import {MedicationRequestDTO} from "../../../models/structured-evidence-dto.ts/medication-request-dto";
+import {filter} from "rxjs";
+import {ResourceType} from "../../../models/structured-evidence-dto/resource-type";
+import {ObservationDTO} from "../../../models/structured-evidence-dto/observation-dto";
+import {ConditionDTO} from "../../../models/structured-evidence-dto/condition-dto";
+import {ProcedureDTO} from "../../../models/structured-evidence-dto/procedure-dto";
+import {EncounterDTO} from "../../../models/structured-evidence-dto/encounter-dto";
+import {MedicationRequestDTO} from "../../../models/structured-evidence-dto/medication-request-dto";
 
 
 @Component({
