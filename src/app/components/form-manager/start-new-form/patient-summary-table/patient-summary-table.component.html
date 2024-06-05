@@ -21,7 +21,7 @@
 
   <ng-container matColumnDef="birthDate">
     <th mat-header-cell *matHeaderCellDef> Date of Birth </th>
-    <td mat-cell *matCellDef="let patient"> {{ patient.birthDate | date}} </td>
+    <td mat-cell *matCellDef="let patient"> {{ patient.birthDate | date: 'MM/dd/yyyy'}} </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

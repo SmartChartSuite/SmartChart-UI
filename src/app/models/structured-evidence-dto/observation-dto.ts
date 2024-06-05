@@ -15,7 +15,7 @@ export class ObservationDTO extends StructuredEvidenceDTO {
     this.date = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
     const code = super.getCode(observation,  [System.LOINC]);
     this.code = code?.code;
-    this.system = code?.system;
+    this.system  = super.getSystemFromEnum(code?.system);
     this.conceptName = observation?.["code"]?.["text"] || code?.display;
     this.value = "Not Implemented"; //TODO presently not specified
   }
