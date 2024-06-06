@@ -7,11 +7,12 @@ export class ProcedureDTO extends StructuredEvidenceDTO {
   system : string;
   conceptName: string;
   constructor(procedure: FhirBaseResource){
+    //TODO verify proper implementation when the requirements are finalized
     console.log(procedure) //TODO: Remove console.log
     super();
-    const code = super.getCode(procedure); //TODO implement when the requirement is known
-    this.code = code?.code || "Not Implemented"; //TODO implement when the requirement is known
-    this.system = code?.system || "Not Implemented"; //TODO implement when the requirement is known
+    const code = super.getCode(procedure);
+    this.code = code?.code;
+    this.system  = super.getSystemFromEnum(code?.system);
     this.conceptName = procedure["code"]?.["text"] || procedure["code"]?.["coding"]?.["display"];
   }
 }

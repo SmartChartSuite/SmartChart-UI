@@ -10,6 +10,7 @@ export class ConditionDTO extends StructuredEvidenceDTO {
   onset: string;
   abatement: string;
   constructor(condition: FhirBaseResource){
+    //TODO verify proper implementation when the requirements are finalized
     super();
     console.log(condition); //TODO: Remove console.log
     this.date = condition["recordedDate"];
