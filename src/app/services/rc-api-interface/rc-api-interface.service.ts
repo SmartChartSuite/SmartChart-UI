@@ -23,7 +23,7 @@ export class RcApiInterfaceService {
   patientEndpoint: string = `${this.base}/patient`;
   groupEndpoint: string = `${this.base}/group`;
   questionnaireEndpoint: string = `${this.base}/questionnaire`;
-  startJobsEndpoint: string = `forms/start?asyncFlag=True`;
+  startJobsEndpoint: string = `${this.base}/batchjob?include_patient=True`;
   getJobPackageEndpoint: string = `forms`;
   getBatchJobsEndpoint: string = `${this.base}/batchjob`
   getResultsEndpoint: string = `${this.base}/results`
@@ -104,7 +104,8 @@ export class RcApiInterfaceService {
    * jobPackage = "name" in the FHIR Questionnaire
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
-    const postBody = new StartJobsPostBody(patientId, jobPackage)
+    const postBody = new StartJobsPostBody(patientId, jobPackage);
+    console.log(postBody);
     return this.http.post<StartJobsPostResponse>(this.configService.config.rcApiUrl + this.startJobsEndpoint, postBody);
   }
 
