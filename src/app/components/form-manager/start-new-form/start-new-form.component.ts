@@ -3,6 +3,7 @@ import {PatientSummary} from "../../../models/patient-summary";
 import {FormSummary} from "../../../models/form-summary";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
+import {UtilsService} from "../../../services/utils/utils.service";
 
 @Component({
   selector: 'app-start-new-form',
@@ -13,7 +14,11 @@ export class StartNewFormComponent implements OnInit {
   selectedPatient: PatientSummary;
   selectedForm: FormSummary;
 
-  constructor(private formManagerService: FormManagerService, private rcApiInterfaceService: RcApiInterfaceService) {
+  constructor(
+    private formManagerService: FormManagerService,
+    private rcApiInterfaceService: RcApiInterfaceService,
+    private utilsService: UtilsService
+    ) {
   }
 
 
@@ -36,11 +41,12 @@ export class StartNewFormComponent implements OnInit {
     // TODO: Handle this appropriately, subscription should not happen in this manner. Example of approach can be found in raven upload.
     this.rcApiInterfaceService.startJobs(this.selectedPatient.fhirId, this.selectedForm.name).subscribe({
         next: value => {
-          console.log("Job Started")
           console.log(value);
+          this.utilsService.showSuccessMessage("Job started")
         },
         error: err => {
-          console.error(err)
+          console.error(err);
+          this.utilsService.showErrorMessage("Server error starting a new job.")
         }
       }
     );

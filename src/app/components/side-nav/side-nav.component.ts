@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Output} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {Router} from "@angular/router";

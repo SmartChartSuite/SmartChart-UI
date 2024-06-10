@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
 import {map, Observable, share, take} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpContext} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
@@ -13,7 +13,7 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
-import {stat} from "ng-packagr/lib/utils/fs";
+import {SkipLoading} from "../loading/skip-loading";
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +69,8 @@ export class RcApiInterfaceService {
    * Search all Group resources. FHIR pass through for SmartChart UI.
    */
   searchGroup(): Observable<any> {
-    const groups$ = this.http.get<any[]>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`).pipe(
+    const groups$ = this.http.get<any[]>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`,
+      {context: new HttpContext().set(SkipLoading, true)}).pipe(
       map(results => {
         const groupList: FhirBaseResource[] = results.filter(resource => resource.resourceType === "Group");
         const patientList: FhirBaseResource[] = results.filter(resource => resource.resourceType === "Patient");
@@ -83,7 +84,8 @@ export class RcApiInterfaceService {
    * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
    */
   getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
-    return this.http.get<FhirBaseResource[]>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`).pipe(
+    return this.http.get<FhirBaseResource[]>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`,
+      {context: new HttpContext().set(SkipLoading, true)}).pipe(
       map(resultsList => {
         let formSummaryList: FormSummary[];
         formSummaryList = resultsList.map(questionnaireResource=> new FormSummary(questionnaireResource));

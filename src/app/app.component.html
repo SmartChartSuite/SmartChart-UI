@@ -2,6 +2,9 @@
   <app-side-nav #sidenav (expandedStatusChangedEvent)="onExpandedStatusChanged($event)"></app-side-nav>
   <div #content class="app-content-wrapper">
     @if (oauthService.hasValidAccessToken()) {
+      @if (loadingService.loading()) {
+        <app-loading></app-loading>
+      }
       <router-outlet></router-outlet>
     } @else {
       <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
