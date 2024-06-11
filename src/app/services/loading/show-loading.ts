@@ -1,6 +1,6 @@
 import { HttpContextToken } from "@angular/common/http";
 
-export const SkipLoading = new HttpContextToken(
+export const ShowLoading = new HttpContextToken(
   () => false
 )
 

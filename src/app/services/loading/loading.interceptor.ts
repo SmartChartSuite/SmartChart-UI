@@ -5,7 +5,7 @@ import {
   HttpHandler,
   HttpRequest,
 } from '@angular/common/http';
-import {SkipLoading} from "./skip-loading";
+import {ShowLoading} from "./show-loading";
 import {LoadingService} from "./loading.service";
 import {finalize, Observable} from "rxjs";
 
@@ -17,10 +17,11 @@ export class LoggingInterceptor implements HttpInterceptor{
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    if(req.context.get(SkipLoading)) {
-       return next.handle(req);
+    if(req.context.get(ShowLoading)) {
+      this.loadingService.loadingOn();
+      return next.handle(req).pipe(finalize(() => {this.loadingService.loadingOff()}))
+
     }
-    this.loadingService.loadingOn();
-    return next.handle(req).pipe(finalize(() => {this.loadingService.loadingOff()}))
+    return next.handle(req);
   }
 }
