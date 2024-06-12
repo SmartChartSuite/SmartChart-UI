@@ -1,8 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {ConfigService} from "./services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {RouteState} from "./models/application-state";
+import {LoadingService} from "./services/loading/loading.service";
 
 @Component({
   selector: 'app-root',
@@ -17,7 +18,8 @@ export class AppComponent {
   constructor(
     config: ConfigService,
     public oauthService: OAuthService,
-    private applicationState: StateManagementService
+    private applicationState: StateManagementService,
+    public loadingService: LoadingService
   ) {
     this.title = config.config.title;
     this.applicationState.getState().subscribe({

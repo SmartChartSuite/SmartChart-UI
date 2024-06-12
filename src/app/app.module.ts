@@ -6,7 +6,7 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from "./components/login/login.component";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ConfigService} from "./services/config/config.service";
-import {HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {MatIcon} from "@angular/material/icon";
@@ -72,6 +72,9 @@ import {
 } from './components/form-viewer/evidence-details/unstructured-results-details/unstructured-results-details.component';
 import {IsValidDatePipe} from "./pipe/is-valid-date.pipe";
 import {CamelCaseToTitleCasePipe} from "./pipe/camel-case-to-title-case.pipe";
+import { LoadingComponent } from './components/loading/loading.component';
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {LoggingInterceptor} from "./services/loading/loading.interceptor";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -100,7 +103,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     EvidenceDetailsComponent,
     DocumentViewerModalComponent,
     StructuredResultsDetailsComponent,
-    UnstructuredResultsDetailsComponent
+    UnstructuredResultsDetailsComponent,
+    LoadingComponent
   ],
   imports: [
     HttpClientModule,
@@ -161,7 +165,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     IsValidDatePipe,
     IsValidDatePipe,
     CamelCaseToTitleCasePipe,
-    MatIconButton
+    MatIconButton,
+    MatProgressSpinner
   ],
   providers: [
     {
@@ -175,6 +180,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
       useFactory: stateFactory,
       deps: [StateManagementService],
       multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true
     }
   ],
   bootstrap: [AppComponent]
