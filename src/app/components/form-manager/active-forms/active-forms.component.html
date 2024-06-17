@@ -35,7 +35,12 @@
       </td>
     } @else {
       <td class="mat-cell padding-md" [attr.colspan]="displayedColumns.length">
-        No records to display.
+        @if(apiErrorFound){
+          There was an error starting the job.
+        }
+        @else {
+          No records to display.
+        }
       </td>
     }
   </tr>
