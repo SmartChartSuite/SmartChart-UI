@@ -20,6 +20,8 @@ export class StructuredEvidenceDTO {
     if(system == System.LOINC) return "Loinc";
     else if(system == System.ICD_10) return "ICD-10";
     else if(system == System.SNOMED) return "SNOMED CT";
+    else if(system == System.RX_NORM) return "RxNorm";
+    else if(system == System.CPT) return "CPT";
     else if(system) return system; //Unknown systems passed. We need to render it to the user
     else return "";
   }
