@@ -10,13 +10,14 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
   frequency: string;
   constructor(medicationRequest: FhirBaseResource){
     super();
+    //TODO: Remove console.log
     console.log(medicationRequest); //TODO: Remove console.log
     this.dateAuthored = medicationRequest["authoredOn"];
-    const code = super.getCode(medicationRequest); //TODO implement when the requirement is known
-    this.code = code?.code || "Not Implemented"; //TODO implement when the requirement is known
-    this.system = code?.system || "Not Implemented"; //TODO implement when the requirement is known
+    const code = super.getCode(medicationRequest);
+    this.code = code?.code
+    this.system = code?.system
     this.conceptName = medicationRequest["medicationCodeableConcept"]?.["text"]
-      || medicationRequest["medicationCodeableConcept"]?.["coding"]?.[0]?.["display"]; //TODO verify with documentation, when the documentation is ready
+      || medicationRequest["medicationCodeableConcept"]?.["coding"]?.[0]?.["display"];
     this.dose = "Not Implemented";
     this.frequency = "Not Implemented"; //TODO implement when the requirement is known
   }

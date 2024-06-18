@@ -18,6 +18,6 @@ export class EncounterDTO extends StructuredEvidenceDTO {
     const reasonCode = super.getReasonCode(encounter, [System.ICD_10, System.SNOMED]);
     this.reasonCode = reasonCode?.code;
     this.reasonSystem = reasonCode?.system;
-    this.reasonConceptName = reasonCode?.display;
+    this.reasonConceptName = reasonCode?.text || reasonCode[0]?.coding?.display;
   }
 }

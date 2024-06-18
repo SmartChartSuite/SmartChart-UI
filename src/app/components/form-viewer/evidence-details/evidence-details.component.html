@@ -6,11 +6,6 @@
 
     <!--TODO Remove the for loop once the parsing of all structured resources is implemented -->
     @if (this.cqlResources?.length > 0) {
-      @for (resource of this.cqlResources; track resource) {
-        <div class="border">
-          {{ resource.resourceType }}/{{ resource.id }}
-        </div>
-      }
       @if(simpleObservations.length > 0){
         <app-structured-results-details
           [structuredEvidenceDto]="simpleObservations">
@@ -49,7 +44,7 @@
         [nlpAnswer]="nlpAnswer">
       </app-unstructured-results-details>
     } @empty {
-      No Unstructured Evidence Found
+      No documents found
     }
   </mat-card-content>
 </mat-card>

@@ -7,8 +7,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class IsValidDatePipe implements PipeTransform {
   private dateRegex: RegExp = /^\d{4}-\d{2}-\d{2}$/;
   transform(data : any): boolean {
-    if(this.dateRegex.test(data) || this.isValidISODate(data)){
-      console.log(`found ${data} ${this.dateRegex.test(data)} ${this.isValidISODate(data)}`)
+    if (this.dateRegex.test(data) || this.isValidISODate(data)){
       return true
     }
     return false;

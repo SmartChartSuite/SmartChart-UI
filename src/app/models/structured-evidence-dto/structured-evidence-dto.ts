@@ -16,7 +16,7 @@ export class StructuredEvidenceDTO {
     if (!coding) return this.getCode(evidence, preferredSystems.splice(1, preferredSystems.length));
     else return coding;
   }
-  getSystemFromEnum(system: System){
+  getSystemFromEnum(system: System): string  {
     if(system == System.LOINC) return "Loinc";
     else if(system == System.ICD_10) return "ICD-10";
     else if(system == System.SNOMED) return "SNOMED CT";
