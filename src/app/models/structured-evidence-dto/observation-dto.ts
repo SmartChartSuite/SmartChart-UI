@@ -21,15 +21,15 @@ export class ObservationDTO extends StructuredEvidenceDTO {
   }
 
   getValue(observation): string {
-    if (observation.valueString) {
+    if(observation.valueQuantity?.value && observation.valueQuantity?.unit){
+      return `${observation?.valueQuantity?.value} ${observation?.valueQuantity?.unit}`
+    }
+    else if (observation.valueString) {
       return observation.valueString;
     }
     else if (observation.valueCodeableConcept) {
       return observation.valueCodeableConcept?.text || observation.valueCodeableConcept?.coding?.[0]?.display;
     }
-    else {
-      console.warn(`Not able to find observation.value from the following resource: ${JSON.stringify(observation)}`);
-      return ""
-    }
+    else return '';
   }
 }
