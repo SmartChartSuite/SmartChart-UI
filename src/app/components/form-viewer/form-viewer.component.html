@@ -124,19 +124,19 @@
         <button mat-raised-button type="submit" (click)="onSubmit()">log form to console</button>
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
-           [ngClass]="evidenceViewerExpanded ? 'viewer-container-body-side-explorer-expanded': ''"
+           [ngClass]="(this.evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
            [hidden]="!showDrawer">
         <div class="fhir-explorer-header">
-          @if(evidenceViewerExpanded){
+          @if(this.evidenceViewerExpanded$ | async){
             <mat-icon
-              (click)="evidenceViewerExpanded = false;"
+              (click)="evidenceViewerService.setViewerExpanded(false);"
               matTooltip="Collapse"
               class="pointer">
               chevron_right
             </mat-icon>
           } @else {
             <mat-icon
-              (click)="evidenceViewerExpanded = true;"
+              (click)="evidenceViewerService.setViewerExpanded(true);"
               matTooltip="Expand"
               class="pointer">
               chevron_left

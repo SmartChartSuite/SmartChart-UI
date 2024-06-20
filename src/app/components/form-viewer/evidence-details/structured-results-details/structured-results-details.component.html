@@ -7,7 +7,7 @@
       @if(element[column] | isValidDate){
         {{ element[column] | date: 'MM/dd/yyyy' }}
       }
-      @else if(element[column]?.length > MAX_STR_LENGTH){
+      @else if( !(evidenceViewerExpanded$ | async) && element[column]?.length > MAX_STR_LENGTH){
         {{ (element[column].slice(0, MAX_STR_LENGTH) + '...') }}
       }
       @else {

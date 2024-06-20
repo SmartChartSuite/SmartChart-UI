@@ -1,4 +1,3 @@
-//TODO: extract to proper location
 import {ActiveFormSummary} from "../../models/active-form-summary";
 
 //TODO: extract to proper location
@@ -18,6 +17,7 @@ import {StateManagementService} from "../../services/state-management/state-mana
 import {filter, mergeMap, Observable, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
+import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 
 @Component({
   selector: 'app-form-viewer',
@@ -34,14 +34,15 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedEvidenceIndex: number | null = null;
 
   results$: Observable<Results>;
-  evidenceViewerExpanded: boolean = false;
+  evidenceViewerExpanded$: Observable<boolean>;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
     public router: Router,
     private stateManagementService: StateManagementService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    public evidenceViewerService: EvidenceViewerService
   ) {
   }
 
@@ -50,7 +51,11 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
+
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
+
     this.formManagerService.selectedActiveFormSummary$.pipe(
       tap(value => this.activeFormSummary = value),
       filter(value => !!value),
