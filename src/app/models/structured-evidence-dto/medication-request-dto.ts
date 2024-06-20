@@ -10,7 +10,6 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
   frequency: string;
   constructor(medicationRequest: FhirBaseResource){
     super();
-    //TODO: Remove console.log
     console.log(medicationRequest); //TODO: Remove console.log
     this.dateAuthored = medicationRequest["authoredOn"];
     const code = super.getCode(medicationRequest);
