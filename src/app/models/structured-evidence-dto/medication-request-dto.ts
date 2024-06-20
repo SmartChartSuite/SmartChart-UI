@@ -18,7 +18,7 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
     this.system = code?.system
     this.conceptName = medicationRequest["medicationCodeableConcept"]?.["text"]
       || medicationRequest["medicationCodeableConcept"]?.["coding"]?.[0]?.["display"];
-    this.dose = "Not Implemented";
-    this.frequency = "Not Implemented"; //TODO implement when the requirement is known
+    this.dose = ""; //TODO implement when the requirement is known
+    this.frequency = ""; //TODO implement when the requirement is known
   }
 }
