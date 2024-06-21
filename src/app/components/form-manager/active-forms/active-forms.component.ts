@@ -25,8 +25,10 @@ export class ActiveFormsComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.getBatchJobs();
-  }
 
+    // Reload the data when a new form is started
+    this.formManagerService.formStarted$.subscribe(() => this.getBatchJobs())
+  }
 
   private getBatchJobs() {
     this.isLoading = true;
