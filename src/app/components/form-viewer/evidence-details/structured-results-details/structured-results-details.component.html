@@ -2,7 +2,8 @@
 
   <ng-container [matColumnDef]="column" *ngFor="let column of columns; index as i">
     <th mat-header-cell *matHeaderCellDef> {{ column | camelCaseToTitleCase }}</th>
-    <td mat-cell *matCellDef="let element" [matTooltip]="dataSource.data?.[i] | concatDataToStr">
+    <td mat-cell *matCellDef="let element"
+        [matTooltip]="!(evidenceViewerExpanded$ | async) ? (dataSource.data?.[dataSource.data?.indexOf(element)] | concatDataToStr): ''">
       @if(element[column] | isValidDate){
         {{ element[column] | date: 'MM/dd/yyyy' }}
       }

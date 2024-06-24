@@ -1,29 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import {UtilsService} from "../services/utils/utils.service";
 
 @Pipe({
   name: 'isValidDate',
   standalone: true
 })
 export class IsValidDatePipe implements PipeTransform {
-  private dateRegex: RegExp = /^\d{4}-\d{2}-\d{2}$/;
+  constructor(private utilsService: UtilsService){}
   transform(data : any): boolean {
-    if (this.dateRegex.test(data) || this.isValidISODate(data)){
-      return true
-    }
-    return false;
+    return this.utilsService.isValidDate(data);
   }
-
-  private isValidISODate(dateString: string): boolean {
-    if(!dateString){
-      return false;
-    }
-    const dateParts = dateString.split('-');
-    const year = parseInt(dateParts[0], 10);
-    const month = parseInt(dateParts[1], 10);
-    const day = parseInt(dateParts[2], 10);
-
-    // Validate year, month, and day
-    return year >= 1000 && year <= 9999 && month >= 1 && month <= 12 && day >= 1 && day <= 31;
-  }
-
 }

@@ -1,18 +1,34 @@
 import { Pipe, PipeTransform } from '@angular/core';
-// TODO delete if not used
+import {UtilsService} from "../services/utils/utils.service";
+import {DatePipe} from "@angular/common";
 @Pipe({
   name: 'concatDataToStr',
   standalone: true
 })
 export class ConcatDataToStrPipe implements PipeTransform {
 
+  constructor(private utilsService: UtilsService){}
+
   transform(data: any): string {
     if(!data){
       return "";
     }
-    const result = Object.entries(data).map(entry=> `${this.camelCaseToTitleCase(entry[0])}: ${entry[1]}`).join('\n');
-    console.log(result);
-    return result;
+    return Object.entries(data).map(entry=> `${this.camelCaseToTitleCase(entry[0])}: ${this.getEntryStrValue(entry[1])}`).join('\n');
+  }
+
+  getEntryStrValue(value){
+    if(!value){
+      return "";
+    }
+    if(this.utilsService.isValidDate(value)){
+      return this.getFormattedDate(value);
+    }
+    return value;
+  }
+
+  getFormattedDate(dateStr) {
+    let datePipe = new DatePipe("en-US");
+    return datePipe.transform(dateStr, 'MM/dd/yyyy');
   }
 
   camelCaseToTitleCase(camelCaseStr) {

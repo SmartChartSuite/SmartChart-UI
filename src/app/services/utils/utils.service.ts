@@ -24,4 +24,27 @@ export class UtilsService {
       duration: 3000
     });
   }
+
+  isValidDate(dataString: string): boolean {
+    if(!dataString){
+      return false;
+    }
+    // The app only uses dates of format yyyy-mm-dd, all other dates are not valid
+    const dateRegex: RegExp = /^\d{4}-\d{2}-\d{2}$/;
+    const validDateRegex = dateRegex.test(dataString);
+
+    // The first step is to validate that the date is in the format yyyy-mm-dd using a regex
+    if(validDateRegex){
+      return true;
+    }
+
+    // The second step is make sure that the data contains enough chars
+    if(dataString.length < 10){
+      return false;
+    }
+
+    // The third step is to validate that the date is valid
+    const parsedDate = Date.parse(dataString);
+    return !!parsedDate;
+  }
 }
