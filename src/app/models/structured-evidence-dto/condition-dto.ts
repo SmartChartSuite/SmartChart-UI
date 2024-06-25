@@ -14,7 +14,7 @@ export class ConditionDTO extends StructuredEvidenceDTO {
     super();
     console.log(condition); //TODO: Remove console.log
     this.date = condition["recordedDate"];
-    const code = super.getCode(condition, [System.ICD_10, System.SNOMED]);
+    const code = super.getCode(condition, 'code', [System.ICD_10, System.SNOMED]);
     this.code = code?.code;
     this.system  = super.getSystemFromEnum(code?.system);
     this.conceptName = condition?.["code"]?.["text"] || code?.display;

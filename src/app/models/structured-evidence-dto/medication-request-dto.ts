@@ -1,5 +1,6 @@
 import {StructuredEvidenceDTO} from "./structured-evidence-dto";
 import {FhirBaseResource} from "../fhir/fhir.base.resource";
+import {System} from "./system";
 
 export class MedicationRequestDTO extends StructuredEvidenceDTO {
   dateAuthored: string;
@@ -12,7 +13,7 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
     super();
     console.log(medicationRequest); //TODO: Remove console.log
     this.dateAuthored = medicationRequest["authoredOn"];
-    const code = medicationRequest?.['medicationCodeableConcept']?.['coding']?.[0];
+    const code = super.getCode(medicationRequest, 'medicationCodeableConcept', [System.RX_NORM])
     this.code = code?.code
     this.system = super.getSystemFromEnum(code?.system);
     this.conceptName = medicationRequest["medicationCodeableConcept"]?.["text"]

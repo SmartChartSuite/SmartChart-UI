@@ -15,7 +15,7 @@ export class EncounterDTO extends StructuredEvidenceDTO {
     this.periodStart = encounter["period"]?.["start"];
     this.periodEnd = encounter["period"]?.["end"];
     this.encounterType = encounter["type"]?.[0]?.["text"] || encounter["type"]?.[0]?.["coding"] ?.[0]?.display
-    const reasonCode = super.getReasonCode(encounter, [System.ICD_10, System.SNOMED]);
+    const reasonCode = super.getCode(encounter, 'reasonCode', [System.ICD_10, System.SNOMED]);
     this.reasonCode = reasonCode?.code;
     this.reasonSystem =  super.getSystemFromEnum(reasonCode?.system)
     this.reasonConceptName = reasonCode?.text || reasonCode[0]?.coding?.display;

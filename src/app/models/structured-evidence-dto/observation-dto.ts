@@ -13,7 +13,7 @@ export class ObservationDTO extends StructuredEvidenceDTO {
     super();
     console.log(observation); //TODO: Remove console.log
     this.date = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
-    const code = super.getCode(observation,  [System.LOINC]);
+    const code = super.getCode(observation, 'code', [System.LOINC]);
     this.code = code?.code;
     this.system  = super.getSystemFromEnum(code?.system);
     this.conceptName = observation?.["code"]?.["text"] || code?.display;
