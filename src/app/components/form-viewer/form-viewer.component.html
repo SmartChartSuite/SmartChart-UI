@@ -28,7 +28,7 @@
                 mat-flat-button
                 class="expanded-menu-button"
                 [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
-                (click)="selectQuestionnaireSection(item, i); this.selectedEvidenceIndex = null; showDrawer=false">
+                (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false">
                 {{ item["text"] }}
               </button>
             </div>
@@ -38,7 +38,7 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of temp_for_demo?.["item"]; track item ; let sectionIndex = $index) {
+        @for (item of temp_for_demo?.["item"]; track item) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
@@ -119,9 +119,10 @@
               </div>
             }
           }
+
         }
-        <!-- TODO the following button is for testing only and we should remove it when we wire the API -->
-        <button mat-raised-button type="submit" (click)="onSubmit()">log form to console</button>
+
+
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
            [ngClass]="(this.evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
@@ -172,4 +173,34 @@
     <!--    }-->
 
   </div>
+  @if (temp_for_demo?.["item"]?.length > 0) {
+    <div class="nav-controls">
+      <div class="content-spacer"></div>
+
+      <button mat-flat-button type="submit" class="wide-button"
+              [disabled]="selectedMenuItemIndex == 0"
+              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex)">
+        <mat-icon>chevron_left</mat-icon>
+        Previous
+        Section{{ selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
+      </button>
+
+      <button mat-flat-button type="submit" class="margin-left-sm wide-button"
+              [disabled]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex"
+              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex)">
+        Next
+        Section{{ (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      <div class="content-spacer"></div>
+
+      <button mat-raised-button type="submit" (click)="onSubmit()">
+        <mat-icon>download</mat-icon>
+        Save/Export
+      </button>
+
+    </div>
+  }
+
 </div>

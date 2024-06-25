@@ -98,3 +98,15 @@ $selected-nave-menu-item-color: #424242;
 .input-prefix {
   font-size: small; padding: 4px; margin:4px;
 }
+
+.nav-controls {
+  margin: 4px 16px 0 16px;
+  padding: 8px;
+  display: flex;
+  border-radius: 4px;
+  background-color: #E0E0E0;
+}
+
+.wide-button{
+  min-width: 20%;
+}

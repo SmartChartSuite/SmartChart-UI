@@ -113,7 +113,9 @@ $lg: 24px;
     min-height: 36px;
   }
   > .viewer-container-body {
-    @extend .padding-md;
+    @extend .padding-left-md;
+    @extend .padding-right-md;
+    @extend .padding-top-md;
     @extend .flex-row-simple;
     flex: 1;
     scroll-behavior: smooth;
