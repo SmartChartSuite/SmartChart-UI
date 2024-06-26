@@ -18,6 +18,7 @@ export class PatientSummary {
   birthDate?: Date;
   gender?: string;
   identifier?: PatientIdentifier[];
+  mrn?: string;
 }
 
 export class PatientName {

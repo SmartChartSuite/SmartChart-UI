@@ -5,9 +5,22 @@ export class Config {
   version: string = "";
   title: string = "";
   rcApiUrl: string = "";
-  issuer: string = "";
+  auth: AuthConfig;
+}
+
+export class AuthConfig {
+  domain: string = "";
   clientId: string = "";
-  callbackUrl: string = "";
+  scope: string = "openid email profile";
+  showDebugInformation: boolean = true;
+  responseType: string = "code";
   logoutUrl: string = "";
-  scope: string = "";
+  callbackUrl: string = "";
+  customQueryParams: CustomQueryParameters = {};
+  issuer: string = "";
+  requireHttps: boolean = true;
+}
+
+export class CustomQueryParameters {
+  audience?: string = "";
 }
