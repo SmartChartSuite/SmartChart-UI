@@ -1,4 +1,5 @@
 import {System} from "./system";
+import {DatePipe} from "@angular/common";
 
 export class StructuredEvidenceDTO {
   [key: string]: any;
@@ -10,6 +11,10 @@ export class StructuredEvidenceDTO {
     else return coding;
   }
 
+  getDateAgeAsStr(dateStr, patientDob){
+    return `${this.getFormattedDate(dateStr)} (${this.getAgeAt(new Date(dateStr), new Date(patientDob))})`
+  }
+
   getSystemFromEnum(system: System): string  {
     if(system == System.LOINC) return "Loinc";
     else if(system == System.ICD_10) return "ICD-10";
@@ -18,6 +23,40 @@ export class StructuredEvidenceDTO {
     else if(system == System.CPT) return "CPT";
     else if(system) return system; //Unknown systems passed. We need to render it to the user
     else return "";
+  }
+
+  private getFormattedDate(dateStr: string) {
+    let datePipe = new DatePipe("en-US");
+    return datePipe.transform(dateStr, 'MM/dd/yyyy');
+  }
+
+  // Function to calculate age in years
+  private getAgeAt(date: Date, patientDob: Date): string {
+    //const birthDate = new Date(dob);
+
+    // Calculate age in years
+    let years = date.getFullYear() - patientDob.getFullYear();
+
+    // Calculate months considering birthday not yet passed
+    let months = date.getMonth() - patientDob.getMonth();
+    if (months < 0 || (months === 0 && date.getDate() < patientDob.getDate())) {
+      years--;
+      months += 12;
+    }
+
+
+    if(years < 0){
+      return '';
+    }
+    else if(years < 1){
+      return `${months}m`;
+    }
+    else if(years < 2){
+      return `${months + 12}m`
+    }
+    else {
+      return `${years}y`
+    }
   }
 
 }

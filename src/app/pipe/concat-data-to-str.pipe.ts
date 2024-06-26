@@ -13,22 +13,8 @@ export class ConcatDataToStrPipe implements PipeTransform {
     if(!data){
       return "";
     }
-    return Object.entries(data).map(entry=> `${this.camelCaseToTitleCase(entry[0])}: ${this.getEntryStrValue(entry[1])}`).join('\n');
-  }
-
-  getEntryStrValue(value){
-    if(!value){
-      return "";
-    }
-    if(this.utilsService.isValidDate(value)){
-      return this.getFormattedDate(value);
-    }
-    return value;
-  }
-
-  getFormattedDate(dateStr) {
-    let datePipe = new DatePipe("en-US");
-    return datePipe.transform(dateStr, 'MM/dd/yyyy');
+    return Object.entries(data).map(entry=>
+      `${entry[0] == 'dateAgeAt'? 'Date (Age At)' : this.camelCaseToTitleCase(entry[0])}: ${entry[1]}`).join('\n');
   }
 
   camelCaseToTitleCase(camelCaseStr) {

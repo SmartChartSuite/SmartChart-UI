@@ -1,18 +1,20 @@
 import {StructuredEvidenceDTO} from "./structured-evidence-dto";
 import {FhirBaseResource} from "../fhir/fhir.base.resource";
 import {System} from "./system";
+import {PatientSummary} from "../patient-summary";
 
 export class ObservationDTO extends StructuredEvidenceDTO {
-  date: string;
+  dateAgeAt: string;
   code: string;
   system: string;
   conceptName: string;
   value: string;
 
-  constructor(observation: FhirBaseResource){
+  constructor(observation: FhirBaseResource, patientSummary: PatientSummary){
     super();
     console.log(observation); //TODO: Remove console.log
-    this.date = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
+    const effectiveDateTime = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
+    this.dateAgeAt = super.getDateAgeAsStr(effectiveDateTime,patientSummary.birthDate); //TODO: verify requirements
     const code = super.getCode(observation, 'code', [System.LOINC]);
     this.code = code?.code;
     this.system  = super.getSystemFromEnum(code?.system);

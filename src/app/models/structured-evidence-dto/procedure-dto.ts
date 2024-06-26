@@ -1,13 +1,14 @@
 import {StructuredEvidenceDTO} from "./structured-evidence-dto";
 import {FhirBaseResource} from "../fhir/fhir.base.resource";
 import {System} from "./system";
+import {PatientSummary} from "../patient-summary";
 
 export class ProcedureDTO extends StructuredEvidenceDTO {
   datePerformed: string;
   code: string;
   system : string;
   conceptName: string;
-  constructor(procedure: FhirBaseResource){
+  constructor(procedure: FhirBaseResource, patientSummary: PatientSummary){
     //TODO verify proper implementation when the requirements are finalized
     console.log(procedure) //TODO: Remove console.log
     super();
