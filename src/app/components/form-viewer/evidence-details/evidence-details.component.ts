@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
@@ -37,18 +37,22 @@ export class EvidenceDetailsComponent implements OnChanges {
 
     this.simpleObservations = cqlResources
       .filter(resource => resource.resourceType == ResourceType.OBSERVATION)
+      .sort((a, b) => ObservationDTO.sort(a, b))
       .map(resource => new ObservationDTO(resource, patientSummary));
 
     this.simpleEncounters = cqlResources
       .filter(resource => resource.resourceType == ResourceType.ENCOUNTER)
+      .sort((a, b) => EncounterDTO.sort(a, b))
       .map(resource => new EncounterDTO(resource, patientSummary));
 
     this.simpleMedicationRequests = cqlResources
       .filter(resource => resource.resourceType == ResourceType.MEDICATION_REQUEST)
+      .sort((a, b) => MedicationRequestDTO.sort(a, b))
       .map(resource => new MedicationRequestDTO(resource, patientSummary));
 
     this.simpleConditions = cqlResources
       .filter(resource => resource.resourceType == ResourceType.CONDITION)
+      .sort((a, b) => ConditionDTO.sort(a, b))
       .map(resource => new ConditionDTO(resource, patientSummary));
 
     this.simpleProcedures = cqlResources

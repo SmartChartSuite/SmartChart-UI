@@ -24,4 +24,11 @@ export class EncounterDTO extends StructuredEvidenceDTO {
     this.reasonSystem =  super.getSystemFromEnum(reasonCode?.system)
     this.reasonConceptName = reasonCode?.text || reasonCode[0]?.coding?.display;
   }
+
+  public static sort(a, b) {
+    if (a["period"]?.["start"] && b["period"]?.["start"]) {
+      return new Date(b["period"]?.["start"]).getTime() - new Date(a["period"]?.["start"]).getTime();
+    }
+    return 0;
+  }
 }

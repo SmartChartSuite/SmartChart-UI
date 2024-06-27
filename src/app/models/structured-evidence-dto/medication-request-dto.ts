@@ -23,4 +23,12 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
     this.dose = ""; //TODO implement when the requirement is known
     this.frequency = ""; //TODO implement when the requirement is known
   }
+
+  public static sort(a, b){
+    if (a["authoredOn"] && b["authoredOn"]) {
+      return new Date(b["authoredOn"]).getTime() - new Date(a["authoredOn"]).getTime();
+    }
+    return 0;
+  }
+
 }
