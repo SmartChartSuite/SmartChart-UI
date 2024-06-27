@@ -33,7 +33,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
 
-  results$: Observable<Results>;
+  results: Results;
   evidenceViewerExpanded$: Observable<boolean>;
 
   constructor(
@@ -68,8 +68,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         });
         this.temp_for_demo = result;
         // TODO : this code needs refactoring since it is using observable which is not
-        this.results$ = this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId);
-        this.results$.subscribe();
+        this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
+          .subscribe(value=> this.results=value);
       },
       error: err => {
         console.error(err);

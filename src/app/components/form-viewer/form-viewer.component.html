@@ -99,18 +99,27 @@
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
 
-                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
-                      <div class="margin-bottom-sm">
-                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
+                    @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+                      <div class="margin-bottom-sm" (click)="childItem['answer'] = results?.['link' + childItem?.['linkId']]?.['cqlAnswer']?.['valueString']">
+                        Suggested Answer:
+                        @if(results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"].length){
+                          @for(suggestedAnswer of results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]; track suggestedAnswer ){
+                            {{ suggestedAnswer }}
+                          }
+                        }
+                        @else {
+                          {{ results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]}}
+                        }
+
                       </div>
                     }
 
-                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                    @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button mat-raised-button
-                              appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
+                              appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
                               (click)="showDrawer=true; selectedEvidenceIndex=i">
                         View Evidence
-                        ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
+                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
                         )
                       </button>
                     }
