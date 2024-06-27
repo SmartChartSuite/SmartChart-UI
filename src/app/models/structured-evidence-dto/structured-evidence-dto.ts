@@ -49,13 +49,13 @@ export class StructuredEvidenceDTO {
       return '';
     }
     else if(years < 1){
-      return `${months} mos`;
+      return `${months} ${months == 1 ? 'mo' : 'mos'}`;
     }
     else if(years < 2){
       return `${months + 12} mos`
     }
     else {
-      return `${years}yrs`
+      return `${years} yrs`
     }
   }
 
