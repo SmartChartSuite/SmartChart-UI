@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component} from '@angular/core';
 import {ConfigService} from "./services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "./services/state-management/state-management.service";
@@ -26,7 +26,7 @@ export class AppComponent {
       next: value => {
         this.currentRoute = value.currentRoute; // TODO: REMOVE
       }
-    })
+    });
   }
 
   onExpandedStatusChanged(expanded: boolean) {

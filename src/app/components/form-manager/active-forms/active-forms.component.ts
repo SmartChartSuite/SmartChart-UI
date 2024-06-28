@@ -16,7 +16,6 @@ export class ActiveFormsComponent implements OnInit {
   displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
   dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
   isLoading = false;
-  apiErrorFound = false;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -26,12 +25,13 @@ export class ActiveFormsComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.getBatchJobs();
-  }
 
+    // Reload the data when a new form is started
+    this.formManagerService.formStarted$.subscribe(() => this.getBatchJobs())
+  }
 
   private getBatchJobs() {
     this.isLoading = true;
-    this.apiErrorFound = false;
     this.rcApiInterfaceService.getBatchJobs().subscribe({
       next: value => {
         this.dataSource.data = value;
@@ -41,7 +41,6 @@ export class ActiveFormsComponent implements OnInit {
         this.isLoading = false;
         console.error(err);
         this.utilsService.showErrorMessage();
-        this.apiErrorFound = true
       }
     })
   }

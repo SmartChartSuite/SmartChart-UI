@@ -1,0 +1,11 @@
+::ng-deep .mdc-tooltip { //TODO find a way to remove deprecated css
+  white-space: pre-line !important;
+}
+
+.mat-column-dateAgeAt {
+  white-space: nowrap;
+}
+
+.compact-row {
+  height: 32px;
+}

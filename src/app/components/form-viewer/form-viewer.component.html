@@ -2,7 +2,7 @@
   @if(activeFormSummary?.formName || activeFormSummary?.patientSummary){
     <div class="viewer-container-header flex">
       <div class="form-name">
-        {{ activeFormSummary?.formName }}
+        {{ temp_for_demo?.["title"] }}
       </div>
       @if (activeFormSummary?.patientSummary) {
         <div class="patient-details">
@@ -28,7 +28,7 @@
                 mat-flat-button
                 class="expanded-menu-button"
                 [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
-                (click)="selectQuestionnaireSection(item, i); this.selectedEvidenceIndex = null; showDrawer=false">
+                (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false">
                 {{ item["text"] }}
               </button>
             </div>
@@ -38,7 +38,7 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of temp_for_demo?.["item"]; track item ; let sectionIndex = $index) {
+        @for (item of temp_for_demo?.["item"]; track item) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
@@ -99,18 +99,27 @@
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
 
-                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
-                      <div class="margin-bottom-sm">
-                        Suggested Answer: {{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] : "ERROR" }}
+                    @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+                      <div class="margin-bottom-sm" (click)="childItem['answer'] = results?.['link' + childItem?.['linkId']]?.['cqlAnswer']?.['valueString']">
+                        Suggested Answer:
+                        @if(results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"].length){
+                          @for(suggestedAnswer of results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]; track suggestedAnswer ){
+                            {{ suggestedAnswer }}
+                          }
+                        }
+                        @else {
+                          {{ results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]}}
+                        }
+
                       </div>
                     }
 
-                    @if ((this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] && (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                    @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button mat-raised-button
-                              appSetEvidence [resultSet]="(this.results$ | async)?.['link' + childItem?.['linkId']]"
+                              appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
                               (click)="showDrawer=true; selectedEvidenceIndex=i">
                         View Evidence
-                        ({{ (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"] ? (this.results$ | async)?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
+                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
                         )
                       </button>
                     }
@@ -119,24 +128,25 @@
               </div>
             }
           }
+
         }
-        <!-- TODO the following button is for testing only and we should remove it when we wire the API -->
-        <button mat-raised-button type="submit" (click)="onSubmit()">log form to console</button>
+
+
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
-           [ngClass]="evidenceViewerExpanded ? 'viewer-container-body-side-explorer-expanded': ''"
+           [ngClass]="(this.evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
            [hidden]="!showDrawer">
         <div class="fhir-explorer-header">
-          @if(evidenceViewerExpanded){
+          @if(this.evidenceViewerExpanded$ | async){
             <mat-icon
-              (click)="evidenceViewerExpanded = false;"
+              (click)="evidenceViewerService.setViewerExpanded(false);"
               matTooltip="Collapse"
               class="pointer">
               chevron_right
             </mat-icon>
           } @else {
             <mat-icon
-              (click)="evidenceViewerExpanded = true;"
+              (click)="evidenceViewerService.setViewerExpanded(true);"
               matTooltip="Expand"
               class="pointer">
               chevron_left
@@ -154,7 +164,7 @@
             close
           </mat-icon>
         </div>
-        <app-evidence-details></app-evidence-details>
+        <app-evidence-details [patientSummary]="activeFormSummary?.patientSummary"></app-evidence-details>
       </div>
     }
 
@@ -172,4 +182,34 @@
     <!--    }-->
 
   </div>
+  @if (temp_for_demo?.["item"]?.length > 0) {
+    <div class="nav-controls">
+      <div class="content-spacer"></div>
+
+      <button mat-flat-button type="submit" class="wide-button"
+              [disabled]="selectedMenuItemIndex == 0"
+              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex)">
+        <mat-icon>chevron_left</mat-icon>
+        Previous
+        Section{{ selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
+      </button>
+
+      <button mat-flat-button type="submit" class="margin-left-sm wide-button"
+              [disabled]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex"
+              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex)">
+        Next
+        Section{{ (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+
+      <div class="content-spacer"></div>
+
+      <button mat-raised-button type="submit" (click)="onSubmit()">
+        <mat-icon>download</mat-icon>
+        Save/Export
+      </button>
+
+    </div>
+  }
+
 </div>

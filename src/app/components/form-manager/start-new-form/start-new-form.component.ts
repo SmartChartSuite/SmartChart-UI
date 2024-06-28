@@ -40,9 +40,9 @@ export class StartNewFormComponent implements OnInit {
 
     // TODO: Handle this appropriately, subscription should not happen in this manner. Example of approach can be found in raven upload.
     this.rcApiInterfaceService.startJobs(this.selectedPatient.fhirId, this.selectedForm.name).subscribe({
-        next: value => {
-          console.log(value);
-          this.utilsService.showSuccessMessage("Job started")
+        next: ()=> {
+          this.utilsService.showSuccessMessage("Job started");
+          this.formManagerService.setFormStarted();
         },
         error: err => {
           console.error(err);

@@ -70,11 +70,11 @@ import {
 import {
   UnstructuredResultsDetailsComponent
 } from './components/form-viewer/evidence-details/unstructured-results-details/unstructured-results-details.component';
-import {IsValidDatePipe} from "./pipe/is-valid-date.pipe";
 import {CamelCaseToTitleCasePipe} from "./pipe/camel-case-to-title-case.pipe";
 import { LoadingComponent } from './components/loading/loading.component';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {LoggingInterceptor} from "./services/loading/loading.interceptor";
+import {ConcatDataToStrPipe} from "./pipe/concat-data-to-str.pipe";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -162,11 +162,10 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     SetEvidenceDirective,
     HasEvidenceDirective,
     Base64stringPipe,
-    IsValidDatePipe,
-    IsValidDatePipe,
     CamelCaseToTitleCasePipe,
     MatIconButton,
-    MatProgressSpinner
+    MatProgressSpinner,
+    ConcatDataToStrPipe,
   ],
   providers: [
     {

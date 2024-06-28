@@ -47,10 +47,10 @@
 
       <li>
         <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LOAD_FORM"
+                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORM_MANAGER"
                 (click)="router.navigate(['/forms']);">
           <mat-icon>person_search</mat-icon>
-          @if (expanded) { Load Form }
+          @if (expanded) { Form Manager }
         </button>
       </li>
     }
