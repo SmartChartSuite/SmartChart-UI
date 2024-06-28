@@ -16,7 +16,7 @@ export class StructuredEvidenceDTO {
   }
 
   getSystemFromEnum(system: System): string  {
-    if(system == System.LOINC) return "Loinc";
+    if(system == System.LOINC) return "LOINC";
     else if(system == System.ICD_10) return "ICD-10";
     else if(system == System.SNOMED) return "SNOMED CT";
     else if(system == System.RX_NORM) return "RxNorm";
