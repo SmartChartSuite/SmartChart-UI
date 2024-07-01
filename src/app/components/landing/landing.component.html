@@ -1,13 +1,19 @@
 <div class="component-wrapper">
   <div class="component-content">
-    <!-- TODO: Remove temp content-->
-    <div>This is temporary content for the landing page. All content on this page will be removed.</div>
-    <div>User Info: </div>
-
-    <div><pre>{{ oauthService.getIdentityClaims() | json }}</pre></div>
-
-    <button mat-raised-button (click)="oauthService.logOut()">
-      Sign Out
-    </button>
+    <h1>SmartChart</h1>
+    <div>
+      <p>
+        Welcome to the SmartChart platform. SmartChart provides a system for multiple client applications to build upon
+        a common backend service built around HL7 FHIR. This client focuses on patient chart abstraction to enable the
+        completion of patient related forms.
+      </p>
+      <p>
+        To begin, please select the "Form Manager" option in the left navigation bar. From there you may load an active
+        form or start a backend job to pull patient data for a new form.
+      </p>
+      <p>
+        <strong>More content coming later.</strong>
+      </p>
+    </div>
   </div>
 </div>
