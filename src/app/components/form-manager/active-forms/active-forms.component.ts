@@ -34,7 +34,9 @@ export class ActiveFormsComponent implements OnInit {
     this.isLoading = true;
     this.rcApiInterfaceService.getBatchJobs().subscribe({
       next: value => {
-        this.dataSource.data = value;
+        this.dataSource.data = value.sort((a,  b) => {
+          return (new Date(b.started).getTime()) - (new Date(a.started).getTime()) ;
+        });
         this.isLoading = false;
       },
       error: err => {
