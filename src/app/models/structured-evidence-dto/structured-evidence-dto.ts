@@ -4,6 +4,13 @@ import {DatePipe} from "@angular/common";
 export class StructuredEvidenceDTO {
   [key: string]: any;
 
+  getCodeFromCodeableConcept(codeableConcept: any, preferredSystems? : string[]): any {
+    if (!preferredSystems) return codeableConcept?.coding?.[0] || undefined;
+    else {
+      return codeableConcept?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);
+    }
+  }
+
   getCode(evidence, property: string, preferredSystems? : string[]) {
     if (!preferredSystems) return evidence?.[property]?.coding?.[0] || undefined;
     let coding = evidence?.[property]?.coding?.find(coding => coding?.["system"] === preferredSystems[0]);

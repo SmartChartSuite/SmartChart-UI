@@ -2,6 +2,7 @@ import {StructuredEvidenceDTO} from "./structured-evidence-dto";
 import {FhirBaseResource} from "../fhir/fhir.base.resource";
 import {System} from "./system";
 import {PatientSummary} from "../patient-summary";
+import {first} from "rxjs";
 
 export class EncounterDTO extends StructuredEvidenceDTO {
   startDateAgeAt: string;
@@ -19,10 +20,12 @@ export class EncounterDTO extends StructuredEvidenceDTO {
     const periodEnd = encounter["period"]?.["end"];
     this.endDateAgeAt = super.getDateAgeAsStr(periodEnd, patientSummary.birthDate); //TODO: verify requirements
     this.encounterType = encounter["type"]?.[0]?.["text"] || encounter["type"]?.[0]?.["coding"] ?.[0]?.display
-    const reasonCode = super.getCode(encounter, 'reasonCode', [System.ICD_10, System.SNOMED]);
-    this.reasonCode = reasonCode?.code;
-    this.reasonSystem =  super.getSystemFromEnum(reasonCode?.system);
-    this.reasonConceptName = reasonCode?.text || reasonCode?.display;
+
+    const firstCodeableConcept = encounter?.["reasonCode"]?.[0];
+    const reasonCoding = super.getCodeFromCodeableConcept(firstCodeableConcept, [System.ICD_10, System.SNOMED]);
+    this.reasonCode = reasonCoding?.code;
+    this.reasonSystem = super.getSystemFromEnum(reasonCoding?.system);
+    this.reasonConceptName = firstCodeableConcept?.text || reasonCoding?.display;
   }
 
   public static sort(a, b) {
