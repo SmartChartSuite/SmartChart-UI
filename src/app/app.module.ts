@@ -75,6 +75,9 @@ import { LoadingComponent } from './components/loading/loading.component';
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {LoggingInterceptor} from "./services/loading/loading.interceptor";
 import {ConcatDataToStrPipe} from "./pipe/concat-data-to-str.pipe";
+import {SuggestedAnswerFormatterPipe} from "./pipe/suggested-answer-formatter.pipe";
+import {MatChip} from "@angular/material/chips";
+import {DisplayItemFilterPipe} from "./pipe/display-item-filter.pipe";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -166,6 +169,9 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatIconButton,
     MatProgressSpinner,
     ConcatDataToStrPipe,
+    SuggestedAnswerFormatterPipe,
+    MatChip,
+    DisplayItemFilterPipe,
   ],
   providers: [
     {

@@ -94,4 +94,5 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectPatientForm() {
     this.router.navigate(['/forms']);
   }
+
 }

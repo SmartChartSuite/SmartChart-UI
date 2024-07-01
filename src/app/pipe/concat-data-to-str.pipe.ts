@@ -1,13 +1,10 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {UtilsService} from "../services/utils/utils.service";
-import {DatePipe} from "@angular/common";
+
 @Pipe({
   name: 'concatDataToStr',
   standalone: true
 })
 export class ConcatDataToStrPipe implements PipeTransform {
-
-  constructor(private utilsService: UtilsService){}
 
   transform(data: any): string {
     if(!data){

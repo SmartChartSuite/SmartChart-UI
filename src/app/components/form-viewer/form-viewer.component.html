@@ -42,7 +42,7 @@
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
-            @for (childItem of item["item"]; track childItem; let i = $index) {
+            @for (childItem of (item["item"] | displayItemFilter); track childItem; let i = $index) {
               <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
                 <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
                   {{ i + 1 }}. <span class="margin-left-sm">{{ childItem["text"] }}</span>
@@ -51,14 +51,17 @@
                 <div class="margin-left-md margin-right-sm margin-top-xs">
                   @if (childItem["type"] == QuestionWidgetType.RADIO) {
                     @for (option of childItem?.['answerOption']; track option) {
-                      <mat-radio-group [(ngModel)]="childItem['value']">
+                      <mat-radio-group [(ngModel)]="childItem['answer']">
                         @if (childItem?.['answerOption'].length <= 3) {
-                          <mat-radio-button class="margin-right-md" [value]="option">{{ option?.['valueString'] }}
+                          <mat-radio-button class="margin-right-md"
+                            [value]="option?.['valueString']">{{ option?.['valueString'] }}
                           </mat-radio-button>
                         } @else {
                           <!-- There are too many options to render in the same line -->
                           <div>
-                            <mat-radio-button [value]="option">{{ option?.['valueString'] }}</mat-radio-button>
+                            <mat-radio-button [value]="option?.['valueString']">
+                              {{ option?.['valueString'] }}
+                            </mat-radio-button>
                           </div>
                         }
                       </mat-radio-group>
@@ -73,7 +76,7 @@
                     <div class="flex">
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input">
+                        class="value-quantity-input margin-right-md">
                         <input type="text" matInput [(ngModel)]="childItem['answer']">
                         <span matPrefix class="input-prefix">Value</span>
                       </mat-form-field>
@@ -100,17 +103,13 @@
                     <!--                      show "No evidence found"                                            -->
 
                     @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
-                      <div class="margin-bottom-sm" (click)="childItem['answer'] = results?.['link' + childItem?.['linkId']]?.['cqlAnswer']?.['valueString']">
+                      <div class="margin-bottom-sm">
                         Suggested Answer:
-                        @if(results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"].length){
-                          @for(suggestedAnswer of results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]; track suggestedAnswer ){
-                            {{ suggestedAnswer }}
-                          }
+                        @for (item of (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item){
+                          <span class="margin-left-sm" (click)="childItem['answer']=item;">
+                            <mat-chip>{{ item }}</mat-chip>
+                          </span>
                         }
-                        @else {
-                          {{ results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]}}
-                        }
-
                       </div>
                     }
 
