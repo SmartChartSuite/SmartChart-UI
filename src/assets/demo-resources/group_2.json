@@ -1,0 +1,28 @@
+{
+  "resourceType": "Group",
+  "type": "patient",
+  "actual": true,
+  "name": "SC UI Demo Patients 2",
+  "member": [
+    {
+      "entity": {
+        "reference": "https://smartchartsuite.dev.heat.icl.gtri.org/fhir-proxy/Patient/10256"
+      }
+    },
+    {
+      "entity": {
+        "reference": "https://smartchartsuite.dev.heat.icl.gtri.org/fhir-proxy/Patient/16800"
+      }
+    },
+    {
+      "entity": {
+        "reference": "https://smartchartsuite.dev.heat.icl.gtri.org/fhir-proxy/Patient/18140"
+      }
+    },
+    {
+      "entity": {
+        "reference": "https://smartchartsuite.dev.heat.icl.gtri.org/fhir-proxy/Patient/19368"
+      }
+    }
+  ]
+}

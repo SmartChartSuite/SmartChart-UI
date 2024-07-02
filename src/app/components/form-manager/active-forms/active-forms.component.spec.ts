@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ContentRootComponent } from './content-root.component';
+import { ActiveChartsComponent } from './active-charts.component';
 
-describe('ContentRootComponent', () => {
-  let component: ContentRootComponent;
-  let fixture: ComponentFixture<ContentRootComponent>;
+describe('ActiveChartsComponent', () => {
+  let component: ActiveChartsComponent;
+  let fixture: ComponentFixture<ActiveChartsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ContentRootComponent]
+      declarations: [ActiveChartsComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ContentRootComponent);
+    fixture = TestBed.createComponent(ActiveChartsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

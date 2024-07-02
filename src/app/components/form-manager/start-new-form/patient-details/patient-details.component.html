@@ -1,0 +1,8 @@
+<!--TODO extract the style to css -->
+<div class="flex">
+  <div class="patient-name">
+    Patient Name: {{ patientSummary.name.given }} {{ patientSummary.name.family }}
+  </div>
+  <div class="patient-details">Gender: {{ patientSummary.gender | titlecase }}</div>
+  <div class="patient-details">DOB: {{ patientSummary.birthDate | date : 'MM/dd/yyyy' }}</div>
+</div>

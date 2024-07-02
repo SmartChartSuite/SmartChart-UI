@@ -1,6 +1,12 @@
 export class ApplicationState {
   constructor() {
-    this.currentComponent = "";
+    this.currentRoute = RouteState.LANDING; // Default Route.
   }
-  currentComponent: string;
+  currentRoute: RouteState;
+}
+
+export enum RouteState {
+  LANDING,
+  FORM_MANAGER,
+  CURRENT_FORM,
 }

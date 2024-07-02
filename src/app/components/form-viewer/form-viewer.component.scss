@@ -1,0 +1,112 @@
+$light-accent-color: #E0E0E0;
+$dark-background-color: #212121;
+
+.form-name {
+  display: flex;
+  flex: 0 0 30%;
+  flex-wrap: wrap;
+  background-color: $dark-background-color;
+  color: whitesmoke;
+  align-content: center;
+  justify-content: center;
+  font-size: large;
+  padding: 16px 0 16px 0;
+}
+
+.patient-details {
+  flex: 0 0 70%;
+  background-color: $light-accent-color;
+}
+
+.question-label {
+  display: flex;
+  background-color: whitesmoke;
+  border-radius: 4px;
+  font-weight: bold;
+  padding: 4px;
+}
+
+/* Begin sidenav style */
+
+$menu-width: 300px;
+$sidenav-background-color: #212121;
+$selected-nave-menu-item-color: #424242;
+
+.side-nav {
+  background-color: $sidenav-background-color;
+  border-radius: 4px;
+}
+
+.selected-menu-item {
+  background-color: $selected-nave-menu-item-color !important;
+}
+
+.expanded-menu-button {
+  width: ($menu-width - 24px);
+  justify-content: flex-start;
+  background-color: $sidenav-background-color;
+  color: whitesmoke;
+}
+
+/* End sidenav style */
+.item-text {
+  font-size: medium; font-weight: bold; margin-bottom: 16px;
+}
+
+.question-item {
+  margin-bottom: 24px;
+  width: 70%;
+}
+
+.full-size-question-item {
+  @extend .question-item;
+  width: 98%;
+}
+
+.question-item {
+  margin-bottom: 24px;
+  width: 70%;
+
+  &.full-size-question-item {
+    width: 98%;
+  }
+}
+
+.selected-evidence {
+  @extend .question-label;
+  background-color: $dark-background-color;
+  color: whitesmoke;
+}
+
+.question-input {
+  margin-top: 8px;
+  margin-left: 4px;
+  margin-bottom: -8px; //removes the space for input form hint
+  width: 100%;
+}
+
+.value-quantity-input {
+  @extend .question-input;
+  width: 30%;
+}
+
+.value-quantity-input-full-size {
+  @extend .question-input;
+  width: 40%;
+}
+
+.input-prefix {
+  font-size: small; padding: 4px; margin: 4px;
+}
+
+.nav-controls {
+  margin: 4px 16px 0 16px;
+  padding: 8px;
+  display: flex;
+  border-radius: 4px;
+  background-color: #E0E0E0;
+}
+
+.wide-button{
+  min-width: 20%;
+}

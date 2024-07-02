@@ -49,15 +49,157 @@ $lg: 24px;
 .margin-top-sm { margin-top: $sm; }
 .margin-top-md { margin-top: $md; }
 .margin-left-md { margin-left: $md; }
+.margin-left-sm { margin-left: $sm; }
 .margin-right-md { margin-right: $md; }
+.margin-right-sm { margin-right: $sm; }
 .padding-bottom-md { padding-bottom: $md; }
 .padding-top-md { padding-top: $md; }
 .padding-bottom-md { padding-bottom: $md; }
 .padding-left-md { padding-left: $md; }
+.padding-left-sm { padding-left: $sm; }
 .padding-right-md { padding-right: $md; }
 .border-radius-xs { border-radius: $xs; }
 // Standardized Border
 .border {
   @extend .border-radius-xs;
   border: 1px solid #cdcdcd;
+}
+
+
+//** Component Wrappers **//
+// DO NOT USE THE FOLLOWING OUTSIDE OF app.component.html!!
+.app-wrapper { @extend .flex; @extend .full-screen; }
+.app-flex-wrapper { @extend .full-screen; @extend .flex-col; flex: 1; justify-content: stretch; align-items: stretch; }
+.app-content-wrapper {
+  @extend .flex-col;
+  @extend .app-flex-wrapper;
+  > * {
+    @extend .flex-col;
+    flex: 1;
+  }
+  > router-outlet {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}
+// Use the following for all router outlet level pages in a wrapping div.
+.component-wrapper {
+  @extend .flex-col-simple; // Sets a basic flex display so child will fill it.
+  flex: 1;                  // Stretches to fill app component.
+  align-content: stretch;   // More stretching.
+  align-items: stretch;     // More stretching to fill!
+  overflow-y: hidden;       // Sets up overflow so that the inner content can be scrollable.
+  > .component-content {
+    @extend .padding-md; // Sets default component padding.
+    @extend .scrollable; // Makes the content scrollable.
+    flex: 1;             // Stretches to fill wrapper.
+  }
+}
+
+.content-spacer{flex: 1 1 auto;}
+
+/*TODO: refactor copied code from raven */
+/** Record Viewer Container **/
+.viewer-container-wrapper {
+  @extend .full-screen;
+  @extend .flex-col-simple;
+  flex: 1;
+  align-content: stretch;
+  align-items: stretch;
+  overflow-y: hidden;
+  > .viewer-container-header {
+    margin-left: 16px;
+    margin-right: 16px;
+    min-height: 36px;
+  }
+  > .viewer-container-body {
+    @extend .padding-left-md;
+    @extend .padding-right-md;
+    @extend .padding-top-md;
+    @extend .flex-row-simple;
+    flex: 1;
+    scroll-behavior: smooth;
+    overflow-y: hidden;
+    align-content: stretch;
+    align-items: stretch;
+    > * {
+      @extend .scrollable;
+      scroll-behavior: smooth;
+      overflow-y: scroll;
+    }
+    > .viewer-container-body-content {
+      flex: 1;
+    }
+    > .viewer-container-body-side-explorer {
+      animation-name: open-explorer;
+      animation-duration: 0.1s;
+      width: 30%;
+      border: 1px solid #212121;
+      border-radius: 4px;
+      > .fhir-explorer-header {
+        @extend .center-contents;
+        @extend .flex-row-simple;
+        @extend .padding-sm;
+        font-weight: bold;
+        font-size: larger;
+        background-color: #212121;
+        color: whitesmoke;
+        > * {
+          @extend .center-contents;
+        }
+        > .explorer-header-title {
+          @extend .margin-left-md;
+          font-size: medium;
+          background-color: #212121;
+        }
+      }
+    }
+    > .viewer-container-body-side-explorer-expanded {
+      @extend .viewer-container-body-side-explorer;
+      width: 45%
+    }
+  }
+}
+@keyframes open-explorer {
+  from {width: 0;}
+  to {width: 30%;}
+}
+
+/** TODO add style for the class below*/
+.no-data-table-row {
+  @extend .margin-md
+}
+
+/** Begin Loading Data style. All the style does is adds ellipses after a text */
+
+.loading {
+  // TODO add style to the text
+}
+
+.loading:after {
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(4,end) 900ms infinite;
+  animation: ellipsis steps(4,end) 900ms infinite;
+  content: "\2026"; /* ascii code for the ellipsis character */
+  width: 0;
+}
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+/* END Loading Data style */
+
+
+.snackbar-offset{
+  transform: translateY(90vh) !important;
 }

@@ -1,0 +1,50 @@
+<mat-card class="margin-sm">
+  <mat-card-header>
+    <mat-card-title>Structured Resources</mat-card-title>
+  </mat-card-header>
+  <mat-card-content style="overflow: auto">
+
+    <!--TODO Remove the for loop once the parsing of all structured resources is implemented -->
+    @if (this.cqlResources?.length > 0) {
+      @if(simpleObservations.length > 0){
+        <app-structured-results-details
+          [structuredEvidenceDto]="simpleObservations">
+        </app-structured-results-details>
+      }
+      @if(simpleConditions.length > 0){
+        <app-structured-results-details
+          [structuredEvidenceDto]="simpleConditions">
+        </app-structured-results-details>
+      }
+      @if(simpleEncounters.length > 0){
+        <app-structured-results-details
+          [structuredEvidenceDto]="simpleEncounters">
+        </app-structured-results-details>
+      }
+      @if(simpleMedicationRequests.length > 0){
+        <app-structured-results-details
+          [structuredEvidenceDto]="simpleMedicationRequests">
+        </app-structured-results-details>
+      }
+    }
+    @else {
+      No Structured Evidence Found
+    }
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="margin-sm">
+  <mat-card-header>
+    <mat-card-title>Documents</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @for (nlpAnswer of this.nlpAnswers; track nlpAnswer) {
+      <app-unstructured-results-details
+        class="padding-md"
+        [nlpAnswer]="nlpAnswer">
+      </app-unstructured-results-details>
+    } @empty {
+      No documents found
+    }
+  </mat-card-content>
+</mat-card>
