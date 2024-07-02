@@ -42,10 +42,11 @@
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
-            @for (childItem of (item["item"] | displayItemFilter); track childItem; let i = $index) {
+            @for (childItem of (item["item"]); track childItem; let i = $index) {
               <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
                 <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
-                  {{ i + 1 }}. <span class="margin-left-sm">{{ childItem["text"] }}</span>
+                  <span appGetIndex [i]="i" [childItems]="childItem" [itemElements]="item['item']"></span>
+                  <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
