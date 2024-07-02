@@ -2,8 +2,8 @@
   "version": "",
   "title": "SmartChart",
   "rcApiUrl": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
-  "callbackUrl": "https://localhost:4200/",
   "auth": {
+    "callbackUrl": "https://localhost:4200/",
     "domain": "dev-heat-gtri-smartchart.us.auth0.com",
     "clientId": "c1q4zjH4atHfyf3vJbcuIXbcgSAQyzii",
     "scope": "openid email profile admin",

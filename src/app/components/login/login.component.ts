@@ -1,6 +1,5 @@
 import {Component, Input} from '@angular/core';
 import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
-import {authCodeFlowConfig} from "../../../assets/config/auth-code-flow-config";
 import {ConfigService} from "../../services/config/config.service";
 @Component({
   selector: 'sc-standalone-login',
@@ -16,7 +15,7 @@ export class LoginComponent {
 
   private configure() {
     // Load information from Auth0 (could also be configured manually)
-    this.oauthService.configure(authCodeFlowConfig);
+    this.oauthService.configure(this.configService.authConfig);
     this.oauthService.customQueryParams = this.configService.config.auth.customQueryParams;
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
     this.oauthService.loadDiscoveryDocumentAndTryLogin();
