@@ -78,6 +78,7 @@ import {ConcatDataToStrPipe} from "./pipe/concat-data-to-str.pipe";
 import {SuggestedAnswerFormatterPipe} from "./pipe/suggested-answer-formatter.pipe";
 import {MatChip} from "@angular/material/chips";
 import {DisplayItemFilterPipe} from "./pipe/display-item-filter.pipe";
+import {QuestionnaireIndexDirective} from "./directives/questionnaire-index.directive";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -172,6 +173,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     SuggestedAnswerFormatterPipe,
     MatChip,
     DisplayItemFilterPipe,
+    QuestionnaireIndexDirective,
   ],
   providers: [
     {
