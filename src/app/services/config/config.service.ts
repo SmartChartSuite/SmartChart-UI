@@ -3,6 +3,8 @@ import {catchError, map, of} from "rxjs";
 import {Config} from "../../models/config";
 import packageInfo from '../../../../package.json';
 import {HttpBackend, HttpClient} from "@angular/common/http";
+import {AuthConfig} from "angular-oauth2-oidc";
+import config from "../../../assets/config/config.json";
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,7 @@ export class ConfigService {
 
   defaultLocalConfigPath = '../../assets/config/config.json'
   config: Config = new Config();
+  authConfig: AuthConfig;
 
   packageInfo = packageInfo;
 
@@ -30,6 +33,7 @@ export class ConfigService {
         config.version = "v" + this.packageInfo.version;
         config.rcApiUrl = this.standardizeUrl(config.rcApiUrl);
         this.config = config;
+        this.authConfig = this.buildAuthConfig(config);
         return true;
       }),
       catchError(error => {
@@ -38,6 +42,19 @@ export class ConfigService {
         return of(false);
       })
     )
+  }
+
+  buildAuthConfig(config: Config): AuthConfig {
+    return new AuthConfig({
+      issuer: config.auth.issuer,
+      redirectUri: config.auth.callbackUrl,
+      clientId: config.auth.clientId,
+      responseType: 'code',
+      scope: config.auth.scope,
+      showDebugInformation: true,
+      requireHttps: false,
+      logoutUrl: config.auth.logoutUrl
+    });
   }
   standardizeUrl(url: string): string {
     if (!url.endsWith("/")) {
