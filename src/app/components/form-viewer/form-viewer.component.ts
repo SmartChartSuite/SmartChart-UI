@@ -95,4 +95,16 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.router.navigate(['/forms']);
   }
 
+  onSelectedNextSection(selectedMenuItemIndex: number) {
+    if ((this.temp_for_demo?.['item']?.length - 1) > selectedMenuItemIndex) {
+      this.selectedMenuItemIndex = selectedMenuItemIndex + 1;
+      this.selectQuestionnaireSection(this.selectedMenuItemIndex)
+    }
+  }
+
+  onSelectedPreviousSection(selectedMenuItemIndex: number) {
+    if(selectedMenuItemIndex > 0){
+      this.selectedMenuItemIndex = selectedMenuItemIndex - 1; this.selectQuestionnaireSection(this.selectedMenuItemIndex);
+    }
+  }
 }

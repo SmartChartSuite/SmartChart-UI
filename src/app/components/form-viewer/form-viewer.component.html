@@ -185,22 +185,35 @@
   @if (temp_for_demo?.["item"]?.length > 0) {
     <div class="nav-controls">
       <div class="content-spacer"></div>
-
-      <button mat-flat-button type="submit" class="wide-button"
-              [disabled]="selectedMenuItemIndex == 0"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex)">
-        <mat-icon>chevron_left</mat-icon>
-        Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
-      </button>
-
-      <button mat-flat-button type="submit" class="margin-left-sm wide-button"
-              [disabled]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex)">
-        Next
-        Section{{ (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
-        <mat-icon>chevron_right</mat-icon>
-      </button>
+      <div class="nav-item"
+           (click)="onSelectedPreviousSection(selectedMenuItemIndex)"
+           [ngClass]="selectedMenuItemIndex == 0 ? 'disabled': 'enabled'">
+        <div class="nav-button">
+          <mat-icon>chevron_left</mat-icon>
+        </div>
+        <div class="nav-text">
+          Previous Section
+          {{ temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text']?.length > 20 ?
+          (((selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '') | slice:0:20) + '...')
+          :
+          selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : ''
+          }}
+        </div>
+      </div>
+        <div class="nav-item"
+             [ngClass]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex ? 'disabled': 'enabled'"
+             (click)="onSelectedNextSection(selectedMenuItemIndex)">
+        <div class="nav-text">
+          Next Section
+          {{  temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text']?.length > 20 ?
+          ((((selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '') | slice:0:20) + '...')
+          :
+          (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : ''}}
+        </div>
+          <div class="nav-button">
+          <mat-icon>chevron_right</mat-icon>
+        </div>
+      </div>
 
       <div class="content-spacer"></div>
 
