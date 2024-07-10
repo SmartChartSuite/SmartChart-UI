@@ -104,7 +104,6 @@ $selected-nave-menu-item-color: #424242;
   padding: 8px;
   display: flex;
   border-radius: 4px;
-  background-color: #E0E0E0;
 }
 
 .wide-button{
@@ -119,7 +118,6 @@ $selected-nave-menu-item-color: #424242;
   align-items: center;
   min-width: 20%;
   background-color: whitesmoke;
-
 }
 
 .enabled {
@@ -143,4 +141,7 @@ $selected-nave-menu-item-color: #424242;
   flex: 1;
   align-items: center;
   padding: 0 16px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  letter-spacing: 1px;
 }

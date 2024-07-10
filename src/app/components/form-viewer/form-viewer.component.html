@@ -183,6 +183,7 @@
 
   </div>
   @if (temp_for_demo?.["item"]?.length > 0) {
+    <mat-divider></mat-divider>
     <div class="nav-controls">
       <div class="content-spacer"></div>
       <div class="nav-item"
@@ -192,8 +193,8 @@
           <mat-icon>chevron_left</mat-icon>
         </div>
         <div class="nav-text">
-          Previous Section
-          {{ temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text']?.length > 20 ?
+          Previous
+          Section{{temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text']?.length > 20 ?
           (((selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '') | slice:0:20) + '...')
           :
           selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : ''
@@ -204,8 +205,8 @@
              [ngClass]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex ? 'disabled': 'enabled'"
              (click)="onSelectedNextSection(selectedMenuItemIndex)">
         <div class="nav-text">
-          Next Section
-          {{  temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text']?.length > 20 ?
+          Next
+          Section{{temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text']?.length > 20 ?
           ((((selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '') | slice:0:20) + '...')
           :
           (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : ''}}

@@ -79,6 +79,7 @@ import {SuggestedAnswerFormatterPipe} from "./pipe/suggested-answer-formatter.pi
 import {MatChip} from "@angular/material/chips";
 import {DisplayItemFilterPipe} from "./pipe/display-item-filter.pipe";
 import {QuestionnaireIndexDirective} from "./directives/questionnaire-index.directive";
+import {MatDivider} from "@angular/material/divider";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -174,6 +175,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatChip,
     DisplayItemFilterPipe,
     QuestionnaireIndexDirective,
+    MatDivider,
   ],
   providers: [
     {
