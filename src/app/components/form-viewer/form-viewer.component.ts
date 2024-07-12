@@ -18,7 +18,7 @@ import {QuestionType} from "../../models/question-type";
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  temp_for_demo: any;
+  questionnaire: any;
   QuestionWidgetType = QuestionType;
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
@@ -58,7 +58,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
-        this.temp_for_demo = result;
+        this.questionnaire = result;
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
       },
@@ -74,12 +74,12 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   selectQuestionnaireSection(index: number) {
     this.selectedMenuItemIndex = index;
-    this.temp_for_demo['item'] = this.temp_for_demo.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
+    this.questionnaire['item'] = this.questionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
     //TODO implement scroll to top when new question is selected
   }
 
   onSubmit() {
-    console.log(this.temp_for_demo)
+    console.log(this.questionnaire)
   }
 
   selectPatientForm() {
