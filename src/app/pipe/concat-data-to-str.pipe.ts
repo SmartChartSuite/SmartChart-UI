@@ -19,7 +19,7 @@ export class ConcatDataToStrPipe implements PipeTransform {
       // Insert a space before all capital letters
       .replace(/([A-Z])/g, ' $1')
       // Capitalize the first letter of the string
-      .replace(/^./, function(str) { return str.toUpperCase(); });
+      .replace(/^./, str =>  str.toUpperCase());
   }
 
 }
