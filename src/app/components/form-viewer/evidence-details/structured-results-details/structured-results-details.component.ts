@@ -17,7 +17,7 @@ export class StructuredResultsDetailsComponent implements OnChanges, OnInit, Aft
 
   columns: string[];
   dataSource = new MatTableDataSource<StructuredEvidenceDTO>([]);
-  readonly MAX_STR_LENGTH = 14;
+  readonly MAX_STR_LENGTH = 17;
   evidenceViewerExpanded$: Observable<boolean>;
 
   constructor(private evidenceViewerService: EvidenceViewerService) {

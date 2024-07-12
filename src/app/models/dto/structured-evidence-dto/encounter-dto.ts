@@ -27,10 +27,4 @@ export class EncounterDTO extends StructuredEvidenceDTO {
     this.reasonConceptName = firstCodeableConcept?.text || reasonCoding?.display;
   }
 
-  public static sort(a, b) {
-    if (a["period"]?.["start"] && b["period"]?.["start"]) {
-      return new Date(b["period"]?.["start"]).getTime() - new Date(a["period"]?.["start"]).getTime();
-    }
-    return 0;
-  }
 }

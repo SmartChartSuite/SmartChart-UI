@@ -25,14 +25,6 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
     this.dosage = this.getDosage(medicationRequest); // See https://jira.gtri.gatech.edu/browse/IHSS-142 for requirements
   }
 
-  // TODO replace with sortByDate pipe when the code is merged.
-  public static sort(a, b){
-    if (a["authoredOn"] && b["authoredOn"]) {
-      return new Date(b["authoredOn"]).getTime() - new Date(a["authoredOn"]).getTime();
-    }
-    return 0;
-  }
-
   private getDosage(medicationRequest): string {
     if(medicationRequest?.dosageInstruction?.[0]?.text){
       return medicationRequest?.dosageInstruction?.[0]?.text;

@@ -10,6 +10,7 @@ import {ProcedureDTO} from "../../../models/dto/structured-evidence-dto/procedur
 import {EncounterDTO} from "../../../models/dto/structured-evidence-dto/encounter-dto";
 import {MedicationRequestDTO} from "../../../models/dto/structured-evidence-dto/medication-request-dto";
 import {PatientSummary} from "../../../models/patient-summary";
+import {SortByDatePipe} from "../../../pipe/sort-by-date.pipe";
 
 @Component({
   selector: 'app-evidence-details',
@@ -31,29 +32,25 @@ export class EvidenceDetailsComponent implements OnChanges {
   simpleConditions: ConditionDTO[] = [];
   simpleProcedures: ProcedureDTO[] = [];
 
-  constructor(private evidenceViewerService: EvidenceViewerService) {
+  constructor(private evidenceViewerService: EvidenceViewerService, private sortByDatePipe: SortByDatePipe) {
   }
 
   private mapStructuredEvidence(cqlResources: FhirBaseResource[], patientSummary: PatientSummary) {
 
-    this.simpleObservations = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.OBSERVATION)
-      .sort((a, b) => ObservationDTO.sort(a, b))
+    this.simpleObservations =  this.sortByDatePipe.transform(cqlResources
+      .filter(resource => resource.resourceType == ResourceType.OBSERVATION), 'effectiveDateTime', 'desc')
       .map(resource => new ObservationDTO(resource, patientSummary));
 
-    this.simpleEncounters = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.ENCOUNTER)
-      .sort((a, b) => EncounterDTO.sort(a, b))
+    this.simpleEncounters = this.sortByDatePipe.transform(cqlResources
+      .filter(resource => resource.resourceType == ResourceType.ENCOUNTER), ["period", "start"], 'desc')
       .map(resource => new EncounterDTO(resource, patientSummary));
 
-    this.simpleMedicationRequests = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.MEDICATION_REQUEST)
-      .sort((a, b) => MedicationRequestDTO.sort(a, b))
+    this.simpleMedicationRequests = this.sortByDatePipe.transform(cqlResources
+      .filter(resource => resource.resourceType == ResourceType.MEDICATION_REQUEST), 'authoredOn', 'desc')
       .map(resource => new MedicationRequestDTO(resource, patientSummary));
 
-    this.simpleConditions = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.CONDITION)
-      .sort((a, b) => ConditionDTO.sort(a, b))
+    this.simpleConditions = this.sortByDatePipe.transform(cqlResources
+      .filter(resource => resource.resourceType == ResourceType.CONDITION), 'recordedDate', 'desc')
       .map(resource => new ConditionDTO(resource, patientSummary));
 
     this.simpleProcedures = cqlResources

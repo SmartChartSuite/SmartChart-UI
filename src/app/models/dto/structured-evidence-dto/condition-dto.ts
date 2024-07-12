@@ -24,11 +24,4 @@ export class ConditionDTO extends StructuredEvidenceDTO {
     this.onset = condition["onsetDateTime"] || condition["onsetPeriod"]?.["start"];
     this.abatement = condition["abatementDateTime"];
   }
-
-  public static sort(a, b){
-    if (a["recordedDate"] && b["recordedDate"]) {
-      return new Date(b["recordedDate"]).getTime() - new Date(a["recordedDate"]).getTime();
-    }
-    return 0;
-  }
 }
