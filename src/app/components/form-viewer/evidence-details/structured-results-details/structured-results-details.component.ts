@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {MatTableDataSource} from "@angular/material/table";
-import {StructuredEvidenceDTO} from "../../../../models/structured-evidence-dto/structured-evidence-dto";
+import {StructuredEvidenceDTO} from "../../../../models/dto/structured-evidence-dto/structured-evidence-dto";
 import {EvidenceViewerService} from "../../../../services/evidence-viewer/evidence-viewer.service";
 import {Observable} from "rxjs";
 import {MatPaginator} from "@angular/material/paginator";

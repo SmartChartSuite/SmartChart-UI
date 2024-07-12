@@ -1,13 +1,4 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-
-//TODO: extract to proper location
-export enum QuestionWidgetType{
-  RADIO = 'choice',
-  INPUT = 'string',
-  QUANTITY = "quantity"
-}
-
-
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
@@ -18,6 +9,7 @@ import {filter, mergeMap, Observable, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
+import {QuestionType} from "../../models/question-type";
 
 @Component({
   selector: 'app-form-viewer',
@@ -26,8 +18,8 @@ import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-vie
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  temp_for_demo: any;
-  QuestionWidgetType = QuestionWidgetType;
+  questionnaire: any;
+  QuestionWidgetType = QuestionType;
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
@@ -66,10 +58,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
-        this.temp_for_demo = result;
-        // TODO : this code needs refactoring since it is using observable which is not
+        this.questionnaire = result;
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
-          .subscribe(value=> this.results=value);
+          .subscribe(value=> this.results = value );
       },
       error: err => {
         console.error(err);
@@ -83,12 +74,12 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   selectQuestionnaireSection(index: number) {
     this.selectedMenuItemIndex = index;
-    this.temp_for_demo['item'] = this.temp_for_demo.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
+    this.questionnaire['item'] = this.questionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
     //TODO implement scroll to top when new question is selected
   }
 
   onSubmit() {
-    console.log(this.temp_for_demo)
+    console.log(this.questionnaire)
   }
 
   selectPatientForm() {
