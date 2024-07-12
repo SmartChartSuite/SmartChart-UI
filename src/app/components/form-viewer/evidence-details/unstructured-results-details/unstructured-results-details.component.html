@@ -2,35 +2,33 @@
   <mat-card-content>
 
     <div class="flex margin-bottom-sm">
-      <div class="flex-col label-text margin-right-md">
-        <div class="margin-bottom-sm">Document Date:</div>
-        <div>Term:</div>
+      <div class="margin-bottom-sm simple-col label-text">Date (Age At): {{ nlpAnswerDTO?.dateAgeAt }}</div>
+      <div class="simple-col">Term: {{ nlpAnswerDTO?.term }}</div>
+    </div>
+
+    <div class="flex">
+      <div class="wide-col">
+        <div class="label-text margin-bottom-sm">Text Fragment:</div>
+        <div class="padding-left-sm" [innerHTML]="safeHtmlFragment"></div>
       </div>
-      <div class="flex-col-simple">
-        <div class="margin-bottom-sm">{{ nlpAnswer.date | date: 'MM/dd/yyyy' }}</div>
-        <div>{{ nlpAnswer?.term }}</div>
+      <div class="actions-col">
+        @if (fullTextVisible) {
+          <button mat-icon-button (click)="fullTextVisible=false" matTooltip="Collapse Content">
+            <mat-icon>unfold_less</mat-icon>
+          </button>
+        } @else {
+          <button mat-icon-button (click)="fullTextVisible=true" matTooltip="Expand Content">
+            <mat-icon>unfold_more</mat-icon>
+          </button>
+        }
+        <button mat-icon-button (click)="onOpenInModal()" matTooltip="View Full Document">
+          <mat-icon>open_in_full</mat-icon>
+        </button>
       </div>
     </div>
 
-    <div class="label-text margin-bottom-sm">Text Fragment:</div>
-    <div class="padding-left-sm" [innerHTML]="safeHtmlFragment"></div>
-
   </mat-card-content>
 
-  <mat-card-actions class="card-action-buttons">
-    @if (fullTextVisible) {
-      <button mat-icon-button (click)="fullTextVisible=false" matTooltip="Collapse Content">
-        <mat-icon>unfold_less</mat-icon>
-      </button>
-    } @else {
-      <button mat-icon-button (click)="fullTextVisible=true" matTooltip="Expand Content">
-        <mat-icon>unfold_more</mat-icon>
-      </button>
-    }
-    <button mat-icon-button (click)="onOpenInModal()" matTooltip="View Full Document">
-      <mat-icon>open_in_full</mat-icon>
-    </button>
-  </mat-card-actions>
   @if (fullTextVisible) {
     <mat-card-content>
       <pre class="full-text-content" [innerHTML]="safeHtmlFullText"></pre>

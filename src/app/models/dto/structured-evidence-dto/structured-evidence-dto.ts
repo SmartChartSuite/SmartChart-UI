@@ -1,7 +1,7 @@
 import {System} from "./system";
-import {DatePipe} from "@angular/common";
+import {EvidenceDTO} from "../evidence-dto";
 
-export class StructuredEvidenceDTO {
+export class StructuredEvidenceDTO extends EvidenceDTO {
   [key: string]: any;
 
   getCodeFromCodeableConcept(codeableConcept: any, preferredSystems? : string[]): any {
@@ -19,7 +19,7 @@ export class StructuredEvidenceDTO {
   }
 
   getDateAgeAsStr(dateStr, patientDob){
-    return `${this.getFormattedDate(dateStr)} (${this.getAgeAt(new Date(dateStr), new Date(patientDob))})`
+    return EvidenceDTO.getDateAgeAsStr(dateStr, patientDob);
   }
 
   getSystemFromEnum(system: System): string  {
@@ -30,40 +30,6 @@ export class StructuredEvidenceDTO {
     else if(system == System.CPT) return "CPT";
     else if(system) return system; //Unknown systems passed. We need to render it to the user
     else return "";
-  }
-
-  private getFormattedDate(dateStr: string) {
-    let datePipe = new DatePipe("en-US");
-    return datePipe.transform(dateStr, 'MM/dd/yyyy');
-  }
-
-  // Function to calculate age in years
-  private getAgeAt(date: Date, patientDob: Date): string {
-    //const birthDate = new Date(dob);
-
-    // Calculate age in years
-    let years = date.getFullYear() - patientDob.getFullYear();
-
-    // Calculate months considering birthday not yet passed
-    let months = date.getMonth() - patientDob.getMonth();
-    if (months < 0 || (months === 0 && date.getDate() < patientDob.getDate())) {
-      years--;
-      months += 12;
-    }
-
-
-    if(years < 0){
-      return '';
-    }
-    else if(years < 1){
-      return `${months} ${months == 1 ? 'mo' : 'mos'}`;
-    }
-    else if(years < 2){
-      return `${months + 12} mos`
-    }
-    else {
-      return `${years} yrs`
-    }
   }
 
 }

@@ -3,12 +3,12 @@ import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
 import {filter} from "rxjs";
-import {ResourceType} from "../../../models/structured-evidence-dto/resource-type";
-import {ObservationDTO} from "../../../models/structured-evidence-dto/observation-dto";
-import {ConditionDTO} from "../../../models/structured-evidence-dto/condition-dto";
-import {ProcedureDTO} from "../../../models/structured-evidence-dto/procedure-dto";
-import {EncounterDTO} from "../../../models/structured-evidence-dto/encounter-dto";
-import {MedicationRequestDTO} from "../../../models/structured-evidence-dto/medication-request-dto";
+import {ResourceType} from "../../../models/dto/structured-evidence-dto/resource-type";
+import {ObservationDTO} from "../../../models/dto/structured-evidence-dto/observation-dto";
+import {ConditionDTO} from "../../../models/dto/structured-evidence-dto/condition-dto";
+import {ProcedureDTO} from "../../../models/dto/structured-evidence-dto/procedure-dto";
+import {EncounterDTO} from "../../../models/dto/structured-evidence-dto/encounter-dto";
+import {MedicationRequestDTO} from "../../../models/dto/structured-evidence-dto/medication-request-dto";
 import {PatientSummary} from "../../../models/patient-summary";
 
 @Component({
@@ -19,6 +19,7 @@ import {PatientSummary} from "../../../models/patient-summary";
 export class EvidenceDetailsComponent implements OnChanges {
 
   @Input() patientSummary!: PatientSummary | undefined;
+  documentsSortDirection: 'asc' | 'desc' = 'desc';
 
   cqlResources: FhirBaseResource[] = [];
   nlpResources: FhirBaseResource[] = [];

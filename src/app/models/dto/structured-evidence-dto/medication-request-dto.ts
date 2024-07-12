@@ -1,7 +1,7 @@
 import {StructuredEvidenceDTO} from "./structured-evidence-dto";
-import {FhirBaseResource} from "../fhir/fhir.base.resource";
+import {FhirBaseResource} from "../../fhir/fhir.base.resource";
 import {System} from "./system";
-import {PatientSummary} from "../patient-summary";
+import {PatientSummary} from "../../patient-summary";
 
 export class MedicationRequestDTO extends StructuredEvidenceDTO {
   code: string;
@@ -12,7 +12,6 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
   dateAgeAt: string;
   constructor(medicationRequest: FhirBaseResource, patientSummary: PatientSummary){
     super();
-    console.log(medicationRequest); //TODO: Remove console.log
     const dateAuthored = medicationRequest["authoredOn"];
     this.dateAgeAt = super.getDateAgeAsStr(dateAuthored, patientSummary.birthDate); //TODO: verify requirements
     const code = super.getCode(medicationRequest, 'medicationCodeableConcept', [System.RX_NORM])

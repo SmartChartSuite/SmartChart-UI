@@ -19,11 +19,11 @@
     <tr mat-row *matRowDef="let row; columns: columns;" class="compact-row"></tr>
 
   </table>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                 [pageSize]="10"
-                 showFirstLastButtons
-                 aria-label="Select page of structured evidence">
-  </mat-paginator>
-
+  @if(dataSource.data.length > 5){
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                   [pageSize]="10"
+                   showFirstLastButtons
+                   aria-label="Select page of structured evidence">
+    </mat-paginator>
+  }
 </div>

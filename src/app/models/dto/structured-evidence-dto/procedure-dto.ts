@@ -1,7 +1,7 @@
 import {StructuredEvidenceDTO} from "./structured-evidence-dto";
-import {FhirBaseResource} from "../fhir/fhir.base.resource";
+import {FhirBaseResource} from "../../fhir/fhir.base.resource";
 import {System} from "./system";
-import {PatientSummary} from "../patient-summary";
+import {PatientSummary} from "../../patient-summary";
 
 export class ProcedureDTO extends StructuredEvidenceDTO {
   datePerformed: string;

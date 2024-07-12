@@ -2,7 +2,7 @@
   @if(activeFormSummary?.formName || activeFormSummary?.patientSummary){
     <div class="viewer-container-header flex">
       <div class="form-name">
-        {{ temp_for_demo?.["title"] }}
+        {{ questionnaire?.["title"] }}
       </div>
       @if (activeFormSummary?.patientSummary) {
         <div class="patient-details">
@@ -22,7 +22,7 @@
     } @else {
       <div class="padding-right-md">
         <mat-nav-list class="side-nav">
-          @for (item of temp_for_demo?.["item"]; track item; let i = $index) {
+          @for (item of questionnaire?.["item"]; track item; let i = $index) {
             <div>
               <button
                 mat-flat-button
@@ -38,7 +38,7 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of temp_for_demo?.["item"]; track item) {
+        @for (item of questionnaire?.["item"]; track item) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
-                  @if (childItem["type"] == QuestionWidgetType.RADIO) {
+                  @if (childItem["type"] == QuestionWidgetType.CHOICE) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['answer']">
                         @if (childItem?.['answerOption'].length <= 3) {
@@ -67,7 +67,7 @@
                         }
                       </mat-radio-group>
                     }
-                  } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                  } @else if (childItem["type"] == QuestionWidgetType.STRING) {
                     <mat-form-field appearance="outline" class="question-input">
                       <input type="text" matInput [(ngModel)]="childItem['answer']">
                     </mat-form-field>
@@ -182,7 +182,7 @@
     <!--    }-->
 
   </div>
-  @if (temp_for_demo?.["item"]?.length > 0) {
+  @if (questionnaire?.["item"]?.length > 0) {
     <div class="nav-controls">
       <div class="content-spacer"></div>
 
@@ -191,15 +191,15 @@
               (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex)">
         <mat-icon>chevron_left</mat-icon>
         Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
+        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
       </button>
 
       <button mat-flat-button type="submit" class="margin-left-sm wide-button"
-              [disabled]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex"
+              [disabled]="(questionnaire?.['item']?.length -1) == selectedMenuItemIndex"
               (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex)">
         Next
-        Section{{ (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
-        <mat-icon>chevron_right</mat-icon>
+        Section{{ (selectedMenuItemIndex < questionnaire?.['item']?.length - 1) ? ': ' + questionnaire?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
+        <mat-icon iconPositionEnd>chevron_right</mat-icon>
       </button>
 
       <div class="content-spacer"></div>
