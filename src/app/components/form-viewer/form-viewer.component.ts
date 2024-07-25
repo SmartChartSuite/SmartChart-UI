@@ -85,5 +85,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectPatientForm() {
     this.router.navigate(['/forms']);
   }
-
+  setValue(questionType: QuestionType, questionnaire: any, i: number, j: number) {
+    if(questionType == QuestionType.INTEGER && questionnaire.item[i].item[j].answer){
+       questionnaire.item[i].item[j].answer = Math.trunc(questionnaire.item[i].item[j].answer);
+    }
+  }
 }

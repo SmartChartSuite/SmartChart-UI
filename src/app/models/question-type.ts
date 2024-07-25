@@ -6,5 +6,6 @@ export enum QuestionType {
   INTEGER = 'integer',
   QUANTITY = "quantity",
   STRING = 'string',
-  TIME = 'time'
+  TIME = 'time',
+  TEXT = 'text'
 }

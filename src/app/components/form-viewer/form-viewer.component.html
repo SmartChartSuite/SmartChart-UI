@@ -38,14 +38,14 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of questionnaire?.["item"]; track item) {
+        @for (item of questionnaire?.["item"]; track item; let i = $index) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
-            @for (childItem of (item["item"]); track childItem; let i = $index) {
+            @for (childItem of (item["item"]); track childItem; let j = $index) {
               <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
-                <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
-                  <span appGetIndex [i]="i" [childItems]="childItem" [itemElements]="item['item']"></span>
+                <div class="question-label" [ngClass]="(j == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                  <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item['item']"></span>
                   <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
@@ -89,6 +89,30 @@
                       </mat-form-field>
                     </div>
                   }
+                  @else if (childItem["type"] == QuestionWidgetType.INTEGER) {
+                    <mat-form-field appearance="outline" class="question-input" (keyup)="setValue(QuestionWidgetType.INTEGER, questionnaire, i, j)">
+                      <input type="number" matInput [(ngModel)]="childItem['answer']">
+                      <mat-hint>Only whole numbers are allowed</mat-hint>
+                    </mat-form-field>
+                  }
+                  @else if (childItem["type"] == QuestionWidgetType.DECIMAL) {
+                    <mat-form-field appearance="outline" class="question-input">
+                      <input type="number" matInput [(ngModel)]="childItem['answer']">
+                    </mat-form-field>
+                  }
+                  @else if (childItem["type"] == QuestionWidgetType.DATE) {
+                    <mat-form-field appearance="outline">
+                      <input matInput [matDatepicker]="picker">
+                      <mat-hint>Date Format MM/DD/YYYY</mat-hint>
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                  }
+<!--                  @else if (childItem["type"] == QuestionWidgetType.TEXT) {-->
+<!--                    <mat-form-field appearance="outline" class="question-input">-->
+<!--                      <textarea rows="8" [(ngModel)]="childItem['answer']"></textarea>-->
+<!--                    </mat-form-field>-->
+<!--                  }-->
 
                   <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md" >
                     <!--                      TODO: Handle status based scenarios per logic below                 -->
@@ -117,7 +141,7 @@
                     @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button mat-raised-button
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
-                              (click)="showDrawer=true; selectedEvidenceIndex=i">
+                              (click)="showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
                         ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
                         )
