@@ -108,11 +108,23 @@
                       <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
                   }
-<!--                  @else if (childItem["type"] == QuestionWidgetType.TEXT) {-->
-<!--                    <mat-form-field appearance="outline" class="question-input">-->
-<!--                      <textarea rows="8" [(ngModel)]="childItem['answer']"></textarea>-->
-<!--                    </mat-form-field>-->
-<!--                  }-->
+                  @else if (childItem["type"] == QuestionWidgetType.TIME) {
+                    <div class="flex padding-bottom-sm">
+                      <mat-form-field appearance="outline" class="value-quantity-input margin-right-md">
+                        <input type="number" min="0" max="24" matInput [(ngModel)]="childItem['answer']">
+                        <span matPrefix class="input-prefix">Hours</span>
+                        <mat-hint>0-24 Hours</mat-hint>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="value-quantity-input margin-left-md">
+                        <input type="number" min="0" max="60" matInput>
+                        <span matPrefix class="input-prefix">Min</span>
+                        <mat-hint>0-60 Minutes</mat-hint>
+                      </mat-form-field>
+                    </div>
+                  }
+                  @else if (childItem["type"] == QuestionWidgetType.TEXT) {
+                    <textarea rows="8" class="question-input" [(ngModel)]="childItem['answer']"></textarea>
+                  }
 
                   <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md" >
                     <!--                      TODO: Handle status based scenarios per logic below                 -->
