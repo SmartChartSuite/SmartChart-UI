@@ -81,6 +81,7 @@ import {DisplayItemFilterPipe} from "./pipe/display-item-filter.pipe";
 import {QuestionnaireIndexDirective} from "./directives/questionnaire-index.directive";
 import {SortByDatePipe} from "./pipe/sort-by-date.pipe";
 import {MatDivider} from "@angular/material/divider";
+import {NgxMatTimepickerModule} from "ngx-mat-timepicker";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -113,6 +114,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     LoadingComponent
   ],
   imports: [
+    NgxMatTimepickerModule,
     HttpClientModule,
     OAuthModule.forRoot(),
     BrowserModule,
