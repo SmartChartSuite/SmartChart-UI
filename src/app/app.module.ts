@@ -6,7 +6,7 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from "./components/login/login.component";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ConfigService} from "./services/config/config.service";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {MatIcon} from "@angular/material/icon";
@@ -113,7 +113,6 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     LoadingComponent
   ],
   imports: [
-    HttpClientModule,
     OAuthModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
@@ -192,6 +191,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
       deps: [StateManagementService],
       multi: true
     },
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true
     }
