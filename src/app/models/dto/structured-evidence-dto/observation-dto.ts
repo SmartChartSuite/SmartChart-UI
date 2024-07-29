@@ -34,12 +34,5 @@ export class ObservationDTO extends StructuredEvidenceDTO {
     }
     else return '';
   }
-  public static sort(a, b){
-    if (a['effectiveDateTime'] && b['effectiveDateTime']) {
-      return new Date(b['effectiveDateTime']).getTime() - new Date(a['effectiveDateTime']).getTime();
-    } else if (a["effectivePeriod"]?.["start"] && b["effectivePeriod"]?.["start"]) {
-      return new Date(b["effectivePeriod"]?.["start"]).getTime() - new Date(a["effectivePeriod"]?.["start"]).getTime();
-    }
-    return 0
-  }
+
 }

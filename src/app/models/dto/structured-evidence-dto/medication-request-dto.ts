@@ -7,9 +7,10 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
   code: string;
   system: string;
   conceptName: string;
-  dose: string;
-  frequency: string;
+  // dose: string;  Temporary removed per https://jira.gtri.gatech.edu/browse/IHSS-142
+  // frequency: string;  Temporary removed per https://jira.gtri.gatech.edu/browse/IHSS-142
   dateAgeAt: string;
+  dosage: string;
   constructor(medicationRequest: FhirBaseResource, patientSummary: PatientSummary){
     super();
     const dateAuthored = medicationRequest["authoredOn"];
@@ -19,15 +20,27 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
     this.system = super.getSystemFromEnum(code?.system);
     this.conceptName = medicationRequest["medicationCodeableConcept"]?.["text"]
       || medicationRequest["medicationCodeableConcept"]?.["coding"]?.[0]?.["display"];
-    this.dose = ""; //TODO implement when the requirement is known
-    this.frequency = ""; //TODO implement when the requirement is known
+    // this.dose = ""; //TODO implement when the requirement is known. Temporary removed per https://jira.gtri.gatech.edu/browse/IHSS-142
+    // this.frequency = ""; //TODO implement when the requirement is known. Temporary removed per https://jira.gtri.gatech.edu/browse/IHSS-142
+    this.dosage = this.getDosage(medicationRequest); // See https://jira.gtri.gatech.edu/browse/IHSS-142 for requirements
   }
 
-  public static sort(a, b){
-    if (a["authoredOn"] && b["authoredOn"]) {
-      return new Date(b["authoredOn"]).getTime() - new Date(a["authoredOn"]).getTime();
+  private getDosage(medicationRequest): string {
+    if(medicationRequest?.dosageInstruction?.[0]?.text){
+      return medicationRequest?.dosageInstruction?.[0]?.text;
     }
-    return 0;
+    else if (medicationRequest?.dosageInstruction?.doseAndRate?.[0]?.doseQuantity?.value
+      &&
+      medicationRequest.dosageInstruction?.doseAndRate?.[0]?.doseQuantity?.unit
+      &&
+      medicationRequest.dosageInstruction?.[0]?.['timing']
+    ){
+      const result = `${medicationRequest?.dosageInstruction?.[0]?.doseAndRate?.[0]?.doseQuantity?.value}
+      ${medicationRequest.dosageInstruction?.[0]?.doseAndRate?.[0]?.doseQuantity?.unit};
+      ${medicationRequest.dosageInstruction?.[0]?.['timing']}`;
+      return result;
+    }
+    return '';
   }
 
 }

@@ -179,6 +179,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     MatDivider
   ],
   providers: [
+    SortByDatePipe,
     {
       provide: APP_INITIALIZER,
       useFactory: configFactory,
