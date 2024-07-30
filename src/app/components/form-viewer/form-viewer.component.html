@@ -122,10 +122,10 @@
                     ></ngx-mat-timepicker>
                   }
                   @else if (childItem["type"] == QuestionWidgetType.DATE_TIME) {
-                    <div class="flex">
+                    <div class="flex padding-bottom-sm">
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input margin-right-md margin-bottom-sm">
+                        class="value-quantity-input margin-right-md">
                         <input matInput [matDatepicker]="picker">
                         <mat-hint>Date Format MM/DD/YYYY</mat-hint>
                         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
