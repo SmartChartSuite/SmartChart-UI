@@ -101,7 +101,7 @@
                     </mat-form-field>
                   }
                   @else if (childItem["type"] == QuestionWidgetType.DATE) {
-                    <mat-form-field appearance="outline">
+                    <mat-form-field appearance="outline" class="value-quantity-input">
                       <input matInput [matDatepicker]="picker">
                       <mat-hint>Date Format MM/DD/YYYY</mat-hint>
                       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -109,7 +109,7 @@
                     </mat-form-field>
                   }
                   @else if (childItem["type"] == QuestionWidgetType.TIME) {
-                    <mat-form-field>
+                    <mat-form-field appearance="outline" class="value-quantity-input">
                       <input matInput
                              [(ngModel)]="childItem['answer']"
                              [ngxMatTimepicker]="pickerA"/>
@@ -120,6 +120,31 @@
                     </mat-form-field>
                     <ngx-mat-timepicker #pickerA
                     ></ngx-mat-timepicker>
+                  }
+                  @else if (childItem["type"] == QuestionWidgetType.DATE_TIME) {
+                    <div class="flex">
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input margin-right-md margin-bottom-sm">
+                        <input matInput [matDatepicker]="picker">
+                        <mat-hint>Date Format MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input margin-left-md">
+                        <input matInput
+                               [(ngModel)]="childItem['answer']"
+                               [ngxMatTimepicker]="pickerA"/>
+                        <mat-icon matSuffix
+                                  (click)="pickerA.open()">
+                          watch_later
+                        </mat-icon>
+                      </mat-form-field>
+                      <ngx-mat-timepicker #pickerA
+                      ></ngx-mat-timepicker>
+                    </div>
                   }
                   @else if (childItem["type"] == QuestionWidgetType.TEXT) {
                     <textarea rows="8" class="question-input" [(ngModel)]="childItem['answer']"></textarea>
