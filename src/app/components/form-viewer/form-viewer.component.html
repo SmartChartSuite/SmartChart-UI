@@ -107,22 +107,36 @@
                       <mat-datepicker #datePicker></mat-datepicker>
                     </mat-form-field>
                   } @else if (childItem["type"] == QuestionWidgetType.TIME) {
-                    <mat-form-field appearance="outline" class="value-quantity-input">
-                      <input matInput
-                             [(ngModel)]="childItem['answer']"
-                             [ngxMatTimepicker]="timePicker"/>
-                      <mat-icon matSuffix
-                                (click)="timePicker.open()">
-                        watch_later
-                      </mat-icon>
-                    </mat-form-field>
-                    <ngx-mat-timepicker #timePicker
-                    ></ngx-mat-timepicker>
+                    <div class="flex">
+                      <mat-form-field appearance="outline" class="value-quantity-input margin-right-md">
+                        <mat-label>Time</mat-label>
+                        <input matInput
+                               [format]="24"
+                               [(ngModel)]="childItem['answer']"
+                               [ngxMatTimepicker]="timePicker"/>
+                        <mat-icon matSuffix
+                                  (click)="timePicker.open()">
+                          watch_later
+                        </mat-icon>
+                      </mat-form-field>
+                      <ngx-mat-timepicker #timePicker></ngx-mat-timepicker>
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input margin-left-md">
+                        <mat-label>Timezone</mat-label>
+                        <mat-select>
+                          @for (timezone of TIMEZONES; track timezone) {
+                            <mat-option [value]="timezone.value">{{timezone.name}}</mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
                   } @else if (childItem["type"] == QuestionWidgetType.DATE_TIME) {
                     <div class="flex padding-bottom-sm">
                       <mat-form-field
                         appearance="outline"
                         class="value-quantity-input margin-right-md">
+                        <mat-label>Date</mat-label>
                         <input matInput [matDatepicker]="datePicker">
                         <mat-hint>Date Format MM/DD/YYYY</mat-hint>
                         <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
@@ -130,14 +144,26 @@
                       </mat-form-field>
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input margin-left-md">
+                        class="value-quantity-input margin-left-md margin-right-md">
+                        <mat-label>Time</mat-label>
                         <input matInput
                                [(ngModel)]="childItem['answer']"
-                               [ngxMatTimepicker]="timePicker"/>
+                               [ngxMatTimepicker]="timePicker"
+                               [format]="24"/>
                         <mat-icon matSuffix
                                   (click)="timePicker.open()">
                           watch_later
                         </mat-icon>
+                      </mat-form-field>
+                      <mat-form-field
+                        appearance="outline"
+                        class="value-quantity-input margin-left-md">
+                        <mat-label>Timezone</mat-label>
+                        <mat-select>
+                          @for (timezone of TIMEZONES; track timezone) {
+                            <mat-option [value]="timezone.value">{{timezone.name}}</mat-option>
+                          }
+                        </mat-select>
                       </mat-form-field>
                       <ngx-mat-timepicker #timePicker
                       ></ngx-mat-timepicker>

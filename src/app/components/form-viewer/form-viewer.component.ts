@@ -10,6 +10,7 @@ import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 import {QuestionType} from "../../models/question-type";
+import { TIMEZONES } from '../../../assets/const/timezones';
 
 @Component({
   selector: 'app-form-viewer',
@@ -24,6 +25,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
+  readonly TIMEZONES = TIMEZONES;
 
   results: Results;
   evidenceViewerExpanded$: Observable<boolean>;
