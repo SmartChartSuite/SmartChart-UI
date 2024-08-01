@@ -92,4 +92,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
        questionnaire.item[i].item[j].answer = Math.trunc(questionnaire.item[i].item[j].answer);
     }
   }
+
+  onDateTimeUpdated($event: any) {
+
+  }
 }

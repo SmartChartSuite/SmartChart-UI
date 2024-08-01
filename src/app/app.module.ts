@@ -82,6 +82,7 @@ import {QuestionnaireIndexDirective} from "./directives/questionnaire-index.dire
 import {SortByDatePipe} from "./pipe/sort-by-date.pipe";
 import {MatDivider} from "@angular/material/divider";
 import {NgxMatTimepickerModule} from "ngx-mat-timepicker";
+import { FhirDateTimeComponent } from './components/fhir-date-time/fhir-date-time.component';
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -111,7 +112,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     DocumentViewerModalComponent,
     StructuredResultsDetailsComponent,
     UnstructuredResultsDetailsComponent,
-    LoadingComponent
+    LoadingComponent,
+    FhirDateTimeComponent
   ],
   imports: [
     NgxMatTimepickerModule,
