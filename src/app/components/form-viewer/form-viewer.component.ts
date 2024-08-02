@@ -93,7 +93,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDateTimeUpdated($event: any) {
-
+  onDateTimeUpdated(event: any, questionnaire: any, i: number, j: number) {
+    if(event.questionType == QuestionType.DATE){
+      questionnaire.item[i].item[j].answer = event.data;
+    }
   }
 }

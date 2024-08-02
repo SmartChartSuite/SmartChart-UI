@@ -101,19 +101,19 @@
                     </mat-form-field>
                   } @else if (childItem["type"] == QuestionWidgetType.DATE) {
                     <app-fhir-date-time
-                      (onDateTimeUpdated)="onDateTimeUpdated($event)"
+                      (onDateTimeUpdated)="onDateTimeUpdated($event,questionnaire,i,j)"
                       [questionType]="QuestionWidgetType.DATE"
                       [inputValue]="childItem['answer']"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionWidgetType.TIME) {
                     <app-fhir-date-time
-                      (onDateTimeUpdated)="onDateTimeUpdated($event)"
+                      (onDateTimeUpdated)="onDateTimeUpdated($event,questionnaire,i,j)"
                       [questionType]="QuestionWidgetType.TIME"
                       [inputValue]="childItem['answer']"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionWidgetType.DATE_TIME) {
                     <app-fhir-date-time
-                      (onDateTimeUpdated)="onDateTimeUpdated($event)"
+                      (onDateTimeUpdated)="onDateTimeUpdated($event, questionnaire, i, j)"
                       [questionType]="QuestionWidgetType.DATE_TIME"
                       [inputValue]="childItem['answer']"
                     ></app-fhir-date-time>

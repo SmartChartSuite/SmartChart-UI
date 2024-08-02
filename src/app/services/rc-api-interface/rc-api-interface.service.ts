@@ -99,7 +99,8 @@ export class RcApiInterfaceService {
    */
   getJobPackage(jobPackage: string): Observable<any> {
     //return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}/${jobPackage}`);
-    return this.http.get<FhirBaseResource>('../assets/temp/ui-for-testing.json');
+    //return this.http.get<FhirBaseResource>('../assets/temp/ui-for-testing.json');
+    return this.http.get<FhirBaseResource>('../assets/temp/full-record.json');
   }
 
   /**
