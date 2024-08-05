@@ -27,16 +27,16 @@
     <ngx-mat-timepicker #timePicker
     ></ngx-mat-timepicker>
   }
-  @if (questionType == QuestionType.DATE_TIME || questionType == QuestionType.TIME) {
-    <mat-form-field
-      appearance="outline" class="timezone">
-      <mat-label>Timezone</mat-label>
-      <mat-select formControlName='timezone'>
-        @for (timezone of TIMEZONES; track timezone) {
-          <mat-option [value]="timezone">{{ timezone.name }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-  }
+<!--  @if (questionType == QuestionType.DATE_TIME || questionType == QuestionType.TIME) {-->
+<!--    <mat-form-field-->
+<!--      appearance="outline" class="timezone">-->
+<!--      <mat-label>Timezone</mat-label>-->
+<!--      <mat-select formControlName='timezone'>-->
+<!--        @for (timezone of TIMEZONES; track timezone) {-->
+<!--          <mat-option [value]="timezone">{{ timezone.name }}</mat-option>-->
+<!--        }-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+<!--  }-->
 </form>
 

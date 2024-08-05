@@ -32,7 +32,7 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
   @Input() questionType: QuestionType;
   @Output() onDateTimeUpdated = new EventEmitter<any>();
 
-  protected readonly TIMEZONES = TIMEZONES;
+  // protected readonly TIMEZONES = TIMEZONES;
   protected readonly QuestionType = QuestionType;
 
   form = new FormGroup({});
@@ -40,21 +40,27 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['questionType']?.currentValue == QuestionType.TIME){
       this.form.addControl('time', new FormControl(this.getTimeStr(this.inputValue), Validators.required));
-      this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
+      // this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
     }
     if (changes['questionType']?.currentValue == QuestionType.DATE && !this.form.contains('date')){
-      this.form.addControl('date', new FormControl(this.getDateStr(this.inputValue), Validators.required));
+      this.form.addControl('date', new FormControl(new Date(this.inputValue), Validators.required));
     }
     if (changes['questionType']?.currentValue == QuestionType.DATE_TIME){
-      this.form.addControl('date', new FormControl(this.getTimeStr(this.inputValue), Validators.required));
+      this.form.addControl('date', new FormControl(new Date(this.inputValue), Validators.required));
       this.form.addControl('time', new FormControl(this.getTimeStr(this.inputValue), Validators.required));
-      this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
+      // this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
     }
 
     if (changes['inputValue']?.currentValue && this.questionType == QuestionType.DATE){
       if(this.questionType == QuestionType.DATE){
         const date  = new Date(this.inputValue);
         this.form.controls['date'].setValue(date, { emitEvent: false });
+      }
+      else if (this.questionType == QuestionType.DATE_TIME){
+        // TODO update all form controls
+      }
+      else if(this.questionType == QuestionType.TIME){
+        // TODO update the form controls for time and timezone
       }
     }
   }
@@ -63,10 +69,13 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
     return "";
   }
 
-  private getTimezone(inputValue: string) {
-    const timezoneOffset = new Date().getTimezoneOffset();
-    return this.TIMEZONES[3];
-  }
+  // private getTimezone(inputValue?: string) {
+  //   if(!inputValue){
+  //     this.TIMEZONES.find(zone => zone.value == "+00:00");
+  //   }
+  //   //TODO implement get timezone based on input string value
+  //   return null;
+  // }
 
   ngOnInit(): void {
     this.form.valueChanges.subscribe(value => {
@@ -75,20 +84,9 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
     })
   }
 
-  private updateFormValue(inputValue: string) {
-    console.log(this.form);
-  }
-
   private formValueToStr(value: any, questionType: QuestionType) {
     if(this.questionType == QuestionType.DATE){
       return value?.date;
     }
-  }
-
-  private getDateStr(inputValue: string){
-    if(!inputValue){
-      return null;
-    }
-    return undefined;
   }
 }
