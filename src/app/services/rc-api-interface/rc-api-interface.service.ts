@@ -98,9 +98,10 @@ export class RcApiInterfaceService {
    * Get a JobPackage questionnaire by the name of the Job Package using the standard RC API Endpoint.
    */
   getJobPackage(jobPackage: string): Observable<any> {
-    //return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}/${jobPackage}`);
-    return this.http.get<FhirBaseResource>('../assets/temp/ui-for-testing.json');
-    //return this.http.get<FhirBaseResource>('../assets/temp/full-record.json');
+    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}/${jobPackage}`);
+    //TODO delete the temp files for testing when the firewall is fixed
+    // return this.http.get<FhirBaseResource>('../assets/temp/ui-for-testing.json');
+    // return this.http.get<FhirBaseResource>('../assets/temp/full-record.json');
   }
 
   /**
