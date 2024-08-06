@@ -26,7 +26,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
   readonly TIMEZONES = TIMEZONES;
-  time = '';
+  testDateTime = '';
 
   results: Results;
   evidenceViewerExpanded$: Observable<boolean>;
@@ -100,6 +100,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   changeDateTime() {
     //TODO : delete
-    this.time='16:09:00'
+    this.testDateTime='2017-01-01T00:00:00.000Z'
   }
 }
