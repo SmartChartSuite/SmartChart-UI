@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {QuestionType} from "../../models/question-type";
 import {provideMomentDateAdapter} from "@angular/material-moment-adapter";
-import moment from 'moment';
 
 const timeRegex = /([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]{1,9})?/;
 const dateRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?/;
@@ -130,10 +129,12 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
       return `${value.time}:00`
     }
     else if(questionType == QuestionType.DATE_TIME){
+      //TODO verify the assumption that the user is required to enter a date and time (and not only date), and change the if statement accordingly
       if(this.form.controls['date'].value && this.form.controls['time'].value){
-        //TODO add comments
         const date = this.form.controls['date'].value;
+        // We need to remove the time and from the ISO string, we add the time selected by the user with the time widget.
         const utcDateStr = new Date(date).toISOString().split('T')[0];
+        // We append the time here. This assumes that the user is required to add both: time and date
         const time = `${this.form.controls['time'].value}:00.000Z`;
         return `${utcDateStr}T${time}`
       }
@@ -143,15 +144,15 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
   private checkValidInput(inputValue: string, questionType: QuestionType): boolean {
     if(questionType == QuestionType.TIME){
       const regExp = new RegExp(this.timeRegex);
-      return regExp.test(this.inputValue);
+      return regExp.test(inputValue);
     }
     if(questionType == QuestionType.DATE){
       const regExp = new RegExp(this.dateRegex);
-      return regExp.test(this.inputValue);
+      return regExp.test(inputValue);
     }
     if(questionType == QuestionType.DATE_TIME){
       const regExp = new RegExp(this.dateTimeRegex);
-      return regExp.test(this.inputValue);
+      return regExp.test(inputValue);
     }
     else return false;
   }

@@ -74,7 +74,6 @@
                     </mat-form-field>
 
                   } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
-                    <!-- TODO: those will -->
                     <div class="flex">
                       <mat-form-field
                         appearance="outline"
@@ -90,8 +89,9 @@
                       </mat-form-field>
                     </div>
                   } @else if (childItem["type"] == QuestionWidgetType.INTEGER) {
-                    <mat-form-field appearance="outline" class="question-input"
-                                    (keyup)="setValue(QuestionWidgetType.INTEGER, questionnaire, i, j)">
+                    <mat-form-field
+                      appearance="outline" class="question-input"
+                      (keyup)="setValue(QuestionWidgetType.INTEGER, questionnaire, i, j)">
                       <input type="number" matInput [(ngModel)]="childItem['answer']">
                       <mat-hint>Only whole numbers are allowed</mat-hint>
                     </mat-form-field>
@@ -221,11 +221,6 @@
       <button mat-raised-button type="submit" (click)="onSubmit()">
         <mat-icon>download</mat-icon>
         Save/Export
-      </button>
-
-<!--TODO: delete-->
-      <button mat-raised-button type="submit" (click)="changeDateTime()">
-        Change Date Time
       </button>
 
     </div>
