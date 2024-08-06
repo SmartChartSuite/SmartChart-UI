@@ -9,7 +9,7 @@ const dateTimeRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1
 
 // See the Moment.js docs for the meaning of these formats:
 // https://momentjs.com/docs/#/displaying/format/
-export const MY_FORMATS = {
+export const DATE_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
   },
@@ -26,7 +26,7 @@ export const MY_FORMATS = {
   templateUrl: './fhir-date-time.component.html',
   styleUrl: './fhir-date-time.component.scss',
   providers: [
-    provideMomentDateAdapter(MY_FORMATS),
+    provideMomentDateAdapter(DATE_FORMATS),
   ],
 })
 export class FhirDateTimeComponent implements OnChanges, OnInit {

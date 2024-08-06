@@ -27,6 +27,8 @@ app-root { display: flex; height: 100%; width: 100% }
 
 .center-contents { justify-items: center; text-align: center; align-self: center; }
 
+.sans-serif { font-family: sans-serif }
+
 /* Margins and Paddings */
 $xs: 4px;
 $sm: 8px;
