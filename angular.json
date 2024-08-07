@@ -33,6 +33,7 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss"
             ],
+            "allowedCommonJsDependencies": ["moment"],
             "scripts": []
           },
           "configurations": {
