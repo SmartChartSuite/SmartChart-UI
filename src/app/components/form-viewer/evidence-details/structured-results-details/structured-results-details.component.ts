@@ -27,7 +27,7 @@ export class StructuredResultsDetailsComponent implements OnChanges, OnInit, Aft
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.structuredEvidenceDto){
+    if(changes['structuredEvidenceDto'].currentValue){
       this.dataSource.data = this.structuredEvidenceDto;
       this.dataSource.paginator = this.paginator;
       if(this.displayedColumns?.length > 0){

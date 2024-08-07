@@ -1,5 +1,17 @@
 <mat-card class="margin-sm">
   <mat-card-header>
+    <mat-card-title>Filter Evidence by Date</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @if (this.cqlResources?.length > 0 || this.nlpAnswers?.length > 0) {
+      <app-evidence-filter/>
+    }
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card class="margin-sm">
+  <mat-card-header>
     <mat-card-title>Structured Resources</mat-card-title>
   </mat-card-header>
   <mat-card-content style="overflow: auto">
