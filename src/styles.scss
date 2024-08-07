@@ -27,6 +27,8 @@ app-root { display: flex; height: 100%; width: 100% }
 
 .center-contents { justify-items: center; text-align: center; align-self: center; }
 
+.sans-serif { font-family: sans-serif }
+
 /* Margins and Paddings */
 $xs: 4px;
 $sm: 8px;
@@ -52,9 +54,11 @@ $lg: 24px;
 .margin-left-sm { margin-left: $sm; }
 .margin-right-md { margin-right: $md; }
 .margin-right-sm { margin-right: $sm; }
+.margin-right-lg { margin-right: $lg; }
 .padding-bottom-md { padding-bottom: $md; }
 .padding-top-md { padding-top: $md; }
 .padding-bottom-md { padding-bottom: $md; }
+.padding-bottom-sm { padding-bottom: $sm; }
 .padding-left-md { padding-left: $md; }
 .padding-left-sm { padding-left: $sm; }
 .padding-right-md { padding-right: $md; }

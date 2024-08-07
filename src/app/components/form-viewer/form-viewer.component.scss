@@ -1,3 +1,5 @@
+@import '../../../styles.scss';
+
 $light-accent-color: #E0E0E0;
 $dark-background-color: #212121;
 
@@ -83,6 +85,7 @@ $selected-nave-menu-item-color: #424242;
   margin-left: 4px;
   margin-bottom: -8px; //removes the space for input form hint
   width: 100%;
+  @extend .sans-serif;
 }
 
 .value-quantity-input {
