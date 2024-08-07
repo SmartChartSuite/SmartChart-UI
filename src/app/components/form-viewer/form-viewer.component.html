@@ -118,7 +118,7 @@
                       [inputValue]="childItem['answer']"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionWidgetType.TEXT) {
-                    <textarea rows="8" class="question-input" [(ngModel)]="childItem['answer']"></textarea>
+                    <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="childItem['answer']"></textarea>
                   }
 
                   <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">
