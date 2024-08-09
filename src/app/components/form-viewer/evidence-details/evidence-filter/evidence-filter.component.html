@@ -1,6 +1,33 @@
 <form [formGroup]="form">
   <mat-radio-group formControlName="options">
-    <mat-radio-button checked value="custom">Previous 90 days</mat-radio-button>
-    <mat-radio-button  value="preset">Custom</mat-radio-button>
+    <div>
+      <mat-radio-button checked value="all">Show all</mat-radio-button>
+    </div>
+    <div>
+      <mat-radio-button checked value="preset">Previous:
+        <mat-form-field appearance="outline" class="margin-top-md margin-left-md">
+          <mat-label>Select a time period</mat-label>
+          <mat-select formControlName="dayRange">
+            @for (typeSystem of dayRangeList; track typeSystem) {
+              <mat-option [value]="typeSystem">{{ typeSystem + ' days' }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </mat-radio-button>
+    </div>
+
+    <div>
+      <mat-radio-button value="custom" class="margin-right-lg">Custom:</mat-radio-button>
+      <mat-form-field appearance="outline">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input matStartDate formControlName="start" placeholder="Start date">
+          <input matEndDate formControlName="end" placeholder="End date">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
   </mat-radio-group>
 </form>

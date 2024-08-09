@@ -31,6 +31,9 @@ export class EvidenceDetailsComponent implements OnChanges {
   simpleEncounters: EncounterDTO[] = [];
   simpleConditions: ConditionDTO[] = [];
   simpleProcedures: ProcedureDTO[] = [];
+  nlpResourcesDeepCopy: FhirBaseResource[] = [];
+  packageRunDate: string;
+  isDateFilterExpanded = false;
 
   constructor(private evidenceViewerService: EvidenceViewerService, private sortByDatePipe: SortByDatePipe) {
   }
@@ -75,11 +78,20 @@ export class EvidenceDetailsComponent implements OnChanges {
             this.nlpAnswers = resultSet.nlpAnswers;
             this.mapStructuredEvidence(cqlResources, this.patientSummary);
 
+            //preserve a copy in case the results are filtered.
+            this.nlpResourcesDeepCopy = JSON.parse(JSON.stringify(this.nlpResources));
+
             console.log(this.cqlResources);
             console.log(this.nlpResources);
             console.log(this.nlpAnswers);
           }
         })
     }
+  }
+
+  filterDataByDateRange(event: any) {
+    console.log(event);
+    console.log(this.cqlResources);
+    console.log(this.nlpResources);
   }
 }
