@@ -62,14 +62,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
-        this.questionnaire.item
-          .forEach(outerItem => outerItem.item
-            .forEach(innerItem => {
-                const key = `linkId${innerItem.linkId}`
-                this.simpleAnswerObject[key] =  '';
-            }));
-        console.log(this.simpleAnswerObject);
-
+        this.simpleAnswerObject = this.createSimpleAnswerObject(this.questionnaire);
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
       },
@@ -106,4 +99,13 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     questionnaire.item[i].item[j].answer = event.data;
   }
 
+  private createSimpleAnswerObject(questionnaire: any) {
+    let simpleAnswerObject = {};
+    questionnaire.item
+      .forEach(outerItem => outerItem.item
+        .forEach(innerItem =>
+          simpleAnswerObject[`linkId${innerItem.linkId}`] =  ''
+        ));
+    return simpleAnswerObject;
+  }
 }
