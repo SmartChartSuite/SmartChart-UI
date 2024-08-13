@@ -81,7 +81,16 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.questionnaire)
+    let simpleAnswerObject = {};
+    this.questionnaire.item
+      .forEach(outerItem => outerItem.item
+        .forEach(innerItem => {
+          if (innerItem.answer) {
+            const key = `linkId${innerItem.linkId}`
+            simpleAnswerObject[key] = innerItem.answer || '';
+          }
+        }));
+    console.log(simpleAnswerObject);
   }
 
   selectPatientForm() {
