@@ -57,7 +57,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
     ).subscribe({
       next: result => { //TODO all properties should we accessed with '.' result.item instead of '[]'
-        result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
