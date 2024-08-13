@@ -19,6 +19,7 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
+  simpleAnswerObject = {};
   questionnaire: any;
   QuestionWidgetType = QuestionType;
   showDrawer = false;
@@ -61,6 +62,14 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
+        this.questionnaire.item
+          .forEach(outerItem => outerItem.item
+            .forEach(innerItem => {
+                const key = `linkId${innerItem.linkId}`
+                this.simpleAnswerObject[key] =  '';
+            }));
+        console.log(this.simpleAnswerObject);
+
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
       },
@@ -81,16 +90,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    let simpleAnswerObject = {};
-    this.questionnaire.item
-      .forEach(outerItem => outerItem.item
-        .forEach(innerItem => {
-          if (innerItem.answer) {
-            const key = `linkId${innerItem.linkId}`
-            simpleAnswerObject[key] = innerItem.answer || '';
-          }
-        }));
-    console.log(simpleAnswerObject);
+    console.log(this.simpleAnswerObject);
   }
 
   selectPatientForm() {

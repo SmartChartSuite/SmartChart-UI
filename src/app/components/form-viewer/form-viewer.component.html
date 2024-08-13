@@ -70,7 +70,8 @@
                     }
                   } @else if (childItem["type"] == QuestionWidgetType.STRING) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+<!--                      <input type="text" matInput [(ngModel)]="childItem['answer']">-->
+                      <input type="text" matInput [(ngModel)]="simpleAnswerObject['linkId' + childItem?.linkId]">
                     </mat-form-field>
 
                   } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
@@ -85,40 +86,40 @@
                         appearance="outline"
                         class="value-quantity-input margin-left-md">
                         <span matPrefix class="input-prefix">Unit</span>
-                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                        <input type="text" matInput [(ngModel)]="simpleAnswerObject['linkId' + childItem?.linkId]">
                       </mat-form-field>
                     </div>
                   } @else if (childItem["type"] == QuestionWidgetType.INTEGER) {
                     <mat-form-field
                       appearance="outline" class="question-input"
                       (keyup)="setValue(QuestionWidgetType.INTEGER, questionnaire, i, j)">
-                      <input type="number" matInput [(ngModel)]="childItem['answer']">
+                      <input type="number" matInput [(ngModel)]="simpleAnswerObject['linkId' + childItem?.linkId]">
                       <mat-hint>Only whole numbers are allowed</mat-hint>
                     </mat-form-field>
                   } @else if (childItem["type"] == QuestionWidgetType.DECIMAL) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="number" matInput [(ngModel)]="childItem['answer']">
+                      <input type="number" matInput [(ngModel)]="simpleAnswerObject['linkId' + childItem?.linkId]">
                     </mat-form-field>
                   } @else if (childItem["type"] == QuestionWidgetType.DATE) {
                     <app-fhir-date-time
                       (onDateTimeUpdated)="onDateTimeUpdated($event,questionnaire,i,j)"
                       [questionType]="QuestionWidgetType.DATE"
-                      [inputValue]="childItem['answer']"
+                      [inputValue]="simpleAnswerObject['linkId' + childItem?.linkId]"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionWidgetType.TIME) {
                     <app-fhir-date-time
                       (onDateTimeUpdated)="onDateTimeUpdated($event,questionnaire,i,j)"
                       [questionType]="QuestionWidgetType.TIME"
-                      [inputValue]="childItem['answer']"
+                      [inputValue]="simpleAnswerObject['linkId' + childItem?.linkId]"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionWidgetType.DATE_TIME) {
                     <app-fhir-date-time
                       (onDateTimeUpdated)="onDateTimeUpdated($event, questionnaire, i, j)"
                       [questionType]="QuestionWidgetType.DATE_TIME"
-                      [inputValue]="childItem['answer']"
+                      [inputValue]="simpleAnswerObject['linkId' + childItem?.linkId]"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionWidgetType.TEXT) {
-                    <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="childItem['answer']"></textarea>
+                    <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="simpleAnswerObject['linkId' + childItem?.linkId]"></textarea>
                   }
 
                   <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">
@@ -138,7 +139,7 @@
                       <div class="margin-bottom-sm">
                         Suggested Answer:
                         @for (item of (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
-                          <span class="margin-left-sm" (click)="childItem['answer']=item;">
+                          <span class="margin-left-sm" (click)="simpleAnswerObject['linkId' + childItem?.linkId]=item;">
                             <mat-chip>{{ item }}</mat-chip>
                           </span>
                         }
