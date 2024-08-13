@@ -19,7 +19,7 @@
     @if (this.isDateFilterExpanded && (this.cqlResources?.length > 0 || this.nlpAnswers?.length > 0)) {
       <app-evidence-filter
         (onDateDateRangeSelected)="filterDataByDateRange($event)"
-        [packageRunDate]="packageRunDate"
+        [packageRunDate]="activeFormSummary.started"
       />
     }
   </mat-card-content>
@@ -85,7 +85,7 @@
       <div class="padding-bottom-md">
         <app-unstructured-results-details
           [nlpAnswer]="nlpAnswer"
-          [patientSummary]="patientSummary">
+          [patientSummary]="activeFormSummary.patientSummary">
         </app-unstructured-results-details>
       </div>
     } @empty {

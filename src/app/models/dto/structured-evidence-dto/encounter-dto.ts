@@ -10,6 +10,7 @@ export class EncounterDTO extends StructuredEvidenceDTO {
   reasonSystem: string;
   reasonConceptName: string;
   endDateAgeAt: string;
+  sortFilterDate: string;
 
   constructor(encounter: FhirBaseResource, patientSummary: PatientSummary){
     super();
@@ -17,6 +18,7 @@ export class EncounterDTO extends StructuredEvidenceDTO {
     const periodStart = encounter["period"]?.["start"];
     this.startDateAgeAt = super.getDateAgeAsStr(periodStart, patientSummary.birthDate); //TODO: verify requirements
     const periodEnd = encounter["period"]?.["end"];
+    this.sortFilterDate = periodEnd //TODO verify requirements
     this.endDateAgeAt = super.getDateAgeAsStr(periodEnd, patientSummary.birthDate); //TODO: verify requirements
     this.encounterType = encounter["type"]?.[0]?.["text"] || encounter["type"]?.[0]?.["coding"] ?.[0]?.display
 

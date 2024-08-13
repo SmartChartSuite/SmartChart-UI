@@ -6,7 +6,7 @@ import {FormControl, FormGroup} from "@angular/forms";
   templateUrl: './evidence-filter.component.html',
   styleUrl: './evidence-filter.component.scss'
 })
-export class EvidenceFilterComponent implements OnInit{
+export class EvidenceFilterComponent implements OnInit {
   @Output() onDateDateRangeSelected = new EventEmitter();
   @Input() packageRunDate: string;
 

@@ -10,12 +10,13 @@ export class ConditionDTO extends StructuredEvidenceDTO {
   conceptName: string;
   onset: string;
   abatement: string;
+  sortFilterDate: string;
 
   constructor(condition: FhirBaseResource, patientSummary: PatientSummary){
     //TODO verify proper implementation when the requirements are finalized
     super();
-
     const recordedDate = condition["recordedDate"];
+    this.sortFilterDate = recordedDate;
     this.dateAgeAt = super.getDateAgeAsStr(recordedDate, patientSummary.birthDate);
     const code = super.getCode(condition, 'code', [System.ICD_10, System.SNOMED]);
     this.code = code?.code;

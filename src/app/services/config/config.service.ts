@@ -3,8 +3,7 @@ import {catchError, map, of} from "rxjs";
 import {Config} from "../../models/config";
 import packageInfo from '../../../../package.json';
 import {HttpBackend, HttpClient} from "@angular/common/http";
-import {AuthConfig} from "angular-oauth2-oidc";
-import config from "../../../assets/config/config.json";
+import {AuthConfig, OAuthModuleConfig} from "angular-oauth2-oidc";
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class ConfigService {
   defaultLocalConfigPath = '../../assets/config/config.json'
   config: Config = new Config();
   authConfig: AuthConfig;
-
+  private oAuthModuleConfig: OAuthModuleConfig;
   packageInfo = packageInfo;
 
   private http: HttpClient;
@@ -61,5 +60,8 @@ export class ConfigService {
       url = url.concat("/");
     }
     return url;
+  }
+  getModuleConfig(): OAuthModuleConfig {
+    return this.oAuthModuleConfig;
   }
 }

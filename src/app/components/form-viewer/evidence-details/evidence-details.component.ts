@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
@@ -11,15 +11,17 @@ import {EncounterDTO} from "../../../models/dto/structured-evidence-dto/encounte
 import {MedicationRequestDTO} from "../../../models/dto/structured-evidence-dto/medication-request-dto";
 import {PatientSummary} from "../../../models/patient-summary";
 import {SortByDatePipe} from "../../../pipe/sort-by-date.pipe";
+import {FormManagerService} from "../../../services/form-manager/form-manager.service";
+import {ActiveFormSummary} from "../../../models/active-form-summary";
 
 @Component({
   selector: 'app-evidence-details',
   templateUrl: './evidence-details.component.html',
   styleUrl: './evidence-details.component.scss'
 })
-export class EvidenceDetailsComponent implements OnChanges {
+export class EvidenceDetailsComponent implements OnChanges, OnInit{
 
-  @Input() patientSummary!: PatientSummary | undefined;
+  @Input() activeFormSummary!: ActiveFormSummary | undefined;
   documentsSortDirection: 'asc' | 'desc' = 'desc';
 
   cqlResources: FhirBaseResource[] = [];
@@ -31,11 +33,25 @@ export class EvidenceDetailsComponent implements OnChanges {
   simpleEncounters: EncounterDTO[] = [];
   simpleConditions: ConditionDTO[] = [];
   simpleProcedures: ProcedureDTO[] = [];
-  nlpResourcesDeepCopy: FhirBaseResource[] = [];
-  packageRunDate: string;
+
   isDateFilterExpanded = false;
 
-  constructor(private evidenceViewerService: EvidenceViewerService, private sortByDatePipe: SortByDatePipe) {
+  //Deep copy all resources for filtering operations because the API does not handle filtering or sorting
+  nlpResourcesDeepCopy: FhirBaseResource[] = [];
+  simpleObservationsDeepCopy: ObservationDTO[] = [];
+  simpleEncountersDeepCopy: EncounterDTO[] = [];
+  simpleMedicationRequestsDeepCopy: EncounterDTO[] = [];
+  simpleProceduresDeepCopy: ProcedureDTO[] = [];
+
+  constructor(private evidenceViewerService: EvidenceViewerService,
+              private sortByDatePipe: SortByDatePipe,
+              private formManagerService: FormManagerService) {
+  }
+
+  ngOnInit(): void {
+     this.formManagerService.selectedForm$.subscribe(
+       value=> console.log(value)
+     )
   }
 
   private mapStructuredEvidence(cqlResources: FhirBaseResource[], patientSummary: PatientSummary) {
@@ -76,10 +92,15 @@ export class EvidenceDetailsComponent implements OnChanges {
             this.cqlResources = cqlResources;
             this.nlpResources = nlpResources;
             this.nlpAnswers = resultSet.nlpAnswers;
-            this.mapStructuredEvidence(cqlResources, this.patientSummary);
+            this.mapStructuredEvidence(cqlResources, this.activeFormSummary.patientSummary);
 
             //preserve a copy in case the results are filtered.
             this.nlpResourcesDeepCopy = JSON.parse(JSON.stringify(this.nlpResources));
+
+            this.simpleObservationsDeepCopy = JSON.parse(JSON.stringify(this.simpleObservations));
+            this.simpleEncountersDeepCopy = JSON.parse(JSON.stringify(this.simpleEncounters));
+            this.simpleMedicationRequestsDeepCopy = JSON.parse(JSON.stringify(this.simpleMedicationRequests));
+            this.simpleProceduresDeepCopy = JSON.parse(JSON.stringify(this.simpleProcedures));
 
             console.log(this.cqlResources);
             console.log(this.nlpResources);

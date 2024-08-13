@@ -8,10 +8,12 @@ export class ProcedureDTO extends StructuredEvidenceDTO {
   code: string;
   system : string;
   conceptName: string;
+  sortFilterDate: string;
   constructor(procedure: FhirBaseResource, patientSummary: PatientSummary){
     //TODO verify proper implementation when the requirements are finalized
     console.log(procedure) //TODO: Remove console.log
     super();
+    this.sortFilterDate = procedure['performedDateTime'] || procedure['performedString'] || procedure['performedPeriod']?.['start']; //TODO verify requirements
     const code = super.getCode(procedure,'code', [System.CPT]);
     this.code = code?.code;
     this.system  = super.getSystemFromEnum(code?.system);
