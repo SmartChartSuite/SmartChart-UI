@@ -37,7 +37,7 @@
       @for (dto of Object.values(combinedDTO); track dto) {
         @if (dto.length > 1) {
           <app-structured-results-details
-            [structuredEvidenceDto]="dto">
+            [structuredEvidenceDto]="dto | sortByDate: 'sortFilterDate' : 'desc'">
           </app-structured-results-details>
         }
       }

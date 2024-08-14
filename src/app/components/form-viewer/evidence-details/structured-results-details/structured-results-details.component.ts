@@ -34,8 +34,9 @@ export class StructuredResultsDetailsComponent implements OnChanges, OnInit, Aft
         this.columns = this.displayedColumns;
       }
       else if(this.structuredEvidenceDto?.[0]){
-        this.columns = Object?.keys(this.structuredEvidenceDto?.[0]);
+        this.columns = Object?.keys(this.structuredEvidenceDto?.[0])
       }
+      this.columns = this.columns.filter(column=> column != 'sortFilterDate');
     }
   }
 
