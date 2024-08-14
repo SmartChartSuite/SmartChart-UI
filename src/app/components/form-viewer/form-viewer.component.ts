@@ -103,7 +103,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   private createSimpleAnswerObject(questionnaire: any) {
-    let simpleAnswerObject = {};
+    let simpleAnswerObject: FormAnswers = {};
     questionnaire.item
       .forEach(outerItem => outerItem.item
         .forEach(innerItem =>
