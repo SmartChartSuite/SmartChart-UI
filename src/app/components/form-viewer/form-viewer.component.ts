@@ -11,6 +11,7 @@ import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 import {QuestionType} from "../../models/question-type";
 import { TIMEZONES } from '../../../assets/const/timezones';
+import {FormAnswers} from "../../models/form-answers";
 
 @Component({
   selector: 'app-form-viewer',
@@ -19,6 +20,7 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
+  answerDictionary: FormAnswers;
   questionnaire: any;
   QuestionWidgetType = QuestionType;
   showDrawer = false;
@@ -56,11 +58,11 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
     ).subscribe({
       next: result => { //TODO all properties should we accessed with '.' result.item instead of '[]'
-        result['item'] = result['item']?.map((item: any) => {return {...item, answer: null}});
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
+        this.answerDictionary = new FormAnswers(this.questionnaire);
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
       },
@@ -81,7 +83,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.questionnaire)
+    console.log(this.answerDictionary);
   }
 
   selectPatientForm() {
