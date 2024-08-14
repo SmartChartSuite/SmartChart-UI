@@ -28,7 +28,6 @@ export class EvidenceFilterComponent implements OnInit {
 
   ngOnInit(): void {
     this.form.valueChanges.subscribe(value => {
-      console.log(value);
       if (value.range.start || value.range.end) {
         this.form.controls['options'].patchValue('custom', {emitEvent: false});
       }
@@ -41,16 +40,25 @@ export class EvidenceFilterComponent implements OnInit {
         if (this.range.dirty) {
           this.range.reset(null, {emitEvent: false});
         }
-        //TODO get the start date from the parent component
-        const today = new Date();
-
-        //subtract 90 days from today
-        const priorDate = new Date(new Date().setDate(today.getDate() - 90));
-        this.onDateDateRangeSelected.emit({'startDate': priorDate, 'endDate': today});
+        const daysRange = this.form.controls['dayRange'].value;
+        const startDate = this.getYearMonthDayStr(new Date(new Date().setDate(new Date(this.packageRunDate).getDate() - daysRange)));
+        const endDate = this.getYearMonthDayStr(new Date(this.packageRunDate));
+        this.onDateDateRangeSelected.emit({'startDate': startDate, 'endDate': endDate});
       } else if (value.options == 'custom' && value.range.start && value.range.end) {
-        this.onDateDateRangeSelected.emit({'startDate': value.range.start, 'endDate': value.range.end})
+        this.onDateDateRangeSelected.emit(
+          {'startDate': this.getYearMonthDayStr(value.range.start), 'endDate': this.getYearMonthDayStr(value.range.end)}
+        );
       }
     })
+  }
+
+  /**
+   * Extract only YYYY-MM-DD string from the Date object
+   * @param date
+   * @private
+   */
+  private getYearMonthDayStr(date: Date): string{
+    return  date.toISOString().split('T')[0];
   }
 
 }

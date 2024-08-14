@@ -18,7 +18,7 @@
   <mat-card-content>
     @if (this.isDateFilterExpanded && (this.cqlResources?.length > 0 || this.nlpAnswers?.length > 0)) {
       <app-evidence-filter
-        (onDateDateRangeSelected)="filterDataByDateRange($event)"
+        (onDateDateRangeSelected)="onFilterByDateRange($event)"
         [packageRunDate]="activeFormSummary.started"
       />
     }
@@ -34,25 +34,12 @@
 
     <!--TODO Remove the for loop once the parsing of all structured resources is implemented -->
     @if (this.cqlResources?.length > 0) {
-      @if (simpleObservations.length > 0) {
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleObservations">
-        </app-structured-results-details>
-      }
-      @if (simpleConditions.length > 0) {
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleConditions">
-        </app-structured-results-details>
-      }
-      @if (simpleEncounters.length > 0) {
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleEncounters">
-        </app-structured-results-details>
-      }
-      @if (simpleMedicationRequests.length > 0) {
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleMedicationRequests">
-        </app-structured-results-details>
+      @for (dto of Object.values(combinedDTO); track dto) {
+        @if (dto.length > 1) {
+          <app-structured-results-details
+            [structuredEvidenceDto]="dto">
+          </app-structured-results-details>
+        }
       }
     } @else {
       No Structured Evidence Found
