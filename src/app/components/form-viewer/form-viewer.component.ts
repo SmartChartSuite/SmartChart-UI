@@ -11,10 +11,7 @@ import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 import {QuestionType} from "../../models/question-type";
 import { TIMEZONES } from '../../../assets/const/timezones';
-
-export class FormAnswers {
-  [key: string]: any;
-}
+import {FormAnswers} from "../../models/form-answers";
 
 @Component({
   selector: 'app-form-viewer',
@@ -23,7 +20,7 @@ export class FormAnswers {
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  answerDictionary: FormAnswers  = {};
+  answerDictionary: FormAnswers;
   questionnaire: any;
   QuestionWidgetType = QuestionType;
   showDrawer = false;
@@ -65,7 +62,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
-        this.answerDictionary = this.createSimpleAnswerObject(this.questionnaire);
+        this.answerDictionary = new FormAnswers(this.questionnaire);
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
       },
@@ -102,13 +99,4 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     questionnaire.item[i].item[j].answer = event.data;
   }
 
-  private createSimpleAnswerObject(questionnaire: any) {
-    let simpleAnswerObject: FormAnswers = {};
-    questionnaire.item
-      .forEach(outerItem => outerItem.item
-        .forEach(innerItem =>
-          simpleAnswerObject[`linkId${innerItem.linkId}`] =  ''
-        ));
-    return simpleAnswerObject;
-  }
 }
