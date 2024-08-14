@@ -19,7 +19,7 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  simpleAnswerObject = {};
+  answerDictionary = {};
   questionnaire: any;
   QuestionWidgetType = QuestionType;
   showDrawer = false;
@@ -61,7 +61,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
-        this.simpleAnswerObject = this.createSimpleAnswerObject(this.questionnaire);
+        this.answerDictionary = this.createSimpleAnswerObject(this.questionnaire);
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
       },
@@ -82,7 +82,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.simpleAnswerObject);
+    console.log(this.answerDictionary);
   }
 
   selectPatientForm() {
