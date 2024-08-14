@@ -12,6 +12,10 @@ import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-vie
 import {QuestionType} from "../../models/question-type";
 import { TIMEZONES } from '../../../assets/const/timezones';
 
+export class FormAnswers {
+  [key: string]: any;
+}
+
 @Component({
   selector: 'app-form-viewer',
   templateUrl: './form-viewer.component.html',
@@ -19,7 +23,7 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
 
-  answerDictionary = {};
+  answerDictionary: FormAnswers  = {};
   questionnaire: any;
   QuestionWidgetType = QuestionType;
   showDrawer = false;
