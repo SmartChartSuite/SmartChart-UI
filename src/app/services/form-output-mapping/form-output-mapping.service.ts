@@ -21,6 +21,8 @@ export class FormOutputMappingService {
       qr.questionnaire = questionnaire["url"];
     }
 
+    // TODO: Handle subject, author, and source.
+
     qr.item = [];
     for (const [groupKey, groupItem] of Object.entries(questionnaire["item"])) {
       //console.log(key, groupItem)
@@ -34,7 +36,6 @@ export class FormOutputMappingService {
 
         if (formAnswers[qrChildItem.linkId]) {
           let answer = {}
-          // TODO: Handle "coding"
           switch (childItem["type"]) {
             // "group" not applicable
             // "display" not applicable
