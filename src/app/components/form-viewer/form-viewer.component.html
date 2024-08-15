@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
-                  @if (childItem["type"] == QuestionWidgetType.CHOICE) {
+                  @if (childItem["type"] == QuestionnaireItemType.choice) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['answer']">
                         @if (childItem?.['answerOption'].length <= 3) {
@@ -68,12 +68,12 @@
                         }
                       </mat-radio-group>
                     }
-                  } @else if (childItem["type"] == QuestionWidgetType.STRING) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.string) {
                     <mat-form-field appearance="outline" class="question-input">
                       <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
                     </mat-form-field>
 
-                  } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.quantity) {
                     <div class="flex">
                       <mat-form-field
                         appearance="outline"
@@ -88,36 +88,36 @@
                         <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
                       </mat-form-field>
                     </div>
-                  } @else if (childItem["type"] == QuestionWidgetType.INTEGER) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.integer) {
                     <mat-form-field
                       appearance="outline" class="question-input"
-                      (keyup)="setValue(QuestionWidgetType.INTEGER, questionnaire, i, j)">
+                      (keyup)="setValue(QuestionnaireItemType.integer, questionnaire, i, j)">
                       <input type="number" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
                       <mat-hint>Only whole numbers are allowed</mat-hint>
                     </mat-form-field>
-                  } @else if (childItem["type"] == QuestionWidgetType.DECIMAL) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.decimal) {
                     <mat-form-field appearance="outline" class="question-input">
                       <input type="number" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
                     </mat-form-field>
-                  } @else if (childItem["type"] == QuestionWidgetType.DATE) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.date) {
                     <app-fhir-date-time
-                      (onDateTimeUpdated)="onDateTimeUpdated($event,questionnaire,i,j)"
-                      [questionType]="QuestionWidgetType.DATE"
+                      (onDateTimeUpdated)="answerDictionary[childItem?.linkId] = $event.value;"
+                      [questionType]="QuestionnaireItemType.date"
                       [inputValue]="answerDictionary[childItem?.linkId]"
                     ></app-fhir-date-time>
-                  } @else if (childItem["type"] == QuestionWidgetType.TIME) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.time) {
                     <app-fhir-date-time
-                      (onDateTimeUpdated)="onDateTimeUpdated($event,questionnaire,i,j)"
-                      [questionType]="QuestionWidgetType.TIME"
+                      (onDateTimeUpdated)="answerDictionary[childItem?.linkId] = $event.value;"
+                      [questionType]="QuestionnaireItemType.time"
                       [inputValue]="answerDictionary[childItem?.linkId]"
                     ></app-fhir-date-time>
-                  } @else if (childItem["type"] == QuestionWidgetType.DATE_TIME) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.dateTime) {
                     <app-fhir-date-time
-                      (onDateTimeUpdated)="onDateTimeUpdated($event, questionnaire, i, j)"
-                      [questionType]="QuestionWidgetType.DATE_TIME"
+                      (onDateTimeUpdated)="answerDictionary[childItem?.linkId] = $event.value;"
+                      [questionType]="QuestionnaireItemType.dateTime"
                       [inputValue]="answerDictionary[childItem?.linkId]"
                     ></app-fhir-date-time>
-                  } @else if (childItem["type"] == QuestionWidgetType.TEXT) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.text) {
                     <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="answerDictionary[childItem?.linkId]"></textarea>
                   }
 
