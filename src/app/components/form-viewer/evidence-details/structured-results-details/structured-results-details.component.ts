@@ -15,7 +15,7 @@ export class StructuredResultsDetailsComponent implements OnChanges, OnInit, Aft
   @Input() displayedColumns: string[] = []; // Allows the user to enter the table columns of their choice in the order they need
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  columns: string[];
+  columns: string[] = [];
   dataSource = new MatTableDataSource<StructuredEvidenceDTO>([]);
   readonly MAX_STR_LENGTH = 17;
   evidenceViewerExpanded$: Observable<boolean>;
