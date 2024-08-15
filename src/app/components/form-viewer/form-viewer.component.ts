@@ -12,6 +12,7 @@ import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-vie
 import {QuestionType} from "../../models/question-type";
 import { TIMEZONES } from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
+import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 
 @Component({
   selector: 'app-form-viewer',
@@ -38,7 +39,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     public router: Router,
     private stateManagementService: StateManagementService,
     private utilsService: UtilsService,
-    public evidenceViewerService: EvidenceViewerService
+    public evidenceViewerService: EvidenceViewerService,
+    private outputMapper: FormOutputMappingService
   ) {
   }
 
@@ -84,6 +86,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     console.log(this.answerDictionary);
+    console.log(this.questionnaire);
+    this.outputMapper.mapToFhir(this.answerDictionary, this.questionnaire);
   }
 
   selectPatientForm() {

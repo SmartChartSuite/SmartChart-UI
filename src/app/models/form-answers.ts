@@ -7,7 +7,7 @@ export class FormAnswers {
     const items = questionnaire?.['item'] ?? [];
     items.forEach(outerItem => {
       outerItem.item?.forEach(innerItem => {
-        this[`linkId${innerItem.linkId}`] = '';
+        this[`${innerItem.linkId}`] = '';
       });
     });
   }
