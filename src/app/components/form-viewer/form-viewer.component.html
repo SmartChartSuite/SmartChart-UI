@@ -53,7 +53,7 @@
                 <div class="margin-left-md margin-right-sm margin-top-xs">
                   @if (childItem["type"] == QuestionnaireItemType.choice) {
                     @for (option of childItem?.['answerOption']; track option) {
-                      <mat-radio-group [(ngModel)]="childItem['answer']">
+                      <mat-radio-group [(ngModel)]="answerDictionary[childItem?.linkId]">
                         @if (childItem?.['answerOption'].length <= 3) {
                           <mat-radio-button class="margin-right-md"
                                             [value]="option?.['valueString']">{{ option?.['valueString'] }}
@@ -78,14 +78,14 @@
                       <mat-form-field
                         appearance="outline"
                         class="value-quantity-input margin-right-md">
-                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                        <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId].value">
                         <span matPrefix class="input-prefix">Value</span>
                       </mat-form-field>
                       <mat-form-field
                         appearance="outline"
                         class="value-quantity-input margin-left-md">
                         <span matPrefix class="input-prefix">Unit</span>
-                        <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
+                        <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId].quantity">
                       </mat-form-field>
                     </div>
                   } @else if (childItem["type"] == QuestionnaireItemType.integer) {
