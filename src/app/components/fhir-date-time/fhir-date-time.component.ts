@@ -52,8 +52,8 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
       this.form.addControl('date', new FormControl(new Date(this.inputValue), Validators.required));
     }
     if (changes['questionType']?.currentValue == QuestionnaireItemType.dateTime){
-      this.form.addControl('date', new FormControl(this.getDateFromUtcString(this.inputValue, 'date'), Validators.required));
-      this.form.addControl('time', new FormControl(this.getDateFromUtcString(this.inputValue, 'time'), Validators.required));
+      this.form.addControl('date', new FormControl(this.getDateFromISOString(this.inputValue, 'date'), Validators.required));
+      this.form.addControl('time', new FormControl(this.getDateFromISOString(this.inputValue, 'time'), Validators.required));
       // this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
     }
 
@@ -66,14 +66,14 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
       }
 
       if(this.questionType == QuestionnaireItemType.date){
-        const date = this.getDateFromUtcString(this.inputValue, 'date');
+        const date = this.getDateFromISOString(this.inputValue, 'date');
         this.form.controls['date'].setValue(date, { emitEvent: false });
       }
       else if (this.questionType == QuestionnaireItemType.dateTime){
-        const date = this.getDateFromUtcString(this.inputValue, 'date');
+        const date = this.getDateFromISOString(this.inputValue, 'date');
         this.form.controls['date'].setValue(date, { emitEvent: false });
 
-        const time = this.getDateFromUtcString(this.inputValue, 'time')
+        const time = this.getDateFromISOString(this.inputValue, 'time')
         this.form.controls['time'].setValue(time, { emitEvent: false });
       }
       else if(this.questionType == QuestionnaireItemType.time){
@@ -84,7 +84,7 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
     }
   }
 
-  getDateFromUtcString(utcString, dataType: 'date' | 'time') {
+  getDateFromISOString(utcString, dataType: 'date' | 'time') {
     if (!utcString || utcString.length == 0) {
       return null;
     }
