@@ -2,7 +2,6 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {provideMomentDateAdapter} from "@angular/material-moment-adapter";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
-import moment from 'moment';
 
 const timeRegex = /([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]{1,9})?/;
 const dateRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?/;
@@ -60,6 +59,7 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
 
     if (changes['inputValue']?.currentValue ){
       // Check if the input value is in correct fhir format
+      this.inputValue = this.inputValue.replaceAll(' ','');
       if(!this.checkValidInput(this.inputValue, this.questionType)){
         console.error(`Invalid ${this.questionType} detected with value ${this.inputValue}`);
         return;
