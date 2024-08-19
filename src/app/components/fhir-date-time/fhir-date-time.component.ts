@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {QuestionType} from "../../models/question-type";
 import {provideMomentDateAdapter} from "@angular/material-moment-adapter";
+import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
 
 const timeRegex = /([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]{1,9})?/;
 const dateRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?/;
@@ -32,11 +32,11 @@ export const DATE_FORMATS = {
 export class FhirDateTimeComponent implements OnChanges, OnInit {
 
   @Input() inputValue: string;
-  @Input() questionType: QuestionType;
+  @Input() questionType: QuestionnaireItemType;
   @Output() onDateTimeUpdated = new EventEmitter<any>();
 
   // protected readonly TIMEZONES = TIMEZONES;
-  protected readonly QuestionType = QuestionType;
+  protected readonly QuestionnaireItemType = QuestionnaireItemType;
   private readonly timeRegex = timeRegex;
   private readonly dateRegex = dateRegex;
   private readonly dateTimeRegex = dateTimeRegex;
@@ -45,37 +45,38 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
   form = new FormGroup({});
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['questionType']?.currentValue == QuestionType.TIME){
+    if (changes['questionType']?.currentValue == QuestionnaireItemType.time){
       this.form.addControl('time', new FormControl(this.inputValue, Validators.required));
     }
-    if (changes['questionType']?.currentValue == QuestionType.DATE && !this.form.contains('date')){
+    if (changes['questionType']?.currentValue == QuestionnaireItemType.date && !this.form.contains('date')){
       this.form.addControl('date', new FormControl(new Date(this.inputValue), Validators.required));
     }
-    if (changes['questionType']?.currentValue == QuestionType.DATE_TIME){
-      this.form.addControl('date', new FormControl(this.getDateFromUtcString(this.inputValue, 'date'), Validators.required));
-      this.form.addControl('time', new FormControl(this.getDateFromUtcString(this.inputValue, 'time'), Validators.required));
+    if (changes['questionType']?.currentValue == QuestionnaireItemType.dateTime){
+      this.form.addControl('date', new FormControl(this.getDateFromISOString(this.inputValue, 'date'), Validators.required));
+      this.form.addControl('time', new FormControl(this.getDateFromISOString(this.inputValue, 'time'), Validators.required));
       // this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
     }
 
     if (changes['inputValue']?.currentValue ){
       // Check if the input value is in correct fhir format
+      this.inputValue = this.inputValue.replaceAll(' ','');
       if(!this.checkValidInput(this.inputValue, this.questionType)){
         console.error(`Invalid ${this.questionType} detected with value ${this.inputValue}`);
         return;
       }
 
-      if(this.questionType == QuestionType.DATE){
-        const date = this.getDateFromUtcString(this.inputValue, 'date');
+      if(this.questionType == QuestionnaireItemType.date){
+        const date = this.getDateFromISOString(this.inputValue, 'date');
         this.form.controls['date'].setValue(date, { emitEvent: false });
       }
-      else if (this.questionType == QuestionType.DATE_TIME){
-        const date = this.getDateFromUtcString(this.inputValue, 'date');
+      else if (this.questionType == QuestionnaireItemType.dateTime){
+        const date = this.getDateFromISOString(this.inputValue, 'date');
         this.form.controls['date'].setValue(date, { emitEvent: false });
 
-        const time = this.getDateFromUtcString(this.inputValue, 'time')
+        const time = this.getDateFromISOString(this.inputValue, 'time')
         this.form.controls['time'].setValue(time, { emitEvent: false });
       }
-      else if(this.questionType == QuestionType.TIME){
+      else if(this.questionType == QuestionnaireItemType.time){
         //The widget accepts data in format HH:MM only. If the format is HH:MM:SS, we need to truncate the SS part
         const time = this.inputValue.length > 5 ? this.inputValue.substring(0, 5) : this.inputValue;
         this.form.controls['time'].setValue(time, { emitEvent: false });
@@ -83,7 +84,7 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
     }
   }
 
-  getDateFromUtcString(utcString, dataType: 'date' | 'time') {
+  getDateFromISOString(utcString, dataType: 'date' | 'time') {
     if (!utcString || utcString.length == 0) {
       return null;
     }
@@ -121,14 +122,16 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
     })
   }
 
-  private formValueToStr(value: any, questionType: QuestionType) {
-    if(questionType == QuestionType.DATE){
-      return value?.date.toUTCString();
+  private formValueToStr(value: any, questionType: QuestionnaireItemType) {
+    let result = '';
+    if(questionType == QuestionnaireItemType.date){
+      const date = new Date(value.date);
+      result =  date.toISOString().split('T')[0];
     }
-    else if(questionType == QuestionType.TIME){
-      return `${value.time}:00`
+    else if(questionType == QuestionnaireItemType.time){
+      result = `${value.time}:00`
     }
-    else if(questionType == QuestionType.DATE_TIME){
+    else if(questionType == QuestionnaireItemType.dateTime){
       //TODO verify the assumption that the user is required to enter a date and time (and not only date), and change the if statement accordingly
       if(this.form.controls['date'].value && this.form.controls['time'].value){
         const date = this.form.controls['date'].value;
@@ -136,21 +139,22 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
         const utcDateStr = new Date(date).toISOString().split('T')[0];
         // We append the time here. This assumes that the user is required to add both: time and date
         const time = `${this.form.controls['time'].value}:00.000Z`;
-        return `${utcDateStr}T${time}`
+        result =  `${utcDateStr}T${time}`
       }
     }
+    return result;
   }
 
-  private checkValidInput(inputValue: string, questionType: QuestionType): boolean {
-    if(questionType == QuestionType.TIME){
+  private checkValidInput(inputValue: string, questionType: QuestionnaireItemType): boolean {
+    if(questionType == QuestionnaireItemType.time){
       const regExp = new RegExp(this.timeRegex);
       return regExp.test(inputValue);
     }
-    if(questionType == QuestionType.DATE){
+    if(questionType == QuestionnaireItemType.date){
       const regExp = new RegExp(this.dateRegex);
       return regExp.test(inputValue);
     }
-    if(questionType == QuestionType.DATE_TIME){
+    if(questionType == QuestionnaireItemType.dateTime){
       const regExp = new RegExp(this.dateTimeRegex);
       return regExp.test(inputValue);
     }

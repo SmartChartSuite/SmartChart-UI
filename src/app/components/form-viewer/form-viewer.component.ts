@@ -9,9 +9,10 @@ import {filter, mergeMap, Observable, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
-import {QuestionType} from "../../models/question-type";
 import { TIMEZONES } from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
+import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
+import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
 
 @Component({
   selector: 'app-form-viewer',
@@ -19,10 +20,9 @@ import {FormAnswers} from "../../models/form-answers";
   styleUrl: './form-viewer.component.scss'
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
-
+  protected readonly QuestionnaireItemType = QuestionnaireItemType;
   answerDictionary: FormAnswers;
   questionnaire: any;
-  QuestionWidgetType = QuestionType;
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
@@ -38,7 +38,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     public router: Router,
     private stateManagementService: StateManagementService,
     private utilsService: UtilsService,
-    public evidenceViewerService: EvidenceViewerService
+    public evidenceViewerService: EvidenceViewerService,
+    private outputMapper: FormOutputMappingService
   ) {
   }
 
@@ -84,19 +85,16 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     console.log(this.answerDictionary);
+    console.log(this.questionnaire);
+    this.outputMapper.mapToFhir(this.answerDictionary, this.questionnaire);
   }
 
   selectPatientForm() {
     this.router.navigate(['/forms']);
   }
-  setValue(questionType: QuestionType, questionnaire: any, i: number, j: number) {
-    if(questionType == QuestionType.INTEGER && questionnaire.item[i].item[j].answer){
+  setValue(questionType: QuestionnaireItemType, questionnaire: any, i: number, j: number) {
+    if(questionType == QuestionnaireItemType.integer && questionnaire.item[i].item[j].answer){
        questionnaire.item[i].item[j].answer = Math.trunc(questionnaire.item[i].item[j].answer);
     }
   }
-
-  onDateTimeUpdated(event: any, questionnaire: any, i: number, j: number) {
-    questionnaire.item[i].item[j].answer = event.data;
-  }
-
 }
