@@ -77,15 +77,15 @@
                     <div class="flex">
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input margin-right-md">
+                        class="value-unit-input margin-right-md">
+                        <mat-label>Value</mat-label>
                         <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId].value">
-                        <span matPrefix class="input-prefix">Value</span>
                       </mat-form-field>
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input margin-left-md">
-                        <span matPrefix class="input-prefix">Unit</span>
-                        <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId].quantity">
+                        class="value-unit-input margin-left-md">
+                        <mat-label>Unit</mat-label>
+                        <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId].unit">
                       </mat-form-field>
                     </div>
                   } @else if (childItem["type"] == QuestionnaireItemType.integer) {
