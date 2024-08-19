@@ -13,7 +13,7 @@ import {UtilsService} from "../../../services/utils/utils.service";
 })
 export class ActiveFormsComponent implements OnInit {
 
-  displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
+  displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started"];
   dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
   isLoading = false;
 
@@ -34,8 +34,8 @@ export class ActiveFormsComponent implements OnInit {
     this.isLoading = true;
     this.rcApiInterfaceService.getBatchJobs().subscribe({
       next: value => {
-        this.dataSource.data = value.sort((a,  b) => {
-          return (new Date(b.started).getTime()) - (new Date(a.started).getTime()) ;
+        this.dataSource.data = value.sort((a, b) => {
+          return (new Date(b.started).getTime()) - (new Date(a.started).getTime());
         });
         this.isLoading = false;
       },
