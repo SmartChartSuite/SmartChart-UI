@@ -51,7 +51,7 @@
                 </div>
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
-                  @if (childItem["type"] == QuestionWidgetType.CHOICE) {
+                  @if (childItem["type"] == QuestionnaireItemType.choice) {
                     @for (option of childItem?.['answerOption']; track option) {
                       <mat-radio-group [(ngModel)]="childItem['answer']">
                         @if (childItem?.['answerOption'].length <= 3) {
