@@ -1,3 +1,51 @@
+<form [formGroup]="searchResultsForm" (ngSubmit)="onSubmit()">
+  <!--Name Form Field-->
+  <mat-form-field appearance="outline" class="margin-right-md">
+    <mat-label>Name:</mat-label>
+    <input matInput formControlName="identifier">
+  </mat-form-field>
+
+  <!--Gender Form Field-->
+  <mat-form-field appearance="outline" class="margin-right-md">
+    <mat-label>Group</mat-label>
+    <mat-select formControlName="gender">
+      @for (gender of GENDER_LIST; track gender) {
+        <mat-option [value]="gender">{{ gender }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="margin-right-md">
+    <mat-label>DoB Range</mat-label>
+    <mat-select formControlName="dobRange">
+      @for (gender of GENDER_LIST; track gender) {
+        <mat-option [value]="gender">{{ gender }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>DoB Range</mat-label>
+    <mat-date-range-input [formGroup]="dobRange" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date">
+      <input matEndDate formControlName="end" placeholder="End date">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="margin-right-md">
+    <mat-label>DoB Range</mat-label>
+    <mat-select formControlName="formName">
+      @for (gender of GENDER_LIST; track gender) {
+        <mat-option [value]="gender">{{ gender }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+</form>
+
+
 <table mat-table [dataSource]="dataSource">
 
   <ng-container matColumnDef="formName">
