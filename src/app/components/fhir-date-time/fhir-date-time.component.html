@@ -1,5 +1,5 @@
 <form [formGroup]="form" class="date-time-inputs">
-  @if (questionType == QuestionType.DATE_TIME || questionType == QuestionType.DATE) {
+  @if (questionType == QuestionnaireItemType.dateTime || questionType == QuestionnaireItemType.date) {
     <mat-form-field
       appearance="outline"
       class="margin-right-lg">
@@ -10,7 +10,7 @@
       <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>
   }
-  @if (questionType == QuestionType.DATE_TIME || questionType == QuestionType.TIME) {
+  @if (questionType == QuestionnaireItemType.dateTime || questionType == QuestionnaireItemType.time) {
     <mat-form-field
       appearance="outline"
       class="margin-right-lg">
