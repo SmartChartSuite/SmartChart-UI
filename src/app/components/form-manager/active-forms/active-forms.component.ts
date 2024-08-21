@@ -56,21 +56,50 @@ export class ActiveFormsComponent implements OnInit {
     * @param filters
    */
   onFiltersValueChanged(filters: any) {
-    console.log(this.activeForms);
-    console.log(filters);
-    let results: ActiveFormSummary[] = [];
-    Object.keys(filters).forEach(key=> {
-      console.log(key);
-      if (key!= 'startedRange' && key!= 'dobRange'){
-        let tempResults = this.activeFormsDeepCopy.filter(value => {
-          console.log(value);
-          console.log(value[key]);
-          return value[key] == filters['key']
-        });
-        results = results.concat(tempResults);
-      }
-    });
-    console.log(results);
+    let tempResults : ActiveFormSummary[] = JSON.parse(JSON.stringify(this.activeFormsDeepCopy));
+    // Implement contains string filter on patient name
+    if(filters.name?.length> 0){
+      tempResults = this.activeFormsDeepCopy.filter(form=>
+        form.patientSummary.name.family?.toLowerCase()?.includes(filters.name.toLowerCase())
+        ||
+        form.patientSummary.name.given?.toString().toLowerCase()?.includes(filters.name)
+      );
+    }
+    // Gender Filter
+    if(filters.gender){
+      tempResults = tempResults.filter(form=>
+        form.patientSummary.gender.toLowerCase() == filters.gender.toLowerCase()
+      );
+    }
 
+    // Begin Form Started Date Range filter
+    if(filters.startedRange?.start){
+      tempResults = tempResults.filter(form=> {
+         new Date(form.started) >= new Date(filters.startedRange?.start);
+        }
+      );
+    }
+    if(filters.startedRange?.end){
+      tempResults = tempResults.filter(form=>
+        new Date(form.started) <= new Date (filters.startedRange?.end)
+      );
+    }
+    // End Form Started Date Range filter
+
+    // Begin PatientDoB Date Range filter
+    if(filters.dobRange?.dobStart){
+      tempResults = tempResults.filter(form=>
+          new Date(form.patientSummary.birthDate) >= new Date(filters.dobRange?.dobStart)
+      );
+    }
+    if(filters.dobRange?.dobEnd){
+      tempResults = tempResults.filter(form=>
+        new Date(form.patientSummary.birthDate) <= new Date(filters.dobRange?.dobEnd)
+      );
+    }
+    // Begin PatientDoB Date Range filter
+    //TODO Implement formName Filter
+    //TODO Implement Status Filter
+    this.activeForms = tempResults;
   }
 }
