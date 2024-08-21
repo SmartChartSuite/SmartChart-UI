@@ -50,7 +50,27 @@ export class ActiveFormsComponent implements OnInit {
     this.router.navigate([`/form-viewer`]);
   }
 
-  onFiltersValueChanged(event: any) {
-    console.log(event);
+  /**
+   * Note: because ActiveFormSummary is not a plain DTO object, and we cannot iterate it using Object.keys()
+   * we need to hardcode all filters (keys) and implement each one individually.
+    * @param filters
+   */
+  onFiltersValueChanged(filters: any) {
+    console.log(this.activeForms);
+    console.log(filters);
+    let results: ActiveFormSummary[] = [];
+    Object.keys(filters).forEach(key=> {
+      console.log(key);
+      if (key!= 'startedRange' && key!= 'dobRange'){
+        let tempResults = this.activeFormsDeepCopy.filter(value => {
+          console.log(value);
+          console.log(value[key]);
+          return value[key] == filters['key']
+        });
+        results = results.concat(tempResults);
+      }
+    });
+    console.log(results);
+
   }
 }
