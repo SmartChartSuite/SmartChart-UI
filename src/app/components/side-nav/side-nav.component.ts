@@ -12,7 +12,7 @@ import  packageInfo from 'package.json';
 export class SideNavComponent{
 
   @Output() expandedStatusChangedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
-  expanded: boolean = false;
+  expanded: boolean = true;
   protected readonly RouteState = RouteState;
   version = packageInfo.version;
 
