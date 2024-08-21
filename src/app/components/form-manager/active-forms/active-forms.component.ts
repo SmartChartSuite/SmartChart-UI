@@ -66,7 +66,7 @@ export class ActiveFormsComponent implements OnInit {
       );
     }
     // Gender Filter
-    if(filters.gender){
+    if(filters.gender && !(filters.gender.toString().toLowerCase() == 'any')){
       tempResults = tempResults.filter(form=>
         form.patientSummary.gender.toLowerCase() == filters.gender.toLowerCase()
       );
@@ -97,8 +97,11 @@ export class ActiveFormsComponent implements OnInit {
         new Date(form.patientSummary.birthDate) <= new Date(filters.dobRange?.dobEnd)
       );
     }
-    // Begin PatientDoB Date Range filter
-    //TODO Implement formName Filter
+    if(filters.formName && !(filters.formName.name.toString().toLowerCase() == 'any')){
+      tempResults = tempResults.filter(form=>
+        form.formName == filters.formName.name || form.formName == filters.formName.title
+      );
+    }
     //TODO Implement Status Filter
     this.activeForms = tempResults;
   }

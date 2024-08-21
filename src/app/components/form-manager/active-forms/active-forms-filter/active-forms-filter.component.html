@@ -41,8 +41,8 @@
   <mat-form-field appearance="outline" class="margin-right-md">
     <mat-label>Name</mat-label>
     <mat-select formControlName="formName">
-      @for (formName of nameList; track formName) {
-        <mat-option [value]="formName">{{ formName }}</mat-option>
+      @for (formName of formList; track formName) {
+        <mat-option [value]="formName">{{ formName.name }}</mat-option>
       }
     </mat-select>
   </mat-form-field>

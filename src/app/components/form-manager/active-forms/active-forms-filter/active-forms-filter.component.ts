@@ -43,29 +43,25 @@ export class ActiveFormsFilterComponent implements OnInit{
 
   ngOnInit(): void {
     this.searchResultsForm.valueChanges.pipe(debounceTime(500)).subscribe(value => {
-      Object.keys(value).forEach(key => {
-        if (value[key] && value[key].toString().toUpperCase() == 'ANY') {
-          value[key] = null;
-        }
-      });
       this.onFormValueChange.emit(value);
     });
-
-    this.rcApiInterfaceService.getSmartChartUiQuestionnaires().subscribe({
-      next: value => {
-        this.formList = value;
-        console.log(this.formList);
-      },
-      error: err => {
-        console.error(err);
-      }
-    });
+    this.rcApiInterfaceService.getQuestionTypes$.subscribe({
+        next: value => {
+          this.formList = value;
+          this.formList.unshift({name: "Any", title: "Any"});
+          this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
+        },
+        error: err => {
+          console.error(err);
+        }
+    })
   }
 
   onClearForm() {
     this.searchResultsForm.reset();
     this.searchResultsForm.controls['gender'].setValue(this.GENDER_LIST[0], {emitEvent: false});
     this.searchResultsForm.controls['status'].setValue(this.statusList[0], {emitEvent: false});
+    this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
   }
 
 }
