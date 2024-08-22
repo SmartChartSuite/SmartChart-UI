@@ -47,7 +47,7 @@ export class ActiveFormsFilterComponent implements OnInit{
     });
     this.rcApiInterfaceService.getQuestionTypes$.subscribe({
         next: value => {
-          this.formList = value;
+          this.formList = JSON.parse(JSON.stringify(value));
           this.formList.unshift({name: "Any", title: "Any"});
           this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
         },
@@ -56,7 +56,6 @@ export class ActiveFormsFilterComponent implements OnInit{
         }
     })
   }
-
   onClearForm() {
     this.searchResultsForm.reset();
     this.searchResultsForm.controls['gender'].setValue(this.GENDER_LIST[0], {emitEvent: false});

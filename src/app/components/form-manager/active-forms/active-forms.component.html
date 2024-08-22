@@ -1,6 +1,8 @@
-<app-active-forms-filter (onFormValueChange)="onFiltersValueChanged($event)"/>
-
-<mat-divider/>
+<mat-card class="margin-top-lg margin-bottom-md margin-right-sm margin-left-sm" appearance="outlined">
+  <mat-card-content>
+    <app-active-forms-filter (onFormValueChange)="onFiltersValueChanged($event)"/>
+  </mat-card-content>
+</mat-card>
 
 <app-active-forms-grid
   [activeForms]="activeForms" [isLoading]="isLoading"
