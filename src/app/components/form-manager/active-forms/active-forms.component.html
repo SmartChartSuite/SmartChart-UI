@@ -1,8 +1,16 @@
 <div class="margin-top-lg margin-bottom-md margin-right-sm margin-left-sm">
-  <mat-expansion-panel
-    [togglePosition]="'before'" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
-    <mat-expansion-panel-header>
-      <mat-panel-title> Patient Search</mat-panel-title>
+  <mat-expansion-panel  [hideToggle]=true
+    (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header >
+      <mat-panel-title> Patient Search
+        <span class="expansion-indicator">
+        @if(panelOpenState()){
+          <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else{
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+        </span>
+      </mat-panel-title>
     </mat-expansion-panel-header>
 
     <app-active-forms-filter (onFormValueChange)="onFiltersValueChanged($event)"/>
