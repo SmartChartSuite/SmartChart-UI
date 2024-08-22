@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
@@ -14,6 +14,7 @@ export class ActiveFormsComponent implements OnInit {
   isLoading = false;
   activeForms: ActiveFormSummary[] = [];
   activeFormsDeepCopy: ActiveFormSummary[] = [];
+  readonly panelOpenState = signal(false);
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,

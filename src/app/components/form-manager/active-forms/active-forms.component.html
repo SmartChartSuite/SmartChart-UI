@@ -1,8 +1,15 @@
-<mat-card class="margin-top-lg margin-bottom-md margin-right-sm margin-left-sm" appearance="outlined">
-  <mat-card-content>
+<div class="margin-top-lg margin-bottom-md margin-right-sm margin-left-sm">
+  <mat-expansion-panel
+    [togglePosition]="'before'" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header>
+      <mat-panel-title> Patient Search</mat-panel-title>
+    </mat-expansion-panel-header>
+
     <app-active-forms-filter (onFormValueChange)="onFiltersValueChanged($event)"/>
-  </mat-card-content>
-</mat-card>
+
+  </mat-expansion-panel>
+</div>
+
 
 <app-active-forms-grid
   [activeForms]="activeForms" [isLoading]="isLoading"
