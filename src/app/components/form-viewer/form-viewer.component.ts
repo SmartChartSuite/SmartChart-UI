@@ -63,6 +63,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
+        console.log(this.questionnaire);
         this.answerDictionary = new FormAnswers(this.questionnaire);
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
