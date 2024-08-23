@@ -23,7 +23,7 @@ export class FormSelectionComponent implements OnInit {
 
   getFormList(){
     this.isLoading = true;
-    this.rcApiInterfaceService.getSmartChartUiQuestionnaires().subscribe({
+    this.rcApiInterfaceService.getQuestionTypes$.subscribe({
       next: value => {
         this.formList = value;
         this.isLoading = false;

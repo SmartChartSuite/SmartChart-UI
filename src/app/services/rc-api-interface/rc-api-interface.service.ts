@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, share} from "rxjs";
+import {map, Observable, share, shareReplay} from "rxjs";
 import {HttpClient, HttpContext} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
@@ -29,6 +29,10 @@ export class RcApiInterfaceService {
   getBatchJobsEndpoint: string = `${this.base}/batchjob`
   getResultsEndpoint: string = `${this.base}/results`
   testResponse = testResponse;
+
+  getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
+    shareReplay(1)
+  );
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
