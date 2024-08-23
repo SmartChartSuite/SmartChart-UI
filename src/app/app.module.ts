@@ -86,6 +86,9 @@ import { FhirDateTimeComponent } from './components/fhir-date-time/fhir-date-tim
 import { ActiveFormsGridComponent } from './components/form-manager/active-forms/active-forms-grid/active-forms-grid.component';
 import { ActiveFormsFilterComponent } from './components/form-manager/active-forms/active-forms-filter/active-forms-filter.component';
 import {MatExpansionModule} from "@angular/material/expansion";
+import {
+  EvidenceFilterComponent
+} from "./components/form-viewer/evidence-details/evidence-filter/evidence-filter.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -118,7 +121,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     LoadingComponent,
     FhirDateTimeComponent,
     ActiveFormsGridComponent,
-    ActiveFormsFilterComponent
+    ActiveFormsFilterComponent,
+    EvidenceFilterComponent
   ],
   imports: [
     NgxMatTimepickerModule,

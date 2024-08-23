@@ -11,9 +11,11 @@ export class MedicationRequestDTO extends StructuredEvidenceDTO {
   // frequency: string;  Temporary removed per https://jira.gtri.gatech.edu/browse/IHSS-142
   dateAgeAt: string;
   dosage: string;
+  sortFilterDate: string;
   constructor(medicationRequest: FhirBaseResource, patientSummary: PatientSummary){
     super();
     const dateAuthored = medicationRequest["authoredOn"];
+    this.sortFilterDate = dateAuthored;
     this.dateAgeAt = super.getDateAgeAsStr(dateAuthored, patientSummary.birthDate); //TODO: verify requirements
     const code = super.getCode(medicationRequest, 'medicationCodeableConcept', [System.RX_NORM])
     this.code = code?.code

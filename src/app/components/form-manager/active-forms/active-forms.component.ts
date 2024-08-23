@@ -1,9 +1,11 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
+import {MatTableDataSource} from "@angular/material/table";
+import {Router} from "@angular/router";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../services/utils/utils.service";
-import {Router} from "@angular/router";
+
 @Component({
   selector: 'app-active-forms',
   templateUrl: './active-forms.component.html',
@@ -11,6 +13,8 @@ import {Router} from "@angular/router";
 })
 export class ActiveFormsComponent implements OnInit {
 
+  displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
+  dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
   isLoading = false;
   activeForms: ActiveFormSummary[] = [];
   activeFormsDeepCopy: ActiveFormSummary[] = [];
@@ -46,6 +50,7 @@ export class ActiveFormsComponent implements OnInit {
       }
     });
   }
+
   onActiveFormSelected(activeFormSummary: ActiveFormSummary) {
     this.formManagerService.setSelectedActiveFormSummary(activeFormSummary);
     this.router.navigate([`/form-viewer`]);
