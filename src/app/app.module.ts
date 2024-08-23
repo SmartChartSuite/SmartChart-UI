@@ -83,7 +83,9 @@ import {SortByDatePipe} from "./pipe/sort-by-date.pipe";
 import {MatDivider} from "@angular/material/divider";
 import {NgxMatTimepickerModule} from "ngx-mat-timepicker";
 import { FhirDateTimeComponent } from './components/fhir-date-time/fhir-date-time.component';
-import { EvidenceFilterComponent } from './components/form-viewer/evidence-details/evidence-filter/evidence-filter.component';
+import { ActiveFormsGridComponent } from './components/form-manager/active-forms/active-forms-grid/active-forms-grid.component';
+import { ActiveFormsFilterComponent } from './components/form-manager/active-forms/active-forms-filter/active-forms-filter.component';
+import {MatExpansionModule} from "@angular/material/expansion";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -115,7 +117,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     UnstructuredResultsDetailsComponent,
     LoadingComponent,
     FhirDateTimeComponent,
-    EvidenceFilterComponent
+    ActiveFormsGridComponent,
+    ActiveFormsFilterComponent
   ],
   imports: [
     NgxMatTimepickerModule,
@@ -182,7 +185,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     QuestionnaireIndexDirective,
     DisplayItemFilterPipe,
     SortByDatePipe,
-    MatDivider
+    MatDivider,
+    MatExpansionModule
   ],
   providers: [
     SortByDatePipe,

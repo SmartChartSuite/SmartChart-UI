@@ -1,43 +1,25 @@
-<table mat-table [dataSource]="dataSource">
+<div class="margin-top-lg margin-bottom-md margin-right-sm margin-left-sm">
+  <mat-expansion-panel  [hideToggle]=true
+    (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+    <mat-expansion-panel-header >
+      <mat-panel-title> Patient Search
+        <span class="expansion-indicator">
+        @if(panelOpenState()){
+          <mat-icon>keyboard_arrow_up</mat-icon>
+        } @else{
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        }
+        </span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-  <ng-container matColumnDef="formName">
-    <th mat-header-cell *matHeaderCellDef>Form Name</th>
-    <td mat-cell *matCellDef="let row">{{ row.formName }}</td>
-  </ng-container>
+    <app-active-forms-filter (onFormValueChange)="onFiltersValueChanged($event)"/>
 
-  <ng-container matColumnDef="started">
-    <th mat-header-cell *matHeaderCellDef>Form Started</th>
-    <td mat-cell *matCellDef="let row">{{ row.started | date:'MM/dd/yyyy  HH:mm:ss' }}</td>
-  </ng-container>
+  </mat-expansion-panel>
+</div>
 
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let row">{{ row.patientSummary.name.given }} {{ row.patientSummary.name.family }}</td>
-  </ng-container>
 
-  <ng-container matColumnDef="gender">
-    <th mat-header-cell *matHeaderCellDef>Gender</th>
-    <td mat-cell *matCellDef="let row">{{ row.patientSummary.gender | titlecase}}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="dob">
-    <th mat-header-cell *matHeaderCellDef>Date of Birth</th>
-    <td mat-cell *matCellDef="let row">{{ row.patientSummary.birthDate | date : 'MM/dd/yyyy' }}</td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onActiveFormSelected(row)"></tr>
-
-  <tr class="mat-row" *matNoDataRow>
-    @if (isLoading) {
-      <td *ngIf="isLoading" class="mat-cell padding-md loading" [attr.colspan]="displayedColumns.length">
-        Loading active forms
-      </td>
-    } @else {
-      <td class="mat-cell padding-md" [attr.colspan]="displayedColumns.length">
-        No active forms found.
-      </td>
-    }
-  </tr>
-
-</table>
+<app-active-forms-grid
+  [activeForms]="activeForms" [isLoading]="isLoading"
+  (onActiveFormSelected)="onActiveFormSelected($event)"
+/>
