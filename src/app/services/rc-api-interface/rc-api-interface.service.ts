@@ -15,12 +15,14 @@ import {NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
+import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RcApiInterfaceService {
   private base = "smartchartui"
+  configEndpoint: string = `config`;
   patientEndpoint: string = `${this.base}/patient`;
   groupEndpoint: string = `${this.base}/group`;
   questionnaireEndpoint: string = `${this.base}/questionnaire`;
@@ -36,6 +38,14 @@ export class RcApiInterfaceService {
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
+  }
+
+  /**
+   * Request environment based configuration, e.g. custom primary identifier.
+   */
+
+  getConfig(): Observable<RcApiConfig> {
+    return this.http.get<RcApiConfig>(this.configService.config.rcApiUrl + this.configEndpoint);
   }
 
   /**
@@ -111,7 +121,6 @@ export class RcApiInterfaceService {
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    console.log(postBody);
     return this.http.post<StartJobsPostResponse>(this.configService.config.rcApiUrl + this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
   }
 
@@ -145,13 +154,19 @@ export class RcApiInterfaceService {
         const statusObservation = bundleEntries.shift();
         const patientResource = bundleEntries.shift();
         const answerObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
-        //console.log(resultObservationList)
         const evidenceList = bundleEntries.filter(bec => !this.isRcApiObservation(bec.resource));
-        //console.log(evidenceList)
 
         const results: Results = new Results();
         results.subject = patientResource.resource;
-        results.status = statusObservation?.resource?.["valueCodeableConcept"]?.["coding"]?.[0]?.["code"] || "error";
+
+        const statusObservationResource = statusObservation?.resource;
+        const statusCodeableConcept = statusObservationResource?.["valueCodeableConcept"];
+        results.status = statusCodeableConcept?.["coding"]?.[0]?.["code"] || "error";
+
+        const statusCodeableConceptText = statusCodeableConcept?.["text"];
+        const completeTotalJobsAsString = statusCodeableConceptText?.split(":")?.[1].trim();
+        results.completeJobs = Number(completeTotalJobsAsString?.split("/")?.[0]);
+        results.totalJobs = Number(completeTotalJobsAsString?.split("/")?.[1]);
         answerObservationList.forEach(bec => {
           const answerObservation = bec.resource;
           const linkId: string = `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`
@@ -197,7 +212,6 @@ export class RcApiInterfaceService {
             results[linkId].evidence = [... new Set(results[linkId].evidence)];
           }
         });
-        console.log(results);
         return results;
       })
     ).pipe(share())

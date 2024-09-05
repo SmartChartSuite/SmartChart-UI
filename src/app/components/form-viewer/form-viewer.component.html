@@ -1,14 +1,32 @@
 <div class="viewer-container-wrapper">
   @if (activeFormSummary?.formName || activeFormSummary?.patientSummary) {
-    <div class="viewer-container-header flex">
+    <div class="viewer-container-header">
       <div class="form-name">
         {{ questionnaire?.["title"] }}
       </div>
       @if (activeFormSummary?.patientSummary) {
-        <div class="patient-details">
+        <div class="patient-details-component-wrapper">
           <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
         </div>
       }
+    </div>
+    <div class="viewer-container-header">
+      <div class="job-details-wrapper">
+        <div class="job-details-label">
+          Form Job Status:
+        </div>
+        <div class="job-details-value">
+          {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
+        </div>
+        <div class="job-details-spinner">
+          @if (status === "complete") {
+            <mat-spinner mode="determinate" color="primary" value="100" [diameter]="16"/>
+          } @else {
+            <mat-spinner [diameter]="16" color="accent"/>
+          }
+        </div>
+
+      </div>
     </div>
   }
   <div class="viewer-container-body">
@@ -22,7 +40,7 @@
     } @else {
       <div class="padding-right-md">
         <mat-nav-list class="side-nav">
-          @for (item of questionnaire?.["item"]; track item; let i = $index) {
+          @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
             <div>
               <button
                 mat-flat-button
@@ -150,8 +168,7 @@
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
                               (click)="showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
-                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
-                        )
+                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }})
                       </button>
                     }
                   </div>

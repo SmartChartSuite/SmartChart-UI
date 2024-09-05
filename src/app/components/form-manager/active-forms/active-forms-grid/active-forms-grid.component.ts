@@ -28,8 +28,13 @@ export class ActiveFormsGridComponent implements OnChanges, AfterViewInit{
     this.dataSource.paginator = this.paginator;
   }
 
-  displayedColumns: string[] = ["name", "gender", "dob", "formName", "started"];
+  displayedColumns: string[] = ["name", "gender", "dob", "formName", "started", "status"];
   dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
+
+  formStatusDictionary = {
+    "inProgress": "In Progress",
+    "complete": "Complete"
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['activeForms']?.currentValue){

@@ -14,7 +14,7 @@ import {
   templateUrl: './evidence-details.component.html',
   styleUrl: './evidence-details.component.scss'
 })
-export class EvidenceDetailsComponent implements OnChanges, OnInit{
+export class EvidenceDetailsComponent implements OnChanges{
 
   @Input() activeFormSummary!: ActiveFormSummary | undefined;
   documentsSortDirection: 'asc' | 'desc' = 'desc';
@@ -33,12 +33,6 @@ export class EvidenceDetailsComponent implements OnChanges, OnInit{
   nlpAnswersDeepCopy: NlpAnswer[] = [];
   constructor(private evidenceViewerService: EvidenceViewerService,
               private formManagerService: FormManagerService) {
-  }
-
-  ngOnInit(): void {
-     this.formManagerService.selectedForm$.subscribe(
-       value=> console.log(value)
-     )
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -61,10 +55,6 @@ export class EvidenceDetailsComponent implements OnChanges, OnInit{
             //preserve a copy in case the results are filtered.
             this.nlpAnswersDeepCopy = this.deepCopy(this.nlpAnswers);
             this.combinedDTODeepCopy = this.deepCopy(this.combinedDTO);
-
-            console.log(this.cqlResources);
-            console.log(this.nlpResources);
-            console.log(this.nlpAnswers);
           }
         })
     }

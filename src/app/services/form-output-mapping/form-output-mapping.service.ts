@@ -25,7 +25,6 @@ export class FormOutputMappingService {
 
     qr.item = [];
     for (const [groupKey, groupItem] of Object.entries(questionnaire["item"])) {
-      //console.log(key, groupItem)
       qr.item[groupKey] = new QuestionnaireResponseItem();
       qr.item[groupKey].linkId = groupItem["linkId"];
       qr.item[groupKey].item = []
@@ -111,7 +110,7 @@ export class FormOutputMappingService {
       }
     }
 
-    console.log(qr);
+    console.info(qr);
     return qr;
   }
 

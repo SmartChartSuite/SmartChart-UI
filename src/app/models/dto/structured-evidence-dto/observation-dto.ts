@@ -13,7 +13,6 @@ export class ObservationDTO extends StructuredEvidenceDTO {
 
   constructor(observation: FhirBaseResource, patientSummary: PatientSummary){
     super();
-    console.log(observation); //TODO: Remove console.log
     const effectiveDateTime = observation?.["effectiveDateTime"] || observation?.["effectivePeriod"]?.["start"] || undefined;
     this.sortFilterDate = effectiveDateTime;
     this.dateAgeAt = super.getDateAgeAsStr(effectiveDateTime,patientSummary.birthDate); //TODO: verify requirements
