@@ -183,7 +183,6 @@ export class RcApiInterfaceService {
             nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
             nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
 
-            console.log(answerObservation.id);
             let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList)
             nlpAnswer.date = documentReference["date"]; // From DocumentReference
             nlpAnswer.fullText = documentReference["content"][0]["attachment"]["data"];
