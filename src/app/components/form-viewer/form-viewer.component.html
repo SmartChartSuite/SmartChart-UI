@@ -10,6 +10,20 @@
         </div>
       }
     </div>
+    <div class="viewer-container-header">
+      <div class="job-details-wrapper">
+        <div class="job-details-label">
+          Form Job Status:
+        </div>
+        <div class="job-details-value">
+          {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
+        </div>
+        <div class="job-details-spinner">
+          <mat-spinner [diameter]="16"/>
+        </div>
+
+      </div>
+    </div>
   }
   <div class="viewer-container-body">
     @if (!activeFormSummary) {
@@ -150,8 +164,7 @@
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
                               (click)="showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
-                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
-                        )
+                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }})
                       </button>
                     }
                   </div>

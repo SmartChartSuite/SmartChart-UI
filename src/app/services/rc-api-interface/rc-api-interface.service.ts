@@ -158,7 +158,15 @@ export class RcApiInterfaceService {
 
         const results: Results = new Results();
         results.subject = patientResource.resource;
-        results.status = statusObservation?.resource?.["valueCodeableConcept"]?.["coding"]?.[0]?.["code"] || "error";
+
+        const statusObservationResource = statusObservation?.resource;
+        const statusCodeableConcept = statusObservationResource?.["valueCodeableConcept"];
+        results.status = statusCodeableConcept?.["coding"]?.[0]?.["code"] || "error";
+
+        const statusCodeableConceptText = statusCodeableConcept?.["text"];
+        const completeTotalJobsAsString = statusCodeableConceptText?.split(":")?.[1].trim();
+        results.completeJobs = Number(completeTotalJobsAsString?.split("/")?.[0]);
+        results.totalJobs = Number(completeTotalJobsAsString?.split("/")?.[1]);
         answerObservationList.forEach(bec => {
           const answerObservation = bec.resource;
           const linkId: string = `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`
@@ -175,6 +183,7 @@ export class RcApiInterfaceService {
             nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
             nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
 
+            console.log(answerObservation.id);
             let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList)
             nlpAnswer.date = documentReference["date"]; // From DocumentReference
             nlpAnswer.fullText = documentReference["content"][0]["attachment"]["data"];
