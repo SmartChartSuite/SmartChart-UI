@@ -19,7 +19,11 @@
           {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
         </div>
         <div class="job-details-spinner">
-          <mat-spinner [diameter]="16"/>
+          @if (status === "complete") {
+            <mat-spinner mode="determinate" color="primary" value="100" [diameter]="16"/>
+          } @else {
+            <mat-spinner [diameter]="16" color="accent"/>
+          }
         </div>
 
       </div>
