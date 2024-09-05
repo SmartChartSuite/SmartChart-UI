@@ -22,7 +22,7 @@
     } @else {
       <div class="padding-right-md">
         <mat-nav-list class="side-nav">
-          @for (item of questionnaire?.["item"]; track item; let i = $index) {
+          @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
             <div>
               <button
                 mat-flat-button

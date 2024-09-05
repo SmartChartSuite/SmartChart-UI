@@ -121,7 +121,6 @@ export class RcApiInterfaceService {
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    console.log(postBody);
     return this.http.post<StartJobsPostResponse>(this.configService.config.rcApiUrl + this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
   }
 
@@ -155,9 +154,7 @@ export class RcApiInterfaceService {
         const statusObservation = bundleEntries.shift();
         const patientResource = bundleEntries.shift();
         const answerObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
-        //console.log(resultObservationList)
         const evidenceList = bundleEntries.filter(bec => !this.isRcApiObservation(bec.resource));
-        //console.log(evidenceList)
 
         const results: Results = new Results();
         results.subject = patientResource.resource;
@@ -207,7 +204,7 @@ export class RcApiInterfaceService {
             results[linkId].evidence = [... new Set(results[linkId].evidence)];
           }
         });
-        console.log(results);
+        // console.log(results);
         return results;
       })
     ).pipe(share())

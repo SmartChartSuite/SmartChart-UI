@@ -35,8 +35,8 @@ export class StartNewFormComponent implements OnInit {
 
   onStartJob() {
     //needs patient ID and form name
-    console.log(this.selectedForm);
-    console.log(this.selectedPatient);
+    // console.log(this.selectedForm);
+    // console.log(this.selectedPatient);
 
     // TODO: Handle this appropriately, subscription should not happen in this manner. Example of approach can be found in raven upload.
     this.rcApiInterfaceService.startJobs(this.selectedPatient.fhirId, this.selectedForm.name).subscribe({

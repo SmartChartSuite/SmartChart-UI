@@ -26,7 +26,6 @@ export class PatientDetailsComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.rcApiInterface.getConfig().subscribe({
       next: (value: RcApiConfig) => {
-        console.log(value);
         if (value?.primaryIdentifier) {
           if (value?.primaryIdentifier?.system) {
             this.identifierSystem = value?.primaryIdentifier?.system;

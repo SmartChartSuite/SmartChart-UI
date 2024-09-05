@@ -22,8 +22,7 @@
       {{ patientSummary.birthDate | date : 'MM/dd/yyyy' }}
     </div>
   </div>
-  @if (true) {
-
+  @if (identifierSystem) {
     <div class="patient-details">
       <div class="patient-details-label">
         {{ identifierLabel }}

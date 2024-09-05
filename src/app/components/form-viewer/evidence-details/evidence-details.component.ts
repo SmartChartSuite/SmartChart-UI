@@ -36,9 +36,9 @@ export class EvidenceDetailsComponent implements OnChanges, OnInit{
   }
 
   ngOnInit(): void {
-     this.formManagerService.selectedForm$.subscribe(
-       value=> console.log(value)
-     )
+     // this.formManagerService.selectedForm$.subscribe(
+     //   value=> console.log("Form l")
+     // )
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -61,10 +61,6 @@ export class EvidenceDetailsComponent implements OnChanges, OnInit{
             //preserve a copy in case the results are filtered.
             this.nlpAnswersDeepCopy = this.deepCopy(this.nlpAnswers);
             this.combinedDTODeepCopy = this.deepCopy(this.combinedDTO);
-
-            console.log(this.cqlResources);
-            console.log(this.nlpResources);
-            console.log(this.nlpAnswers);
           }
         })
     }

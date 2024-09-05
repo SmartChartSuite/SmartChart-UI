@@ -28,7 +28,6 @@ export class ConfigService {
     let configPath = this.defaultLocalConfigPath;
     return this.http.get<Config>(configPath).pipe(
       map((config: Config) => {
-        console.log(config)
         config.version = "v" + this.packageInfo.version;
         config.rcApiUrl = this.standardizeUrl(config.rcApiUrl);
         this.config = config;

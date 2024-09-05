@@ -111,7 +111,7 @@ export class FormOutputMappingService {
       }
     }
 
-    console.log(qr);
+    console.info(qr);
     return qr;
   }
 

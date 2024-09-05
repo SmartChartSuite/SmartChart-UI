@@ -63,7 +63,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
         this.questionnaire = result;
-        console.log(this.questionnaire);
         this.answerDictionary = new FormAnswers(this.questionnaire);
         this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId)
           .subscribe(value=> this.results = value );
@@ -85,8 +84,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log(this.answerDictionary);
-    console.log(this.questionnaire);
+    console.info("Logging Questionnaire Responses");
+    console.info(this.answerDictionary);
     this.outputMapper.mapToFhir(this.answerDictionary, this.questionnaire);
   }
 

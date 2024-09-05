@@ -14,7 +14,6 @@ export class EncounterDTO extends StructuredEvidenceDTO {
 
   constructor(encounter: FhirBaseResource, patientSummary: PatientSummary){
     super();
-    console.log(encounter); //TODO: Remove console.log
     const periodStart = encounter["period"]?.["start"];
     this.startDateAgeAt = super.getDateAgeAsStr(periodStart, patientSummary.birthDate); //TODO: verify requirements
     const periodEnd = encounter["period"]?.["end"];
