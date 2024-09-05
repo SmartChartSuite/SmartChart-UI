@@ -8,20 +8,14 @@ import {RcApiConfig} from "../../../models/rc-api/rc-api-config";
   templateUrl: './patient-details.component.html',
   styleUrl: './patient-details.component.scss'
 })
-export class PatientDetailsComponent implements OnInit, OnChanges {
+export class PatientDetailsComponent implements OnChanges {
   @Input() patientSummary: PatientSummary;
 
   identifierLabel: string = "Medical Record Number";
   identifierSystem: string | undefined = undefined;
   identifierValue: string = "Unknown";
 
-  constructor(public rcApiInterface: RcApiInterfaceService) {
-
-  }
-
-  ngOnInit() {
-
-  }
+  constructor(public rcApiInterface: RcApiInterfaceService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     this.rcApiInterface.getConfig().subscribe({

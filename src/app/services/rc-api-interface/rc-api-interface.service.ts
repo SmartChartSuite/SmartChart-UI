@@ -212,7 +212,6 @@ export class RcApiInterfaceService {
             results[linkId].evidence = [... new Set(results[linkId].evidence)];
           }
         });
-        // console.log(results);
         return results;
       })
     ).pipe(share())
