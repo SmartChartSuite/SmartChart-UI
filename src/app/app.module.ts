@@ -54,7 +54,7 @@ import {MatNavList} from "@angular/material/list";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {
   PatientDetailsComponent
-} from './components/form-manager/start-new-form/patient-details/patient-details.component';
+} from './components/form-viewer/patient-details/patient-details.component';
 import {HasEvidenceDirective} from "./directives/has-evidence.directive";
 import {EvidenceDetailsComponent} from './components/form-viewer/evidence-details/evidence-details.component';
 import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";

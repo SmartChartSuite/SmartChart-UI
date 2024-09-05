@@ -1,11 +1,11 @@
 <div class="viewer-container-wrapper">
   @if (activeFormSummary?.formName || activeFormSummary?.patientSummary) {
-    <div class="viewer-container-header flex">
+    <div class="viewer-container-header">
       <div class="form-name">
         {{ questionnaire?.["title"] }}
       </div>
       @if (activeFormSummary?.patientSummary) {
-        <div class="patient-details">
+        <div class="patient-details-component-wrapper">
           <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
         </div>
       }

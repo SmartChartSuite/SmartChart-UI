@@ -114,6 +114,7 @@ $lg: 24px;
   align-items: stretch;
   overflow-y: hidden;
   > .viewer-container-header {
+    @extend .flex-row-simple;
     margin-left: 16px;
     margin-right: 16px;
     min-height: 36px;

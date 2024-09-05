@@ -15,12 +15,14 @@ import {NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
+import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RcApiInterfaceService {
   private base = "smartchartui"
+  configEndpoint: string = `config`;
   patientEndpoint: string = `${this.base}/patient`;
   groupEndpoint: string = `${this.base}/group`;
   questionnaireEndpoint: string = `${this.base}/questionnaire`;
@@ -36,6 +38,14 @@ export class RcApiInterfaceService {
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
+  }
+
+  /**
+   * Request environment based configuration, e.g. custom primary identifier.
+   */
+
+  getConfig(): Observable<RcApiConfig> {
+    return this.http.get<RcApiConfig>(this.configService.config.rcApiUrl + this.configEndpoint);
   }
 
   /**
