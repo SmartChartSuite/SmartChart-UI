@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="dataSource">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z3">
 
   <ng-container matColumnDef="selection">
     <th mat-header-cell *matHeaderCellDef></th>
@@ -36,11 +36,12 @@
       <span class="no-data-table-row">No records found</span>
     </td>
   </tr>
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 25]"
+    aria-label="Select page patient search results"
+    [disabled]="dataSource.data.length <= 5"
+  >
+  </mat-paginator>
 </table>
 
-<mat-paginator
-  [pageSizeOptions]="[5, 10, 25]"
-  aria-label="Select page patient search results"
-  [disabled]="dataSource.data.length <= 5"
->
-</mat-paginator>
+

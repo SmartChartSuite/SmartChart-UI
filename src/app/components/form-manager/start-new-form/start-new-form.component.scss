@@ -1,11 +1,13 @@
 .col-width-70 {
   flex: 0 0 70%; /* 0px growth, 0px shrink, 70% base width */
   max-width: 70%;
+  margin-top: 8px;
 }
 
 .col-width-30 {
   flex: 0 0 30%; /* 0px growth, 0px shrink, 30% base width */
   max-width: 30%;
+  margin-top: 8px;
 }
 
 .start-job-button {
@@ -15,5 +17,9 @@
 .right-panel {
   display: flex;
   flex-direction: column;
-  justify-content: space-between
+  justify-content: space-between;
+}
+
+.container-height {
+  height: calc(100vh - 130px);
 }

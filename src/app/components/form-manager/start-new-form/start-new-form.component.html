@@ -1,32 +1,44 @@
 <div class="flex">
   <div class="col-width-70">
-    <mat-tab-group color="primary" mat-stretch-tabs="false">
-      <mat-tab label="Patient Groups/Cohorts">
-        <app-patient-groups/>
-      </mat-tab>
-      <mat-tab label="Patient Search">
-        <app-patient-search/>
-      </mat-tab>
-    </mat-tab-group>
+    <div class="margin-right-md">
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <div class="container-height">
+          <mat-tab-group color="primary" mat-stretch-tabs="false">
+            <mat-tab label="Patient Groups/Cohorts">
+              <app-patient-groups/>
+            </mat-tab>
+            <mat-tab label="Patient Search">
+              <app-patient-search/>
+            </mat-tab>
+          </mat-tab-group>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    </div>
   </div>
   <div class="col-width-30 right-panel">
-      <app-form-selection>
-      </app-form-selection>
-    <div class="flex-row margin-sm start-job-button">
-      <div class="flex-row margin-sm start-job-button"
-           [matTooltip]="!selectedPatient && !selectedForm ? 'You must select a patient and a form to proceed' :
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <div class="container-height">
+          <app-form-selection>
+          </app-form-selection>
+            <div class="flex-row start-job-button margin-top-lg"
+                 [matTooltip]="!selectedPatient && !selectedForm ? 'You must select a patient and a form to proceed' :
                  (!selectedForm ? 'You must select a form to proceed'
                     : (!selectedPatient ? 'You must select a patient to proceed': ''))">
-        <button
-          mat-raised-button color="primary"
-          [disabled]="!(selectedPatient && selectedForm)"
-          mat-button type="button" class="button"
-          (click)="onStartJob()">
-          <mat-icon>start</mat-icon>
-          Start Job
-        </button>
-      </div>
-    </div>
+              <button
+                mat-raised-button color="primary"
+                [disabled]="!(selectedPatient && selectedForm)"
+                mat-button type="button" class="button"
+                (click)="onStartJob()">
+                <mat-icon>start</mat-icon>
+                Start Job
+              </button>
+            </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
 
 </div>

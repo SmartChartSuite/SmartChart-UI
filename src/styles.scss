@@ -29,6 +29,7 @@ app-root { display: flex; height: 100%; width: 100% }
 
 .sans-serif { font-family: sans-serif }
 
+
 /* Margins and Paddings */
 $xs: 4px;
 $sm: 8px;
@@ -230,4 +231,8 @@ $lg: 24px;
 
 .snackbar-offset{
   transform: translateY(90vh) !important;
+}
+
+.label-text {
+  font-size: medium;
 }

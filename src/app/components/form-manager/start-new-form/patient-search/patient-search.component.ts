@@ -39,6 +39,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   // Search by FHIR ID controls
   fhirIdFc: FormControl = new FormControl("", Validators.required);
+  searchExecuted: boolean = false;
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -51,6 +52,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     if(changes['selectedSearchCriteria']?.currentValue){
+      this.searchExecuted = false;
       this.createSearchForm(this.selectedSearchCriteria);
     }
   }
@@ -96,6 +98,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
     this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
       next: value => {
         this.patientSummaryData = value;
+        this.searchExecuted = true;
       },
       error: err => {
         console.error(err);

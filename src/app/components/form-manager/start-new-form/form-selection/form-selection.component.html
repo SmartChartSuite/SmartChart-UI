@@ -1,5 +1,5 @@
-<div class="margin-md">
-  Select form
+<div>
+  <div class="label-text">Select form:</div>
   @if (!isLoading && !formList?.length) {
     <mat-error>No SmartChart Forms Found</mat-error>
   } @else {
@@ -11,9 +11,11 @@
       }
     </mat-radio-group>
   }
-  <div class="margin-md">
-    <mat-label class="margin-top-sm">Selected Patient:</mat-label>
-    <div>{{ selectedPatient?.name?.given }} {{ selectedPatient?.name?.family }}</div>
+  <div class="margin-top-lg">
+    <mat-label class="margin-top-sm margin-bottom-md label-text">Selected Patient:
+      {{ selectedPatient?.name?.given }} {{ selectedPatient?.name?.family }}
+    </mat-label>
+
   </div>
 
 </div>
