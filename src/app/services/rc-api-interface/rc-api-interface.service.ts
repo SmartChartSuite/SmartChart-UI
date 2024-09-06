@@ -23,7 +23,7 @@ import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 export class RcApiInterfaceService {
   private base = "smartchartui"
   configEndpoint: string = `config`;
-  patientEndpoint: string = `${this.base}/patient`;
+  patientEndpoint: string = `${this.base}/Patient`; // FHIR Conformant.
   groupEndpoint: string = `${this.base}/group`;
   questionnaireEndpoint: string = `${this.base}/questionnaire`;
   startJobsEndpoint: string = `${this.base}/batchjob?include_patient=True`;
@@ -63,6 +63,8 @@ export class RcApiInterfaceService {
    */
   searchPatient(searchParameters?: PatientSearchParameters): Observable<PatientSummary[]> {
     const searchPatientUrl = this.configService.config.rcApiUrl + `${this.patientEndpoint}`;
+    searchParameters = this.mapParameterKeysToFHIR(searchParameters);
+
     let patientSearch$: Observable<any>;
     if (!searchParameters) {
       patientSearch$ = this.http.get<FhirBaseResource>(searchPatientUrl);
@@ -72,13 +74,31 @@ export class RcApiInterfaceService {
     }
 
     return patientSearch$.pipe(
-      map((value: any) => {
-        const entries = value["entry"];
+      map((bundle: Bundle) => {
+        const entries = bundle.entry;
         let patientSummaryList: PatientSummary[] = [];
-        // TODO Map entries to Patient Summaries and add to list.
+        entries.forEach((bec: BundleEntryComponent) => {
+          let patientSummary = new PatientSummary(bec.resource);
+          patientSummaryList.push(patientSummary);
+        })
         return patientSummaryList;
       })
     )
+  }
+
+  private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {
+    if (Object.keys(searchParameters).includes("fhirId")) {
+      Object.defineProperty(searchParameters, "_id",
+        Object.getOwnPropertyDescriptor(searchParameters, "fhirId"));
+      delete searchParameters["fhirId"];
+    }
+    if (Object.keys(searchParameters).includes("dob")) {
+      Object.defineProperty(searchParameters, "birthdate",
+        Object.getOwnPropertyDescriptor(searchParameters, "dob"));
+      delete searchParameters["dob"];
+      searchParameters["birthdate"] = (searchParameters["birthdate"] as unknown as Date).toISOString().split("T")[0];
+    }
+    return searchParameters;
   }
 
   /**

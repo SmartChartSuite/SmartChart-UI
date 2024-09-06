@@ -18,7 +18,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
   // Form gives query parameters. See src/app/models/rc-api/patient-search-parameters.ts.
   @Input() selectedSearchCriteria: searchByType = searchByType.IDENTIFIER;
 
-  protected readonly SYSTEM_TYPE_LIST: string[] = ['mrn', 'test'];
+  // protected readonly SYSTEM_TYPE_LIST: string[] = ['mrn', 'test'];
 
   protected readonly SearchByType = searchByType;
 
@@ -30,7 +30,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   // Search by Identifier controls
   identifierFc: FormControl = new FormControl(null, [Validators.required]);
-  typeSystemFc: FormControl = new FormControl(this.SYSTEM_TYPE_LIST[0], Validators.required);
+  // typeSystemFc: FormControl = new FormControl(this.SYSTEM_TYPE_LIST[0], Validators.required);
 
   // Search by Name and DoB controls
   givenFc: FormControl = new FormControl("", Validators.required);
@@ -65,7 +65,7 @@ export class PatientSearchComponent implements OnChanges, OnInit {
     if(selectedSearchCriteria == searchByType.IDENTIFIER){
       this.searchForm = new FormGroup<any>({
         identifier: this.identifierFc,
-        typeSystem: this.typeSystemFc
+        // typeSystem: this.typeSystemFc
       });
     }
     else if(selectedSearchCriteria == searchByType.NAME_AND_DOB){
@@ -94,7 +94,9 @@ export class PatientSearchComponent implements OnChanges, OnInit {
 
   private executeSearch(searchParams: PatientSearchParameters) {
     this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
-      next: value => this.patientSummaryData = value,
+      next: value => {
+        this.patientSummaryData = value;
+      },
       error: err => {
         console.error(err);
         this.utilsService.showErrorMessage();

@@ -1,6 +1,7 @@
 <div class="margin-md">
   <div class="margin-bottom-md">
-    <mat-label id="select-form-label">Select Search:</mat-label>
+    <mat-label id="select-form-label">Search by:</mat-label>
+    <br/>
     <mat-radio-group aria-labelledby="select-form-label"
                      type="button"
                      class="form-radio-group" (change)="onSearchBySelected($event)"
@@ -22,16 +23,16 @@
           <mat-error>Identifier is required.</mat-error>
         }
       </mat-form-field>
-
-      <!-- Type/System -->
-      <mat-form-field appearance="outline">
-        <mat-label>Type/System</mat-label>
-        <mat-select formControlName="typeSystem" required>
-          @for (typeSystem of SYSTEM_TYPE_LIST; track typeSystem) {
-            <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+<!-- TODO: Removed for now, only value will be searched by. -->
+<!--      &lt;!&ndash; Type/System &ndash;&gt;-->
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>Type/System</mat-label>-->
+<!--        <mat-select formControlName="typeSystem" required>-->
+<!--          @for (typeSystem of SYSTEM_TYPE_LIST; track typeSystem) {-->
+<!--            <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>-->
+<!--          }-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
     </form>
   } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
     <form [formGroup]="searchForm" class="margin-top-sm">
