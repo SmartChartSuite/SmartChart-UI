@@ -20,6 +20,7 @@ import {MatPaginator} from "@angular/material/paginator";
 export class ActiveFormsGridComponent implements OnChanges, AfterViewInit{
   @Input() activeForms: ActiveFormSummary[];
   @Input() isLoading: boolean = false;
+  @Input() collapsedState!: boolean;
 
   @Output() onActiveFormSelected = new EventEmitter<ActiveFormSummary>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
