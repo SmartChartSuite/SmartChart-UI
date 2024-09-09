@@ -23,18 +23,24 @@
         <div class="container-height">
           <app-form-selection>
           </app-form-selection>
-            <div class="flex-row start-job-button margin-top-lg"
+            <div class="flex-col-simple start-job-button margin-top-lg"
                  [matTooltip]="!selectedPatient && !selectedForm ? 'You must select a patient and a form to proceed' :
                  (!selectedForm ? 'You must select a form to proceed'
                     : (!selectedPatient ? 'You must select a patient to proceed': ''))">
-              <button
-                mat-raised-button color="primary"
-                [disabled]="!(selectedPatient && selectedForm)"
-                mat-button type="button" class="button"
-                (click)="onStartJob()">
-                <mat-icon>start</mat-icon>
-                Start Job
-              </button>
+
+              <div class="flex-col-simple padding-sm">
+                <button
+                  mat-raised-button color="primary"
+                  [disabled]="!(selectedPatient && selectedForm)"
+                  mat-button type="button" class="button"
+                  (click)="onStartJob()">
+                  <mat-icon iconPositionEnd>play_circle_outline</mat-icon>
+                  Create Patient Form
+                </button>
+              </div>
+              <div class="description-box padding-sm">
+                Select a patient and form, then press "Create Patient Form" to open a new patient form and begin running chart abstraction logic.
+              </div>
             </div>
         </div>
       </mat-card-content>

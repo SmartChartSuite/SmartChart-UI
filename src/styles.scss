@@ -48,6 +48,7 @@ $lg: 24px;
 .margin-bottom-xs { margin-bottom: $xs; }
 .margin-bottom-sm { margin-bottom: $sm; }
 .margin-bottom-md { margin-bottom: $md; }
+.margin-bottom-lg { margin-bottom: $lg; }
 .margin-top-xs { margin-top: $xs; }
 .margin-top-sm { margin-top: $sm; }
 .margin-top-md { margin-top: $md; }
@@ -192,6 +193,13 @@ $lg: 24px;
 @keyframes open-explorer {
   from {width: 0;}
   to {width: 30%;}
+}
+
+.description-box {
+  font-variant-caps: small-caps;
+  @extend .border;
+  @extend .margin-sm;
+  background-color: #3f51b522;
 }
 
 /** TODO add style for the class below*/
