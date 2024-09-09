@@ -1,83 +1,105 @@
-<div class="margin-md">
-  <div class="margin-bottom-md">
-    <mat-label id="select-form-label">Search by:</mat-label>
-    <br/>
-    <mat-radio-group aria-labelledby="select-form-label"
-                     type="button"
-                     class="form-radio-group" (change)="onSearchBySelected($event)"
-                     [(ngModel)]="selectedSearchCriteria">
-      @for (searchType of searchTypeList; track searchType) {
-        <mat-radio-button [value]="searchType" class="margin-right-md">{{ searchType }}</mat-radio-button>
+<div class="margin-sm">
+  <mat-card appearance="outlined">
+    <mat-card-content>
+      <div class="margin-bottom-md">
+        <div class="label-text">
+          <mat-label>Search by:</mat-label>
+        </div>
+        <div>
+          <mat-radio-group aria-labelledby="select-form-label"
+                           type="button"
+                           class="form-radio-group" (change)="onSearchBySelected($event)"
+                           [(ngModel)]="selectedSearchCriteria">
+            @for (searchType of searchTypeList; track searchType) {
+              <mat-radio-button [value]="searchType" class="margin-right-md">{{ searchType }}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+      </div>
+
+
+      @if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
+        <form [formGroup]="searchForm" class="margin-top-sm">
+          <!-- Identifier -->
+          <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-label>Identifier</mat-label>
+            <input matInput formControlName="identifier">
+            @if (searchForm.get('identifier')?.errors?.['required']) {
+              <mat-error>Identifier is required.</mat-error>
+            }
+          </mat-form-field>
+          <!-- TODO: Removed for now, only value will be searched by. -->
+          <!--      &lt;!&ndash; Type/System &ndash;&gt;-->
+          <!--      <mat-form-field appearance="outline">-->
+          <!--        <mat-label>Type/System</mat-label>-->
+          <!--        <mat-select formControlName="typeSystem" required>-->
+          <!--          @for (typeSystem of SYSTEM_TYPE_LIST; track typeSystem) {-->
+          <!--            <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>-->
+          <!--          }-->
+          <!--        </mat-select>-->
+          <!--      </mat-form-field>-->
+        </form>
+      } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
+        <form [formGroup]="searchForm" class="margin-top-sm">
+          <!-- Given Name -->
+          <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-label>Given</mat-label>
+            <input matInput formControlName="given">
+          </mat-form-field>
+
+          <!-- Family Name -->
+          <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-label>Family</mat-label>
+            <input matInput formControlName="family">
+          </mat-form-field>
+
+          <!-- Date of Birth -->
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput formControlName="dob" [matDatepicker]="picker">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-hint>MM/DD/YYYY</mat-hint>
+          </mat-form-field>
+        </form>
+
+      } @else if (selectedSearchCriteria == SearchByType.FHIR_ID) {
+        <form [formGroup]="searchForm" class="margin-top-sm">
+          <!-- FHIR ID -->
+          <mat-form-field appearance="outline">
+            <mat-label>FHIR ID</mat-label>
+            <input matInput formControlName="fhirId">
+          </mat-form-field>
+        </form>
       }
-    </mat-radio-group>
-  </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button (click)="onSubmit();">
+        <mat-icon>search</mat-icon>
+        Search
+      </button>
+    </mat-card-actions>
+
+  </mat-card>
 
 
-  @if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
-    <form [formGroup]="searchForm" class="margin-top-sm">
-      <!-- Identifier -->
-      <mat-form-field appearance="outline" class="margin-right-md">
-        <mat-label>Identifier:</mat-label>
-        <input matInput formControlName="identifier">
-        @if (searchForm.get('identifier')?.errors?.['required']) {
-          <mat-error>Identifier is required.</mat-error>
+  <div class="margin-top-lg">
+    <div class="margin-bottom-md label-text">
+      @if (searchExecuted) {
+        Showing results of
+        @if (selectedSearchCriteria == SearchByType.FHIR_ID) {
+          FHIR ID: {{ searchForm.controls['fhirId'].value }}.
+        } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
+          given name: {{ searchForm.controls['given'].value }},
+            family name: {{ searchForm.controls['family'].value }},
+            and birthdate: {{ searchForm.controls['dob'].value | date }}
+        } @else if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
+          given name: {{ searchForm.controls['identifier'].value }}.
         }
-      </mat-form-field>
-<!-- TODO: Removed for now, only value will be searched by. -->
-<!--      &lt;!&ndash; Type/System &ndash;&gt;-->
-<!--      <mat-form-field appearance="outline">-->
-<!--        <mat-label>Type/System</mat-label>-->
-<!--        <mat-select formControlName="typeSystem" required>-->
-<!--          @for (typeSystem of SYSTEM_TYPE_LIST; track typeSystem) {-->
-<!--            <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>-->
-<!--          }-->
-<!--        </mat-select>-->
-<!--      </mat-form-field>-->
-    </form>
-  } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
-    <form [formGroup]="searchForm" class="margin-top-sm">
-      <!-- Given Name -->
-      <mat-form-field appearance="outline" class="margin-right-md">
-        <mat-label>Given:</mat-label>
-        <input matInput formControlName="given">
-      </mat-form-field>
-
-      <!-- Family Name -->
-      <mat-form-field appearance="outline" class="margin-right-md">
-        <mat-label>Family:</mat-label>
-        <input matInput formControlName="family">
-      </mat-form-field>
-
-      <!-- Date of Birth -->
-      <mat-form-field appearance="outline">
-        <mat-label>Date of Birth</mat-label>
-        <input matInput formControlName="dob" [matDatepicker]="picker">
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-        <mat-hint>MM/DD/YYYY</mat-hint>
-      </mat-form-field>
-    </form>
-
-  } @else if (selectedSearchCriteria == SearchByType.FHIR_ID) {
-    <form [formGroup]="searchForm" class="margin-top-sm">
-      <!-- FHIR ID -->
-      <mat-form-field appearance="outline">
-        <mat-label>FHIR ID:</mat-label>
-        <input matInput formControlName="fhirId">
-      </mat-form-field>
-    </form>
-  }
-
-  <div>
-    <button mat-raised-button (click)="onSubmit();">
-      <mat-icon>search</mat-icon>
-      Search
-    </button>
-  </div>
-
-
-  <div class="margin-top-sm">
-    <h2>Results</h2>
+      } @else {
+        Search Results
+      }
+    </div>
     <app-patient-summary-table [patientSummaryData]="patientSummaryData"></app-patient-summary-table>
   </div>
 </div>

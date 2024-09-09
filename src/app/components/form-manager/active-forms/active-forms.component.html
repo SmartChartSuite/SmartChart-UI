@@ -6,7 +6,7 @@
         <span class="expansion-indicator">
         @if(panelOpenState()){
           <mat-icon>keyboard_arrow_up</mat-icon>
-        } @else{
+        } @else {
           <mat-icon>keyboard_arrow_down</mat-icon>
         }
         </span>
@@ -22,4 +22,5 @@
 <app-active-forms-grid
   [activeForms]="activeForms" [isLoading]="isLoading"
   (onActiveFormSelected)="onActiveFormSelected($event)"
+  [collapsedState]="panelOpenState()"
 />
