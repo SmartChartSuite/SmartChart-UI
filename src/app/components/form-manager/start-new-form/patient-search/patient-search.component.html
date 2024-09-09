@@ -22,7 +22,7 @@
         <form [formGroup]="searchForm" class="margin-top-sm">
           <!-- Identifier -->
           <mat-form-field appearance="outline" class="margin-right-md">
-            <mat-label>Identifier:</mat-label>
+            <mat-label>Identifier</mat-label>
             <input matInput formControlName="identifier">
             @if (searchForm.get('identifier')?.errors?.['required']) {
               <mat-error>Identifier is required.</mat-error>
@@ -43,13 +43,13 @@
         <form [formGroup]="searchForm" class="margin-top-sm">
           <!-- Given Name -->
           <mat-form-field appearance="outline" class="margin-right-md">
-            <mat-label>Given:</mat-label>
+            <mat-label>Given</mat-label>
             <input matInput formControlName="given">
           </mat-form-field>
 
           <!-- Family Name -->
           <mat-form-field appearance="outline" class="margin-right-md">
-            <mat-label>Family:</mat-label>
+            <mat-label>Family</mat-label>
             <input matInput formControlName="family">
           </mat-form-field>
 
@@ -67,7 +67,7 @@
         <form [formGroup]="searchForm" class="margin-top-sm">
           <!-- FHIR ID -->
           <mat-form-field appearance="outline">
-            <mat-label>FHIR ID:</mat-label>
+            <mat-label>FHIR ID</mat-label>
             <input matInput formControlName="fhirId">
           </mat-form-field>
         </form>
