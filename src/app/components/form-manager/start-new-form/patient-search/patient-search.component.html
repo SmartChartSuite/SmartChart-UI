@@ -19,7 +19,7 @@
 
 
       @if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
-        <form [formGroup]="searchForm" class="margin-top-sm">
+        <form [formGroup]="searchForm" class="margin-top-sm" (ngSubmit)="onSubmit();">
           <!-- Identifier -->
           <mat-form-field appearance="outline" class="margin-right-md">
             <mat-label>Identifier</mat-label>
@@ -38,9 +38,16 @@
           <!--          }-->
           <!--        </mat-select>-->
           <!--      </mat-form-field>-->
+          <div>
+            <button type="submit" mat-raised-button>
+              <mat-icon>search</mat-icon>
+              Search
+            </button>
+          </div>
+
         </form>
       } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
-        <form [formGroup]="searchForm" class="margin-top-sm">
+        <form [formGroup]="searchForm" class="margin-top-sm" (ngSubmit)="onSubmit();">
           <!-- Given Name -->
           <mat-form-field appearance="outline" class="margin-right-md">
             <mat-label>Given</mat-label>
@@ -61,25 +68,33 @@
             <mat-datepicker #picker></mat-datepicker>
             <mat-hint>MM/DD/YYYY</mat-hint>
           </mat-form-field>
+
+          <div>
+            <button type="submit" mat-raised-button>
+              <mat-icon>search</mat-icon>
+              Search
+            </button>
+          </div>
+
         </form>
 
       } @else if (selectedSearchCriteria == SearchByType.FHIR_ID) {
-        <form [formGroup]="searchForm" class="margin-top-sm">
+        <form [formGroup]="searchForm" class="margin-top-sm" (ngSubmit)="onSubmit();">
           <!-- FHIR ID -->
           <mat-form-field appearance="outline">
             <mat-label>FHIR ID</mat-label>
             <input matInput formControlName="fhirId">
           </mat-form-field>
+
+          <div>
+            <button type="submit" mat-raised-button>
+              <mat-icon>search</mat-icon>
+              Search
+            </button>
+          </div>
         </form>
       }
     </mat-card-content>
-    <mat-card-actions>
-      <button mat-raised-button (click)="onSubmit();">
-        <mat-icon>search</mat-icon>
-        Search
-      </button>
-    </mat-card-actions>
-
   </mat-card>
 
 
