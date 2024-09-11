@@ -66,7 +66,6 @@ export class ActiveFormsFilterComponent implements OnInit, OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes)
     if(!this.isLoading){
       this.searchResultsForm.enable();
     }
