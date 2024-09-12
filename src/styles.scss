@@ -29,6 +29,10 @@ app-root { display: flex; height: 100%; width: 100% }
 
 .sans-serif { font-family: sans-serif }
 
+/* Colors */
+$primary: #3f51b5;
+$primary-transparent: #3f51b522;
+$dark: #212121;
 
 /* Margins and Paddings */
 $xs: 4px;
@@ -61,6 +65,7 @@ $lg: 24px;
 .margin-right-lg { margin-right: $lg; }
 .padding-bottom-md { padding-bottom: $md; }
 .padding-top-md { padding-top: $md; }
+.padding-top-sm { padding-top: $sm; }
 .padding-bottom-md { padding-bottom: $md; }
 .padding-bottom-sm { padding-bottom: $sm; }
 .padding-left-md { padding-left: $md; }

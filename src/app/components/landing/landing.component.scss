@@ -1,0 +1,90 @@
+@import '../../../styles.scss';
+
+.header-3 {
+  font-weight: bold;
+  width: 100%;
+  border-bottom: $primary solid 3px;
+}
+
+.header-4 {
+  font-weight: bold;
+  width: 80%;
+  border-bottom: $primary solid 1px;
+}
+
+.instructions-wrapper {
+  background: rgb(33,33,33);
+  background: linear-gradient(90deg, $dark 60%, white 100%);
+  color: white;
+  border-radius: $sm;
+  padding: $md;
+  font-weight: bold;
+}
+
+.instructions-block {
+  border-left: $dark solid 2px;
+  padding-left: $sm;
+}
+
+.title-header {
+  @extend .border;
+  @extend .padding-left-md;
+  @extend .padding-top-sm;
+  @extend .padding-bottom-sm;
+  @extend .margin-bottom-md;
+  background-color: $dark;
+  @extend .flex-row;
+  > h1 {
+    color: white;
+    padding: 0;
+    margin: 0;
+    font-variant-caps: small-caps;
+    display: block;
+  }
+  > h2 {
+    color: white;
+    padding: 0;
+    margin: 0 0 0 $md;
+    font-variant-caps: all-petite-caps;
+    display: block;
+    font-style: italic;
+  }
+  > .title-header-line {
+    flex: 1;
+    background-color: white;
+    width: 100%;
+    height: 1px;
+    margin: $md;
+  }
+}
+
+.landing-page-columns {
+  @extend .flex-row-simple;
+  > .landing-page-left-column {
+    //@extend .border;
+    flex: 1;
+    @extend .margin-right-md;
+  }
+  > .landing-page-right-column {
+    flex: 1;
+    @extend .flex-col-simple;
+    @extend .margin-left-md;
+  }
+}
+
+// Material Overrides
+.mat-expansion-panel:not([class*=mat-elevation-z]) {
+  box-shadow: none;
+}
+
+//mat-expansion-panel {
+//  > * {
+//    padding: 0;
+//    > * {
+//      padding: 0;
+//    }
+//  }
+//}
+//.mat-expansion-panel-content .mat-expansion-panel-body {
+//  padding: 0;
+//}
