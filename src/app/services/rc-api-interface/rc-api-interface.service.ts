@@ -75,9 +75,9 @@ export class RcApiInterfaceService {
 
     return patientSearch$.pipe(
       map((bundle: Bundle) => {
-        const entries = bundle.entry;
+        const entries = bundle.entry || [];
         let patientSummaryList: PatientSummary[] = [];
-        entries?.forEach((bec: BundleEntryComponent) => {
+        entries.forEach((bec: BundleEntryComponent) => {
           let patientSummary = new PatientSummary(bec.resource);
           patientSummaryList.push(patientSummary);
         })
