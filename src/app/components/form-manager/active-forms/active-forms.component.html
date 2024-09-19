@@ -13,7 +13,10 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <app-active-forms-filter (onFormValueChange)="onFiltersValueChanged($event)"/>
+    <app-active-forms-filter
+      [isLoading]="isLoading"
+      (onFormValueChange)="onFiltersValueChanged($event)"
+    />
 
   </mat-expansion-panel>
 </div>

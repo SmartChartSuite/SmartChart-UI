@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 import {FormSummary} from "../../../../models/form-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
@@ -9,8 +9,9 @@ import {debounceTime} from "rxjs";
   templateUrl: './active-forms-filter.component.html',
   styleUrl: './active-forms-filter.component.scss'
 })
-export class ActiveFormsFilterComponent implements OnInit{
+export class ActiveFormsFilterComponent implements OnInit, OnChanges{
   @Output() onFormValueChange = new EventEmitter<any>();
+  @Input() isLoading = true;
 
   readonly GENDER_LIST = ["Any", "Male", "Female", "Other", "Unknown"];
   statusList : string[] = ['Any'];
@@ -39,10 +40,11 @@ export class ActiveFormsFilterComponent implements OnInit{
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {
     this.searchResultsForm.addControl('startedRange', this.startedRange);
     this.searchResultsForm.addControl('dobRange', this.dobRange);
+    this.searchResultsForm.disable();
   }
 
   ngOnInit(): void {
-    this.searchResultsForm.valueChanges.pipe(debounceTime(500)).subscribe(value => {
+    this.searchResultsForm.valueChanges.pipe(debounceTime(250)).subscribe(value => {
       this.onFormValueChange.emit(value);
     });
     this.rcApiInterfaceService.getQuestionTypes$.subscribe({
@@ -61,6 +63,12 @@ export class ActiveFormsFilterComponent implements OnInit{
     this.searchResultsForm.controls['gender'].setValue(this.GENDER_LIST[0], {emitEvent: false});
     this.searchResultsForm.controls['status'].setValue(this.statusList[0], {emitEvent: false});
     this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(!this.isLoading){
+      this.searchResultsForm.enable();
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-<form [formGroup]="searchResultsForm" class="margin-top-md">
+<form [formGroup]="searchResultsForm" class="margin-top-md" (keydown.enter)="$event.preventDefault()">
   <div class="inputs-container">
 
     <!--Patient Name-->
