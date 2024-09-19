@@ -28,28 +28,22 @@
     <!-- Menu options rendered if the user is logged in -->
     @if (oauthService.hasValidAccessToken()) {
       <li>
-        <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LANDING"
-                (click)="router.navigate(['/']);">
-          <mat-icon>home</mat-icon>
+        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/']);">
+          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LANDING">home</mat-icon>
           @if (expanded) { Home }
         </button>
       </li>
 
       <li>
-        <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM"
-                (click)="router.navigate(['/form-viewer']);">
-          <mat-icon>list_alt</mat-icon>
+        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/form-viewer']);">
+          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM">list_alt</mat-icon>
           @if (expanded) { Current Form }
         </button>
       </li>
 
       <li>
-        <button mat-button class="expanded-menu-button"
-                [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORM_MANAGER"
-                (click)="router.navigate(['/forms']);">
-          <mat-icon>person_search</mat-icon>
+        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/forms']);">
+          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORM_MANAGER">person_search</mat-icon>
           @if (expanded) { Form Manager }
         </button>
       </li>

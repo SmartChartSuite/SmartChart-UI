@@ -1,5 +1,6 @@
 $menu-width: 200px;
 $dark-grey-color: #d3d0cf;
+$blue-ascent-color: #8C9EFF;
 
 nav.main-menu.expanded {
   width:$menu-width;
@@ -56,7 +57,7 @@ button {
  }
 
  .selected {
-  color: $dark-grey-color !important;
+  color: $blue-ascent-color;
  }
 
 .version{
