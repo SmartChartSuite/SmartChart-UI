@@ -13,11 +13,10 @@
           Welcome to the SmartChart platform's Form-based Chart Abstraction application.
         </p>
         <p>
-          SmartChart provides a complete platform for multiple client applications to build upon
-          a common backend service built around the HL7 FHIR specification. The platform leverages
-          Clinical Quality Language (CQL) in conjunction with Natural Language Processing (NLP) to
-          gather complete patient health records from a FHIR compliant Electronic Health Records (EHR)
-          and streamline the data to provide clearly defined groupings of evidence for defined concepts.
+          SmartChart provides a complete platform for chart abstraction which can be leveraged for a wide variety of
+          use cases. It is designed to be compatible with FHIR-compliant Electronic Health Record (EHR) systems to
+          retrieve data from both free text notes and coded entries in a patient's medical record. This data is then
+          presented to users in appropriate contexts, limiting the need for full patient record review.
         </p>
         <h3 class="header-3">More information...</h3>
         <mat-accordion multi="true">
@@ -89,6 +88,27 @@
               </li>
             </ol>
           </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="header-4">Retrieval Logic</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              Data retrieval is performed and interpreted using Natural Language Processing (NLP) and Clinical
+              Quality Language (CQL).
+            </p>
+            <p>
+              NLP is the ability of a system to interpret human language, which is relevant for processing data such
+              as notes or summaries written by a clinician.
+            </p>
+            <p>
+              CQL is a language that defines a way to represent clinical knowledge, such as medical concepts that
+              adhere to a standardized coding system like ICD-10, SNOMED, or LOINC. It is intended for use both in
+              Clinical Quality Measurement (CQM) and decision support.
+            </p>
+          </mat-expansion-panel>
+
         </mat-accordion>
 
 
