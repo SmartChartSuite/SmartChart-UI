@@ -166,7 +166,7 @@
                     @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button mat-raised-button
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
-                              (click)="showDrawer=!showDrawer; selectedEvidenceIndex=j">
+                              (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
                         ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }})
                       </button>
