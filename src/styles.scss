@@ -27,6 +27,13 @@ app-root { display: flex; height: 100%; width: 100% }
 
 .center-contents { justify-items: center; text-align: center; align-self: center; }
 
+.sans-serif { font-family: sans-serif }
+
+/* Colors */
+$primary: #3f51b5;
+$primary-transparent: #3f51b522;
+$dark: #212121;
+
 /* Margins and Paddings */
 $xs: 4px;
 $sm: 8px;
@@ -45,16 +52,22 @@ $lg: 24px;
 .margin-bottom-xs { margin-bottom: $xs; }
 .margin-bottom-sm { margin-bottom: $sm; }
 .margin-bottom-md { margin-bottom: $md; }
+.margin-bottom-lg { margin-bottom: $lg; }
 .margin-top-xs { margin-top: $xs; }
 .margin-top-sm { margin-top: $sm; }
 .margin-top-md { margin-top: $md; }
+.margin-top-lg { margin-top: $lg; }
 .margin-left-md { margin-left: $md; }
 .margin-left-sm { margin-left: $sm; }
+.margin-left-lg { margin-left: $lg; }
 .margin-right-md { margin-right: $md; }
 .margin-right-sm { margin-right: $sm; }
+.margin-right-lg { margin-right: $lg; }
 .padding-bottom-md { padding-bottom: $md; }
 .padding-top-md { padding-top: $md; }
+.padding-top-sm { padding-top: $sm; }
 .padding-bottom-md { padding-bottom: $md; }
+.padding-bottom-sm { padding-bottom: $sm; }
 .padding-left-md { padding-left: $md; }
 .padding-left-sm { padding-left: $sm; }
 .padding-right-md { padding-right: $md; }
@@ -108,9 +121,31 @@ $lg: 24px;
   align-items: stretch;
   overflow-y: hidden;
   > .viewer-container-header {
+    @extend .flex-row-simple;
     margin-left: 16px;
     margin-right: 16px;
     min-height: 36px;
+    > .job-details-wrapper {
+      @extend .flex-row-simple;
+      flex: 1;
+      width: 100%;
+      border-top: #757575 solid 1px;
+      background-color: #E0E0E0;
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      > .job-details-label {
+        font-weight: bold;
+      }
+      > .job-details-value {
+        @extend .flex-row-simple;
+        margin-right: $sm;
+        margin-left: $sm;
+      }
+      > .job-details-spinner {
+        margin-right: $sm;
+      }
+    }
   }
   > .viewer-container-body {
     @extend .padding-left-md;
@@ -165,6 +200,13 @@ $lg: 24px;
   to {width: 30%;}
 }
 
+.description-box {
+  font-variant-caps: small-caps;
+  @extend .border;
+  @extend .margin-sm;
+  background-color: #3f51b522;
+}
+
 /** TODO add style for the class below*/
 .no-data-table-row {
   @extend .margin-md
@@ -202,4 +244,8 @@ $lg: 24px;
 
 .snackbar-offset{
   transform: translateY(90vh) !important;
+}
+
+.label-text {
+  font-size: medium;
 }

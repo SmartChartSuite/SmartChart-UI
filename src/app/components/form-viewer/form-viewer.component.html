@@ -1,14 +1,32 @@
 <div class="viewer-container-wrapper">
-  @if(activeFormSummary?.formName || activeFormSummary?.patientSummary){
-    <div class="viewer-container-header flex">
+  @if (activeFormSummary?.formName || activeFormSummary?.patientSummary) {
+    <div class="viewer-container-header">
       <div class="form-name">
-        {{ temp_for_demo?.["title"] }}
+        {{ questionnaire?.["title"] }}
       </div>
       @if (activeFormSummary?.patientSummary) {
-        <div class="patient-details">
+        <div class="patient-details-component-wrapper">
           <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
         </div>
       }
+    </div>
+    <div class="viewer-container-header">
+      <div class="job-details-wrapper">
+        <div class="job-details-label">
+          Form Job Status:
+        </div>
+        <div class="job-details-value">
+          {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
+        </div>
+        <div class="job-details-spinner">
+          @if (status === "complete") {
+            <mat-spinner mode="determinate" color="primary" value="100" [diameter]="16"/>
+          } @else {
+            <mat-spinner [diameter]="16" color="accent"/>
+          }
+        </div>
+
+      </div>
     </div>
   }
   <div class="viewer-container-body">
@@ -22,7 +40,7 @@
     } @else {
       <div class="padding-right-md">
         <mat-nav-list class="side-nav">
-          @for (item of temp_for_demo?.["item"]; track item; let i = $index) {
+          @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
             <div>
               <button
                 mat-flat-button
@@ -38,24 +56,25 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content">
-        @for (item of temp_for_demo?.["item"]; track item) {
+        @for (item of questionnaire?.["item"]; track item; let i = $index) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
 
-            @for (childItem of (item["item"]); track childItem; let i = $index) {
+            @for (childItem of (item["item"]); track childItem; let j = $index) {
               <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
-                <div class="question-label" [ngClass]="(i == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
-                  <span appGetIndex [i]="i" [childItems]="childItem" [itemElements]="item['item']"></span>
+                <div class="question-label"
+                     [ngClass]="(j == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                  <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item['item']"></span>
                   <span class="margin-left-sm">{{ childItem["text"] }}</span>
                 </div>
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
-                  @if (childItem["type"] == QuestionWidgetType.RADIO) {
+                  @if (childItem["type"] == QuestionnaireItemType.choice) {
                     @for (option of childItem?.['answerOption']; track option) {
-                      <mat-radio-group [(ngModel)]="childItem['answer']">
+                      <mat-radio-group [(ngModel)]="answerDictionary[childItem?.linkId]">
                         @if (childItem?.['answerOption'].length <= 3) {
                           <mat-radio-button class="margin-right-md"
-                            [value]="option?.['valueString']">{{ option?.['valueString'] }}
+                                            [value]="option?.['valueString']">{{ option?.['valueString'] }}
                           </mat-radio-button>
                         } @else {
                           <!-- There are too many options to render in the same line -->
@@ -67,30 +86,60 @@
                         }
                       </mat-radio-group>
                     }
-                  } @else if (childItem["type"] == QuestionWidgetType.INPUT) {
+                  } @else if (childItem["type"] == QuestionnaireItemType.string) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="text" matInput [(ngModel)]="childItem['answer']">
+                      <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
                     </mat-form-field>
 
-                  } @else if (childItem["type"] == QuestionWidgetType.QUANTITY) {
-                    <!-- TODO: those will -->
+                  } @else if (childItem["type"] == QuestionnaireItemType.quantity) {
                     <div class="flex">
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input margin-right-md">
-                        <input type="text" matInput [(ngModel)]="childItem['answer']">
-                        <span matPrefix class="input-prefix">Value</span>
+                        class="value-unit-input margin-right-md">
+                        <mat-label>Value</mat-label>
+                        <input type="number" matInput [(ngModel)]="answerDictionary[childItem?.linkId].value">
                       </mat-form-field>
                       <mat-form-field
                         appearance="outline"
-                        class="value-quantity-input margin-left-md">
-                        <span matPrefix class="input-prefix">Unit</span>
-                        <input type="text" matInput [(ngModel)]="childItem['answer']">
+                        class="value-unit-input margin-left-md">
+                        <mat-label>Unit</mat-label>
+                        <input type="text" matInput [(ngModel)]="answerDictionary[childItem?.linkId].unit">
                       </mat-form-field>
                     </div>
+                  } @else if (childItem["type"] == QuestionnaireItemType.integer) {
+                    <mat-form-field
+                      appearance="outline" class="question-input"
+                      (keyup)="setValue(QuestionnaireItemType.integer, questionnaire, i, j)">
+                      <input type="number" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
+                      <mat-hint>Only whole numbers are allowed</mat-hint>
+                    </mat-form-field>
+                  } @else if (childItem["type"] == QuestionnaireItemType.decimal) {
+                    <mat-form-field appearance="outline" class="question-input">
+                      <input type="number" matInput [(ngModel)]="answerDictionary[childItem?.linkId]">
+                    </mat-form-field>
+                  } @else if (childItem["type"] == QuestionnaireItemType.date) {
+                    <app-fhir-date-time
+                      (onDateTimeUpdated)="answerDictionary[childItem?.linkId] = $event.value;"
+                      [questionType]="QuestionnaireItemType.date"
+                      [inputValue]="answerDictionary[childItem?.linkId]"
+                    ></app-fhir-date-time>
+                  } @else if (childItem["type"] == QuestionnaireItemType.time) {
+                    <app-fhir-date-time
+                      (onDateTimeUpdated)="answerDictionary[childItem?.linkId] = $event.value;"
+                      [questionType]="QuestionnaireItemType.time"
+                      [inputValue]="answerDictionary[childItem?.linkId]"
+                    ></app-fhir-date-time>
+                  } @else if (childItem["type"] == QuestionnaireItemType.dateTime) {
+                    <app-fhir-date-time
+                      (onDateTimeUpdated)="answerDictionary[childItem?.linkId] = $event.value;"
+                      [questionType]="QuestionnaireItemType.dateTime"
+                      [inputValue]="answerDictionary[childItem?.linkId]"
+                    ></app-fhir-date-time>
+                  } @else if (childItem["type"] == QuestionnaireItemType.text) {
+                    <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="answerDictionary[childItem?.linkId]"></textarea>
                   }
 
-                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md" >
+                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">
                     <!--                      TODO: Handle status based scenarios per logic below                 -->
                     <!--                      if hasLogic                                                         -->
                     <!--                        if results[linkId} is found                                       -->
@@ -106,8 +155,8 @@
                     @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                       <div class="margin-bottom-sm">
                         Suggested Answer:
-                        @for (item of (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item){
-                          <span class="margin-left-sm" (click)="childItem['answer']=item;">
+                        @for (item of (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
+                          <span class="margin-left-sm" (click)="answerDictionary[childItem?.linkId]=item;">
                             <mat-chip>{{ item }}</mat-chip>
                           </span>
                         }
@@ -117,10 +166,9 @@
                     @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button mat-raised-button
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
-                              (click)="showDrawer=true; selectedEvidenceIndex=i">
+                              (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
-                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }}
-                        )
+                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }})
                       </button>
                     }
                   </div>
@@ -128,16 +176,13 @@
               </div>
             }
           }
-
         }
-
-
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
            [ngClass]="(this.evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
            [hidden]="!showDrawer">
         <div class="fhir-explorer-header">
-          @if(this.evidenceViewerExpanded$ | async){
+          @if (this.evidenceViewerExpanded$ | async) {
             <mat-icon
               (click)="evidenceViewerService.setViewerExpanded(false);"
               matTooltip="Collapse"
@@ -164,25 +209,11 @@
             close
           </mat-icon>
         </div>
-        <app-evidence-details [patientSummary]="activeFormSummary?.patientSummary"></app-evidence-details>
+        <app-evidence-details [activeFormSummary]="activeFormSummary"></app-evidence-details>
       </div>
     }
-
-    <!--    @if (temp_for_demo) {-->
-    <!--      <ul>-->
-    <!--        @for (item of temp_for_demo["item"]; track item) {-->
-    <!--          <li>{{ item["text"] }}-->
-    <!--            <ul>-->
-    <!--              @for (childItem of item["item"]; track childItem) {-->
-    <!--                <li>{{ childItem["text"] }} - {{ childItem["type"] }}</li>-->
-    <!--              }-->
-    <!--            </ul>-->
-    <!--            }-->
-    <!--      </ul>-->
-    <!--    }-->
-
   </div>
-  @if (temp_for_demo?.["item"]?.length > 0) {
+  @if (questionnaire?.["item"]?.length > 0) {
     <div class="nav-controls">
       <div class="content-spacer"></div>
 
@@ -191,15 +222,15 @@
               (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex)">
         <mat-icon>chevron_left</mat-icon>
         Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
+        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
       </button>
 
       <button mat-flat-button type="submit" class="margin-left-sm wide-button"
-              [disabled]="(temp_for_demo?.['item']?.length -1) == selectedMenuItemIndex"
+              [disabled]="(questionnaire?.['item']?.length -1) == selectedMenuItemIndex"
               (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex)">
         Next
-        Section{{ (selectedMenuItemIndex < temp_for_demo?.['item']?.length - 1) ? ': ' + temp_for_demo?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
-        <mat-icon>chevron_right</mat-icon>
+        Section{{ (selectedMenuItemIndex < questionnaire?.['item']?.length - 1) ? ': ' + questionnaire?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
+        <mat-icon iconPositionEnd>chevron_right</mat-icon>
       </button>
 
       <div class="content-spacer"></div>

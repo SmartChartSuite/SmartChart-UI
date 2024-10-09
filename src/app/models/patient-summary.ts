@@ -5,19 +5,22 @@
  */
 import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
-
 export class PatientSummary {
   constructor(patientResource: FhirBaseResource) {
-    this.fhirId = patientResource.id // REQUIRED
-    this.birthDate = patientResource?.["birthDate"]
-    this.gender = patientResource?.["gender"]
-    this.name = new PatientName(patientResource?.["name"])
+    this.fhirId = patientResource.id; // REQUIRED
+    this.birthDate = patientResource?.["birthDate"];
+    this.gender = patientResource?.["gender"];
+    this.name = new PatientName(patientResource?.["name"]);
+    if (patientResource["identifier"]) {
+      this.identifier = patientResource["identifier"];
+    }
   }
   fhirId: string;
   name?: PatientName; // Get from FHIR Official
   birthDate?: Date;
   gender?: string;
   identifier?: PatientIdentifier[];
+  primaryIdentifier?: PatientIdentifier;
   mrn?: string;
 }
 

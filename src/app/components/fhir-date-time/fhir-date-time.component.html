@@ -1,0 +1,43 @@
+<form [formGroup]="form" class="date-time-inputs">
+  @if (questionType == QuestionnaireItemType.dateTime || questionType == QuestionnaireItemType.date) {
+    <mat-form-field
+      appearance="outline"
+      class="margin-right-lg">
+      <mat-label>Date</mat-label>
+      <input matInput [matDatepicker]="datePicker" formControlName='date'>
+      <mat-hint>Date Format: YYYY-MM-DD</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+      <mat-datepicker #datePicker></mat-datepicker>
+    </mat-form-field>
+  }
+  @if (questionType == QuestionnaireItemType.dateTime || questionType == QuestionnaireItemType.time) {
+    <mat-form-field
+      appearance="outline"
+      class="margin-right-lg">
+      <mat-label>Time</mat-label>
+      <input matInput
+             formControlName='time'
+             [ngxMatTimepicker]="timePicker"
+             [format]="24"/>
+      <mat-icon matSuffix
+                (click)="timePicker.open()">
+        watch_later
+      </mat-icon>
+      <mat-hint>Time Format: HH-MM</mat-hint>
+    </mat-form-field>
+    <ngx-mat-timepicker #timePicker
+    ></ngx-mat-timepicker>
+  }
+<!--  @if (questionType == QuestionType.DATE_TIME || questionType == QuestionType.TIME) {-->
+<!--    <mat-form-field-->
+<!--      appearance="outline" class="timezone">-->
+<!--      <mat-label>Timezone</mat-label>-->
+<!--      <mat-select formControlName='timezone'>-->
+<!--        @for (timezone of TIMEZONES; track timezone) {-->
+<!--          <mat-option [value]="timezone">{{ timezone.name }}</mat-option>-->
+<!--        }-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+<!--  }-->
+</form>
+

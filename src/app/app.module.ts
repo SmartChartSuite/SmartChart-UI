@@ -6,7 +6,7 @@ import {AppComponent} from './app.component';
 import {LoginComponent} from "./components/login/login.component";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {ConfigService} from "./services/config/config.service";
-import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from "@angular/common/http";
 import {StateManagementService} from "./services/state-management/state-management.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {MatIcon} from "@angular/material/icon";
@@ -54,7 +54,7 @@ import {MatNavList} from "@angular/material/list";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {
   PatientDetailsComponent
-} from './components/form-manager/start-new-form/patient-details/patient-details.component';
+} from './components/form-viewer/patient-details/patient-details.component';
 import {HasEvidenceDirective} from "./directives/has-evidence.directive";
 import {EvidenceDetailsComponent} from './components/form-viewer/evidence-details/evidence-details.component';
 import {MatDialogContent, MatDialogModule} from "@angular/material/dialog";
@@ -79,6 +79,16 @@ import {SuggestedAnswerFormatterPipe} from "./pipe/suggested-answer-formatter.pi
 import {MatChip} from "@angular/material/chips";
 import {DisplayItemFilterPipe} from "./pipe/display-item-filter.pipe";
 import {QuestionnaireIndexDirective} from "./directives/questionnaire-index.directive";
+import {SortByDatePipe} from "./pipe/sort-by-date.pipe";
+import {MatDivider} from "@angular/material/divider";
+import {NgxMatTimepickerModule} from "ngx-mat-timepicker";
+import { FhirDateTimeComponent } from './components/fhir-date-time/fhir-date-time.component';
+import { ActiveFormsGridComponent } from './components/form-manager/active-forms/active-forms-grid/active-forms-grid.component';
+import { ActiveFormsFilterComponent } from './components/form-manager/active-forms/active-forms-filter/active-forms-filter.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {
+  EvidenceFilterComponent
+} from "./components/form-viewer/evidence-details/evidence-filter/evidence-filter.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -108,10 +118,14 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     DocumentViewerModalComponent,
     StructuredResultsDetailsComponent,
     UnstructuredResultsDetailsComponent,
-    LoadingComponent
+    LoadingComponent,
+    FhirDateTimeComponent,
+    ActiveFormsGridComponent,
+    ActiveFormsFilterComponent,
+    EvidenceFilterComponent
   ],
   imports: [
-    HttpClientModule,
+    NgxMatTimepickerModule,
     OAuthModule.forRoot(),
     BrowserModule,
     AppRoutingModule,
@@ -172,10 +186,14 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     ConcatDataToStrPipe,
     SuggestedAnswerFormatterPipe,
     MatChip,
-    DisplayItemFilterPipe,
     QuestionnaireIndexDirective,
+    DisplayItemFilterPipe,
+    SortByDatePipe,
+    MatDivider,
+    MatExpansionModule
   ],
   providers: [
+    SortByDatePipe,
     {
       provide: APP_INITIALIZER,
       useFactory: configFactory,
@@ -188,6 +206,7 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
       deps: [StateManagementService],
       multi: true
     },
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true
     }

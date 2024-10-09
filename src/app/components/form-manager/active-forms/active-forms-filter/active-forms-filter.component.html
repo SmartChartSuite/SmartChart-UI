@@ -1,0 +1,72 @@
+<form [formGroup]="searchResultsForm" class="margin-top-md" (keydown.enter)="$event.preventDefault()">
+  <div class="inputs-container">
+
+    <!--Patient Name-->
+    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+
+    <!--Gender-->
+    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
+      <mat-label>Gender</mat-label>
+      <mat-select formControlName="gender">
+        @for (gender of GENDER_LIST; track gender) {
+          <mat-option [value]="gender">{{ gender }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!--DoB Range-->
+    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
+      <mat-label>DoB Range</mat-label>
+      <mat-date-range-input [formGroup]="dobRange" [rangePicker]="dobPicker">
+        <input matStartDate formControlName="dobStart" placeholder="Start date">
+        <input matEndDate formControlName="dobEnd" placeholder="End date">
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
+
+      <mat-date-range-picker #dobPicker></mat-date-range-picker>
+    </mat-form-field>
+
+    <!--Form Name-->
+    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
+      <mat-label>Form Name</mat-label>
+      <mat-select formControlName="formName">
+        <!-- TODO replace formName.name with formName.title when proper API implementation is available for the grid -->
+        @for (formName of formList; track formName) {
+          <mat-option [value]="formName">{{ formName.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!--Started Range-->
+    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
+      <mat-label>Started Range</mat-label>
+      <mat-date-range-input [formGroup]="startedRange" [rangePicker]="startedPicker">
+        <input matStartDate formControlName="start" placeholder="Start date">
+        <input matEndDate formControlName="end" placeholder="End date">
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="startedPicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #startedPicker></mat-date-range-picker>
+    </mat-form-field>
+
+    <!--Status-->
+    <!--TODO render the status field when implement in the API -->
+<!--    <mat-form-field appearance="outline" class="full-width" floatLabel="always">-->
+<!--      <mat-label>Status</mat-label>-->
+<!--      <mat-select formControlName="status">-->
+<!--        @for (status of statusList; track status) {-->
+<!--          <mat-option [value]="status">{{ status }}</mat-option>-->
+<!--        }-->
+<!--      </mat-select>-->
+<!--    </mat-form-field>-->
+  </div>
+
+  <div>
+    <button mat-raised-button (click)="onClearForm()">Clear Filters</button>
+  </div>
+
+</form>

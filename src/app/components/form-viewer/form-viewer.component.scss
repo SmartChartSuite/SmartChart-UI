@@ -13,9 +13,17 @@ $dark-background-color: #212121;
   padding: 16px 0 16px 0;
 }
 
-.patient-details {
-  flex: 0 0 70%;
+.patient-details-component-wrapper {
+  flex: 1;
+  display: flex;
   background-color: $light-accent-color;
+  > * {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-evenly;
+    height: 100%;
+  }
 }
 
 .question-label {
@@ -85,7 +93,7 @@ $selected-nave-menu-item-color: #424242;
   width: 100%;
 }
 
-.value-quantity-input {
+.value-unit-input {
   @extend .question-input;
   width: 30%;
 }

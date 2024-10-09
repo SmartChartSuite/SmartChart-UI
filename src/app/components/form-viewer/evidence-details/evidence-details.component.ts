@@ -1,67 +1,42 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
 import {filter} from "rxjs";
-import {ResourceType} from "../../../models/structured-evidence-dto/resource-type";
-import {ObservationDTO} from "../../../models/structured-evidence-dto/observation-dto";
-import {ConditionDTO} from "../../../models/structured-evidence-dto/condition-dto";
-import {ProcedureDTO} from "../../../models/structured-evidence-dto/procedure-dto";
-import {EncounterDTO} from "../../../models/structured-evidence-dto/encounter-dto";
-import {MedicationRequestDTO} from "../../../models/structured-evidence-dto/medication-request-dto";
-import {PatientSummary} from "../../../models/patient-summary";
+import {FormManagerService} from "../../../services/form-manager/form-manager.service";
+import {ActiveFormSummary} from "../../../models/active-form-summary";
+import {
+  CombinedStructuredEvidenceDTO
+} from "../../../models/dto/structured-evidence-dto/combined-structured-evidence-dto";
 
 @Component({
   selector: 'app-evidence-details',
   templateUrl: './evidence-details.component.html',
   styleUrl: './evidence-details.component.scss'
 })
-export class EvidenceDetailsComponent implements OnChanges {
+export class EvidenceDetailsComponent implements OnChanges{
 
-  @Input() patientSummary!: PatientSummary | undefined;
+  @Input() activeFormSummary!: ActiveFormSummary | undefined;
+  documentsSortDirection: 'asc' | 'desc' = 'desc';
 
   cqlResources: FhirBaseResource[] = [];
   nlpResources: FhirBaseResource[] = [];
   nlpAnswers: NlpAnswer[];
+  protected readonly Object = Object;
 
-  simpleObservations: ObservationDTO[] = [];
-  simpleMedicationRequests: MedicationRequestDTO[] = [];
-  simpleEncounters: EncounterDTO[] = [];
-  simpleConditions: ConditionDTO[] = [];
-  simpleProcedures: ProcedureDTO[] = [];
+  combinedDTODeepCopy: CombinedStructuredEvidenceDTO;
+  combinedDTO: CombinedStructuredEvidenceDTO = {observations: [], procedures: [], conditions: [], medicationRequests: [], encounters : []};
 
-  constructor(private evidenceViewerService: EvidenceViewerService) {
-  }
+  isDateFilterExpanded = false;
 
-  private mapStructuredEvidence(cqlResources: FhirBaseResource[], patientSummary: PatientSummary) {
-
-    this.simpleObservations = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.OBSERVATION)
-      .sort((a, b) => ObservationDTO.sort(a, b))
-      .map(resource => new ObservationDTO(resource, patientSummary));
-
-    this.simpleEncounters = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.ENCOUNTER)
-      .sort((a, b) => EncounterDTO.sort(a, b))
-      .map(resource => new EncounterDTO(resource, patientSummary));
-
-    this.simpleMedicationRequests = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.MEDICATION_REQUEST)
-      .sort((a, b) => MedicationRequestDTO.sort(a, b))
-      .map(resource => new MedicationRequestDTO(resource, patientSummary));
-
-    this.simpleConditions = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.CONDITION)
-      .sort((a, b) => ConditionDTO.sort(a, b))
-      .map(resource => new ConditionDTO(resource, patientSummary));
-
-    this.simpleProcedures = cqlResources
-      .filter(resource => resource.resourceType == ResourceType.PROCEDURE)
-      .map(resource => new ProcedureDTO(resource, patientSummary));
+  //Deep copy all resources for filtering operations because the API does not handle filtering or sorting
+  nlpAnswersDeepCopy: NlpAnswer[] = [];
+  constructor(private evidenceViewerService: EvidenceViewerService,
+              private formManagerService: FormManagerService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['patientSummary']?.currentValue){
+    if(changes['activeFormSummary']?.currentValue){
       this.evidenceViewerService.resultSet$
         .pipe(
           filter(value=> Object.keys(value).length !== 0))
@@ -75,13 +50,50 @@ export class EvidenceDetailsComponent implements OnChanges {
             this.cqlResources = cqlResources;
             this.nlpResources = nlpResources;
             this.nlpAnswers = resultSet.nlpAnswers;
-            this.mapStructuredEvidence(cqlResources, this.patientSummary);
 
-            console.log(this.cqlResources);
-            console.log(this.nlpResources);
-            console.log(this.nlpAnswers);
+            this.combinedDTO = new CombinedStructuredEvidenceDTO(cqlResources, this.activeFormSummary.patientSummary);
+            //preserve a copy in case the results are filtered.
+            this.nlpAnswersDeepCopy = this.deepCopy(this.nlpAnswers);
+            this.combinedDTODeepCopy = this.deepCopy(this.combinedDTO);
           }
         })
     }
   }
+
+  onFilterByDateRange(event: any) {
+    this.combinedDTO = this.deepCopy(this.combinedDTODeepCopy);
+    this.nlpAnswers = this.nlpAnswersDeepCopy;
+    if(event.startDate && event.endDate){
+      this.combinedDTO = this.deepCopy(this.combinedDTODeepCopy);
+      this.nlpAnswers = this.nlpAnswersDeepCopy;
+      this.combinedDTO = this.applyDateFilterToStructuredResources(
+        this.combinedDTODeepCopy, event.startDate, event.endDate);
+      this.nlpAnswers = this.applyDateFilterToUnstructuredResources(this.nlpAnswersDeepCopy, event.startDate, event.endDate);
+    }
+  }
+
+  private applyDateFilterToStructuredResources(structuredResources: CombinedStructuredEvidenceDTO, startDate, endDate): CombinedStructuredEvidenceDTO {
+    let result: CombinedStructuredEvidenceDTO = { observations: [], encounters: [], medicationRequests: [], procedures: [], conditions: [] };
+    Object.keys(structuredResources).forEach(key => {
+      result[key] = structuredResources[key].filter(item =>
+        new Date(item.sortFilterDate) >= new Date(startDate) && new Date(item.sortFilterDate) <= new Date(endDate))
+    });
+    return result;
+  }
+
+  private applyDateFilterToUnstructuredResources(unstructuredResources: NlpAnswer[], startDate, endDate): NlpAnswer[] {
+    if(!unstructuredResources){
+      return null;
+    }
+    return  unstructuredResources.filter(item =>
+      new Date(item.date) >= new Date(startDate) && new Date(item.date) <= new Date(endDate));
+  }
+
+  private deepCopy(object: any){
+    if(!object){
+      return null;
+    }
+    return JSON.parse(JSON.stringify(object));
+  }
+
 }

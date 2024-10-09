@@ -1,48 +1,75 @@
 <mat-card class="margin-sm">
   <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title>
+        Filter Evidence by Date
+      </mat-card-title>
+    </mat-card-title-group>
+    <button mat-icon-button
+            [matTooltip]="isDateFilterExpanded ? 'Collapse' : 'Expand' + 'Date Filters'"
+            (click)="isDateFilterExpanded = !isDateFilterExpanded">
+      @if (isDateFilterExpanded) {
+        <mat-icon>expand_less</mat-icon>
+      } @else {
+        <mat-icon>expand_more</mat-icon>
+      }
+    </button>
+  </mat-card-header>
+  <mat-card-content>
+    @if (this.isDateFilterExpanded) {
+      <app-evidence-filter
+        (onDateDateRangeSelected)="onFilterByDateRange($event)"
+        [packageRunDate]="activeFormSummary.started"
+      />
+    }
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card class="margin-sm">
+  <mat-card-header>
     <mat-card-title>Structured Resources</mat-card-title>
   </mat-card-header>
   <mat-card-content style="overflow: auto">
-
-    <!--TODO Remove the for loop once the parsing of all structured resources is implemented -->
-    @if (this.cqlResources?.length > 0) {
-      @if(simpleObservations.length > 0){
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleObservations">
-        </app-structured-results-details>
-      }
-      @if(simpleConditions.length > 0){
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleConditions">
-        </app-structured-results-details>
-      }
-      @if(simpleEncounters.length > 0){
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleEncounters">
-        </app-structured-results-details>
-      }
-      @if(simpleMedicationRequests.length > 0){
-        <app-structured-results-details
-          [structuredEvidenceDto]="simpleMedicationRequests">
-        </app-structured-results-details>
-      }
+    @for (dto of Object.values(combinedDTO); track dto) {
+      <app-structured-results-details
+        [structuredEvidenceDto]="dto | sortByDate: 'sortFilterDate' : 'desc'">
+      </app-structured-results-details>
     }
-    @else {
+    @if(!cqlResources?.length){
       No Structured Evidence Found
     }
   </mat-card-content>
 </mat-card>
 
 <mat-card class="margin-sm">
-  <mat-card-header>
-    <mat-card-title>Documents</mat-card-title>
-  </mat-card-header>
+  <mat-card-title class="document-title">
+    <span>Documents</span>
+    @if (this.nlpAnswers?.length) {
+      <button
+        mat-stroked-button
+        [matTooltip]="documentsSortDirection == 'asc' ? 'Sort By Date Desc' : 'Sort By Date Desc'"
+        (click)="documentsSortDirection == 'asc' ? documentsSortDirection = 'desc' : documentsSortDirection = 'asc'"
+      >
+        <mat-icon>
+          @if (documentsSortDirection == 'asc') {
+            keyboard_arrow_up
+          } @else {
+            keyboard_arrow_down
+          }
+        </mat-icon>
+        Sort by Date {{ documentsSortDirection == 'asc' ? 'Desc' : 'Asc' }}
+      </button>
+    }
+  </mat-card-title>
   <mat-card-content>
-    @for (nlpAnswer of this.nlpAnswers; track nlpAnswer) {
-      <app-unstructured-results-details
-        class="padding-md"
-        [nlpAnswer]="nlpAnswer">
-      </app-unstructured-results-details>
+    @for (nlpAnswer of this.nlpAnswers | sortByDate: 'date' : (documentsSortDirection == 'asc' ? 'asc' : 'desc'); track nlpAnswer) {
+      <div class="padding-bottom-md">
+        <app-unstructured-results-details
+          [nlpAnswer]="nlpAnswer"
+          [patientSummary]="activeFormSummary.patientSummary">
+        </app-unstructured-results-details>
+      </div>
     } @empty {
       No documents found
     }

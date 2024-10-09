@@ -1,29 +1,34 @@
-<div class="mat-elevation-z2">
-  <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+<div class="mat-elevation-z2 paginated-table-container">
+  @if (columns.length > 1 && dataSource.data.values()) {
+    <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
 
-    <ng-container [matColumnDef]="column" *ngFor="let column of columns; index as i">
-      <th mat-header-cell
-          *matHeaderCellDef> {{ column == 'dateAgeAt' ? 'Date (Age At)' : column | camelCaseToTitleCase }}
-      </th>
-      <td mat-cell *matCellDef="let element"
-          [matTooltip]="dataSource.data?.[dataSource.data?.indexOf(element)] | concatDataToStr">
-        @if (!(evidenceViewerExpanded$ | async) && element[column]?.length > MAX_STR_LENGTH) {
-          {{ (element[column].slice(0, MAX_STR_LENGTH) + '...') }}
-        } @else {
-          {{ element[column] }}
-        }
-      </td>
-    </ng-container>
+      <ng-container [matColumnDef]="column" *ngFor="let column of columns; index as i">
+        <th mat-header-cell
+            *matHeaderCellDef> {{ column == 'dateAgeAt' ? 'Date (Age At)' : column | camelCaseToTitleCase }}
+        </th>
+        <td mat-cell *matCellDef="let element"
+            [matTooltip]="dataSource.data?.[dataSource.data?.indexOf(element)] | concatDataToStr">
+          @if (!(evidenceViewerExpanded$ | async) && element[column]?.length > MAX_STR_LENGTH) {
+            {{ (element[column]?.slice(0, MAX_STR_LENGTH - 3) + '...') }}
+          } @else if (((evidenceViewerExpanded$ | async) && element[column]?.length > MAX_STR_LENGTH + 10)) {
+            {{ (element[column]?.slice(0, (MAX_STR_LENGTH + 7)) + '...') }}
+          } @else {
+            {{ (element[column]) }}
+          }
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="columns"></tr>
-    <tr mat-row *matRowDef="let row; columns: columns;" class="compact-row"></tr>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;" class="compact-row"></tr>
 
-  </table>
-
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                 [pageSize]="10"
-                 showFirstLastButtons
-                 aria-label="Select page of structured evidence">
-  </mat-paginator>
-
+    </table>
+    @if (dataSource.data.length > 5) {
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20]"
+        [pageSize]="10"
+        showFirstLastButtons
+        aria-label="Select page of structured evidence">
+      </mat-paginator>
+    }
+  }
 </div>

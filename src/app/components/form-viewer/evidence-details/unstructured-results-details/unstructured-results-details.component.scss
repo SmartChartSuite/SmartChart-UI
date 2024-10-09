@@ -10,6 +10,7 @@
 .full-text-content {
   max-height: 320px;
   overflow-x: auto;
+  margin-top: 0;
 }
 
 .highlight {
@@ -28,4 +29,30 @@
 
 .label-text {
   font-weight: bold;
+}
+
+.simple-col{
+  flex: 1;
+}
+
+.wide-col {
+  flex: 4;
+}
+
+.actions-col {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.mat-mdc-card-content{
+  padding: 8px
+}
+
+.mat-mdc-card-content:first-child {
+  padding-top: 8px;
+}
+
+.mat-mdc-card-content:last-child {
+  padding-bottom: 8px;
 }

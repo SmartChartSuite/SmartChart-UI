@@ -4,6 +4,8 @@ export class Results {
   [key: string]: any;
   subject: FhirBaseResource;
   status: string;
+  completeJobs: number;
+  totalJobs: number;
 }
 
 export class ResultSet {

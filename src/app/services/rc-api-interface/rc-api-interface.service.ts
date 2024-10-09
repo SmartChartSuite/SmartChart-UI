@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, share} from "rxjs";
+import {map, Observable, share, shareReplay} from "rxjs";
 import {HttpClient, HttpContext} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
@@ -14,22 +14,38 @@ import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {ShowLoading} from "../loading/show-loading";
+import testResponse from '../../../assets/temp/ui-for-testing.json';
+import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 
 @Injectable({
   providedIn: 'root'
 })
 export class RcApiInterfaceService {
   private base = "smartchartui"
-  patientEndpoint: string = `${this.base}/patient`;
+  configEndpoint: string = `config`;
+  patientEndpoint: string = `${this.base}/Patient`; // FHIR Conformant.
   groupEndpoint: string = `${this.base}/group`;
   questionnaireEndpoint: string = `${this.base}/questionnaire`;
   startJobsEndpoint: string = `${this.base}/batchjob?include_patient=True`;
   getJobPackageEndpoint: string = `forms`;
   getBatchJobsEndpoint: string = `${this.base}/batchjob`
   getResultsEndpoint: string = `${this.base}/results`
+  testResponse = testResponse;
+
+  getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
+    shareReplay(1)
+  );
 
   constructor(private configService: ConfigService,
               private http: HttpClient) {
+  }
+
+  /**
+   * Request environment based configuration, e.g. custom primary identifier.
+   */
+
+  getConfig(): Observable<RcApiConfig> {
+    return this.http.get<RcApiConfig>(this.configService.config.rcApiUrl + this.configEndpoint);
   }
 
   /**
@@ -47,6 +63,8 @@ export class RcApiInterfaceService {
    */
   searchPatient(searchParameters?: PatientSearchParameters): Observable<PatientSummary[]> {
     const searchPatientUrl = this.configService.config.rcApiUrl + `${this.patientEndpoint}`;
+    searchParameters = this.mapParameterKeysToFHIR(searchParameters);
+
     let patientSearch$: Observable<any>;
     if (!searchParameters) {
       patientSearch$ = this.http.get<FhirBaseResource>(searchPatientUrl);
@@ -56,13 +74,31 @@ export class RcApiInterfaceService {
     }
 
     return patientSearch$.pipe(
-      map((value: any) => {
-        const entries = value["entry"];
+      map((bundle: Bundle) => {
+        const entries = bundle.entry || [];
         let patientSummaryList: PatientSummary[] = [];
-        // TODO Map entries to Patient Summaries and add to list.
+        entries.forEach((bec: BundleEntryComponent) => {
+          let patientSummary = new PatientSummary(bec.resource);
+          patientSummaryList.push(patientSummary);
+        })
         return patientSummaryList;
       })
     )
+  }
+
+  private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {
+    if (Object.keys(searchParameters).includes("fhirId")) {
+      Object.defineProperty(searchParameters, "_id",
+        Object.getOwnPropertyDescriptor(searchParameters, "fhirId"));
+      delete searchParameters["fhirId"];
+    }
+    if (Object.keys(searchParameters).includes("dob")) {
+      Object.defineProperty(searchParameters, "birthdate",
+        Object.getOwnPropertyDescriptor(searchParameters, "dob"));
+      delete searchParameters["dob"];
+      searchParameters["birthdate"] = (searchParameters["birthdate"] as unknown as Date).toISOString().split("T")[0];
+    }
+    return searchParameters;
   }
 
   /**
@@ -105,7 +141,6 @@ export class RcApiInterfaceService {
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    console.log(postBody);
     return this.http.post<StartJobsPostResponse>(this.configService.config.rcApiUrl + this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
   }
 
@@ -139,13 +174,19 @@ export class RcApiInterfaceService {
         const statusObservation = bundleEntries.shift();
         const patientResource = bundleEntries.shift();
         const answerObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
-        //console.log(resultObservationList)
         const evidenceList = bundleEntries.filter(bec => !this.isRcApiObservation(bec.resource));
-        //console.log(evidenceList)
 
         const results: Results = new Results();
         results.subject = patientResource.resource;
-        results.status = statusObservation?.resource?.["valueCodeableConcept"]?.["coding"]?.[0]?.["code"] || "error";
+
+        const statusObservationResource = statusObservation?.resource;
+        const statusCodeableConcept = statusObservationResource?.["valueCodeableConcept"];
+        results.status = statusCodeableConcept?.["coding"]?.[0]?.["code"] || "error";
+
+        const statusCodeableConceptText = statusCodeableConcept?.["text"];
+        const completeTotalJobsAsString = statusCodeableConceptText?.split(":")?.[1].trim();
+        results.completeJobs = Number(completeTotalJobsAsString?.split("/")?.[0]);
+        results.totalJobs = Number(completeTotalJobsAsString?.split("/")?.[1]);
         answerObservationList.forEach(bec => {
           const answerObservation = bec.resource;
           const linkId: string = `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`
@@ -191,7 +232,6 @@ export class RcApiInterfaceService {
             results[linkId].evidence = [... new Set(results[linkId].evidence)];
           }
         });
-        console.log(results);
         return results;
       })
     ).pipe(share())

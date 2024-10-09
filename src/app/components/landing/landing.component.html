@@ -1,19 +1,279 @@
 <div class="component-wrapper">
   <div class="component-content">
-    <h1>SmartChart</h1>
-    <div>
-      <p>
-        Welcome to the SmartChart platform. SmartChart provides a system for multiple client applications to build upon
-        a common backend service built around HL7 FHIR. This client focuses on patient chart abstraction to enable the
-        completion of patient related forms.
-      </p>
-      <p>
-        To begin, please select the "Form Manager" option in the left navigation bar. From there you may load an active
-        form or start a backend job to pull patient data for a new form.
-      </p>
-      <p>
-        <strong>More content coming later.</strong>
-      </p>
+    <div class="title-header">
+      <h1>SmartChart</h1>
+      <h2>Form-based Chart Abstraction</h2>
+      <div class="title-header-line">
+      </div>
+    </div>
+    <div class="landing-page-columns">
+      <div class="landing-page-left-column">
+        <h3 class="header-3">About</h3>
+        <p>
+          Welcome to the SmartChart platform's Form-based Chart Abstraction application.
+        </p>
+        <p>
+          SmartChart provides a complete platform for chart abstraction which can be leveraged for a wide variety of
+          use cases. It is designed to be compatible with FHIR-compliant Electronic Health Record (EHR) systems to
+          retrieve data from both free text notes and coded entries in a patient's medical record. This data is then
+          presented to users in appropriate contexts, limiting the need for full patient record review.
+        </p>
+        <h3 class="header-3">More information...</h3>
+        <mat-accordion multi="true">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="header-4">Concepts in SmartChart</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              Broadly, a concept is any semantically meaningful piece of data. Concepts may represent real
+              world entities (medications, procedures, etc.) or be more abstract, such as questions about a
+              person or entity ("Is the patient deceased?").
+            </p>
+            <p>
+              In SmartChart's Form-based Chart Abstraction, concepts are any fields within a form or questionnaire.
+              For example, an item in a reporting questionnaire asking "When did treatment begin?" is considered a
+              concept.
+            </p>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="header-4">Forms and Jobs</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              A form is a collection of concepts, typically rendered to users as questions and prompts defined by
+              subject matter experts. Forms may represent common healthcare surveys or questionnaires, reporting workflows,
+              or be entirely custom.
+            </p>
+            <p>
+              For each concept within a form, CQL or NLP logic may be attached in an attempt to provide
+              the information from the patient's health record. This logic is described as a job to be executed.
+              A job is either CQL or NLP, not both at once, and a concept may be associated with more than one job.
+              The case of one CQL job and one NLP job for a given concept is common.
+            </p>
+            <p>
+              Where a form is the largest unit of work, a job is the smallest.
+            </p>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="header-4">Evidence</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              SmartChart concepts are paired with "evidence". Evidence are parts of the clinical record which contains
+              relevant information to the concept.
+            </p>
+            <p>
+              When a new patient form is started, CQL and/or NLP logic defined as part of the form and associated with
+              one or more concepts is executed against the patient's health records. The logic will define how to review
+              both structured and unstructured clinical data in an attempt to gather the relevant evidence.
+            </p>
+            <p>
+              This evidence is then presented to the user in two ways:
+            </p>
+            <ol>
+              <li>
+                As a collection of FHIR Resources which contain the data as it appears in the EHR to facilitate quickly
+                reviewing the patient's health record.
+              </li>
+              <li>
+                When possible, summarized as a suggested answer for a concept. For example, in addressing the concept
+                "If the patient is deceased, what is their date of death?" a single answer can be inferred from the data.
+                (Note: The evidence collection is still included alongside any suggested answers to allow human confirmation.)
+              </li>
+            </ol>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h4 class="header-4">Retrieval Logic</h4>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+            <p>
+              Data retrieval is performed and interpreted using Natural Language Processing (NLP) and Clinical
+              Quality Language (CQL).
+            </p>
+            <p>
+              NLP is the ability of a system to interpret human language, which is relevant for processing data such
+              as notes or summaries written by a clinician.
+            </p>
+            <p>
+              CQL is a language that defines a way to represent clinical knowledge, such as medical concepts that
+              adhere to a standardized coding system like ICD-10, SNOMED, or LOINC. It is intended for use both in
+              Clinical Quality Measurement (CQM) and decision support.
+            </p>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+
+
+
+
+      </div>
+      <div class="landing-page-right-column">
+        <div class="instructions-wrapper">
+          Instructions
+        </div>
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                1. Select "Form Manager" in the Menu
+              </mat-panel-title>
+              <mat-panel-description>
+                (Click for detailed information.)
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="instructions-block">
+              <p>
+                In the left side navigation window, select "Form Manager". You will be taken
+                to a list of active patient forms. These may either have logic running in the background
+                or already be completed.
+              </p>
+            </div>
+            <mat-divider></mat-divider>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                2. Start a New Patient Form
+              </mat-panel-title>
+              <mat-panel-description>
+                (Click for detailed information.)
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="instructions-block">
+              <p>
+                If you already have form previously started you intend to use, skip this step.
+              </p>
+              <p>
+                In the Form Manager, select the "Start New Patient Form" tab. You will be asked to select
+                a patient and a form. System administrators may provide lists of pre-identified patients,
+                presented as cohorts, for quick access. A patient may be selected from these lists, or the
+                user may search for a given patient on the EHR.
+              </p>
+              <p>
+                To search for a patient, select "Patient Search" while in the "Start New Patient Form" tab.
+                You must then select a search type as follows:
+              </p>
+              <ul>
+                <li>
+                  Identifier - Search by a known patient identifier such as a medical record number or
+                  social security number.
+                </li>
+                <li>
+                  Name and Date of Birth - Search by a patient's given name, family name, and date of birth.
+                </li>
+                <li>
+                  FHIR ID - Search by a FHIR Patient Resource's ID in the EHR FHIR Server. This information is
+                  likely not available for all users, in which case one of the previous two options should be
+                  preferred.
+                </li>
+              </ul>
+              <p>
+                Once you have selected a patient the form you wish to start for that patient, press the "Create
+                Patient Form" button. This will start a new form and begin running the associated logic to collect
+                evidence.
+              </p>
+            </div>
+            <mat-divider></mat-divider>
+          </mat-expansion-panel>
+
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                3. Select an Active Form
+              </mat-panel-title>
+              <mat-panel-description>
+                (Click for detailed information.)
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="instructions-block">
+              <p>
+                In the Active Forms tab of the Form Manager, you will see a list of all forms previously created.
+                If you have just started a new form, it should appear at the top of the list.
+              </p>
+              <p>
+                To find a particular form, you may use the "Patient Search" options at the top to filter the list
+                of active forms.
+              </p>
+              <p>
+                Select the patient form you wish to load.
+              </p>
+            </div>
+            <mat-divider></mat-divider>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                4. Fill Out Your Form
+              </mat-panel-title>
+              <mat-panel-description>
+                (Click for detailed information.)
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="instructions-block">
+              <p>
+                Once a patient form is selected, you will be taken to a page in order to review the evidence
+                and complete the form.
+              </p>
+              <p>
+                <strong>WARNING:</strong> Before proceeding with completing the form, you should check the
+                status of the form's logic in
+                the header. It will
+                provide a completion percentage as it processes the patient's healthcare record. The running
+                time will depend on the form and logic. As the jobs complete, the page will continue to make
+                new evidence or suggested answers available to users.
+              </p>
+              <p>
+                As forms may vary, you should follow the instructions presented for each question or prompt.
+                Each may have a suggested answer or evidence gathered through the abstraction process.
+                Suggested answers should be reviewed carefully. You may click on the suggested answer to
+                automatically fill in the form with that answer.
+              </p>
+              <p>
+                If there is available evidence gathered from
+                the EHR, a "View Evidence" button with a count of the amount of evidence found. Selecting this
+                button will open the evidence viewer panel on the right side of the screen. Structured healthcare
+                record data is presented as a table based on the type of data, while unstructured data such as notes
+                are provided below. The terms used in the logic for the processing of the unstructured data is given,
+                with relevant matches in the source note or document highlighted. You may also open the raw document
+                text in a window for further review.
+                You may filter both types of evidence by dates using the controls at the top of the evidence viewer.
+              </p>
+
+            </div>
+            <mat-divider></mat-divider>
+          </mat-expansion-panel>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                5. Submit Your Form
+              </mat-panel-title>
+              <mat-panel-description>
+                (Click for detailed information.)
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <div class="instructions-block">
+              <p>
+                <strong>Full Information Pending.</strong>
+              </p>
+              <p>
+                Temporarily while an output/submission format is established, pressing the submit button
+                in the form will print a FHIR QuestionnaireResponse resource to the browser's logs.
+              </p>
+
+            </div>
+            <mat-divider></mat-divider>
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </div>
     </div>
   </div>
 </div>
