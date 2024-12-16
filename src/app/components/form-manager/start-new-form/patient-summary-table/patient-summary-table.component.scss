@@ -11,5 +11,20 @@ tr.selected-patient-row {
 }
 
 .mat-column-selection {
-  width: 8%;
+  width: 24px;
+}
+
+.centered{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.check-mark {
+  transform: scale(0.8);
+  color: #646064
+}
+
+.custom-padding{
+  padding: 0 0 0 8px;
 }
