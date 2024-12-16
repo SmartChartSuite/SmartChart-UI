@@ -27,10 +27,11 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-    <tr class="patient-row" mat-row *matRowDef="let row; columns: displayedColumns;"
+    <tr class="patient-row compact-row" mat-row *matRowDef="let row; columns: displayedColumns;"
         [class.selected-patient-row]="(selectedPatient$ | async) === row"
         (click)="setSelectedPatient(row)">
     </tr>
+
     <!--  TODO: Render only after a search has been executed-->
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" [attr.colspan]="displayedColumns.length">
@@ -39,7 +40,7 @@
     </tr>
   </table>
   <mat-paginator
-    [pageSizeOptions]="[5, 10, 25]"
+    [pageSizeOptions]="[10, 20]"
     aria-label="Select page patient search results"
   >
   </mat-paginator>

@@ -109,7 +109,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectQuestionnaireSection(index: number) {
     this.selectedMenuItemIndex = index;
     this.questionnaire['item'] = this.questionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
-    //TODO implement scroll to top when new question is selected
   }
 
   onSubmit() {
