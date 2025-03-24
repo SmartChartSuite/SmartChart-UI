@@ -8,14 +8,14 @@ import {
 import {PatientSummary} from "../../../../models/patient-summary";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
-import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {Observable} from "rxjs";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 
 @Component({
-  selector: 'app-patient-summary-table',
-  templateUrl: './patient-summary-table.component.html',
-  styleUrl: './patient-summary-table.component.scss'
+    selector: 'app-patient-summary-table',
+    templateUrl: './patient-summary-table.component.html',
+    styleUrl: './patient-summary-table.component.scss',
+    standalone: false
 })
 export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, OnInit {
 

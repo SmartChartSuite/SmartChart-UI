@@ -7,9 +7,10 @@ import {FormManagerService} from "../../../services/form-manager/form-manager.se
 import {UtilsService} from "../../../services/utils/utils.service";
 
 @Component({
-  selector: 'app-active-forms',
-  templateUrl: './active-forms.component.html',
-  styleUrl: './active-forms.component.scss'
+    selector: 'app-active-forms',
+    templateUrl: './active-forms.component.html',
+    styleUrl: './active-forms.component.scss',
+    standalone: false
 })
 export class ActiveFormsComponent implements OnInit {
 

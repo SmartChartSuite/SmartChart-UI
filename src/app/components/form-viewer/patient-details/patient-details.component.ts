@@ -1,12 +1,13 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {PatientSummary} from "../../../models/patient-summary";
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {RcApiConfig} from "../../../models/rc-api/rc-api-config";
 
 @Component({
-  selector: 'app-patient-details',
-  templateUrl: './patient-details.component.html',
-  styleUrl: './patient-details.component.scss'
+    selector: 'app-patient-details',
+    templateUrl: './patient-details.component.html',
+    styleUrl: './patient-details.component.scss',
+    standalone: false
 })
 export class PatientDetailsComponent implements OnChanges {
   @Input() patientSummary: PatientSummary;

@@ -8,10 +8,11 @@ import {EvidenceDTO} from "../../../../models/dto/evidence-dto";
 import {NlpAnswerDTO} from "../../../../models/dto/nlp-answer-dto";
 
 @Component({
-  selector: 'app-unstructured-results-details',
-  templateUrl: './unstructured-results-details.component.html',
-  styleUrl: './unstructured-results-details.component.scss',
-  encapsulation: ViewEncapsulation.None,
+    selector: 'app-unstructured-results-details',
+    templateUrl: './unstructured-results-details.component.html',
+    styleUrl: './unstructured-results-details.component.scss',
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class UnstructuredResultsDetailsComponent implements OnChanges{
   @Input() nlpAnswer: NlpAnswer;

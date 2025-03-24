@@ -1,13 +1,14 @@
-import {Component, EventEmitter, inject, Output} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import  packageInfo from 'package.json';
 @Component({
-  selector: 'app-side-nav',
-  templateUrl: './side-nav.component.html',
-  styleUrl: './side-nav.component.scss'
+    selector: 'app-side-nav',
+    templateUrl: './side-nav.component.html',
+    styleUrl: './side-nav.component.scss',
+    standalone: false
 })
 export class SideNavComponent{
 

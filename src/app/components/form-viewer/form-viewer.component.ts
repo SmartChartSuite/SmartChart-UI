@@ -5,7 +5,7 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, interval, mergeMap, Observable, ReplaySubject, share, switchMap, takeWhile, tap, timer} from "rxjs";
+import {filter, mergeMap, Observable, ReplaySubject, share, switchMap, takeWhile, tap, timer} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -15,9 +15,10 @@ import {FormOutputMappingService} from "../../services/form-output-mapping/form-
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
 
 @Component({
-  selector: 'app-form-viewer',
-  templateUrl: './form-viewer.component.html',
-  styleUrl: './form-viewer.component.scss'
+    selector: 'app-form-viewer',
+    templateUrl: './form-viewer.component.html',
+    styleUrl: './form-viewer.component.scss',
+    standalone: false
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;

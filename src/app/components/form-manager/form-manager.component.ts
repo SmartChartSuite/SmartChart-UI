@@ -4,9 +4,10 @@ import {StateManagementService} from "../../services/state-management/state-mana
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 
 @Component({
-  selector: 'app-form-manager',
-  templateUrl: './form-manager.component.html',
-  styleUrl: './form-manager.component.scss'
+    selector: 'app-form-manager',
+    templateUrl: './form-manager.component.html',
+    styleUrl: './form-manager.component.scss',
+    standalone: false
 })
 export class FormManagerComponent implements OnInit{
   selectedTabIndex: number = 0;

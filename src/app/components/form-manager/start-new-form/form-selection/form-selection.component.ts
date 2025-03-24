@@ -7,9 +7,10 @@ import {FormManagerService} from "../../../../services/form-manager/form-manager
 import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
-  selector: 'app-form-selection',
-  templateUrl: './form-selection.component.html',
-  styleUrl: './form-selection.component.scss'
+    selector: 'app-form-selection',
+    templateUrl: './form-selection.component.html',
+    styleUrl: './form-selection.component.scss',
+    standalone: false
 })
 export class FormSelectionComponent implements OnInit {
   isLoading = false;
