@@ -1,5 +1,5 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -32,6 +32,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   results: Results;
   evidenceViewerExpanded$: Observable<boolean>;
+  @ViewChild('top') topScroll: ElementRef;
 
   // Refresh Evidence Trigger
   refreshTrigger$ = new ReplaySubject(1);
@@ -109,7 +110,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectQuestionnaireSection(index: number) {
     this.selectedMenuItemIndex = index;
     this.questionnaire['item'] = this.questionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
-    //TODO implement scroll to top when new question is selected
   }
 
   onSubmit() {
@@ -125,5 +125,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     if(questionType == QuestionnaireItemType.integer && questionnaire.item[i].item[j].answer){
        questionnaire.item[i].item[j].answer = Math.trunc(questionnaire.item[i].item[j].answer);
     }
+  }
+
+  scrollToTop() {
+    this.topScroll.nativeElement.scrollTop = 0;
   }
 }
