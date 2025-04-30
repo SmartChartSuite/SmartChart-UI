@@ -46,7 +46,7 @@
                 mat-flat-button
                 class="expanded-menu-button"
                 [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
-                (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false">
+                (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop()">
                 {{ item["text"] }}
               </button>
             </div>
@@ -55,7 +55,7 @@
       </div>
 
       <!-- Begin actual form rendering -->
-      <div class="viewer-container-body-content">
+      <div class="viewer-container-body-content" #top>
         @for (item of questionnaire?.["item"]; track item; let i = $index) {
           @if (item["selected"]) {
             <div class="margin-top-md item-text">{{ item["text"] }}</div>
@@ -219,7 +219,7 @@
 
       <button mat-flat-button type="submit" class="wide-button"
               [disabled]="selectedMenuItemIndex == 0"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex)">
+              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex); scrollToTop()">
         <mat-icon>chevron_left</mat-icon>
         Previous
         Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
@@ -227,7 +227,7 @@
 
       <button mat-flat-button type="submit" class="margin-left-sm wide-button"
               [disabled]="(questionnaire?.['item']?.length -1) == selectedMenuItemIndex"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex)">
+              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex); scrollToTop()">
         Next
         Section{{ (selectedMenuItemIndex < questionnaire?.['item']?.length - 1) ? ': ' + questionnaire?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
         <mat-icon iconPositionEnd>chevron_right</mat-icon>
