@@ -89,6 +89,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {
   EvidenceFilterComponent
 } from "./components/form-viewer/evidence-details/evidence-filter/evidence-filter.component";
+import {CreateGroupDialogComponent} from "./components/create-group-dialog/create-group-dialog.component";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -122,7 +123,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     FhirDateTimeComponent,
     ActiveFormsGridComponent,
     ActiveFormsFilterComponent,
-    EvidenceFilterComponent
+    EvidenceFilterComponent,
+    CreateGroupDialogComponent
   ],
   imports: [
     NgxMatTimepickerModule,
