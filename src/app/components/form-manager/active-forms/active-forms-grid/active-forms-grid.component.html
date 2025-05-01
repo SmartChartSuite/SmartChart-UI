@@ -38,11 +38,11 @@
       <tr class="mat-row" *matNoDataRow>
         @if (isLoading) {
           <td *ngIf="isLoading" class="mat-cell padding-md loading" [attr.colspan]="displayedColumns.length">
-            Loading active forms
+            Loading existing forms
           </td>
         } @else {
           <td class="mat-cell padding-md" [attr.colspan]="displayedColumns.length">
-            No active forms found.
+            No existing forms found.
           </td>
         }
       </tr>

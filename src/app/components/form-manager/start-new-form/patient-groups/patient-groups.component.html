@@ -1,12 +1,21 @@
 <div class="margin-md">
-  <mat-form-field appearance="outline" class="group-select">
-    <mat-label>Group</mat-label>
-    <mat-select (selectionChange)="onGroupSelected($event)" [(value)]="selectedGroup">
-      @for (group of patientGroups; track group) {
-        <mat-option [value]="group">{{ group.groupName }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <div class="centered-controls">
+    <div class="no-hint-section">
+      <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Group</mat-label>
+        <mat-select (selectionChange)="onGroupSelected($event)" [(value)]="selectedGroup">
+          @for (group of patientGroups; track group) {
+            <mat-option [value]="group">{{ group.groupName }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="margin-left-md">
+      <button mat-raised-button>
+        Create New Group
+      </button>
+    </div>
+  </div>
   <app-patient-summary-table
     [patientSummaryData]="patientSummaryData"
   />

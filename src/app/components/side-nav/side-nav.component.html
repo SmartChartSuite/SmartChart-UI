@@ -35,18 +35,19 @@
       </li>
 
       <li>
-        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/form-viewer']);">
-          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM">list_alt</mat-icon>
-          @if (expanded) { Current Form }
+        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/forms']);">
+          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORM_MANAGER">person_search</mat-icon>
+          @if (expanded) { Chart Abstractions }
         </button>
       </li>
 
       <li>
-        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/forms']);">
-          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORM_MANAGER">person_search</mat-icon>
-          @if (expanded) { Form Manager }
+        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/form-viewer']);">
+          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM">list_alt</mat-icon>
+          @if (expanded) { Current Chart }
         </button>
       </li>
+
     }
   </ul>
 
