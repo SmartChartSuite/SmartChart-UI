@@ -6,9 +6,10 @@ import {Observable} from "rxjs";
 import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
-  selector: 'app-structured-results-details',
-  templateUrl: './structured-results-details.component.html',
-  styleUrl: './structured-results-details.component.scss'
+    selector: 'app-structured-results-details',
+    templateUrl: './structured-results-details.component.html',
+    styleUrl: './structured-results-details.component.scss',
+    standalone: false
 })
 export class StructuredResultsDetailsComponent implements OnChanges, OnInit, AfterViewInit{
   @Input() structuredEvidenceDto: StructuredEvidenceDTO[] = [];

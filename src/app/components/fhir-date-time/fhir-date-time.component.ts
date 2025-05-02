@@ -22,12 +22,13 @@ export const DATE_FORMATS = {
 };
 
 @Component({
-  selector: 'app-fhir-date-time',
-  templateUrl: './fhir-date-time.component.html',
-  styleUrl: './fhir-date-time.component.scss',
-  providers: [
-    provideMomentDateAdapter(DATE_FORMATS),
-  ],
+    selector: 'app-fhir-date-time',
+    templateUrl: './fhir-date-time.component.html',
+    styleUrl: './fhir-date-time.component.scss',
+    providers: [
+        provideMomentDateAdapter(DATE_FORMATS),
+    ],
+    standalone: false
 })
 export class FhirDateTimeComponent implements OnChanges, OnInit {
 

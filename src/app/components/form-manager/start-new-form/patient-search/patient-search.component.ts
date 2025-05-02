@@ -8,9 +8,10 @@ import {PatientSearchParameters} from "../../../../models/rc-api/patient-search-
 import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
-  selector: 'app-patient-search',
-  templateUrl: './patient-search.component.html',
-  styleUrl: './patient-search.component.scss'
+    selector: 'app-patient-search',
+    templateUrl: './patient-search.component.html',
+    styleUrl: './patient-search.component.scss',
+    standalone: false
 })
 export class PatientSearchComponent implements OnChanges, OnInit {
 

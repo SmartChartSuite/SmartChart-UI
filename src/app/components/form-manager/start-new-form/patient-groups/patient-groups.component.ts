@@ -9,9 +9,10 @@ import {openCreateGroupDialog} from "../../../create-group-dialog/create-group-d
 import {MatDialog} from "@angular/material/dialog";
 
 @Component({
-  selector: 'app-patient-groups',
-  templateUrl: './patient-groups.component.html',
-  styleUrl: './patient-groups.component.scss'
+    selector: 'app-patient-groups',
+    templateUrl: './patient-groups.component.html',
+    styleUrl: './patient-groups.component.scss',
+    standalone: false
 })
 export class PatientGroupsComponent implements OnInit{
   constructor(
