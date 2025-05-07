@@ -33,6 +33,7 @@ export class RcApiInterfaceService {
   testResponse = testResponse;
 
   getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
+    map(response => response.sort((a, b) => a.title.localeCompare(b.title))),
     shareReplay(1)
   );
 
