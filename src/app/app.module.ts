@@ -90,6 +90,7 @@ import {
   EvidenceFilterComponent
 } from "./components/form-viewer/evidence-details/evidence-filter/evidence-filter.component";
 import {CreateGroupDialogComponent} from "./components/create-group-dialog/create-group-dialog.component";
+import { ExportSelectionDialogComponent } from './components/export-selection-dialog/export-selection-dialog.component';
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -124,7 +125,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     ActiveFormsGridComponent,
     ActiveFormsFilterComponent,
     EvidenceFilterComponent,
-    CreateGroupDialogComponent
+    CreateGroupDialogComponent,
+    ExportSelectionDialogComponent
   ],
   imports: [
     NgxMatTimepickerModule,
