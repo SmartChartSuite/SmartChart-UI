@@ -52,8 +52,8 @@ $selected-nave-menu-item-color: #424242;
 .expanded-menu-button {
   width: ($menu-width - 24px);
   justify-content: flex-start;
-  background-color: $sidenav-background-color;
-  color: whitesmoke;
+  background-color: $sidenav-background-color !important;
+  color: whitesmoke !important;
 }
 
 /* End sidenav style */
