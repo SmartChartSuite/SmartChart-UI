@@ -69,3 +69,37 @@ button {
   color: whitesmoke;
   font-size: small;
 }
+
+.menu-items-wrapper {
+  list-style: none;
+  > .menu-item {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    padding: 4px 2px;
+    color: whitesmoke;
+    margin-left: 12px;
+    > .icon {
+      padding: 4px;
+      border-radius: 4px;
+      min-height: 28px;
+      min-width: 28px
+    }
+  }
+
+  > .menu-item:hover {
+    color: $blue-ascent-color;
+  }
+}
+
+.selected-menu-item {
+  background-color: $blue-ascent-color;
+  color: black;
+}
+
+.menu-text{
+  margin-left: 4px;
+  padding-right: 4px;
+}
+
