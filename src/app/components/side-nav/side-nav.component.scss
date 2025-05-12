@@ -84,7 +84,10 @@ button {
       padding: 4px;
       border-radius: 4px;
       min-height: 28px;
-      min-width: 28px
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
