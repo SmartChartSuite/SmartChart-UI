@@ -13,9 +13,10 @@ import {ActiveFormSummary} from "../../../../models/active-form-summary";
 import {MatPaginator} from "@angular/material/paginator";
 
 @Component({
-  selector: 'app-active-forms-grid',
-  templateUrl: './active-forms-grid.component.html',
-  styleUrl: './active-forms-grid.component.scss'
+    selector: 'app-active-forms-grid',
+    templateUrl: './active-forms-grid.component.html',
+    styleUrl: './active-forms-grid.component.scss',
+    standalone: false
 })
 export class ActiveFormsGridComponent implements OnChanges, AfterViewInit{
   @Input() activeForms: ActiveFormSummary[];

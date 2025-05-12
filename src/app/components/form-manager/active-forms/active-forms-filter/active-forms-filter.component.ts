@@ -5,9 +5,10 @@ import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-ap
 import {debounceTime} from "rxjs";
 
 @Component({
-  selector: 'app-active-forms-filter',
-  templateUrl: './active-forms-filter.component.html',
-  styleUrl: './active-forms-filter.component.scss'
+    selector: 'app-active-forms-filter',
+    templateUrl: './active-forms-filter.component.html',
+    styleUrl: './active-forms-filter.component.scss',
+    standalone: false
 })
 export class ActiveFormsFilterComponent implements OnInit, OnChanges{
   @Output() onFormValueChange = new EventEmitter<any>();

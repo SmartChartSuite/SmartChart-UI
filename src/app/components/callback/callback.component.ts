@@ -4,9 +4,10 @@ import {ApplicationState, RouteState} from "../../models/application-state";
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-callback',
-  templateUrl: './callback.component.html',
-  styleUrl: './callback.component.scss'
+    selector: 'app-callback',
+    templateUrl: './callback.component.html',
+    styleUrl: './callback.component.scss',
+    standalone: false
 })
 export class CallbackComponent implements OnInit {
 

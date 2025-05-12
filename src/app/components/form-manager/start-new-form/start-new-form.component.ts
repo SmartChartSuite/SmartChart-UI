@@ -6,9 +6,10 @@ import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-i
 import {UtilsService} from "../../../services/utils/utils.service";
 
 @Component({
-  selector: 'app-start-new-form',
-  templateUrl: './start-new-form.component.html',
-  styleUrl: './start-new-form.component.scss'
+    selector: 'app-start-new-form',
+    templateUrl: './start-new-form.component.html',
+    styleUrl: './start-new-form.component.scss',
+    standalone: false
 })
 export class StartNewFormComponent implements OnInit {
   selectedPatient: PatientSummary;

@@ -4,9 +4,10 @@ import {SafeHtml} from "@angular/platform-browser";
 
 
 @Component({
-  selector: 'app-document-viewer-modal',
-  templateUrl: './document-viewer-modal.component.html',
-  styleUrl: './document-viewer-modal.component.scss'
+    selector: 'app-document-viewer-modal',
+    templateUrl: './document-viewer-modal.component.html',
+    styleUrl: './document-viewer-modal.component.scss',
+    standalone: false
 })
 export class DocumentViewerModalComponent implements OnInit{
 

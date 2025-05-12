@@ -2,9 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup} from "@angular/forms";
 
 @Component({
-  selector: 'app-evidence-filter',
-  templateUrl: './evidence-filter.component.html',
-  styleUrl: './evidence-filter.component.scss'
+    selector: 'app-evidence-filter',
+    templateUrl: './evidence-filter.component.html',
+    styleUrl: './evidence-filter.component.scss',
+    standalone: false
 })
 export class EvidenceFilterComponent implements OnInit {
   @Output() onDateDateRangeSelected = new EventEmitter();

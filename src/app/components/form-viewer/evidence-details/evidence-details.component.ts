@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
@@ -10,9 +10,10 @@ import {
 } from "../../../models/dto/structured-evidence-dto/combined-structured-evidence-dto";
 
 @Component({
-  selector: 'app-evidence-details',
-  templateUrl: './evidence-details.component.html',
-  styleUrl: './evidence-details.component.scss'
+    selector: 'app-evidence-details',
+    templateUrl: './evidence-details.component.html',
+    styleUrl: './evidence-details.component.scss',
+    standalone: false
 })
 export class EvidenceDetailsComponent implements OnChanges{
 
@@ -31,8 +32,7 @@ export class EvidenceDetailsComponent implements OnChanges{
 
   //Deep copy all resources for filtering operations because the API does not handle filtering or sorting
   nlpAnswersDeepCopy: NlpAnswer[] = [];
-  constructor(private evidenceViewerService: EvidenceViewerService,
-              private formManagerService: FormManagerService) {
+  constructor(private evidenceViewerService: EvidenceViewerService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {

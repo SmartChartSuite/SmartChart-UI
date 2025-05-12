@@ -7,9 +7,10 @@ import {FormManagerService} from "../../../../services/form-manager/form-manager
 import {UtilsService} from "../../../../services/utils/utils.service";
 
 @Component({
-  selector: 'app-patient-groups',
-  templateUrl: './patient-groups.component.html',
-  styleUrl: './patient-groups.component.scss'
+    selector: 'app-patient-groups',
+    templateUrl: './patient-groups.component.html',
+    styleUrl: './patient-groups.component.scss',
+    standalone: false
 })
 export class PatientGroupsComponent implements OnInit{
   constructor(

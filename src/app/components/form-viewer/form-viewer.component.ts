@@ -15,9 +15,10 @@ import {FormOutputMappingService} from "../../services/form-output-mapping/form-
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
 
 @Component({
-  selector: 'app-form-viewer',
-  templateUrl: './form-viewer.component.html',
-  styleUrl: './form-viewer.component.scss'
+    selector: 'app-form-viewer',
+    templateUrl: './form-viewer.component.html',
+    styleUrl: './form-viewer.component.scss',
+    standalone: false
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
