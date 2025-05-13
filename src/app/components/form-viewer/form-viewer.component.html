@@ -45,7 +45,7 @@
               <button
                 mat-flat-button
                 class="expanded-menu-button"
-                [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
+                [ngStyle]="{color: selectedMenuItemIndex == i? '#8C9EFF': 'whitesmoke'}"
                 (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop()">
                 {{ item["text"] }}
               </button>

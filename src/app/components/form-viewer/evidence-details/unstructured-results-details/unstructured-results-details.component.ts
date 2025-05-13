@@ -26,7 +26,13 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
   highlightText(text : string, query: string): string{
     let re = new RegExp(query, 'gi')
     // Angular refused to apply class, so I had to go with style tage here. I wonder why.
-    return text.replace(re, `<span class="highlight">${query}</span>`)
+    if(text && query){
+      return text.replace(re, `<span class="highlight">${query}</span>`)
+    }
+    else {
+      return text;
+    }
+
   }
 
   onOpenInModal() {
@@ -48,9 +54,14 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
     if(changes['nlpAnswer'].currentValue) {
       const htmlStringFragment = this.highlightText(this.nlpAnswer.fragment, this.nlpAnswer.term);
       this.safeHtmlFragment = this.sanitized.bypassSecurityTrustHtml(htmlStringFragment);
-      this.nlpAnswerDTO = ({...this.nlpAnswer, 'dateAgeAt': EvidenceDTO.getDateAgeAsStr(this.nlpAnswer.date, this.patientSummary.birthDate)}) as NlpAnswerDTO
+      this.nlpAnswerDTO = ({
+        ...this.nlpAnswer,
+        'dateAgeAt': EvidenceDTO.getDateAgeAsStr(this.nlpAnswer.date, this.patientSummary.birthDate),
+        'fulltextStr': this.nlpAnswer.fullText,
+        'type': this.nlpAnswer.type,
+      }) as NlpAnswerDTO
 
-      const fullTextStr = atob(this.nlpAnswer.fullText)
+      const fullTextStr = this.nlpAnswer.fullText;
       const htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.term);
       this.safeHtmlFullText = this.sanitized.bypassSecurityTrustHtml(htmlStringFullText);
     }

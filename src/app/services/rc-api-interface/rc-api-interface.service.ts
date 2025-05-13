@@ -11,7 +11,7 @@ import {PatientGroup} from "../../models/patient-group";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
-import {NlpAnswer, Results, ResultSet} from "../../models/results";
+import {AnswerComponent, NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
@@ -199,14 +199,22 @@ export class RcApiInterfaceService {
 
           if (isNlpqlAnswer){
             let nlpAnswer = new NlpAnswer();
-
-            nlpAnswer.term = answerObservation["valueString"];
+            // TODO: verify the "term" comes from the "term" section and not from "section-text"
+            nlpAnswer.term = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'section-text')?.valueString;
             nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
             nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
+            nlpAnswer.observationDisplay = answerObservation["note"]?.[0]?.["text"];
+            nlpAnswer.observationResource = answerObservation;
+            nlpAnswer.componentAnswerList = answerObservation?.['component']?.map(component=> {
+              return {label: component?.code?.coding?.[0]?.display, value: component.valueString} as AnswerComponent
+            });
 
-            let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList)
+            let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList);
             nlpAnswer.date = documentReference["date"]; // From DocumentReference
-            nlpAnswer.fullText = documentReference["content"][0]["attachment"]["data"];
+            nlpAnswer.documentReferenceResource = documentReference;
+            nlpAnswer.fullText = atob(documentReference["content"][0]["attachment"]["data"]);
+            nlpAnswer.type = documentReference?.["type"]?.["coding"]?.[0]?.["display"];
+
 
             if (!("nlpAnswers" in results[linkId])) {
               results[linkId].nlpAnswers = [];

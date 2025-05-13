@@ -14,10 +14,20 @@ export class ResultSet {
   evidence?: FhirBaseResource[];
 }
 
+export class AnswerComponent{
+  label: string;
+  value: string;
+}
+
 export class NlpAnswer {
   term: string;
   date: string;
   fullText: string; // Base64
   fragment: string;
-  evidenceReferenceList: string[]
+  evidenceReferenceList: string[];
+  documentReferenceResource: any;
+  observationResource: any;
+  type: string;
+  observationDisplay: string;
+  componentAnswerList: AnswerComponent[];
 }

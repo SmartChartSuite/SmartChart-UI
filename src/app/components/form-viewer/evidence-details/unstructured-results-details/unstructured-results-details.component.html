@@ -1,16 +1,16 @@
 <mat-card>
   <mat-card-content>
-
-    <div class="flex margin-bottom-sm">
-      <div class="margin-bottom-sm simple-col label-text">Date (Age At): {{ nlpAnswerDTO?.dateAgeAt }}</div>
-      <div class="simple-col">Term: {{ nlpAnswerDTO?.term }}</div>
+    <div class="flex-row">
+      <span class="row-label">Date (Age At):</span> {{ nlpAnswerDTO?.dateAgeAt }}
     </div>
+    @for (answerComponent of nlpAnswer?.componentAnswerList | slice:1; track answerComponent; let i = $index) {
+      <div class="flex-row margin-top-sm">
+        <span class="row-label">{{ answerComponent.label }}</span> : {{ answerComponent.value }}
+      </div>
+    }
 
     <div class="flex">
-      <div class="wide-col">
-        <div class="label-text margin-bottom-sm">Text Fragment:</div>
-        <div class="padding-left-sm" [innerHTML]="safeHtmlFragment"></div>
-      </div>
+
       <div class="actions-col">
         @if (fullTextVisible) {
           <button mat-icon-button (click)="fullTextVisible=false" matTooltip="Collapse Content">
