@@ -16,7 +16,7 @@ export class EvidenceDTO {
 
   // Function to calculate age in years
   private static getAgeAt(date: Date, patientDob: Date): string {
-    if(!isNaN(patientDob.getTime())){
+    if(!patientDob){
       return 'No DOB Given';
     }
     // Calculate age in years
