@@ -62,7 +62,8 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
       }) as NlpAnswerDTO
 
       const fullTextStr = this.nlpAnswer.fullText;
-      const htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.term);
+      let htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.term);
+      htmlStringFullText = this.highlightText(htmlStringFullText, this.nlpAnswer.sectionText);
       this.safeHtmlFullText = this.sanitized.bypassSecurityTrustHtml(htmlStringFullText);
     }
   }

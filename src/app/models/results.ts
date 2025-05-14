@@ -23,6 +23,7 @@ export class NlpAnswer {
   term: string;
   date: string;
   fullText: string; // Base64
+  sectionText: string;
   fragment: string;
   evidenceReferenceList: string[];
   documentReferenceResource: any;
