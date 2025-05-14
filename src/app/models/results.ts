@@ -24,6 +24,7 @@ export class NlpAnswer {
   date: string;
   fullText: string; // Base64
   sectionText: string;
+  textFragment: string;
   fragment: string;
   evidenceReferenceList: string[];
   documentReferenceResource: any;
