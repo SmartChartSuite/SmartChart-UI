@@ -24,9 +24,10 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
   constructor(private dialog: MatDialog, private sanitized: DomSanitizer){}
 
   highlightText(text : string, query: string): string{
-    let re = new RegExp(query, 'gi')
     // Angular refused to apply class, so I had to go with style tage here. I wonder why.
     if(text && query){
+      query = query.replace(/\*/g, '');
+      let re = new RegExp(query, 'gi')
       return text.replace(re, `<span class="highlight">${query}</span>`)
     }
     else {

@@ -91,6 +91,7 @@ import {
 } from "./components/form-viewer/evidence-details/evidence-filter/evidence-filter.component";
 import {CreateGroupDialogComponent} from "./components/create-group-dialog/create-group-dialog.component";
 import { ExportSelectionDialogComponent } from './components/export-selection-dialog/export-selection-dialog.component';
+import { DateFormatPipe } from './pipe/date-format.pipe';
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -126,7 +127,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     ActiveFormsFilterComponent,
     EvidenceFilterComponent,
     CreateGroupDialogComponent,
-    ExportSelectionDialogComponent
+    ExportSelectionDialogComponent,
+    DateFormatPipe
   ],
   imports: [
     NgxMatTimepickerModule,
