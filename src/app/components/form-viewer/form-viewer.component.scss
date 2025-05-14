@@ -1,5 +1,6 @@
 $light-accent-color: #E0E0E0;
 $dark-background-color: #212121;
+$blue-ascent-color: #8C9EFF;
 
 .form-name {
   display: flex;
@@ -82,7 +83,7 @@ $selected-nave-menu-item-color: #424242;
 .selected-evidence {
   @extend .question-label;
   background-color: $dark-background-color;
-  color: whitesmoke;
+  color: $blue-ascent-color;
 }
 
 .question-input {
