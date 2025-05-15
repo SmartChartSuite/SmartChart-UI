@@ -33,6 +33,5 @@ export class SideNavComponent{
   onPathSelected(path: string){
     this.router.navigate([path]);
     this.currentRoute = path;
-    console.log(this.currentRoute);
   }
 }

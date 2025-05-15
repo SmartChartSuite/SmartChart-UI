@@ -71,7 +71,8 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
       const fullTextStr = this.nlpAnswer.fullText;
       let htmlStringFullText = '';
 
-      htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.textFragment);
+      htmlStringFullText = this.highlightText(fullTextStr, this.nlpAnswer.noteText);
+      htmlStringFullText = this.highlightText(htmlStringFullText, this.nlpAnswer.textFragment);
       htmlStringFullText = this.highlightText(htmlStringFullText, this.nlpAnswer.sectionText);
       this.safeHtmlFullText = this.sanitized.bypassSecurityTrustHtml(htmlStringFullText);
     }

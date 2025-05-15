@@ -203,6 +203,7 @@ export class RcApiInterfaceService {
             nlpAnswer.term = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'term')?.valueString;
             nlpAnswer.sectionText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'section-text')?.valueString;
             nlpAnswer.textFragment = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'text-fragment')?.valueString;
+            nlpAnswer.noteText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-evidence')?.valueString;
             nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
             nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
             nlpAnswer.observationDisplay = answerObservation["note"]?.[0]?.["text"];
