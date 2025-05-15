@@ -1,6 +1,7 @@
 $menu-width: 220px;
 $dark-grey-color: #d3d0cf;
-$blue-ascent-color: #8C9EFF;
+$blue-ascent-color: #005cbb;
+$blue-accent-color-light: #d4e4f5;
 
 nav.main-menu.expanded {
   width:$menu-width;
@@ -8,7 +9,8 @@ nav.main-menu.expanded {
 }
 
 .main-menu {
-  background:#212121;
+  background: #f1f4ff;
+  color: #333;
   border-right:1px solid #e5e5e5;
   height:100%;
   width:64px;
@@ -53,7 +55,8 @@ button {
  }
 
  .selected {
-  color: $blue-ascent-color;
+  color: $blue-accent-color-light;
+
  }
 
 .version{
@@ -62,20 +65,22 @@ button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  color: whitesmoke;
+  
   font-size: small;
 }
 
 .menu-items-wrapper {
   list-style: none;
   > .menu-item {
+    border-radius: .5em;
     cursor: pointer;
     list-style: none;
     display: flex;
     align-items: center;
-    padding: 4px 2px;
-    color: whitesmoke;
-    margin-left: 12px;
+    padding: 2px 2px;
+    color: #333;
+    margin: 0 8px;
+     transition: all 0.2s ease-in-out;
     > .icon {
       padding: 4px;
       border-radius: 4px;
@@ -88,17 +93,33 @@ button {
   }
 
   > .menu-item:hover {
+    transition: all 0.2s ease-in-out;
     color: $blue-ascent-color;
+    background-color: $blue-accent-color-light;
   }
 }
 
 .selected-menu-item {
-  background-color: $blue-ascent-color;
-  color: black;
+
+  background-color: $blue-accent-color-light;
+  color: $blue-ascent-color !important;
+ 
+   > .icon {
+    color: $blue-ascent-color;
+ 
+   }
 }
 
 .menu-text{
   margin-left: 4px;
   padding-right: 4px;
+}
+
+.menu-state{
+  border-radius: 0;
+  padding: .25em 0 !important;
+  margin: 1em 0 !important;
+  border-bottom: 1px solid #e8ecff;
+  border-top: 1px solid #e8ecff;
 }
 

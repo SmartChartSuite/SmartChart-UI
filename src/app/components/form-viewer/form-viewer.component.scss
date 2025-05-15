@@ -5,18 +5,19 @@ $dark-background-color: #212121;
   display: flex;
   flex: 0 0 30%;
   flex-wrap: wrap;
-  background-color: $dark-background-color;
-  color: whitesmoke;
+  background-color: #e7efff;
+  color: #555555;
   align-content: center;
   justify-content: center;
   font-size: large;
+  font-weight: 300;
   padding: 16px 0 16px 0;
 }
 
 .patient-details-component-wrapper {
   flex: 1;
   display: flex;
-  background-color: $light-accent-color;
+  background-color: #F4F6FA;
   > * {
     display: flex;
     flex: 1;
