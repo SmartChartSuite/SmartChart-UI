@@ -1,11 +1,15 @@
 $menu-width: 220px;
 $dark-grey-color: #d3d0cf;
-$blue-ascent-color: #005cbb;
-$blue-accent-color-light: #d4e4f5;
+$blue-ascent-color: #4a5dc4 ;
+$blue-accent-color-light: #dde2ff;
 
 nav.main-menu.expanded {
   width:$menu-width;
   overflow:visible;
+
+  .menu-item{
+    justify-content: flex-start;
+  }
 }
 
 .main-menu {
@@ -77,6 +81,7 @@ button {
     list-style: none;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 2px 2px;
     color: #333;
     margin: 0 8px;
