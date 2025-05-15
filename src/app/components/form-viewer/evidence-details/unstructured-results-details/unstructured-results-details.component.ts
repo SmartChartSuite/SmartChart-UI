@@ -23,17 +23,23 @@ export class UnstructuredResultsDetailsComponent implements OnChanges{
   nlpAnswerDTO: NlpAnswerDTO;
   constructor(private dialog: MatDialog, private sanitized: DomSanitizer){}
 
+  //TODO: improve handling on the highlighting and splitting function.
+  // Presently it splits the query on multiple queries using the * as divider
+  private  extractAsteriskContent(text) {
+    return text.split('*').filter(item => item.trim() !== '').map(item => item.trim());
+  }
+
   highlightText(text : string, query: string): string{
-    // Angular refused to apply class, so I had to go with style tage here. I wonder why.
     if(text && query){
-      query = query.replace(/\*/g, '');
-      let re = new RegExp(query, 'gi')
-      return text.replace(re, `<span class="highlight">${query}</span>`)
+      const queryList = this.extractAsteriskContent(query);
+      queryList.forEach(q => {
+        text = text.split(q).join(`<span class="highlight">${q}</span>`);
+      });
+      return text;
     }
     else {
       return text;
     }
-
   }
 
   onOpenInModal() {
