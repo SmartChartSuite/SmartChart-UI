@@ -2,7 +2,6 @@
 // Custom Theming for Angular Material
 @use '@angular/material' as mat;
 
-
 html {
   @include mat.theme((
     color: (
@@ -145,6 +144,7 @@ $lg: 24px;
       flex: 1;
       width: 100%;
       border-top: #dee2ea solid 1px;
+      border-bottom: #dee2ea solid 1px;
       background-color: #F4F6FA;
       display: flex;
       align-items: center;
@@ -163,9 +163,9 @@ $lg: 24px;
     }
   }
   > .viewer-container-body {
-    @extend .padding-left-md;
-    @extend .padding-right-md;
-    @extend .padding-top-md;
+    // @extend .padding-left-md;
+    // @extend .padding-right-md;
+    // @extend .padding-top-md;
     @extend .flex-row-simple;
     flex: 1;
     scroll-behavior: smooth;
@@ -185,7 +185,7 @@ $lg: 24px;
       animation-name: open-explorer;
       animation-duration: 0.1s;
       width: 30%;
-      border: 1px solid #212121;
+      border: 1px solid #c1d1ff;
       border-radius: 4px;
       > .fhir-explorer-header {
         @extend .center-contents;
@@ -193,7 +193,7 @@ $lg: 24px;
         @extend .padding-sm;
         font-weight: bold;
         font-size: larger;
-        background-color: #212121;
+        background-color: #354d92;
         color: whitesmoke;
         > * {
           @extend .center-contents;
@@ -201,7 +201,7 @@ $lg: 24px;
         > .explorer-header-title {
           @extend .margin-left-md;
           font-size: medium;
-          background-color: #212121;
+          background-color: #354d92;
         }
       }
     }
@@ -263,8 +263,9 @@ $lg: 24px;
 }
 
 .label-text {
-  font-size: medium;
+  font-size: 1.1em;
   font-weight: bold;
+  color: #535353;
 }
 
 .alert{

@@ -1,7 +1,7 @@
 <div>
-  <div class="form-selection-card">
+  <div class="selection-card form-selection-card margin-bottom-lg">
     <div class="label-text">Select Form</div>
-    <div class="margin-bottom-lg">
+    <div class="">
       @if (!isLoading && !formList?.length) {
         <mat-error class="alert alert-danger">No SmartChart Forms Found</mat-error>
       } @else {
@@ -17,7 +17,7 @@
   </div>
   
   <mat-divider></mat-divider>
-  <div class="selected-patient margin-top-lg margin-bottom-lg">
+  <div class="selection-card selected-patient margin-top-lg margin-bottom-lg">
     <mat-label class="margin-top-sm margin-bottom-md label-text">
       Selected Patient
     </mat-label>

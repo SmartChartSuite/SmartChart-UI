@@ -2,6 +2,11 @@ $menu-width: 220px;
 $dark-grey-color: #d3d0cf;
 $blue-ascent-color: #4a5dc4 ;
 $blue-accent-color-light: #dde2ff;
+$primary-menu: #213368;
+$primary-text-color: #ccd4ff;
+$primary-icon-color: #91A9F0;
+$primary-selected: #354d92;
+$menu-border-color: #31437f;
 
 nav.main-menu.expanded {
   width:$menu-width;
@@ -13,9 +18,9 @@ nav.main-menu.expanded {
 }
 
 .main-menu {
-  background: #f1f4ff;
-  color: #333;
-  border-right:1px solid #e5e5e5;
+  background: $primary-menu;
+  color: $primary-text-color;
+
   height:100%;
   width:64px;
   overflow:hidden;
@@ -34,6 +39,8 @@ nav ul,nav li {
   position:absolute;
   left:0;
   bottom:0;
+  width: 100%;
+  padding-top: 8px
 }
 
 
@@ -58,10 +65,10 @@ button {
    border-radius: 0
  }
 
- .selected {
-  color: $blue-accent-color-light;
+//  .selected {
+//   color: $blue-accent-color-light;
 
- }
+//  }
 
 .version{
   margin-left: 16px;
@@ -77,14 +84,15 @@ button {
   list-style: none;
   > .menu-item {
     border-radius: .5em;
+
     cursor: pointer;
     list-style: none;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px 2px;
-    color: #333;
-    margin: 0 8px;
+    padding: 2px 4px;
+    color: $primary-text-color;
+    margin: 1px 12px;
      transition: all 0.2s ease-in-out;
     > .icon {
       padding: 4px;
@@ -99,18 +107,18 @@ button {
 
   > .menu-item:hover {
     transition: all 0.2s ease-in-out;
-    color: $blue-ascent-color;
-    background-color: $blue-accent-color-light;
+     background-color: $primary-selected;
+  color:$primary-text-color !important;
   }
 }
 
 .selected-menu-item {
 
-  background-color: $blue-accent-color-light;
-  color: $blue-ascent-color !important;
+  background-color: $primary-selected;
+  color:$primary-text-color !important;
  
    > .icon {
-    color: $blue-ascent-color;
+    color: $primary-text-color;
  
    }
 }
@@ -123,8 +131,12 @@ button {
 .menu-state{
   border-radius: 0;
   padding: .25em 0 !important;
-  margin: 1em 0 !important;
-  border-bottom: 1px solid #e8ecff;
-  border-top: 1px solid #e8ecff;
+  margin: 1em 0 1.5em !important;
+  border-bottom: 1px solid $menu-border-color;
+  border-top: 1px solid $menu-border-color;
+}
+
+.logout{
+  border-top: 1px solid $menu-border-color;
 }
 

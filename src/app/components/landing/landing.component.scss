@@ -28,6 +28,7 @@ $blue-accent-color: #005cbb;
 .instructions-block {
   border-left: #c8c8c8 solid 2px;
   padding-left: $sm;
+  letter-spacing: normal;
 }
 
 .title-header {
@@ -90,6 +91,7 @@ $blue-accent-color: #005cbb;
     color: #a5a5a5;
     font-style: italic;
     font-weight: 400;
+    justify-content: end;
 }
 //mat-expansion-panel {
 //  > * {
@@ -106,4 +108,5 @@ $blue-accent-color: #005cbb;
 .mat-expansion-panel-header-title {
 font-weight: 600;
 color: #4e4e4e;
+flex-basis: min-content;
 }

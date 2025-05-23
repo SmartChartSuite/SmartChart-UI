@@ -38,19 +38,18 @@
         </div>
       </div>
     } @else {
-      <div class="padding-right-md">
-        <mat-nav-list class="side-nav">
-          @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
-            <div>
-              <button
-                mat-flat-button
-                class="expanded-menu-button"
-                [ngStyle]="{color: selectedMenuItemIndex == i? '#8C9EFF': 'whitesmoke'}"
-                (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop()">
-                {{ item["text"] }}
-              </button>
-            </div>
-          }
+      <div class="sub-nav">
+        <mat-nav-list>
+          <ul class="sub-menu">
+            @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
+          
+                <li class="sub-menu-item"
+                  [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
+                  (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop()">
+                  {{ item["text"] }}
+              </li>
+            }
+          </ul>
         </mat-nav-list>
       </div>
 

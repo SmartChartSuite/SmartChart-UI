@@ -28,7 +28,6 @@
                 or already be completed.
               </p>
             </div>
-            <mat-divider></mat-divider>
           </mat-expansion-panel>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -55,14 +54,14 @@
               </p>
               <ul>
                 <li>
-                  Identifier - Search by a known patient identifier such as a medical record number or
+                 <b> Identifier</b> - Search by a known patient identifier such as a medical record number or
                   social security number.
                 </li>
                 <li>
-                  Name and Date of Birth - Search by a patient's given name, family name, and date of birth.
+                  <b>Name and Date of Birth</b> - Search by a patient's given name, family name, and date of birth.
                 </li>
                 <li>
-                  FHIR ID - Search by a FHIR Patient Resource's ID in the EHR FHIR Server. This information is
+                  <b>FHIR ID</b> - Search by a FHIR Patient Resource's ID in the EHR FHIR Server. This information is
                   likely not available for all users, in which case one of the previous two options should be
                   preferred.
                 </li>
@@ -72,7 +71,7 @@
                 evidence.
               </p>
             </div>
-            <mat-divider></mat-divider>
+          
           </mat-expansion-panel>
 
           <mat-expansion-panel>
@@ -97,7 +96,6 @@
                 Select the patient form you wish to load.
               </p>
             </div>
-            <mat-divider></mat-divider>
           </mat-expansion-panel>
           <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -113,14 +111,17 @@
                 Once a patient form is selected, you will be taken to a page in order to review the evidence
                 and complete the form.
               </p>
-              <p>
+              <div class="alert alert-warning">
+                
                 <strong>WARNING:</strong> Before proceeding with completing the form, you should check the
                 status of the form's logic in
                 the header. It will
                 provide a completion percentage as it processes the patient's healthcare record. The running
                 time will depend on the form and logic. As the jobs complete, the page will continue to make
                 new evidence or suggested answers available to users.
-              </p>
+            
+              </div>
+            
               <p>
                 As forms may vary, you should follow the instructions presented for each question or prompt.
                 Each may have a suggested answer or evidence gathered through the abstraction process.
@@ -160,7 +161,7 @@
               </p>
 
             </div>
-            <mat-divider></mat-divider>
+           
           </mat-expansion-panel>
 
         </mat-accordion>
