@@ -1,29 +1,34 @@
 @import '../../../styles.scss';
 
+$blue-accent-color: #005cbb;
 .header-3 {
   font-weight: bold;
   width: 100%;
-  border-bottom: $primary solid 3px;
+  padding: .5em 0;
+  border-bottom: #ececec solid 1px;
 }
 
 .header-4 {
-  font-weight: bold;
+  font-weight: 500;
   width: 80%;
-  border-bottom: $primary solid 1px;
+  padding: .25em 0;
+  border-bottom: #ececec solid 1px;
 }
 
 .instructions-wrapper {
-  background: rgb(33,33,33);
-  background: linear-gradient(90deg, $dark 60%, white 100%);
-  color: white;
+  font-size: 1.5em;
+  // background: $blue-accent-color;
+  // background: linear-gradient(90deg, $dark 60%, white 100%);
+  color: #444444;
   border-radius: $sm;
   padding: $md;
-  font-weight: bold;
+  font-weight: 600;
 }
 
 .instructions-block {
-  border-left: $dark solid 2px;
+  border-left: #c8c8c8 solid 2px;
   padding-left: $sm;
+  letter-spacing: normal;
 }
 
 .title-header {
@@ -32,22 +37,23 @@
   @extend .padding-top-sm;
   @extend .padding-bottom-sm;
   @extend .margin-bottom-md;
-  background-color: $dark;
+  // background-color: $dark;
   @extend .flex-row;
   > h1 {
-    color: white;
+    color: #333;
     padding: 0;
     margin: 0;
-    font-variant-caps: small-caps;
+    // font-variant-caps: small-caps;
     display: block;
   }
   > h2 {
-    color: white;
+    color: #333;
+    font-weight: 300;
     padding: 0;
     margin: 0 0 0 $md;
-    font-variant-caps: all-petite-caps;
+    // font-variant-caps: all-petite-caps;
     display: block;
-    font-style: italic;
+    // font-style: italic;
   }
   > .title-header-line {
     flex: 1;
@@ -67,6 +73,8 @@
   }
   > .landing-page-right-column {
     flex: 1;
+    line-height: 1.3em;
+    color: #4b4b4b;
     @extend .flex-col-simple;
     @extend .margin-left-md;
   }
@@ -78,7 +86,12 @@
 }
 
 .narrow-description{
-  flex-grow: 1;
+    flex-grow: 1;
+    font-size: 0.75em;
+    color: #a5a5a5;
+    font-style: italic;
+    font-weight: 400;
+    justify-content: end;
 }
 //mat-expansion-panel {
 //  > * {
@@ -91,3 +104,9 @@
 //.mat-expansion-panel-content .mat-expansion-panel-body {
 //  padding: 0;
 //}
+
+.mat-expansion-panel-header-title {
+font-weight: 600;
+color: #4e4e4e;
+flex-basis: min-content;
+}

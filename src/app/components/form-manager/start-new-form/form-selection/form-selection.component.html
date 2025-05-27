@@ -1,22 +1,25 @@
 <div>
-  <div class="label-text">Select Form:</div>
-  <div class="margin-bottom-lg">
-    @if (!isLoading && !formList?.length) {
-      <mat-error>No SmartChart Forms Found</mat-error>
-    } @else {
-      <mat-radio-group aria-labelledby="select-form-label"
-                       class="form-radio-group" (change)="onFormSelected($event)"
-                       [(ngModel)]="selectedForm">
-        @for (form of formList; track form) {
-          <mat-radio-button [value]="form">{{ form.title }}</mat-radio-button>
-        }
-      </mat-radio-group>
-    }
+  <div class="selection-card form-selection-card margin-bottom-lg">
+    <div class="label-text">Select Form</div>
+    <div class="">
+      @if (!isLoading && !formList?.length) {
+        <mat-error class="alert alert-danger">No SmartChart Forms Found</mat-error>
+      } @else {
+        <mat-radio-group aria-labelledby="select-form-label"
+                        class="form-radio-group" (change)="onFormSelected($event)"
+                        [(ngModel)]="selectedForm">
+          @for (form of formList; track form) {
+            <mat-radio-button [value]="form">{{ form.title }}</mat-radio-button>
+          }
+        </mat-radio-group>
+      }
+    </div>
   </div>
+  
   <mat-divider></mat-divider>
-  <div class="margin-top-lg margin-bottom-lg">
+  <div class="selection-card selected-patient margin-top-lg margin-bottom-lg">
     <mat-label class="margin-top-sm margin-bottom-md label-text">
-      Selected Patient:
+      Selected Patient
     </mat-label>
     @if (selectedPatient?.name) {
       {{ selectedPatient?.name?.given }} {{ selectedPatient?.name?.family }}

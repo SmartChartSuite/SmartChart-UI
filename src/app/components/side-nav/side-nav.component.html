@@ -11,8 +11,7 @@
       </li>
     </ul>
   }
-
-  <ul class="menu-items-wrapper">
+  <ul class="menu-items-wrapper menu-state">
     <!-- Open/Close nav menu (always rendered) -->
     @if (expanded) {
       <li class="menu-item" (click)="onExpandedStatusChanged()">
@@ -24,27 +23,30 @@
         <mat-icon class="icon-display">chevron_right</mat-icon>
       </li>
     }
+    </ul>
+
+  <ul class="menu-items-wrapper">
 
     <!-- Menu options rendered if the user is logged in -->
     @if (oauthService.hasValidAccessToken()) {
-      <li class="menu-item" (click)="onPathSelected('')">
-        <mat-icon class="icon" [ngClass]="this.currentRoute == '' ? 'selected-menu-item' : ''">home</mat-icon>
+      <li class="menu-item" (click)="onPathSelected('')" [ngClass]="this.currentRoute == '' ? 'selected-menu-item' : ''">
+        <mat-icon class="icon">home</mat-icon>
         @if (expanded) {
           <span class="menu-text">Home</span>
         }
       </li>
 
 
-      <li class="menu-item" (click)="onPathSelected('/forms')">
-        <mat-icon class="icon" [ngClass]="this.currentRoute == '/forms' ? 'selected-menu-item' : ''">person_search
+      <li class="menu-item" (click)="onPathSelected('/forms')" [ngClass]="this.currentRoute == '/forms' ? 'selected-menu-item' : ''">
+        <mat-icon class="icon">person_search
         </mat-icon>
         @if (expanded) {
           <span class="menu-text">Chart Abstractions</span>
         }
       </li>
 
-      <li class="menu-item" (click)="onPathSelected('/form-viewer')">
-        <mat-icon class="icon" [ngClass]="this.currentRoute == '/form-viewer' ? 'selected-menu-item' : ''">list_alt
+      <li class="menu-item" (click)="onPathSelected('/form-viewer')" [ngClass]="this.currentRoute == '/form-viewer' ? 'selected-menu-item' : ''">
+        <mat-icon class="icon">list_alt
         </mat-icon>
         @if (expanded) {
           <span class="menu-text">Current Chart</span>

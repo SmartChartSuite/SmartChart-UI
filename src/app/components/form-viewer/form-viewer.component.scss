@@ -1,28 +1,30 @@
 $light-accent-color: #E0E0E0;
-$dark-background-color: #212121;
-$blue-ascent-color: #8C9EFF;
-
+$dark-background-color: #354d92;
+$sub-nav-bg: #F4F6FA;
+$sub-nav-text-color: #4d5c8c;
+$sub-nav-select: #dee2f4;
 .form-name {
   display: flex;
   flex: 0 0 30%;
   flex-wrap: wrap;
-  background-color: $dark-background-color;
-  color: whitesmoke;
+  background-color: #e6e8f0;
+  color: #555555;
   align-content: center;
   justify-content: center;
   font-size: large;
+  font-weight: 400;
   padding: 16px 0 16px 0;
 }
 
 .patient-details-component-wrapper {
   flex: 1;
   display: flex;
-  background-color: $light-accent-color;
+  background-color: #F4F6FA;
   > * {
     display: flex;
     flex: 1;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
     height: 100%;
   }
 }
@@ -41,19 +43,15 @@ $menu-width: 300px;
 $sidenav-background-color: #212121;
 $selected-nave-menu-item-color: #424242;
 
-.side-nav {
-  background-color: $sidenav-background-color;
-  border-radius: 4px;
-}
 
 .selected-menu-item {
-  background-color: $selected-nave-menu-item-color !important;
+  background-color: $sub-nav-select !important;
 }
 
 .expanded-menu-button {
   width: ($menu-width - 24px);
   justify-content: flex-start;
-  background-color: $sidenav-background-color !important;
+  // background-color: $sidenav-background-color !important;
 }
 
 /* End sidenav style */
@@ -83,7 +81,7 @@ $selected-nave-menu-item-color: #424242;
 .selected-evidence {
   @extend .question-label;
   background-color: $dark-background-color;
-  color: $blue-ascent-color;
+  color: whitesmoke;
 }
 
 .question-input {
@@ -117,4 +115,37 @@ $selected-nave-menu-item-color: #424242;
 
 .wide-button{
   min-width: 20%;
+}
+
+.sub-nav{
+  background-color: $sub-nav-bg;
+  padding: 1.5em;
+
+  .sub-menu{
+    padding-inline: 0;
+    text-decoration: none;
+
+
+    .sub-menu-item{
+      cursor: pointer;
+      color: $sub-nav-text-color;
+      font-size: medium;
+      padding: 8px 16px;
+      border-radius: 4px;
+      margin: 4px 0;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-weight: 400;
+
+      &:hover{
+        background-color: $sub-nav-select;
+
+      }
+    }
+    .selected-menu-item{
+      background-color: $sub-nav-select;
+
+    }
+  }
 }
