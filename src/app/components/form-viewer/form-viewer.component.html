@@ -42,11 +42,11 @@
         <mat-nav-list>
           <ul class="sub-menu">
             @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
-          
+
                 <li class="sub-menu-item"
                   [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
-                  (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop()">
-                  {{ item["text"] }}
+                  (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
+                  {{ item["text"] }} ({{item?.item?.length}})
               </li>
             }
           </ul>
@@ -156,7 +156,7 @@
                         Suggested Answer:
                         @for (item of (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
                           <span class="margin-left-sm" (click)="answerDictionary[childItem?.linkId]=item;">
-                            <mat-chip>{{ item }}</mat-chip>
+                            <mat-chip class="suggested-answer" matTooltip="Click to fill the answer">{{ item }}</mat-chip>
                           </span>
                         }
                       </div>
