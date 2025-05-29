@@ -92,6 +92,7 @@ import {
 import {CreateGroupDialogComponent} from "./components/create-group-dialog/create-group-dialog.component";
 import { ExportSelectionDialogComponent } from './components/export-selection-dialog/export-selection-dialog.component';
 import { DateFormatPipe } from './pipe/date-format.pipe';
+import {FormattedTitlePipe} from "./pipe/formatted-title.pipe";
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -196,7 +197,8 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     DisplayItemFilterPipe,
     SortByDatePipe,
     MatDivider,
-    MatExpansionModule
+    MatExpansionModule,
+    FormattedTitlePipe
   ],
   providers: [
     SortByDatePipe,

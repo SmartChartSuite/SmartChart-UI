@@ -46,7 +46,7 @@
                 <li class="sub-menu-item"
                   [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
                   (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
-                  {{ item["text"] }} ({{item?.item?.length}})
+                  {{ item | formattedTitle : results }}
               </li>
             }
           </ul>
@@ -150,7 +150,6 @@
                     <!--                          show progress spinner                                           -->
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
-
                     @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                       <div class="margin-bottom-sm">
                         Suggested Answer:
