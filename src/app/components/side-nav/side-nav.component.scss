@@ -1,15 +1,26 @@
-$menu-width: 200px;
+$menu-width: 220px;
 $dark-grey-color: #d3d0cf;
-$blue-ascent-color: #8C9EFF;
+$blue-ascent-color: #4a5dc4 ;
+$blue-accent-color-light: #dde2ff;
+$primary-menu: #213368;
+$primary-text-color: #ccd4ff;
+$primary-icon-color: #91A9F0;
+$primary-selected: #354d92;
+$menu-border-color: #31437f;
 
 nav.main-menu.expanded {
   width:$menu-width;
   overflow:visible;
+
+  .menu-item{
+    justify-content: flex-start;
+  }
 }
 
 .main-menu {
-  background:#212121;
-  border-right:1px solid #e5e5e5;
+  background: $primary-menu;
+  color: $primary-text-color;
+
   height:100%;
   width:64px;
   overflow:hidden;
@@ -28,6 +39,8 @@ nav ul,nav li {
   position:absolute;
   left:0;
   bottom:0;
+  width: 100%;
+  padding-top: 8px
 }
 
 
@@ -39,13 +52,9 @@ nav ul,nav li {
   color: $dark-grey-color;
 }
 
-.expanded-menu-button{
-  width: ($menu-width - 24px);
-}
-
 button {
   justify-content: flex-start;
-  font-size: 16px;
+  font-size: 14px;
   margin: 8px 12px;
 }
 
@@ -56,9 +65,10 @@ button {
    border-radius: 0
  }
 
- .selected {
-  color: $blue-ascent-color;
- }
+//  .selected {
+//   color: $blue-accent-color-light;
+
+//  }
 
 .version{
   margin-left: 16px;
@@ -66,6 +76,67 @@ button {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  color: whitesmoke;
+  
   font-size: small;
 }
+
+.menu-items-wrapper {
+  list-style: none;
+  > .menu-item {
+    border-radius: .5em;
+
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    color: $primary-text-color;
+    margin: 1px 12px;
+     transition: all 0.2s ease-in-out;
+    > .icon {
+      padding: 4px;
+      border-radius: 4px;
+      min-height: 28px;
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  > .menu-item:hover {
+    transition: all 0.2s ease-in-out;
+     background-color: $primary-selected;
+  color:$primary-text-color !important;
+  }
+}
+
+.selected-menu-item {
+
+  background-color: $primary-selected;
+  color:$primary-text-color !important;
+ 
+   > .icon {
+    color: $primary-text-color;
+ 
+   }
+}
+
+.menu-text{
+  margin-left: 4px;
+  padding-right: 4px;
+}
+
+.menu-state{
+  border-radius: 0;
+  padding: .25em 0 !important;
+  margin: 1em 0 1.5em !important;
+  border-bottom: 1px solid $menu-border-color;
+  border-top: 1px solid $menu-border-color;
+}
+
+.logout{
+  border-top: 1px solid $menu-border-color;
+}
+

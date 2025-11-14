@@ -32,25 +32,24 @@
   <div class="viewer-container-body">
     @if (!activeFormSummary) {
       <div class="viewer-container-body-content">
-        <div class="margin-md">No form has been selected, please load an active form through the Form Manager.</div>
+        <div class="margin-md">No chart has been selected, please load an existing form through the Charts.</div>
         <div class="margin-md">
-          <button mat-raised-button (click)="selectPatientForm()">Go to Form Manager</button>
+          <button mat-raised-button (click)="selectPatientForm()">Go to Ongoing Chart Abstractions</button>
         </div>
       </div>
     } @else {
-      <div class="padding-right-md">
-        <mat-nav-list class="side-nav">
-          @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
-            <div>
-              <button
-                mat-flat-button
-                class="expanded-menu-button"
-                [ngClass]="(i == selectedMenuItemIndex) ? 'selected-menu-item': ''"
-                (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop()">
-                {{ item["text"] }}
-              </button>
-            </div>
-          }
+      <div class="sub-nav">
+        <mat-nav-list>
+          <ul class="sub-menu">
+            @for (item of questionnaire?.["item"]; track item.linkId; let i = $index) {
+
+                <li class="sub-menu-item"
+                  [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
+                  (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
+                  {{ item | formattedTitle : results }}
+              </li>
+            }
+          </ul>
         </mat-nav-list>
       </div>
 
@@ -151,13 +150,12 @@
                     <!--                          show progress spinner                                           -->
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
-
                     @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                       <div class="margin-bottom-sm">
                         Suggested Answer:
                         @for (item of (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
                           <span class="margin-left-sm" (click)="answerDictionary[childItem?.linkId]=item;">
-                            <mat-chip>{{ item }}</mat-chip>
+                            <mat-chip class="suggested-answer" matTooltip="Click to fill the answer">{{ item }}</mat-chip>
                           </span>
                         }
                       </div>

@@ -16,6 +16,7 @@ export class SideNavComponent{
   expanded: boolean = true;
   protected readonly RouteState = RouteState;
   version = packageInfo.version;
+  currentRoute: string = '';
 
   constructor(
     public oauthService: OAuthService,
@@ -29,4 +30,8 @@ export class SideNavComponent{
     this.expandedStatusChangedEvent.emit(this.expanded);
   }
 
+  onPathSelected(path: string){
+    this.router.navigate([path]);
+    this.currentRoute = path;
+  }
 }

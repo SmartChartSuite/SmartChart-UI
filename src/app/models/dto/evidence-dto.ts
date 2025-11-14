@@ -1,9 +1,14 @@
 import {DatePipe} from "@angular/common";
 
 export class EvidenceDTO {
+
   public static getDateAgeAsStr(dateStr, patientDob){
+    if(!dateStr && patientDob){
+      return '';
+    }
     return `${this.getFormattedDate(dateStr)} (${this.getAgeAt(new Date(dateStr), new Date(patientDob))})`
   }
+
   private static getFormattedDate(dateStr: string) {
     let datePipe = new DatePipe("en-US");
     return datePipe.transform(dateStr, 'MM/dd/yyyy');
@@ -11,6 +16,9 @@ export class EvidenceDTO {
 
   // Function to calculate age in years
   private static getAgeAt(date: Date, patientDob: Date): string {
+    if(!patientDob){
+      return 'No DOB Given';
+    }
     // Calculate age in years
     let years = date.getFullYear() - patientDob.getFullYear();
 

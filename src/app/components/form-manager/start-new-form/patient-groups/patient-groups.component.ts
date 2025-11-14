@@ -5,6 +5,8 @@ import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-ap
 import {MatSelectChange} from "@angular/material/select";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
+import {openCreateGroupDialog} from "../../../create-group-dialog/create-group-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-patient-groups',
@@ -16,7 +18,8 @@ export class PatientGroupsComponent implements OnInit{
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private dialog: MatDialog,
   ){}
 
   patientSummaryData: PatientSummary[];
@@ -36,6 +39,19 @@ export class PatientGroupsComponent implements OnInit{
       }
     });
   }
+
+  onCreateNewGroup() {
+    openCreateGroupDialog(
+      this.dialog,
+      {})
+      .subscribe(
+        result => {
+            //TODO finish implementation
+          console.log(result);
+        }
+      )
+  }
+
 
   onGroupSelected(event: MatSelectChange) {
     this.formManagerService.setSelectedPatient(null);

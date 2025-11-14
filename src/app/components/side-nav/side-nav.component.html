@@ -1,67 +1,71 @@
 <nav class="main-menu" [ngClass]="{'expanded': expanded}">
   @if (oauthService.hasValidAccessToken()) {
     <span class="icon"> <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login></span>
+  } @else {
+    <ul class="menu-items-wrapper">
+      <li class="menu-item" (click)="this.oauthService.initLoginFlow();">
+        <mat-icon class="icon">login</mat-icon>
+        @if (expanded) {
+          <span class="menu-text">Sign In</span>
+        }
+      </li>
+    </ul>
   }
-  @else {
-    <button mat-button color="menu-button" class="expanded-menu-button" (click)="this.oauthService.initLoginFlow();">
-      <mat-icon>login</mat-icon>
-      @if (expanded) { Sign In }
-    </button>
-  }
-
-  <ul>
+  <ul class="menu-items-wrapper menu-state">
     <!-- Open/Close nav menu (always rendered) -->
-    <li>
-      @if (expanded) {
-        <button mat-button class="expanded-menu-button" (click)="onExpandedStatusChanged()">
-          <mat-icon class="icon-display">chevron_left</mat-icon>
-          Close Menu
-        </button>
-      }
-      @else {
-        <button mat-button (click)="onExpandedStatusChanged()">
-          <mat-icon class="icon-display">chevron_right</mat-icon>
-        </button>
-      }
-    </li>
+    @if (expanded) {
+      <li class="menu-item" (click)="onExpandedStatusChanged()">
+        <mat-icon class="icon">chevron_left</mat-icon>
+        Close Menu
+      </li>
+    } @else {
+      <li class="menu-item" (click)="onExpandedStatusChanged()">
+        <mat-icon class="icon-display">chevron_right</mat-icon>
+      </li>
+    }
+    </ul>
+
+  <ul class="menu-items-wrapper">
 
     <!-- Menu options rendered if the user is logged in -->
     @if (oauthService.hasValidAccessToken()) {
-      <li>
-        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/']);">
-          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.LANDING">home</mat-icon>
-          @if (expanded) { Home }
-        </button>
+      <li class="menu-item" (click)="onPathSelected('')" [ngClass]="this.currentRoute == '' ? 'selected-menu-item' : ''">
+        <mat-icon class="icon">home</mat-icon>
+        @if (expanded) {
+          <span class="menu-text">Home</span>
+        }
       </li>
 
-      <li>
-        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/form-viewer']);">
-          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.CURRENT_FORM">list_alt</mat-icon>
-          @if (expanded) { Current Form }
-        </button>
+
+      <li class="menu-item" (click)="onPathSelected('/forms')" [ngClass]="this.currentRoute == '/forms' ? 'selected-menu-item' : ''">
+        <mat-icon class="icon">person_search
+        </mat-icon>
+        @if (expanded) {
+          <span class="menu-text">Chart Abstractions</span>
+        }
       </li>
 
-      <li>
-        <button mat-button class="expanded-menu-button" (click)="router.navigate(['/forms']);">
-          <mat-icon [class.selected]="(stateManagementService.getState() | async).currentRoute == RouteState.FORM_MANAGER">person_search</mat-icon>
-          @if (expanded) { Form Manager }
-        </button>
+      <li class="menu-item" (click)="onPathSelected('/form-viewer')" [ngClass]="this.currentRoute == '/form-viewer' ? 'selected-menu-item' : ''">
+        <mat-icon class="icon">list_alt
+        </mat-icon>
+        @if (expanded) {
+          <span class="menu-text">Current Chart</span>
+        }
       </li>
+
     }
   </ul>
 
   <!-- render a logout button at the bottom of the menu -->
 
-  <ul class="logout">
+  <ul class="logout menu-items-wrapper">
 
     @if (oauthService.hasValidAccessToken()) {
-      <li>
-        <button mat-button color="menu-button" class="expanded-menu-button" (click)="oauthService.logOut()">
-          <mat-icon>logout</mat-icon>
-          @if (expanded) {
-            Sign Out
-          }
-        </button>
+      <li class="menu-item" (click)="oauthService.logOut()">
+        <mat-icon class="icon">logout</mat-icon>
+        @if (expanded) {
+          <span class="menu-text">Sign Out</span>
+        }
       </li>
     }
     @if (version) {

@@ -13,6 +13,9 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
 import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
+import {FormControl, FormGroup} from "@angular/forms";
+import {openExportFileDialog} from "../export-selection-dialog/export-selection-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
     selector: 'app-form-viewer',
@@ -41,6 +44,12 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   totalCount: number = 0; // Initial State
   percentComplete: number = 0; // Initial State
 
+  exportTypes: string[] = ['json', 'pdf']
+
+  exportForm = new FormGroup({
+    exportType: new FormControl(this.exportTypes[0])
+  });
+
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
@@ -48,7 +57,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     private stateManagementService: StateManagementService,
     private utilsService: UtilsService,
     public evidenceViewerService: EvidenceViewerService,
-    private outputMapper: FormOutputMappingService
+    private outputMapper: FormOutputMappingService,
+    private dialog: MatDialog,
   ) {
   }
 
@@ -116,6 +126,14 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     console.info("Logging Questionnaire Responses");
     console.info(this.answerDictionary);
     this.outputMapper.mapToFhir(this.answerDictionary, this.questionnaire);
+    openExportFileDialog(
+      this.dialog,
+      {})
+      .subscribe(
+        result => {
+          //TODO finish implementation
+          console.log(result);
+        })
   }
 
   selectPatientForm() {
@@ -130,4 +148,5 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   scrollToTop() {
     this.topScroll.nativeElement.scrollTop = 0;
   }
+
 }
