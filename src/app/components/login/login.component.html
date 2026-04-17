@@ -1,12 +1,16 @@
 @if (isLocatedInMainMenu) {
   <div class="user-profile-header">
-    <ng-container *ngIf="oauthService.hasValidAccessToken();" class="profile-wrapper"></ng-container>
-    <div *ngIf="oauthService.getIdentityClaims() as user">
-      <img
-        [src]="user?.['picture'] ? user?.['picture'] : '/assets/portrait_placeholder.png'"
-        referrerpolicy="no-referrer"
-        class="profile-image">
-    </div>
+    @if (oauthService.hasValidAccessToken()) {
+      <ng-container class="profile-wrapper"></ng-container>
+    }
+    @if (oauthService.getIdentityClaims(); as user) {
+      <div>
+        <img
+          [src]="user?.['picture'] ? user?.['picture'] : '/assets/portrait_placeholder.png'"
+          referrerpolicy="no-referrer"
+          class="profile-image">
+      </div>
+    }
   </div>
 }
 @else {
@@ -14,14 +18,14 @@
     <mat-card class="login-card">
       <mat-card-header>
         <mat-card-title>
-          Sign In Header
+          Sign In
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        Temp content
+      Sign in with Auth0
       </mat-card-content>
       <mat-card-actions>
-        <button mat-raised-button (click)="oauthService.initImplicitFlow()">
+        <button matButton="outlined" (click)="oauthService.initImplicitFlow()">
           <mat-icon>login</mat-icon>
           Sign In
         </button>

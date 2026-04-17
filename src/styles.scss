@@ -10,8 +10,42 @@ html {
       tertiary: mat.$blue-palette,
     ),
     typography: Inter,
-    density: 0,
+    density: -2,
   ));
+}
+:root {
+  @include mat.form-field-overrides((
+    error-text-color: #991B1B,
+    filled-error-caret-color: #991B1B,
+    outlined-error-outline-color: #991B1B,
+    container-height: 40px,
+    container-vertical-padding: 8px,
+    filled-with-label-container-padding-top: 8px,
+    filled-with-label-container-padding-bottom: 8px,
+    outlined-input-text-placeholder-color: #999999,
+    trailing-icon-color: var(--zinc-400),
+  ));
+  @include mat.button-overrides((
+    filled-container-shape: 0.5rem,
+    outlined-container-shape: 0.5rem,
+    protected-container-shape: 0.5rem,
+    text-container-shape: 0.5rem,
+    tonal-container-shape: 0.5rem,
+
+  ));
+}
+
+// Override mat-form-field trailing icon size
+.mat-mdc-form-field {
+  .mat-mdc-form-field-icon-suffix {
+    .mat-mdc-icon-button.mat-mdc-button-base {
+      --mdc-icon-button-state-layer-size: 32px;
+      --mat-icon-button-state-layer-size: 32px;
+      width: var(--mat-icon-button-state-layer-size);
+      height: var(--mat-icon-button-state-layer-size);
+      padding: 6px;
+    }
+  }
 }
 
 /**** Root Containers ****/
