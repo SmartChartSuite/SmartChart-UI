@@ -1,7 +1,12 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {provideMomentDateAdapter} from "@angular/material-moment-adapter";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
+import { MatFormField, MatLabel, MatHint, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { NgxMatTimepickerDirective, NgxMatTimepickerComponent } from 'ngx-mat-timepicker';
+import { MatIcon } from '@angular/material/icon';
 
 const timeRegex = /([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]{1,9})?/;
 const dateRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?/;
@@ -28,7 +33,20 @@ export const DATE_FORMATS = {
     providers: [
         provideMomentDateAdapter(DATE_FORMATS),
     ],
-    standalone: false
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormField,
+      MatLabel,
+      MatInput,
+      MatDatepickerInput,
+      MatHint,
+      MatDatepickerToggle,
+      MatSuffix,
+      MatDatepicker,
+      NgxMatTimepickerDirective,
+      MatIcon,
+      NgxMatTimepickerComponent]
 })
 export class FhirDateTimeComponent implements OnChanges, OnInit {
 

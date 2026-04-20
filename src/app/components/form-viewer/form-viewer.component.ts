@@ -1,5 +1,5 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -13,20 +13,38 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
 import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
-import {FormControl, FormGroup} from "@angular/forms";
+import { FormControl, FormGroup, FormsModule } from "@angular/forms";
 import {openExportFileDialog} from "../export-selection-dialog/export-selection-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import { PatientDetailsComponent } from "./patient-details/patient-details.component";
+import { MatProgressSpinner } from "@angular/material/progress-spinner";
+import { MatButton } from "@angular/material/button";
+import { MatNavList } from "@angular/material/list";
+import { NgClass, AsyncPipe } from "@angular/common";
+import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
+import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
+import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
+import { FhirDateTimeComponent } from "../fhir-date-time/fhir-date-time.component";
+import { HasEvidenceDirective } from "../../directives/has-evidence.directive";
+import { MatChip } from "@angular/material/chips";
+import { MatTooltip } from "@angular/material/tooltip";
+import { SetEvidenceDirective } from "../../directives/set-evidence.directive";
+import { MatIcon } from "@angular/material/icon";
+import { EvidenceDetailsComponent } from "./evidence-details/evidence-details.component";
+import { SuggestedAnswerFormatterPipe } from "../../pipe/suggested-answer-formatter.pipe";
+import { FormattedTitlePipe } from "../../pipe/formatted-title.pipe";
 
 @Component({
     selector: 'app-form-viewer',
     templateUrl: './form-viewer.component.html',
     styleUrl: './form-viewer.component.scss',
-    standalone: false
+    imports: [PatientDetailsComponent, MatProgressSpinner, MatButton, MatNavList, NgClass, QuestionnaireIndexDirective, MatRadioGroup, FormsModule, MatRadioButton, MatFormField, MatInput, MatLabel, MatHint, FhirDateTimeComponent, HasEvidenceDirective, MatChip, MatTooltip, SetEvidenceDirective, MatIcon, EvidenceDetailsComponent, AsyncPipe, SuggestedAnswerFormatterPipe, FormattedTitlePipe]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
-  answerDictionary: FormAnswers;
-  questionnaire: any;
+  answerDictionary = signal<FormAnswers | undefined>(undefined);
+  questionnaire = signal<any>(undefined);
   showDrawer = false;
   activeFormSummary: ActiveFormSummary;
   selectedMenuItemIndex = 0;
@@ -94,8 +112,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         result['item'] = result['item']?.map((item: any, index: number) => {
           return index == 0 ? {...item, selected: true} : {...item, selected: false}
         });
-        this.questionnaire = result;
-        this.answerDictionary = new FormAnswers(this.questionnaire);
+        this.questionnaire.set(result);
+        this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.refreshTrigger$.next(1);
       },
       error: err => {
@@ -119,13 +137,21 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   selectQuestionnaireSection(index: number) {
     this.selectedMenuItemIndex = index;
-    this.questionnaire['item'] = this.questionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
+    const currentQuestionnaire = this.questionnaire();
+    if (currentQuestionnaire) {
+      currentQuestionnaire['item'] = currentQuestionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
+      this.questionnaire.set(currentQuestionnaire);
+    }
   }
 
   onSubmit() {
     console.info("Logging Questionnaire Responses");
-    console.info(this.answerDictionary);
-    this.outputMapper.mapToFhir(this.answerDictionary, this.questionnaire);
+    console.info(this.answerDictionary());
+    const currentAnswerDictionary = this.answerDictionary();
+    const currentQuestionnaire = this.questionnaire();
+    if (currentAnswerDictionary && currentQuestionnaire) {
+      this.outputMapper.mapToFhir(currentAnswerDictionary, currentQuestionnaire);
+    }
     openExportFileDialog(
       this.dialog,
       {})
@@ -140,8 +166,10 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.router.navigate(['/forms']);
   }
   setValue(questionType: QuestionnaireItemType, questionnaire: any, i: number, j: number) {
-    if(questionType == QuestionnaireItemType.integer && questionnaire.item[i].item[j].answer){
-       questionnaire.item[i].item[j].answer = Math.trunc(questionnaire.item[i].item[j].answer);
+    const currentQuestionnaire = this.questionnaire();
+    if(questionType == QuestionnaireItemType.integer && currentQuestionnaire?.item[i]?.item[j]?.answer){
+       currentQuestionnaire.item[i].item[j].answer = Math.trunc(currentQuestionnaire.item[i].item[j].answer);
+       this.questionnaire.set(currentQuestionnaire);
     }
   }
 

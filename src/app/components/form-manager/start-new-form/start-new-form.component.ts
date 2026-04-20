@@ -4,12 +4,20 @@ import {FormSummary} from "../../../models/form-summary";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {UtilsService} from "../../../services/utils/utils.service";
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { PatientSearchComponent } from './patient-search/patient-search.component';
+import { PatientGroupsComponent } from './patient-groups/patient-groups.component';
+import { FormSelectionComponent } from './form-selection/form-selection.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-start-new-form',
     templateUrl: './start-new-form.component.html',
     styleUrl: './start-new-form.component.scss',
-    standalone: false
+    imports: [MatCard, MatCardContent, MatTabGroup, MatTab, PatientSearchComponent, PatientGroupsComponent, FormSelectionComponent, MatTooltip, MatButton, MatIcon]
 })
 export class StartNewFormComponent implements OnInit {
   selectedPatient: PatientSummary;

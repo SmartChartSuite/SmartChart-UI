@@ -4,11 +4,15 @@ import {StateManagementService} from "../../services/state-management/state-mana
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import  packageInfo from 'package.json';
+import { NgClass } from '@angular/common';
+import { LoginComponent } from '../login/login.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 @Component({
     selector: 'app-side-nav',
     templateUrl: './side-nav.component.html',
     styleUrl: './side-nav.component.scss',
-    standalone: false
+    imports: [NgClass, LoginComponent, MatIcon, MatTooltip]
 })
 export class SideNavComponent{
 

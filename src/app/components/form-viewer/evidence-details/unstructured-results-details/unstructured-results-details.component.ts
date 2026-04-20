@@ -6,13 +6,18 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {EvidenceDTO} from "../../../../models/dto/evidence-dto";
 import {NlpAnswerDTO} from "../../../../models/dto/nlp-answer-dto";
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatIconButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { SlicePipe } from '@angular/common';
 
 @Component({
     selector: 'app-unstructured-results-details',
     templateUrl: './unstructured-results-details.component.html',
     styleUrl: './unstructured-results-details.component.scss',
     encapsulation: ViewEncapsulation.None,
-    standalone: false
+    imports: [MatCard, MatCardContent, MatIconButton, MatTooltip, MatIcon, SlicePipe]
 })
 export class UnstructuredResultsDetailsComponent implements OnChanges{
   @Input() nlpAnswer: NlpAnswer;

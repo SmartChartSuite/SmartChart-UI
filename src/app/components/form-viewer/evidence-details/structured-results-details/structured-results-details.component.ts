@@ -1,15 +1,21 @@
 import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from "@angular/material/table";
 import {StructuredEvidenceDTO} from "../../../../models/dto/structured-evidence-dto/structured-evidence-dto";
 import {EvidenceViewerService} from "../../../../services/evidence-viewer/evidence-viewer.service";
 import {Observable} from "rxjs";
 import {MatPaginator} from "@angular/material/paginator";
+import { MatSort } from '@angular/material/sort';
+import { NgFor, AsyncPipe } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CamelCaseToTitleCasePipe } from '../../../../pipe/camel-case-to-title-case.pipe';
+import { ConcatDataToStrPipe } from '../../../../pipe/concat-data-to-str.pipe';
+import { dateFormat } from '../../../../pipe/date-format.pipe';
 
 @Component({
     selector: 'app-structured-results-details',
     templateUrl: './structured-results-details.component.html',
     styleUrl: './structured-results-details.component.scss',
-    standalone: false
+    imports: [MatTable, MatSort, NgFor, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatPaginator, AsyncPipe, CamelCaseToTitleCasePipe, ConcatDataToStrPipe]
 })
 export class StructuredResultsDetailsComponent implements OnChanges, OnInit, AfterViewInit{
   @Input() structuredEvidenceDto: StructuredEvidenceDTO[] = [];
@@ -20,6 +26,9 @@ export class StructuredResultsDetailsComponent implements OnChanges, OnInit, Aft
   dataSource = new MatTableDataSource<StructuredEvidenceDTO>([]);
   readonly MAX_STR_LENGTH = 17;
   evidenceViewerExpanded$: Observable<boolean>;
+
+  // Expose dateFormat function for template use
+  protected readonly dateFormat = dateFormat;
 
   constructor(private evidenceViewerService: EvidenceViewerService) {
   }

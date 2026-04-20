@@ -14,16 +14,16 @@
     </mat-expansion-panel-header>
 
     <app-active-forms-filter
-      [isLoading]="isLoading"
+      [isLoading]="isLoading()"
       (onFormValueChange)="onFiltersValueChanged($event)"
     />
 
   </mat-expansion-panel>
 </div>
 
-
 <app-active-forms-grid
-  [activeForms]="activeForms" [isLoading]="isLoading"
-  (onActiveFormSelected)="onActiveFormSelected($event)"
+  [activeForms]="activeForms()"
+  [isLoading]="isLoading()"
   [collapsedState]="panelOpenState()"
+  (onActiveFormSelected)="onActiveFormSelected($event)"
 />

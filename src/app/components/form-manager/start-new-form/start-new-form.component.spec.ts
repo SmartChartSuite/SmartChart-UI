@@ -8,8 +8,8 @@ describe('NewChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [StartNewFormComponent]
-    })
+    imports: [StartNewFormComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(StartNewFormComponent);
