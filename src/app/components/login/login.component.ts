@@ -1,10 +1,16 @@
 import {Component, computed, inject, input} from '@angular/core';
 import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
 import {ConfigService} from "../../services/config/config.service";
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
 @Component({
-    selector: 'sc-standalone-login',
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.scss',
+  selector: 'sc-standalone-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  imports: [
+    MatCardModule,
+    MatIconModule,
+  ]
 })
 export class LoginComponent {
 
