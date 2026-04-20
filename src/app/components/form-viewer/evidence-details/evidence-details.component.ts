@@ -3,17 +3,24 @@ import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
 import {filter} from "rxjs";
-import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {
   CombinedStructuredEvidenceDTO
 } from "../../../models/dto/structured-evidence-dto/combined-structured-evidence-dto";
+import { MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatCardContent } from '@angular/material/card';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { EvidenceFilterComponent } from './evidence-filter/evidence-filter.component';
+import { StructuredResultsDetailsComponent } from './structured-results-details/structured-results-details.component';
+import { UnstructuredResultsDetailsComponent } from './unstructured-results-details/unstructured-results-details.component';
+import { SortByDatePipe } from '../../../pipe/sort-by-date.pipe';
 
 @Component({
     selector: 'app-evidence-details',
     templateUrl: './evidence-details.component.html',
     styleUrl: './evidence-details.component.scss',
-    standalone: false
+    imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe]
 })
 export class EvidenceDetailsComponent implements OnChanges{
 

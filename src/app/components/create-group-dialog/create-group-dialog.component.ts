@@ -1,12 +1,28 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent } from "@angular/material/dialog";
+import { MatCardTitle } from '@angular/material/card';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-create-group-dialog',
-  standalone: false,
-  templateUrl: './create-group-dialog.component.html',
-  styleUrl: './create-group-dialog.component.scss'
+    selector: 'app-create-group-dialog',
+    templateUrl: './create-group-dialog.component.html',
+    styleUrl: './create-group-dialog.component.scss',
+    imports: [
+      MatCardTitle,
+      MatDialogContent,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormField,
+      MatLabel,
+      MatInput,
+      MatError,
+      MatButton,
+      MatIcon
+    ]
 })
 export class CreateGroupDialogComponent {
 

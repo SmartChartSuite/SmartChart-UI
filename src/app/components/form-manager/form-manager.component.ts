@@ -2,12 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { StartNewFormComponent } from './start-new-form/start-new-form.component';
+import { ActiveFormsComponent } from './active-forms/active-forms.component';
 
 @Component({
     selector: 'app-form-manager',
     templateUrl: './form-manager.component.html',
     styleUrl: './form-manager.component.scss',
-    standalone: false
+    imports: [MatTabGroup, MatTab, StartNewFormComponent, ActiveFormsComponent]
 })
 export class FormManagerComponent implements OnInit{
   selectedTabIndex: number = 0;

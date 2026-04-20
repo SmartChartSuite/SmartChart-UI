@@ -16,7 +16,7 @@
           } @else if (((evidenceViewerExpanded$ | async) && element[column]?.length > MAX_STR_LENGTH + 10)) {
             {{ (element[column]?.slice(0, (MAX_STR_LENGTH + 7)) + '...') }}
           } @else {
-            {{ (element[column]) | dateFormat }}
+            {{ dateFormat(element[column]) }}
           }
         </td>
       </ng-container>

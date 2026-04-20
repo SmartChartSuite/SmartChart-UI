@@ -8,8 +8,8 @@ describe('FormSelectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FormSelectionComponent]
-    })
+    imports: [FormSelectionComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(FormSelectionComponent);

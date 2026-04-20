@@ -1,13 +1,20 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig} from "@angular/material/dialog";
+import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog";
 import {SafeHtml} from "@angular/platform-browser";
+import { MatButton } from '@angular/material/button';
 
 
 @Component({
     selector: 'app-document-viewer-modal',
     templateUrl: './document-viewer-modal.component.html',
     styleUrl: './document-viewer-modal.component.scss',
-    standalone: false
+    imports: [
+      MatDialogTitle,
+      MatDialogContent,
+      MatDialogActions,
+      MatButton,
+      MatDialogClose
+    ]
 })
 export class DocumentViewerModalComponent implements OnInit{
 

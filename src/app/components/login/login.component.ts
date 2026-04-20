@@ -1,16 +1,21 @@
 import {Component, Input} from '@angular/core';
-import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
+import {OAuthService} from "angular-oauth2-oidc";
+import {JwksValidationHandler} from "angular-oauth2-oidc-jwks";
 import {ConfigService} from "../../services/config/config.service";
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+
 @Component({
     selector: 'sc-standalone-login',
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
-    standalone: false
+    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, MatButton, MatIcon]
 })
 export class LoginComponent {
   @Input({ required: true }) isLocatedInMainMenu!: boolean;
-  constructor(public oauthService: OAuthService, public configService: ConfigService,
-  ) {
+
+  constructor(public oauthService: OAuthService, public configService: ConfigService) {
     this.configure();
   }
 

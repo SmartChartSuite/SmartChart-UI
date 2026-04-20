@@ -2,17 +2,20 @@ import {Component, OnInit} from '@angular/core';
 import { PatientSummary } from '../../../../models/patient-summary';
 import { PatientGroup } from '../../../../models/patient-group';
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
-import {MatSelectChange} from "@angular/material/select";
+import { MatSelectChange, MatSelect, MatOption } from "@angular/material/select";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
 import {openCreateGroupDialog} from "../../../create-group-dialog/create-group-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatButton } from '@angular/material/button';
+import { PatientSummaryTableComponent } from '../patient-summary-table/patient-summary-table.component';
 
 @Component({
     selector: 'app-patient-groups',
     templateUrl: './patient-groups.component.html',
     styleUrl: './patient-groups.component.scss',
-    standalone: false
+    imports: [MatFormField, MatLabel, MatSelect, MatOption, MatButton, PatientSummaryTableComponent]
 })
 export class PatientGroupsComponent implements OnInit{
   constructor(
