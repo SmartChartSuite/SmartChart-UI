@@ -93,6 +93,10 @@ import {CreateGroupDialogComponent} from "./components/create-group-dialog/creat
 import { ExportSelectionDialogComponent } from './components/export-selection-dialog/export-selection-dialog.component';
 import { DateFormatPipe } from './pipe/date-format.pipe';
 import {FormattedTitlePipe} from "./pipe/formatted-title.pipe";
+import {Button} from "primeng/button";
+import {Card} from "primeng/card";
+import {providePrimeNG} from "primeng/config";
+import Aura from '@primeuix/themes/aura';
 
 export const configFactory = (configService: ConfigService) => {
   return () => configService.loadConfig();
@@ -198,9 +202,16 @@ export const stateFactory = (stateManagementService: StateManagementService) => 
     SortByDatePipe,
     MatDivider,
     MatExpansionModule,
-    FormattedTitlePipe
+    FormattedTitlePipe,
+    Button,
+    Card
   ],
   providers: [
+    providePrimeNG({
+      theme: {
+        preset: Aura
+      }
+    }),
     SortByDatePipe,
     {
       provide: APP_INITIALIZER,

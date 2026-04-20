@@ -2,6 +2,12 @@
 // Custom Theming for Angular Material
 @use '@angular/material' as mat;
 
+// NG-PRIME-Start
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+// NG-PRIME-End
+
 html {
   @include mat.theme((
     color: (
@@ -14,6 +20,15 @@ html {
   ));
 }
 :root {
+
+  // NG-PRIME-Start
+  --card-border: 1px solid var(--border-color);
+  --card-bg: var(--p-surface-0);
+  --border-color: var(--p-surface-200);
+  // NG-PRIME-End
+
+
+
   @include mat.form-field-overrides((
     error-text-color: #991B1B,
     filled-error-caret-color: #991B1B,
@@ -362,3 +377,14 @@ $lg: 24px;
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+//NG-PRIME start
+.card {
+  background: var(--card-bg);
+  border: var(--card-border);
+  padding: 2rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+//NG-PRIME end
