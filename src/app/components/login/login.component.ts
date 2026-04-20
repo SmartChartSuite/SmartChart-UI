@@ -1,21 +1,19 @@
-import {Component, Input} from '@angular/core';
-import {OAuthService} from "angular-oauth2-oidc";
-import {JwksValidationHandler} from "angular-oauth2-oidc-jwks";
+import {Component, computed, inject, input} from '@angular/core';
+import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
 import {ConfigService} from "../../services/config/config.service";
-import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions } from '@angular/material/card';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-
 @Component({
     selector: 'sc-standalone-login',
     templateUrl: './login.component.html',
     styleUrl: './login.component.scss',
-    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatCardActions, MatButton, MatIcon]
 })
 export class LoginComponent {
-  @Input({ required: true }) isLocatedInMainMenu!: boolean;
 
-  constructor(public oauthService: OAuthService, public configService: ConfigService) {
+  isLocatedInMainMenu = input.required<boolean>();
+  user = computed(() => this.oauthService.getIdentityClaims());
+  public oauthService: OAuthService = inject(OAuthService);
+  public configService: ConfigService = inject(ConfigService);
+
+  constructor() {
     this.configure();
   }
 
