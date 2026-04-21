@@ -1,17 +1,20 @@
 <div>
   <div class="selection-card form-selection-card margin-bottom-lg">
-    <div class="label-text">Select Form</div>
+    <div class="label-text margin-bottom-md">Select Form</div>
     <div class="">
       @if (!isLoading && !formList?.length) {
         <mat-error class="alert alert-danger">No SmartChart Forms Found</mat-error>
       } @else {
-        <mat-radio-group aria-labelledby="select-form-label"
-                        class="form-radio-group" (change)="onFormSelected($event)"
-                        [(ngModel)]="selectedForm">
-          @for (form of formList; track form) {
-            <mat-radio-button [value]="form">{{ form.title }}</mat-radio-button>
-          }
-        </mat-radio-group>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Select Form</mat-label>
+          <mat-select [(ngModel)]="selectedForm"
+                      (selectionChange)="onFormSelected($event)"
+                      aria-labelledby="select-form-label">
+            @for (form of formList; track form) {
+              <mat-option [value]="form">{{ form.title }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
       }
     </div>
   </div>
