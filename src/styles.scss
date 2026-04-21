@@ -1,6 +1,8 @@
 
 // Custom Theming for Angular Material
 @use '@angular/material' as mat;
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 // NG-PRIME-Start
 @tailwind base;
@@ -141,6 +143,23 @@ $lg: 24px;
 .border {
   @extend .border-radius-xs;
   border: 1px solid #cdcdcd;
+}
+
+//Helpers
+.w-full {
+  width: 100%;
+}
+.w-75 {
+  width: 75%;
+}
+.w-50 {
+  width: 50%;
+}
+.w-25 {
+  width: 25%;
+}
+.h-full {
+  height: 100%;
 }
 
 
@@ -375,8 +394,11 @@ $lg: 24px;
     color: inherit;
   }
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.centered-vertically{
+  display: flex;
+  align-items: center;
+}
 
 
 //NG-PRIME start

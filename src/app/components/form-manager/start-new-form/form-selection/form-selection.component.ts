@@ -5,14 +5,15 @@ import {FormSummary} from "../../../../models/form-summary";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
-import { MatError, MatLabel } from '@angular/material/form-field';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import {MatOption, MatSelect} from "@angular/material/select";
 
 @Component({
     selector: 'app-form-selection',
     templateUrl: './form-selection.component.html',
     styleUrl: './form-selection.component.scss',
-    imports: [MatError, MatRadioGroup, FormsModule, MatRadioButton, MatLabel]
+  imports: [MatError, MatRadioGroup, FormsModule, MatRadioButton, MatLabel, MatFormField, MatSelect, MatOption]
 })
 export class FormSelectionComponent implements OnInit {
   isLoading = false;
@@ -49,7 +50,7 @@ export class FormSelectionComponent implements OnInit {
     );
 
   }
-  onFormSelected(event: MatRadioChange) {
+  onFormSelected(event: any) {
     this.formManagerService.setSelectedForm(event.value);
   }
 }
