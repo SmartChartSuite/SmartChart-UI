@@ -1,6 +1,7 @@
+
 <div class="mat-elevation-z3 margin-sm">
-  <div [ngClass]="collapsedState ? 'compact-scrollable-table-container': 'scrollable-table-container'">
-    <table mat-table [dataSource]="dataSource">
+  <div [ngClass]="collapsedState() ? 'compact-scrollable-table-container': 'scrollable-table-container'">
+    <table mat-table [dataSource]="dataSource()">
 
       <ng-container matColumnDef="formName">
         <th mat-header-cell *matHeaderCellDef>Form Name</th>
@@ -36,7 +37,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onSelectForm(row)"></tr>
 
       <tr class="mat-row" *matNoDataRow>
-        @if (isLoading) {
+        @if (isLoading()) {
           <td class="mat-cell padding-md loading" [attr.colspan]="displayedColumns.length">
             Loading existing forms
           </td>

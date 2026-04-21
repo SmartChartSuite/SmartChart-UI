@@ -1,47 +1,44 @@
 import {
-  AfterViewInit,
   Component,
+  computed,
   EventEmitter,
-  Input,
-  OnChanges,
+  input,
   Output,
-  SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {MatTableDataSource} from "@angular/material/table";
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from "@angular/material/table";
 import {ActiveFormSummary} from "../../../../models/active-form-summary";
 import {MatPaginator} from "@angular/material/paginator";
+import { NgClass, TitleCasePipe, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-active-forms-grid',
     templateUrl: './active-forms-grid.component.html',
     styleUrl: './active-forms-grid.component.scss',
-    standalone: false
+    imports: [NgClass, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, TitleCasePipe, DatePipe]
 })
-export class ActiveFormsGridComponent implements OnChanges, AfterViewInit{
-  @Input() activeForms: ActiveFormSummary[];
-  @Input() isLoading: boolean = false;
-  @Input() collapsedState!: boolean;
+export class ActiveFormsGridComponent {
+  activeForms = input.required<ActiveFormSummary[]>();
+  isLoading = input<boolean>(false);
+  collapsedState = input.required<boolean>();
 
   @Output() onActiveFormSelected = new EventEmitter<ActiveFormSummary>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-  }
-
   displayedColumns: string[] = ["name", "gender", "dob", "formName", "started", "status"];
-  dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
+
+  // Computed signal that reactively creates a MatTableDataSource
+  dataSource = computed(() => {
+    const source = new MatTableDataSource<ActiveFormSummary>(this.activeForms());
+    if (this.paginator) {
+      source.paginator = this.paginator;
+    }
+    return source;
+  });
 
   formStatusDictionary = {
     "inProgress": "In Progress",
     "complete": "Complete"
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(changes['activeForms']?.currentValue){
-      this.dataSource.data = this.activeForms;
-    }
   }
 
   onSelectForm(activeFormSummary: ActiveFormSummary) {

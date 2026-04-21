@@ -1,12 +1,29 @@
 import { Component } from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
-import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogTitle, MatDialogContent } from "@angular/material/dialog";
+import { MatCardTitle } from '@angular/material/card';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-export-selection-dialog',
-  standalone: false,
-  templateUrl: './export-selection-dialog.component.html',
-  styleUrl: './export-selection-dialog.component.scss'
+    selector: 'app-export-selection-dialog',
+    templateUrl: './export-selection-dialog.component.html',
+    styleUrl: './export-selection-dialog.component.scss',
+    imports: [
+      MatCardTitle,
+      MatDialogTitle,
+      MatDialogContent,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormField,
+      MatLabel,
+      MatSelect,
+      MatOption,
+      MatButton,
+      MatIcon
+    ]
 })
 export class ExportSelectionDialogComponent {
   exportTypes: string[] = ['json', 'pdf']

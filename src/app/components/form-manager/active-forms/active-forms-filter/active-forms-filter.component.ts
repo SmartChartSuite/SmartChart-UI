@@ -1,21 +1,47 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
-import {FormControl, FormGroup} from "@angular/forms";
+import {Component, effect, EventEmitter, input, OnInit, Output} from '@angular/core';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FormSummary} from "../../../../models/form-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {debounceTime} from "rxjs";
+import {MatFormField, MatLabel, MatHint, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {
+  MatDateRangeInput,
+  MatStartDate,
+  MatEndDate,
+  MatDatepickerToggle,
+  MatDateRangePicker
+} from '@angular/material/datepicker';
+import {MatButton} from '@angular/material/button';
 
 @Component({
-    selector: 'app-active-forms-filter',
-    templateUrl: './active-forms-filter.component.html',
-    styleUrl: './active-forms-filter.component.scss',
-    standalone: false
+  selector: 'app-active-forms-filter',
+  templateUrl: './active-forms-filter.component.html',
+  styleUrl: './active-forms-filter.component.scss',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatSelect,
+    MatOption,
+    MatDateRangeInput,
+    MatStartDate,
+    MatEndDate,
+    MatHint,
+    MatDatepickerToggle,
+    MatSuffix,
+    MatDateRangePicker,
+    MatButton]
 })
-export class ActiveFormsFilterComponent implements OnInit, OnChanges{
+export class ActiveFormsFilterComponent implements OnInit {
   @Output() onFormValueChange = new EventEmitter<any>();
-  @Input() isLoading = true;
+  isLoading = input<boolean>(true);
 
   readonly GENDER_LIST = ["Any", "Male", "Female", "Other", "Unknown"];
-  statusList : string[] = ['Any'];
+  statusList: string[] = ['Any'];
   //TODO add from api call populating the radio buttons for the form names
   nameList: string[] = ['Any'];
 
@@ -42,6 +68,13 @@ export class ActiveFormsFilterComponent implements OnInit, OnChanges{
     this.searchResultsForm.addControl('startedRange', this.startedRange);
     this.searchResultsForm.addControl('dobRange', this.dobRange);
     this.searchResultsForm.disable();
+
+    // Use effect to enable/disable form based on isLoading signal
+    effect(() => {
+      if (!this.isLoading()) {
+        this.searchResultsForm.enable();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -49,27 +82,22 @@ export class ActiveFormsFilterComponent implements OnInit, OnChanges{
       this.onFormValueChange.emit(value);
     });
     this.rcApiInterfaceService.getQuestionTypes$.subscribe({
-        next: value => {
-          this.formList = JSON.parse(JSON.stringify(value));
-          this.formList.unshift({name: "Any", title: "Any"});
-          this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
-        },
-        error: err => {
-          console.error(err);
-        }
+      next: value => {
+        this.formList = JSON.parse(JSON.stringify(value));
+        this.formList.unshift({name: "Any", title: "Any"});
+        this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
+      },
+      error: err => {
+        console.error(err);
+      }
     })
   }
+
   onClearForm() {
     this.searchResultsForm.reset();
     this.searchResultsForm.controls['gender'].setValue(this.GENDER_LIST[0], {emitEvent: false});
     this.searchResultsForm.controls['status'].setValue(this.statusList[0], {emitEvent: false});
     this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(!this.isLoading){
-      this.searchResultsForm.enable();
-    }
   }
 
 }

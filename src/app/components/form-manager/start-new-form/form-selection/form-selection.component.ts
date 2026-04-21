@@ -1,16 +1,18 @@
 import {Component, OnInit} from '@angular/core';
-import {MatRadioChange} from "@angular/material/radio";
+import { MatRadioChange, MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {FormSummary} from "../../../../models/form-summary";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../../services/utils/utils.service";
+import { MatError, MatLabel } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 @Component({
     selector: 'app-form-selection',
     templateUrl: './form-selection.component.html',
     styleUrl: './form-selection.component.scss',
-    standalone: false
+    imports: [MatError, MatRadioGroup, FormsModule, MatRadioButton, MatLabel]
 })
 export class FormSelectionComponent implements OnInit {
   isLoading = false;

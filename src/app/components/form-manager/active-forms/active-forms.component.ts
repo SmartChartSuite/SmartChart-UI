@@ -5,19 +5,23 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../services/utils/utils.service";
+import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { ActiveFormsFilterComponent } from './active-forms-filter/active-forms-filter.component';
+import { ActiveFormsGridComponent } from './active-forms-grid/active-forms-grid.component';
 
 @Component({
     selector: 'app-active-forms',
     templateUrl: './active-forms.component.html',
     styleUrl: './active-forms.component.scss',
-    standalone: false
+    imports: [MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatIcon, ActiveFormsFilterComponent, ActiveFormsGridComponent]
 })
 export class ActiveFormsComponent implements OnInit {
 
   displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
   dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
-  isLoading = false;
-  activeForms: ActiveFormSummary[] = [];
+  isLoading = signal(false);
+  activeForms = signal<ActiveFormSummary[]>([]);
   activeFormsDeepCopy: ActiveFormSummary[] = [];
   readonly panelOpenState = signal(false);
 
@@ -35,17 +39,18 @@ export class ActiveFormsComponent implements OnInit {
   }
 
   private getBatchJobs() {
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.rcApiInterfaceService.getBatchJobs().subscribe({
       next: value => {
-       this.activeForms = value.sort((a,  b) => {
+       const sortedForms = value.sort((a,  b) => {
           return (new Date(b.started).getTime()) - (new Date(a.started).getTime()) ;
         });
-        this.activeFormsDeepCopy = JSON.parse(JSON.stringify(this.activeForms));
-        this.isLoading = false;
+        this.activeForms.set(sortedForms);
+        this.activeFormsDeepCopy = JSON.parse(JSON.stringify(sortedForms));
+        this.isLoading.set(false);
       },
       error: err => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         console.error(err);
         this.utilsService.showErrorMessage();
       }
@@ -110,6 +115,6 @@ export class ActiveFormsComponent implements OnInit {
       );
     }
     //TODO Implement Status Filter
-    this.activeForms = tempResults;
+    this.activeForms.set(tempResults);
   }
 }

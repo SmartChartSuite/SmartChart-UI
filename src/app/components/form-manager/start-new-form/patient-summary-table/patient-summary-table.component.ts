@@ -6,16 +6,18 @@ import {
   SimpleChanges, ViewChild,
 } from '@angular/core';
 import {PatientSummary} from "../../../../models/patient-summary";
-import {MatTableDataSource} from "@angular/material/table";
-import {MatPaginator} from "@angular/material/paginator";
+import { MatTableDataSource, MatTableModule } from "@angular/material/table";
+import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import {Observable} from "rxjs";
 import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
+import { MatIcon } from '@angular/material/icon';
+import { AsyncPipe, TitleCasePipe, DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-patient-summary-table',
     templateUrl: './patient-summary-table.component.html',
     styleUrl: './patient-summary-table.component.scss',
-    standalone: false
+    imports: [MatTableModule, MatPaginatorModule, MatIcon, AsyncPipe, TitleCasePipe, DatePipe]
 })
 export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, OnInit {
 

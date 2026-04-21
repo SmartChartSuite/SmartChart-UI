@@ -1,12 +1,12 @@
-@if (isLocatedInMainMenu) {
+@if (isLocatedInMainMenu()) {
   <div class="user-profile-header">
     @if (oauthService.hasValidAccessToken()) {
       <ng-container class="profile-wrapper"></ng-container>
     }
-    @if (oauthService.getIdentityClaims(); as user) {
+    @if (user()) {
       <div>
         <img
-          [src]="user?.['picture'] ? user?.['picture'] : '/assets/portrait_placeholder.png'"
+          [src]="user()?.['picture'] ? user()?.['picture'] : '/assets/portrait_placeholder.png'"
           referrerpolicy="no-referrer"
           class="profile-image">
       </div>
@@ -51,4 +51,3 @@
 <!--    </mat-card>-->
 <!--  </div>-->
 }
-

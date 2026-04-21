@@ -1,17 +1,25 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {MatRadioChange} from "@angular/material/radio";
+import { MatRadioChange, MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {searchByType, searchByTypes} from "../../../../models/search-by-types";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {PatientSummary} from "../../../../models/patient-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSearchParameters} from "../../../../models/rc-api/patient-search-parameters";
 import {UtilsService} from "../../../../services/utils/utils.service";
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatLabel, MatFormField, MatError, MatSuffix, MatHint } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { PatientSummaryTableComponent } from '../patient-summary-table/patient-summary-table.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-patient-search',
     templateUrl: './patient-search.component.html',
     styleUrl: './patient-search.component.scss',
-    standalone: false
+    imports: [MatCard, MatCardContent, MatLabel, MatRadioGroup, FormsModule, MatRadioButton, ReactiveFormsModule, MatFormField, MatInput, MatError, MatButton, MatIcon, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatHint, PatientSummaryTableComponent, DatePipe]
 })
 export class PatientSearchComponent implements OnChanges, OnInit {
 
