@@ -109,8 +109,6 @@ export class FormOutputMappingService {
         qr.item[groupKey].item[childKey] = qrChildItem;
       }
     }
-
-    console.info(qr);
     return qr;
   }
 
