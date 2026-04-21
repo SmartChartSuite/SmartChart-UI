@@ -1,24 +1,23 @@
-<mat-card-title mat-dialog-title>Select Export File Type</mat-card-title>
-<div mat-dialog-content class="margin-md">
-  <form [formGroup]="exportForm" (ngSubmit)="onExport(exportForm.value)">
-    <div class="form-controls">
-    <div>
-      <mat-form-field appearance="outline" class="margin-top-md">
-        <mat-label>Export data as:</mat-label>
-        <mat-select formControlName="exportType">
-          @for (exportType of exportTypes; track exportType) {
-            <mat-option [value]="exportType">{{ exportType }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div>
-      <button mat-raised-button type="submit">
-        <mat-icon>download</mat-icon>
-        Export
-      </button>
-    </div>
-    </div>
-  </form>
-</div>
+<h2 mat-dialog-title>Export Data</h2>
+<form [formGroup]="exportForm" (ngSubmit)="onExport(exportForm.value)">
+  <mat-dialog-content>
+    <mat-form-field appearance="outline" class="margin-top-md full-width">
+      <mat-label>Export data as:</mat-label>
+      <mat-select formControlName="exportType">
+        @for (exportType of exportTypes; track exportType) {
+          <mat-option [value]="exportType">{{ exportType }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end" class="dialog-footer">
+    <button matButton="outlined" type="button" (click)="onCancel()" >
+      Cancel
+    </button>
+    <button matButton="outlined" color="primary" type="submit">
+      <mat-icon>download</mat-icon>
+      Export
+    </button>
+  </mat-dialog-actions>
+</form>
 

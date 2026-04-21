@@ -145,20 +145,26 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.info("Logging Questionnaire Responses");
-    console.info(this.answerDictionary());
-    const currentAnswerDictionary = this.answerDictionary();
-    const currentQuestionnaire = this.questionnaire();
-    if (currentAnswerDictionary && currentQuestionnaire) {
-      this.outputMapper.mapToFhir(currentAnswerDictionary, currentQuestionnaire);
-    }
     openExportFileDialog(
       this.dialog,
       {})
       .subscribe(
-        result => {
-          //TODO finish implementation
-          console.log(result);
+        exportType => {
+          if(exportType == "json"){
+            const questionnaireResponse = this.outputMapper.mapToFhir(this.answerDictionary(), this.questionnaire());
+            const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
+            const link = document.createElement('a');
+
+            link.href = URL.createObjectURL(blob);
+            link.download = `FHIR_Question_Response.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body?.removeChild(link);
+            URL.revokeObjectURL(link.href);
+          }
+          else if (exportType == "pdf"){
+            //TODO implement the pdf export
+          }
         })
   }
 
