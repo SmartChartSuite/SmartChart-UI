@@ -1,10 +1,10 @@
-<div class="margin-sm">
+<div class="m-sm">
   <mat-card appearance="outlined">
     <mat-card-content>
       <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
         <!-- Search By Label and Radio Buttons on Same Line -->
-        <div class="flex-row-simple margin-bottom-md" style="align-items: center;">
-          <div class="label-text margin-right-md">
+        <div class="flex-row-simple mb-md" style="align-items: center;">
+          <div class="label-text mr-md">
             <mat-label>Search by:</mat-label>
           </div>
           <mat-radio-group aria-labelledby="select-form-label"
@@ -12,7 +12,7 @@
                            class="form-radio-group"
                            formControlName="selectedSearchCriteria">
             @for (searchType of searchTypeList; track searchType) {
-              <mat-radio-button [value]="searchType" class="margin-right-md">{{ searchType }}</mat-radio-button>
+              <mat-radio-button [value]="searchType" class="mr-md">{{ searchType }}</mat-radio-button>
             }
           </mat-radio-group>
         </div>
@@ -21,7 +21,7 @@
         <div class="flex-row-simple" style="align-items: flex-start;">
           @if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.IDENTIFIER) {
             <!-- Identifier -->
-            <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-form-field appearance="outline" class="mr-md">
               <mat-label>Identifier</mat-label>
               <input matInput formControlName="identifier">
               @if (searchForm.get('identifier')?.errors?.['required']) {
@@ -30,19 +30,19 @@
             </mat-form-field>
           } @else if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.NAME_AND_DOB) {
             <!-- Given Name -->
-            <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-form-field appearance="outline" class="mr-md">
               <mat-label>Given</mat-label>
               <input matInput formControlName="given">
             </mat-form-field>
 
             <!-- Family Name -->
-            <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-form-field appearance="outline" class="mr-md">
               <mat-label>Family</mat-label>
               <input matInput formControlName="family">
             </mat-form-field>
 
             <!-- Date of Birth -->
-            <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-form-field appearance="outline" class="mr-md">
               <mat-label>Date of Birth</mat-label>
               <input matInput formControlName="dob" [matDatepicker]="picker">
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -51,7 +51,7 @@
             </mat-form-field>
           } @else if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.FHIR_ID) {
             <!-- FHIR ID -->
-            <mat-form-field appearance="outline" class="margin-right-md">
+            <mat-form-field appearance="outline" class="mr-md">
               <mat-label>FHIR ID</mat-label>
               <input matInput formControlName="fhirId">
             </mat-form-field>
@@ -68,8 +68,8 @@
   </mat-card>
 
 
-  <div class="margin-top-lg">
-    <div class="margin-bottom-md label-text">
+  <div class="mt-lg">
+    <div class="mb-md label-text">
       @if (searchExecuted) {
         Showing results of
         @if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.FHIR_ID) {

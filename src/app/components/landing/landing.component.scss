@@ -1,4 +1,4 @@
-@import '../../../styles.scss';
+@use '../../../styles/variables' as *;
 
 $blue-accent-color: #005cbb;
 .header-3 {
@@ -20,63 +20,72 @@ $blue-accent-color: #005cbb;
   // background: $blue-accent-color;
   // background: linear-gradient(90deg, $dark 60%, white 100%);
   color: #444444;
-  border-radius: $sm;
-  padding: $md;
+  border-radius: $spacing-sm;
+  padding: $spacing-md;
   font-weight: 600;
 }
 
 .instructions-block {
   border-left: #c8c8c8 solid 2px;
-  padding-left: $sm;
+  padding-left: $spacing-sm;
   letter-spacing: normal;
 }
 
 .title-header {
-  @extend .border;
-  @extend .padding-left-md;
-  @extend .padding-top-sm;
-  @extend .padding-bottom-sm;
-  @extend .margin-bottom-md;
-  // background-color: $dark;
-  @extend .flex-row;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  padding-left: $spacing-md;
+  padding-top: $spacing-sm;
+  padding-bottom: $spacing-sm;
+  margin-bottom: $spacing-md;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  overflow: hidden;
+  justify-content: stretch;
+
+  > * {
+    flex: 0 0 auto;
+  }
+
   > h1 {
     color: #333;
     padding: 0;
     margin: 0;
-    // font-variant-caps: small-caps;
     display: block;
   }
   > h2 {
     color: #333;
     font-weight: 300;
     padding: 0;
-    margin: 0 0 0 $md;
-    // font-variant-caps: all-petite-caps;
+    margin: 0 0 0 $spacing-md;
     display: block;
-    // font-style: italic;
   }
   > .title-header-line {
     flex: 1;
     background-color: white;
     width: 100%;
     height: 1px;
-    margin: $md;
+    margin: $spacing-md;
   }
 }
 
 .landing-page-columns {
-  @extend .flex-row-simple;
+  display: flex;
+  flex-direction: row;
+
   > .landing-page-left-column {
-    //@extend .border;
     flex: 1;
-    @extend .margin-right-md;
+    margin-right: $spacing-md;
   }
   > .landing-page-right-column {
     flex: 1;
     line-height: 1.3em;
     color: #4b4b4b;
-    @extend .flex-col-simple;
-    @extend .margin-left-md;
+    display: flex;
+    flex-direction: column;
+    margin-left: $spacing-md;
   }
 }
 
