@@ -3,7 +3,8 @@ import {JwksValidationHandler, OAuthService} from "angular-oauth2-oidc";
 import {ConfigService} from "../../services/config/config.service";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
-import {MatButton} from "@angular/material/button";
+import {Card} from "primeng/card";
+import {ButtonModule} from "primeng/button";
 @Component({
   selector: 'sc-standalone-login',
   templateUrl: './login.component.html',
@@ -11,7 +12,8 @@ import {MatButton} from "@angular/material/button";
   imports: [
     MatCardModule,
     MatIconModule,
-    MatButton,
+    Card,
+    ButtonModule,
   ]
 })
 export class LoginComponent {

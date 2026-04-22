@@ -1,14 +1,6 @@
 
 // Custom Theming for Angular Material
 @use '@angular/material' as mat;
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-// NG-PRIME-Start
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-// NG-PRIME-End
 
 html {
   @include mat.theme((
@@ -22,15 +14,6 @@ html {
   ));
 }
 :root {
-
-  // NG-PRIME-Start
-  --card-border: 1px solid var(--border-color);
-  --card-bg: var(--p-surface-0);
-  --border-color: var(--p-surface-200);
-  // NG-PRIME-End
-
-
-
   @include mat.form-field-overrides((
     error-text-color: #991B1B,
     filled-error-caret-color: #991B1B,
@@ -143,23 +126,6 @@ $lg: 24px;
 .border {
   @extend .border-radius-xs;
   border: 1px solid #cdcdcd;
-}
-
-//Helpers
-.w-full {
-  width: 100%;
-}
-.w-75 {
-  width: 75%;
-}
-.w-50 {
-  width: 50%;
-}
-.w-25 {
-  width: 25%;
-}
-.h-full {
-  height: 100%;
 }
 
 
@@ -356,11 +322,11 @@ $lg: 24px;
     background-color: #e2e3e5;
     border-color: #d6d8db;
   }
-  &.alert-success{
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-  }
+  //&.alert-success{
+  //  color: #155724;
+  //  background-color: #d4edda;
+  //  border-color: #c3e6cb;
+  //}
   &.alert-danger{
     color: #721c24;
     background-color: #f8d7da;
@@ -394,19 +360,6 @@ $lg: 24px;
     color: inherit;
   }
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.centered-vertically{
-  display: flex;
-  align-items: center;
-}
-
-
-//NG-PRIME start
-.card {
-  background: var(--card-bg);
-  border: var(--card-border);
-  padding: 2rem;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-}
-//NG-PRIME end

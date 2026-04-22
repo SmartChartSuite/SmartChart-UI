@@ -24,8 +24,9 @@
         <ng-template #footer>
           <div class="flex gap-4 mt-1">
             <p-button
+              severity="contrast"
               label="Sign In"
-              icon="pi pi-sign-in" iconPos="left" styleClass="w-full"
+              icon="pi pi-sign-in" iconPos="left"
               (click)="oauthService.initImplicitFlow()"/>
           </div>
         </ng-template>
