@@ -1,20 +1,50 @@
-// SmartChart UI - Main Styles
-// Modular SCSS architecture for better maintainability
-
-// 1. Variables and Design Tokens
+// Custom Theming for Angular Material
+@use '@angular/material' as mat;
 @use 'styles/variables' as *;
+@use 'styles/layout' as *;
+@use 'styles/utilities' as *;
+@use 'styles/components' as *;
 
-// 2. Material Design Overrides
-@use 'styles/material-overrides';
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Inter,
+    density: -2,
+  ));
+}
 
-// 3. Utility Classes
-@use 'styles/utilities';
+//** Component Wrappers **//
+// DO NOT USE THE FOLLOWING OUTSIDE OF app.component.html!!
+.app-wrapper { @extend .flex; @extend .full-screen; }
+.app-flex-wrapper { @extend .full-screen; @extend .flex-col; flex: 1; justify-content: stretch; align-items: stretch; }
+.app-content-wrapper {
+  @extend .flex-col;
+  @extend .app-flex-wrapper;
+  > * {
+    @extend .flex-col;
+    flex: 1;
+  }
+  > router-outlet {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}
+// Use the following for all router outlet level pages in a wrapping div.
+.component-wrapper {
+  @extend .flex-col-simple; // Sets a basic flex display so child will fill it.
+  flex: 1;                  // Stretches to fill app component.
+  align-content: stretch;   // More stretching.
+  align-items: stretch;     // More stretching to fill!
+  overflow-y: hidden;       // Sets up overflow so that the inner content can be scrollable.
+  > .component-content {
+    @extend .padding-md; // Sets default component padding.
+    @extend .scrollable; // Makes the content scrollable.
+    flex: 1;             // Stretches to fill wrapper.
+  }
+}
 
-// 4. Layout Classes
-@use 'styles/layout';
 
-// 5. Component Styles
-@use 'styles/components';
-
-// 6. Animations
-@use 'styles/animations';

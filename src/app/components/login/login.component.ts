@@ -5,6 +5,7 @@ import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {Card} from "primeng/card";
 import {ButtonModule} from "primeng/button";
+import {MatButton} from "@angular/material/button";
 @Component({
   selector: 'sc-standalone-login',
   templateUrl: './login.component.html',
@@ -14,6 +15,7 @@ import {ButtonModule} from "primeng/button";
     MatIconModule,
     Card,
     ButtonModule,
+    MatButton,
   ]
 })
 export class LoginComponent {

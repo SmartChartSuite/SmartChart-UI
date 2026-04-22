@@ -3,6 +3,7 @@
 @use 'variables' as *;
 
 // Root Containers
+// These styles define the base layout structure for the entire application
 html, body {
   height: 100%;
   width: 100%;
@@ -12,6 +13,8 @@ body {
   margin: 0;
   font-family: var(--font-family-primary);
   color: var(--color-text-primary);
+  font-size: 1rem; // 16px - explicit base font size
+  overflow: hidden; // Prevent body scroll, app-content-wrapper handles scrolling
 }
 
 app-root {
@@ -29,6 +32,7 @@ app-root {
   justify-content: stretch;
   height: 100%;
   width: 100%;
+  padding-top: 64px; // Account for fixed header height
 
   > * {
     flex: 0 0 auto;

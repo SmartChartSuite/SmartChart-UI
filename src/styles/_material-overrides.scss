@@ -1,18 +1,14 @@
 // Angular Material Component Overrides
 @use '@angular/material' as mat;
 
-// Material Theme Configuration
-html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Inter,
-    density: -2,
-  ));
-}
+// Define custom typography with 16px base font size
+$custom-typography: mat.m2-define-typography-config(
+  $font-family: 'Inter, sans-serif',
+  $body-1: mat.m2-define-typography-level(16px, 24px, 400),
+  $body-2: mat.m2-define-typography-level(16px, 24px, 400),
+);
+
+@include mat.typography-hierarchy($custom-typography);
 
 // Form Field Overrides
 :root {
@@ -20,8 +16,8 @@ html {
     error-text-color: var(--color-error),
     filled-error-caret-color: var(--color-error),
     outlined-error-outline-color: var(--color-error),
-    container-height: 2.5rem,              // 40px
-    container-vertical-padding: 0.5rem,    // 8px
+    container-height: 2.5rem,
+    container-vertical-padding: 0.5rem,
     filled-with-label-container-padding-top: 0.5rem,
     filled-with-label-container-padding-bottom: 0.5rem,
     outlined-input-text-placeholder-color: var(--color-placeholder),
@@ -30,33 +26,33 @@ html {
 
   // Select Overrides
   @include mat.select-overrides((
-    trigger-text-size: 0.875rem,           // 14px
-    trigger-text-line-height: 1.25rem,     // 20px
+    trigger-text-size: 0.875rem,
+    trigger-text-line-height: 1.25rem,
   ));
 
   // Table Overrides - Compact Display
   @include mat.table-overrides((
-    header-container-height: 2.5rem,       // 40px (default: 56px)
-    row-item-container-height: 2.25rem,    // 36px (default: 52px)
-    footer-container-height: 2.5rem,       // 40px (default: 52px)
-    header-headline-size: 0.8125rem,       // 13px
-    row-item-label-text-size: 0.8125rem,   // 13px
-    header-headline-line-height: 1.125rem, // 18px
+    header-container-height: 2.5rem,
+    row-item-container-height: 2.25rem,
+    footer-container-height: 2.5rem,
+    header-headline-size: 0.8125rem,
+    row-item-label-text-size: 0.8125rem,
+    header-headline-line-height: 1.125rem,
     row-item-label-text-line-height: 1.125rem,
   ));
 }
 
 // Mat-Option Overrides
 .mat-mdc-option {
-  --mat-option-label-text-size: 0.875rem;      // 14px
-  --mat-option-label-text-line-height: 1.25rem; // 20px
+  --mat-option-label-text-size: 0.875rem;
+  --mat-option-label-text-line-height: 1.25rem;
 }
 
 // Mat-Form-Field Icon Overrides
 .mat-mdc-form-field {
   .mat-mdc-form-field-icon-suffix {
     .mat-mdc-icon-button.mat-mdc-button-base {
-      --mdc-icon-button-state-layer-size: 2rem;  // 32px
+      --mdc-icon-button-state-layer-size: 2rem;
       --mat-icon-button-state-layer-size: 2rem;
       width: var(--mat-icon-button-state-layer-size);
       height: var(--mat-icon-button-state-layer-size);
