@@ -14,7 +14,6 @@ import { AppComponent } from "./app/app.component";
 
 bootstrapApplication(AppComponent, {
     providers: [
-        provideAnimations(),
         provideRouter(routes),
         provideNativeDateAdapter(),
         importProvidersFrom(OAuthModule.forRoot()),

@@ -27,14 +27,6 @@ html {
     outlined-input-text-placeholder-color: #999999,
     trailing-icon-color: var(--zinc-400),
   ));
-  @include mat.button-overrides((
-    filled-container-shape: 0.5rem,
-    outlined-container-shape: 0.5rem,
-    protected-container-shape: 0.5rem,
-    text-container-shape: 0.5rem,
-    tonal-container-shape: 0.5rem,
-
-  ));
   @include mat.select-overrides((
     trigger-text-size: 14px,
     trigger-text-line-height: 20px,
@@ -133,11 +125,11 @@ $lg: 24px;
 .padding-left-md { padding-left: $md; }
 .padding-left-sm { padding-left: $sm; }
 .padding-right-md { padding-right: $md; }
-.border-radius-xs { border-radius: $xs; }
 // Standardized Border
 .border {
-  @extend .border-radius-xs;
-  border: 1px solid #cdcdcd;
+  border-radius: $xs;
+  border: 1px solid #DBDBDB;
+  overflow: hidden;
 }
 
 //Helpers
@@ -394,3 +386,11 @@ $lg: 24px;
   display: flex;
   align-items: center;
 }
+
+.primary-outlined{
+  @include mat.button-overrides((
+    outlined-outline-color: $primary,
+    outlined-label-text-color: $primary,
+  ));
+}
+

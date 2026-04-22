@@ -1,99 +1,69 @@
 <div class="margin-sm">
   <mat-card appearance="outlined">
     <mat-card-content>
-      <div class="margin-bottom-md">
-        <div class="label-text">
-          <mat-label>Search by:</mat-label>
-        </div>
-        <div>
+      <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+        <!-- Search By Label and Radio Buttons on Same Line -->
+        <div class="flex-row-simple margin-bottom-md" style="align-items: center;">
+          <div class="label-text margin-right-md">
+            <mat-label>Search by:</mat-label>
+          </div>
           <mat-radio-group aria-labelledby="select-form-label"
                            type="button"
-                           class="form-radio-group" (change)="onSearchBySelected($event)"
-                           [(ngModel)]="selectedSearchCriteria">
+                           class="form-radio-group"
+                           formControlName="selectedSearchCriteria">
             @for (searchType of searchTypeList; track searchType) {
               <mat-radio-button [value]="searchType" class="margin-right-md">{{ searchType }}</mat-radio-button>
             }
           </mat-radio-group>
         </div>
-      </div>
 
+        <!-- Form Fields and Search Button on Same Line -->
+        <div class="flex-row-simple" style="align-items: flex-start;">
+          @if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.IDENTIFIER) {
+            <!-- Identifier -->
+            <mat-form-field appearance="outline" class="margin-right-md">
+              <mat-label>Identifier</mat-label>
+              <input matInput formControlName="identifier">
+              @if (searchForm.get('identifier')?.errors?.['required']) {
+                <mat-error>Identifier is required.</mat-error>
+              }
+            </mat-form-field>
+          } @else if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.NAME_AND_DOB) {
+            <!-- Given Name -->
+            <mat-form-field appearance="outline" class="margin-right-md">
+              <mat-label>Given</mat-label>
+              <input matInput formControlName="given">
+            </mat-form-field>
 
-      @if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
-        <form [formGroup]="searchForm" class="margin-top-sm" (ngSubmit)="onSubmit();">
-          <!-- Identifier -->
-          <mat-form-field appearance="outline" class="margin-right-md">
-            <mat-label>Identifier</mat-label>
-            <input matInput formControlName="identifier">
-            @if (searchForm.get('identifier')?.errors?.['required']) {
-              <mat-error>Identifier is required.</mat-error>
-            }
-          </mat-form-field>
-          <!-- TODO: Removed for now, only value will be searched by. -->
-          <!--      &lt;!&ndash; Type/System &ndash;&gt;-->
-          <!--      <mat-form-field appearance="outline">-->
-          <!--        <mat-label>Type/System</mat-label>-->
-          <!--        <mat-select formControlName="typeSystem" required>-->
-          <!--          @for (typeSystem of SYSTEM_TYPE_LIST; track typeSystem) {-->
-          <!--            <mat-option [value]="typeSystem">{{ typeSystem }}</mat-option>-->
-          <!--          }-->
-          <!--        </mat-select>-->
-          <!--      </mat-form-field>-->
-          <div>
-            <button type="submit" mat-raised-button>
-              <mat-icon>search</mat-icon>
-              Search
-            </button>
-          </div>
+            <!-- Family Name -->
+            <mat-form-field appearance="outline" class="margin-right-md">
+              <mat-label>Family</mat-label>
+              <input matInput formControlName="family">
+            </mat-form-field>
 
-        </form>
-      } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
-        <form [formGroup]="searchForm" class="margin-top-sm" (ngSubmit)="onSubmit();">
-          <!-- Given Name -->
-          <mat-form-field appearance="outline" class="margin-right-md">
-            <mat-label>Given</mat-label>
-            <input matInput formControlName="given">
-          </mat-form-field>
+            <!-- Date of Birth -->
+            <mat-form-field appearance="outline" class="margin-right-md">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput formControlName="dob" [matDatepicker]="picker">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-hint>MM/DD/YYYY</mat-hint>
+            </mat-form-field>
+          } @else if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.FHIR_ID) {
+            <!-- FHIR ID -->
+            <mat-form-field appearance="outline" class="margin-right-md">
+              <mat-label>FHIR ID</mat-label>
+              <input matInput formControlName="fhirId">
+            </mat-form-field>
+          }
 
-          <!-- Family Name -->
-          <mat-form-field appearance="outline" class="margin-right-md">
-            <mat-label>Family</mat-label>
-            <input matInput formControlName="family">
-          </mat-form-field>
-
-          <!-- Date of Birth -->
-          <mat-form-field appearance="outline">
-            <mat-label>Date of Birth</mat-label>
-            <input matInput formControlName="dob" [matDatepicker]="picker">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            <mat-hint>MM/DD/YYYY</mat-hint>
-          </mat-form-field>
-
-          <div>
-            <button type="submit" mat-raised-button>
-              <mat-icon>search</mat-icon>
-              Search
-            </button>
-          </div>
-
-        </form>
-
-      } @else if (selectedSearchCriteria == SearchByType.FHIR_ID) {
-        <form [formGroup]="searchForm" class="margin-top-sm" (ngSubmit)="onSubmit();">
-          <!-- FHIR ID -->
-          <mat-form-field appearance="outline">
-            <mat-label>FHIR ID</mat-label>
-            <input matInput formControlName="fhirId">
-          </mat-form-field>
-
-          <div>
-            <button type="submit" mat-raised-button>
-              <mat-icon>search</mat-icon>
-              Search
-            </button>
-          </div>
-        </form>
-      }
+          <!-- Single Search Button -->
+          <button type="submit" matButton="filled" color="primary">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+        </div>
+      </form>
     </mat-card-content>
   </mat-card>
 
@@ -102,13 +72,13 @@
     <div class="margin-bottom-md label-text">
       @if (searchExecuted) {
         Showing results of
-        @if (selectedSearchCriteria == SearchByType.FHIR_ID) {
+        @if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.FHIR_ID) {
           FHIR ID: {{ searchForm.controls['fhirId'].value }}.
-        } @else if (selectedSearchCriteria == SearchByType.NAME_AND_DOB) {
+        } @else if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.NAME_AND_DOB) {
           given name: {{ searchForm.controls['given'].value }},
             family name: {{ searchForm.controls['family'].value }},
             and birthdate: {{ searchForm.controls['dob'].value | date }}
-        } @else if (selectedSearchCriteria == SearchByType.IDENTIFIER) {
+        } @else if (searchForm.get('selectedSearchCriteria')?.value == SearchByType.IDENTIFIER) {
           given name: {{ searchForm.controls['identifier'].value }}.
         }
       } @else {

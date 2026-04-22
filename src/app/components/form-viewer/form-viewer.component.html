@@ -162,7 +162,7 @@
                     }
 
                     @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
-                      <button mat-raised-button
+                      <button matButton="outlined" class="primary-outlined"
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
                               (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
