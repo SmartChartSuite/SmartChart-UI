@@ -1,14 +1,14 @@
-<div class="mat-elevation-z3">
+<div class="border">
   <table mat-table [dataSource]="dataSource">
 
-        <ng-container matColumnDef="selection">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let patient" class="custom-padding">
-            @if((selectedPatient$ | async) === patient){
-              <span class="centered"><mat-icon class="check-mark">check</mat-icon></span>
-            }
-          </td>
-        </ng-container>
+    <ng-container matColumnDef="selection">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let patient" class="custom-padding">
+        @if ((selectedPatient$ | async) === patient) {
+          <span class="centered"><mat-icon class="check-mark">check</mat-icon></span>
+        }
+      </td>
+    </ng-container>
 
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef> Name</th>
@@ -27,7 +27,7 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
 
-    <tr class="patient-row compact-row" mat-row *matRowDef="let row; columns: displayedColumns;"
+    <tr class="patient-row" mat-row *matRowDef="let row; columns: displayedColumns;"
         [class.selected-patient-row]="(selectedPatient$ | async) === row"
         (click)="setSelectedPatient(row)">
     </tr>
@@ -39,10 +39,10 @@
       </td>
     </tr>
   </table>
+
   <mat-paginator
     [pageSizeOptions]="[10, 20]"
     aria-label="Select page patient search results"
   >
   </mat-paginator>
-
 </div>

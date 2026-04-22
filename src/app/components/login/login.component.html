@@ -14,41 +14,22 @@
   </div>
 }
 @else {
-  <div class="login-container">
-    <div class="login-card-wrapper">
-      <p-card>
-        <ng-template #title>Sign In</ng-template>
-        <p>
-          Sign In With Auth0
-        </p>
-        <ng-template #footer>
-          <div class="flex gap-4 mt-1">
-            <p-button
-              severity="contrast"
-              label="Sign In"
-              icon="pi pi-sign-in" iconPos="left"
-              (click)="oauthService.initImplicitFlow()"/>
-          </div>
-        </ng-template>
-      </p-card>
-    </div>
+  <div class="centered-card">
+    <mat-card class="login-card">
+      <mat-card-header>
+        <mat-card-title>
+          Sign In
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+      Sign in with Auth0
+      </mat-card-content>
+      <mat-card-actions>
+        <button matButton="outlined" color=primary (click)="oauthService.initImplicitFlow()">
+          <mat-icon>login</mat-icon>
+          Sign In
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </div>
-<!--  <div class="centered-card">-->
-<!--    <mat-card class="login-card">-->
-<!--      <mat-card-header>-->
-<!--        <mat-card-title>-->
-<!--          Sign In-->
-<!--        </mat-card-title>-->
-<!--      </mat-card-header>-->
-<!--      <mat-card-content>-->
-<!--      Sign in with Auth0-->
-<!--      </mat-card-content>-->
-<!--      <mat-card-actions>-->
-<!--        <button matButton="outlined" (click)="oauthService.initImplicitFlow()">-->
-<!--          <mat-icon>login</mat-icon>-->
-<!--          Sign In-->
-<!--        </button>-->
-<!--      </mat-card-actions>-->
-<!--    </mat-card>-->
-<!--  </div>-->
 }

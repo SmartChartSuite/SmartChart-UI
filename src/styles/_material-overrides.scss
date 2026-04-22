@@ -1,0 +1,74 @@
+// Angular Material Component Overrides
+@use '@angular/material' as mat;
+
+// Material Theme Configuration
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Inter,
+    density: -2,
+  ));
+}
+
+// Form Field Overrides
+:root {
+  @include mat.form-field-overrides((
+    error-text-color: var(--color-error),
+    filled-error-caret-color: var(--color-error),
+    outlined-error-outline-color: var(--color-error),
+    container-height: 2.5rem,              // 40px
+    container-vertical-padding: 0.5rem,    // 8px
+    filled-with-label-container-padding-top: 0.5rem,
+    filled-with-label-container-padding-bottom: 0.5rem,
+    outlined-input-text-placeholder-color: var(--color-placeholder),
+    trailing-icon-color: var(--zinc-400),
+  ));
+
+  // Select Overrides
+  @include mat.select-overrides((
+    trigger-text-size: 0.875rem,           // 14px
+    trigger-text-line-height: 1.25rem,     // 20px
+  ));
+
+  // Table Overrides - Compact Display
+  @include mat.table-overrides((
+    header-container-height: 2.5rem,       // 40px (default: 56px)
+    row-item-container-height: 2.25rem,    // 36px (default: 52px)
+    footer-container-height: 2.5rem,       // 40px (default: 52px)
+    header-headline-size: 0.8125rem,       // 13px
+    row-item-label-text-size: 0.8125rem,   // 13px
+    header-headline-line-height: 1.125rem, // 18px
+    row-item-label-text-line-height: 1.125rem,
+  ));
+}
+
+// Mat-Option Overrides
+.mat-mdc-option {
+  --mat-option-label-text-size: 0.875rem;      // 14px
+  --mat-option-label-text-line-height: 1.25rem; // 20px
+}
+
+// Mat-Form-Field Icon Overrides
+.mat-mdc-form-field {
+  .mat-mdc-form-field-icon-suffix {
+    .mat-mdc-icon-button.mat-mdc-button-base {
+      --mdc-icon-button-state-layer-size: 2rem;  // 32px
+      --mat-icon-button-state-layer-size: 2rem;
+      width: var(--mat-icon-button-state-layer-size);
+      height: var(--mat-icon-button-state-layer-size);
+      padding: 0.375rem; // 6px
+    }
+  }
+}
+
+// Primary Outlined Button Override
+.primary-outlined {
+  @include mat.button-overrides((
+    outlined-outline-color: var(--color-primary),
+    outlined-label-text-color: var(--color-primary),
+  ));
+}
