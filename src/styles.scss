@@ -4,6 +4,7 @@
 @use 'styles/layout' as *;
 @use 'styles/utilities' as *;
 @use 'styles/components' as *;
+@use 'styles/material-overrides' as *;
 
 html {
   @include mat.theme((

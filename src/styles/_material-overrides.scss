@@ -13,14 +13,10 @@ $custom-typography: mat.m2-define-typography-config(
 // Form Field Overrides
 :root {
   @include mat.form-field-overrides((
-    error-text-color: var(--color-error),
-    filled-error-caret-color: var(--color-error),
-    outlined-error-outline-color: var(--color-error),
-    container-height: 2.5rem,
-    container-vertical-padding: 0.5rem,
-    filled-with-label-container-padding-top: 0.5rem,
-    filled-with-label-container-padding-bottom: 0.5rem,
-    outlined-input-text-placeholder-color: var(--color-placeholder),
+    container-height: 40px,
+    container-vertical-padding: 8px,
+    filled-with-label-container-padding-top: 8px,
+    filled-with-label-container-padding-bottom: 8px,
     trailing-icon-color: var(--zinc-400),
   ));
 
