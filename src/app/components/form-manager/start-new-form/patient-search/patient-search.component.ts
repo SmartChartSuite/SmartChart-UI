@@ -116,8 +116,52 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
     this.searchForm.markAllAsTouched();
 
     if(this.searchForm.valid){
-      this.executeSearch(this.searchForm.value);
+      // Build search parameters based on selected criteria
+      const searchParameters = this.buildSearchParameters(selectedSearchCriteria);
+      this.executeSearch(searchParameters);
     }
+  }
+
+  private buildSearchParameters(searchCriteria: searchByType): PatientSearchParameters {
+    let searchParams = new PatientSearchParameters();
+
+    switch (searchCriteria) {
+      case searchByType.IDENTIFIER:
+        const identifier = this.searchForm.get('identifier')?.value;
+        if (identifier) {
+          searchParams = searchParams.set('identifier', identifier) as PatientSearchParameters;
+        }
+        break;
+
+      case searchByType.NAME_AND_DOB:
+        const given = this.searchForm.get('given')?.value;
+        const family = this.searchForm.get('family')?.value;
+        const dob = this.searchForm.get('dob')?.value;
+
+        if (given) {
+          searchParams = searchParams.set('given', given) as PatientSearchParameters;
+        }
+        if (family) {
+          searchParams = searchParams.set('family', family) as PatientSearchParameters;
+        }
+        if (dob) {
+          // Format date as YYYY-MM-DD
+          const formattedDate = dob instanceof Date
+            ? dob.toISOString().split('T')[0]
+            : dob;
+          searchParams = searchParams.set('birthdate', formattedDate) as PatientSearchParameters;
+        }
+        break;
+
+      case searchByType.FHIR_ID:
+        const fhirId = this.searchForm.get('fhirId')?.value;
+        if (fhirId) {
+          searchParams = searchParams.set('_id', fhirId) as PatientSearchParameters;
+        }
+        break;
+    }
+
+    return searchParams;
   }
 
   private executeSearch(searchParams: PatientSearchParameters) {
