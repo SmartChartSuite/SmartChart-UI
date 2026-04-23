@@ -172,3 +172,8 @@ $spacing-sizes: (
 .content-spacer {
   flex: 1 1 auto;
 }
+
+.col-right-aligned{
+  display: flex;
+  justify-content: flex-end;
+}

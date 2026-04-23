@@ -1,3 +1,7 @@
+$primary-menu: #213368;
+$primary-text-color: #ccd4ff;
+$primary-selected: #354d92;
+
 .app-header {
   position: fixed;
   top: 0;
@@ -8,8 +12,9 @@
   align-items: center;
   height: 64px;
   padding: 0 12px;
-  background: #213368;
+  background: $primary-menu;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  gap: 16px;
 }
 
 .logo-container {
@@ -66,4 +71,83 @@
   margin-left: 4px;
   border-left: 1px solid #ececec;
   color: #ffffff;
+}
+
+.horizontal-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 24px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: $primary-text-color !important;
+  transition: all 0.2s ease-in-out;
+
+  --mdc-text-button-label-text-color: #{$primary-text-color};
+  --mat-text-button-state-layer-color: #{$primary-text-color};
+  --mat-text-button-ripple-color: rgba(255, 255, 255, 0.1);
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: $primary-text-color;
+  }
+
+  span {
+    font-size: 14px;
+    font-weight: 500;
+    color: $primary-text-color;
+  }
+
+  &:hover {
+    background-color: $primary-selected;
+    color: $primary-text-color;
+
+    mat-icon, span {
+      color: $primary-text-color;
+    }
+  }
+
+  &.active {
+    color: #ffffff;
+
+    mat-icon, span {
+      color: white;
+    }
+  }
+}
+
+.header-spacer {
+  flex: 1;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logout-button {
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding-left: 16px;
+  margin-left: 8px;
+}
+
+.version-text {
+  font-size: 12px;
+  color: $primary-text-color;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+.nav-button {
+  --mat-button-text-label-text-color: white !important;
+  --mat-text-button-state-layer-color: white;
+  --mat-text-button-ripple-color: rgba(255, 255, 255, 0.1);
 }

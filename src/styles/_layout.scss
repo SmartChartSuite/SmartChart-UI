@@ -69,21 +69,3 @@ app-root {
     margin: 0;
   }
 }
-
-// Component Wrapper
-// Use the following for all router outlet level pages in a wrapping div.
-.component-wrapper {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  align-content: stretch;
-  align-items: stretch;
-  overflow-y: hidden;
-
-  > .component-content {
-    padding: $spacing-md;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-    flex: 1;
-  }
-}

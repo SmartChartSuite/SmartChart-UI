@@ -3,12 +3,51 @@
     @if (oauthService.hasValidAccessToken()) {
       <ng-container class="profile-wrapper"></ng-container>
     }
+
     @if (user()) {
       <div>
         <img
-          [src]="user()?.['picture'] ? user()?.['picture'] : '/assets/portrait_placeholder.png'"
+          [src]="user()?.['picture'] ? user()?.['picture'] : '/assets/img/portrait_placeholder.png'"
+          [attr.alt]="'Profile picture for ' + user()?.['name'] + '. Click to open user menu.'"
           referrerpolicy="no-referrer"
-          class="profile-image">
+          class="profile-image"
+          [matMenuTriggerFor]="userMenu"
+          [attr.tabindex]="'0'"
+          [attr.role]="'button'"
+          [attr.aria-haspopup]="'menu'"
+          [attr.aria-label]="'Open user menu for ' + user()?.['name']">
+        <mat-menu
+          #userMenu="matMenu"
+          style="width: 250px;"
+          [attr.aria-label]="'User menu'">
+          <div
+            mat-menu-item>
+            <div
+              class="user-card"
+              role="group"
+              [attr.aria-label]="'User information'">
+              <img
+                [src]="user()?.['picture'] "
+                [attr.alt]="''"
+                referrerpolicy="no-referrer"
+                class="profile-image"
+                aria-hidden="true">
+              <div class="details">
+                <div class="name">{{user()?.['name'] }}</div>
+                <div class="email">{{user()?.['email']}}</div>
+              </div>
+            </div>
+          </div>
+          <mat-divider role="separator" aria-hidden="true"></mat-divider>
+          <button
+            mat-menu-item
+            type="button"
+            (click)="oauthService.logOut()"
+            [attr.aria-label]="'Sign out of your account'">
+            <mat-icon aria-hidden="true">logout</mat-icon>
+            <span>Sign Out</span>
+          </button>
+        </mat-menu>
       </div>
     }
   </div>

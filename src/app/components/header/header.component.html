@@ -19,4 +19,47 @@
     </div>
     <div class="logo-subtitle">Form-based Chart Abstraction</div>
   </div>
+
+  @if (oauthService.hasValidAccessToken()) {
+    <nav class="horizontal-nav">
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('')"
+              [ngClass]="{'active': currentRoute === ''}">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </button>
+
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/forms')"
+              [ngClass]="{'active': currentRoute === '/forms'}">
+        <mat-icon>person_search</mat-icon>
+        <span>Chart Abstractions</span>
+      </button>
+
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/form-viewer')"
+              [ngClass]="{'active': currentRoute === '/form-viewer'}">
+        <mat-icon>list_alt</mat-icon>
+        <span>Current Chart</span>
+      </button>
+    </nav>
+  }
+
+  <div class="header-spacer"></div>
+
+  <div class="header-actions">
+    @if (oauthService.hasValidAccessToken()) {
+      <span class="icon">
+        <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login>
+      </span>
+    } @else {
+      <button mat-button class="nav-item"
+              (click)="this.oauthService.initLoginFlow();"
+              [ngClass]="{'active': currentRoute === '/form-viewer'}">
+        <mat-icon>login</mat-icon>
+        <span>Sign In</span>
+      </button>
+    }
+    <div class="version-text">v{{ configService?.config?.version }}</div>
+  </div>
 </header>
