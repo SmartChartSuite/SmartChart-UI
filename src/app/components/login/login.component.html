@@ -4,18 +4,18 @@
       <ng-container class="profile-wrapper"></ng-container>
     }
 
-    @if (user()) {
+    @if (oauthService.getIdentityClaims()) {
       <div>
         <img
-          [src]="user()?.['picture'] ? user()?.['picture'] : '/assets/img/portrait_placeholder.png'"
-          [attr.alt]="'Profile picture for ' + user()?.['name'] + '. Click to open user menu.'"
+          [src]="oauthService.getIdentityClaims()?.['picture'] ? oauthService.getIdentityClaims()?.['picture'] : '/assets/img/portrait_placeholder.png'"
+          [attr.alt]="'Profile picture for ' + oauthService.getIdentityClaims()?.['name'] + '. Click to open user menu.'"
           referrerpolicy="no-referrer"
           class="profile-image"
           [matMenuTriggerFor]="userMenu"
           [attr.tabindex]="'0'"
           [attr.role]="'button'"
           [attr.aria-haspopup]="'menu'"
-          [attr.aria-label]="'Open user menu for ' + user()?.['name']">
+          [attr.aria-label]="'Open user menu for ' + oauthService.getIdentityClaims()?.['name']">
         <mat-menu
           #userMenu="matMenu"
           style="width: 250px;"
@@ -27,14 +27,14 @@
               role="group"
               [attr.aria-label]="'User information'">
               <img
-                [src]="user()?.['picture'] "
+                [src]="oauthService.getIdentityClaims()?.['picture'] "
                 [attr.alt]="''"
                 referrerpolicy="no-referrer"
                 class="profile-image"
                 aria-hidden="true">
               <div class="details">
-                <div class="name">{{user()?.['name'] }}</div>
-                <div class="email">{{user()?.['email']}}</div>
+                <div class="name">{{oauthService.getIdentityClaims()?.['name'] }}</div>
+                <div class="email">{{oauthService.getIdentityClaims()?.['email']}}</div>
               </div>
             </div>
           </div>

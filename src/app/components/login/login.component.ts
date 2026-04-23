@@ -25,7 +25,6 @@ import {MatDivider} from "@angular/material/list";
 export class LoginComponent {
 
   isLocatedInMainMenu = input.required<boolean>();
-  user = computed(() => this.oauthService.getIdentityClaims());
   public oauthService: OAuthService = inject(OAuthService);
   public configService: ConfigService = inject(ConfigService);
 

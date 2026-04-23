@@ -1,12 +1,14 @@
-import {Component, inject} from '@angular/core';
+import {Component, computed, inject} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
 import {MatTooltip} from "@angular/material/tooltip";
 import {ConfigService} from "../../services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 import {NgClass} from "@angular/common";
 import {LoginComponent} from "../login/login.component";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {filter, map} from "rxjs/operators";
 
 @Component({
   selector: 'app-header',
@@ -25,11 +27,18 @@ export class HeaderComponent {
   oauthService = inject(OAuthService);
   router = inject(Router);
 
-  currentRoute: string = '';
+  private routerEvents = toSignal(
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      map((event: NavigationEnd) => event.urlAfterRedirects)
+    ),
+    { initialValue: this.router.url }
+  );
+
+  protected readonly currentRoute = computed(() => this.routerEvents() ?? '');
 
   protected onPathSelected(path: string) {
     this.router.navigate([path]);
-    this.currentRoute = path;
   }
 
   protected onLogout() {
