@@ -5,6 +5,14 @@
 @use 'styles/utilities' as *;
 @use 'styles/components' as *;
 @use 'styles/material-overrides' as *;
+@use 'styles/prime' as *;
+
+// Define custom typography configuration with 1rem base font size
+$custom-typography: mat.m2-define-typography-config(
+  $font-family: 'Inter, "Helvetica Neue", sans-serif',
+  $body-1: mat.m2-define-typography-level(1rem, 1.5rem, 400),
+  $body-2: mat.m2-define-typography-level(1rem, 1.5rem, 400),
+);
 
 html {
   @include mat.theme((
@@ -13,7 +21,7 @@ html {
       primary: mat.$azure-palette,
       tertiary: mat.$blue-palette,
     ),
-    typography: Inter,
+    typography: $custom-typography,
     density: -2,
   ));
 }
@@ -47,5 +55,3 @@ html {
     flex: 1;             // Stretches to fill wrapper.
   }
 }
-
-

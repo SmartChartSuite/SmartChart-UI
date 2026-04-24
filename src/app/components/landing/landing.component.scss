@@ -42,7 +42,6 @@ $blue-accent-color: #005cbb;
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  overflow: hidden;
   justify-content: stretch;
 
   > * {
@@ -118,4 +117,13 @@ $blue-accent-color: #005cbb;
 font-weight: 600;
 color: #4e4e4e;
 flex-basis: min-content;
+}
+
+
+.carousel{
+  margin: 4em 4em;
+}
+
+.centered-img{
+  margin: auto;
 }

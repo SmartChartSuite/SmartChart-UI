@@ -177,3 +177,49 @@ $spacing-sizes: (
   display: flex;
   justify-content: flex-end;
 }
+
+.col {
+  flex: 1;        /* distributes space on the line equally among items */
+}
+
+// 50/50 Column Layout
+// Use for layouts requiring exact 50% width columns with proper image fitting
+.col-50 {
+  flex: 0 0 50%;        // Fixed 50% width, no grow/shrink
+  max-width: 50%;       // Enforce maximum width
+  min-width: 0;         // Allow flex items to shrink below content size
+  box-sizing: border-box;
+  padding: 1rem;        // Add comfortable spacing between columns
+
+  // Ensure images fit within the column
+  img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    border: 1px solid var(--color-border); // Use existing border color variable
+    border-radius: var(--radius-xs);      // Use existing radius variable (0.25rem)
+  }
+
+  // Responsive: Stack on smaller screens
+  @media screen and (max-width: 768px) {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+// 50/50 Column Layout with vertical centering
+// Use for image columns that need to be vertically centered
+.col-50-centered {
+  @extend .col-50;
+  margin: auto;         // Center the column content vertically
+}
+
+// Flex row variant without overflow hidden for content that needs to flow
+.flex-row-wrap {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}

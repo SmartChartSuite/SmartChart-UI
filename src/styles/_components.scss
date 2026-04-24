@@ -92,6 +92,87 @@
   }
 }
 
+// Centered Screen Container
+// Responsive container that centers content with appropriate padding
+// Mobile-first approach with progressive enhancement
+.centered-screen {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0.25rem;
+  min-height: 100vh;
+
+  .centered-content {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  // Mobile (376px and up)
+  @media screen and (min-width: 376px) {
+    padding: 0.5rem;
+  }
+
+  // Small mobile (426px and up)
+  @media screen and (min-width: 426px) {
+    padding: 0.5rem;
+
+    .centered-content {
+      padding: 0.5rem;
+    }
+  }
+
+  // Tablet portrait (640px and up)
+  @media screen and (min-width: 640px) {
+    padding: 0.75rem;
+    min-height: 100vh;
+  }
+
+  // Tablet (768px and up)
+  @media screen and (min-width: 768px) {
+    padding: 1rem;
+
+    .centered-content {
+      max-width: 720px;
+    }
+  }
+
+  // Tablet landscape (900px and up)
+  @media screen and (min-width: 900px) {
+    padding: 1rem;
+
+    .centered-content {
+      max-width: 860px;
+    }
+  }
+
+  // iPad (992px and up)
+  @media screen and (min-width: 992px) {
+    padding: 2.5rem;
+
+    .centered-content {
+      max-width: 960px;
+    }
+  }
+
+  // Desktop (1064px and up)
+  @media screen and (min-width: 1064px) {
+    padding: 2rem;
+
+    .centered-content {
+      max-width: 1200px;
+    }
+  }
+
+  // Large desktop (1092px and up)
+  @media screen and (min-width: 1092px) {
+    padding: 2rem;
+
+    .centered-content {
+      max-width: 1400px;
+    }
+  }
+}
+
 // Record Viewer Container
 // Note: Consider moving this to the specific component's SCSS file
 .viewer-container-wrapper {

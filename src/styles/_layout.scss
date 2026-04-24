@@ -13,7 +13,7 @@ body {
   margin: 0;
   font-family: var(--font-family-primary);
   color: var(--color-text-primary);
-  font-size: 1rem; // 16px - explicit base font size
+  font-size: var(--font-size-base); // 1rem (16px) - base font size for entire app
   overflow: hidden; // Prevent body scroll, app-content-wrapper handles scrolling
 }
 
