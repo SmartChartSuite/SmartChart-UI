@@ -16,21 +16,21 @@ import Aura from '@primeuix/themes/aura';
 import {definePreset} from '@primeuix/themes';
 import Material from '@primeuix/themes/material';
 
-// Define custom Aura preset with Angular Material Indigo colors
-const IndigoAura = definePreset(Aura, {
+// Define custom Aura preset with custom primary color #213368
+const CustomAura = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '{indigo.50}',
-      100: '{indigo.100}',
-      200: '{indigo.200}',
-      300: '{indigo.300}',
-      400: '{indigo.400}',
-      500: '{indigo.500}',
-      600: '{indigo.600}',
-      700: '{indigo.700}',
-      800: '{indigo.800}',
-      900: '{indigo.900}',
-      950: '{indigo.950}'
+      50: '#e8eaf2',
+      100: '#c5cade',
+      200: '#9ea7c8',
+      300: '#7784b2',
+      400: '#5a69a1',
+      500: '#3d4f91',
+      600: '#374889',
+      700: '#2f3f7e',
+      800: '#273674',
+      900: '#1a2662',
+      950: '#213368'
     }
   }
 });
@@ -39,7 +39,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     providePrimeNG({
       theme: {
-        preset: IndigoAura,
+        preset: CustomAura,
         options: {
           prefix: 'p',
           darkModeSelector: false,
