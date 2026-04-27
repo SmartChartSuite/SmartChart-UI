@@ -14,11 +14,39 @@ $custom-typography: mat.m2-define-typography-config(
   $body-2: mat.m2-define-typography-level(1rem, 1.5rem, 400),
 );
 
+// Define custom primary palette based on #213368
+$custom-primary-palette: (
+  50: #e8eaf2,
+  100: #c5cade,
+  200: #9ea7c8,
+  300: #7784b2,
+  400: #5a69a1,
+  500: #3d4f91,
+  600: #374889,
+  700: #2f3f7e,
+  800: #273674,
+  900: #1a2662,
+  950: #213368,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    950: white,
+  )
+);
+
 html {
   @include mat.theme((
     color: (
       theme-type: light,
-      primary: mat.$azure-palette,
+      primary: mat.m2-define-palette($custom-primary-palette, 950),
       tertiary: mat.$blue-palette,
     ),
     typography: $custom-typography,
