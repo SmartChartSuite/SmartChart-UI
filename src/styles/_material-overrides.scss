@@ -41,7 +41,7 @@ $custom-typography: mat.m2-define-typography-config(
 // Table Header Background Color Override
 .mat-mdc-table {
   .mat-mdc-header-row {
-    background-color: var(--color-primary-light);
+    background-color: #f6f6f6;
 
     .mat-mdc-header-cell {
       font-weight: 600;
