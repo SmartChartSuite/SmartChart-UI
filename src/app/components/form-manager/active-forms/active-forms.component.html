@@ -1,24 +1,8 @@
-<div class="margin-top-lg margin-bottom-md margin-right-sm margin-left-sm">
-  <mat-expansion-panel  [hideToggle]=true
-    (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
-    <mat-expansion-panel-header >
-      <mat-panel-title> Patient Form Filter
-        <span class="expansion-indicator">
-        @if(panelOpenState()){
-          <mat-icon>keyboard_arrow_up</mat-icon>
-        } @else {
-          <mat-icon>keyboard_arrow_down</mat-icon>
-        }
-        </span>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <app-active-forms-filter
-      [isLoading]="isLoading()"
-      (onFormValueChange)="onFiltersValueChanged($event)"
-    />
-
-  </mat-expansion-panel>
+<div class="border padding-md margin-top-md">
+  <app-active-forms-filter
+    [isLoading]="isLoading()"
+    (onFormValueChange)="onFiltersValueChanged($event)"
+  />
 </div>
 
 <app-active-forms-grid

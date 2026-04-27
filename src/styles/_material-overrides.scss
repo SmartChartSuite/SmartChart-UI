@@ -38,6 +38,17 @@ $custom-typography: mat.m2-define-typography-config(
   ));
 }
 
+// Table Header Background Color Override
+.mat-mdc-table {
+  .mat-mdc-header-row {
+    background-color: var(--color-primary-light);
+
+    .mat-mdc-header-cell {
+      font-weight: 600;
+    }
+  }
+}
+
 // Mat-Option Overrides
 .mat-mdc-option {
   --mat-option-label-text-size: 0.875rem;
