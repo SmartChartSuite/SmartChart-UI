@@ -1,7 +1,6 @@
 import {Component, computed, inject} from '@angular/core';
 import {MatIcon} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
-import {MatTooltip} from "@angular/material/tooltip";
 import {ConfigService} from "../../services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {NavigationEnd, Router} from "@angular/router";
@@ -15,7 +14,6 @@ import {filter, map} from "rxjs/operators";
   imports: [
     MatIcon,
     MatButton,
-    MatTooltip,
     NgClass,
     LoginComponent
   ],
