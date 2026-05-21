@@ -1,7 +1,3 @@
-$primary-menu: #213368;
-$primary-text-color: #ccd4ff;
-$primary-selected: #354d92;
-
 .app-header {
   position: fixed;
   top: 0;
@@ -12,7 +8,7 @@ $primary-selected: #354d92;
   align-items: center;
   height: 64px;
   padding: 0 12px;
-  background: $primary-menu;
+  background: var(--color-header-bg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   gap: 16px;
 }
@@ -38,7 +34,7 @@ $primary-selected: #354d92;
   height: 40px;
   background: rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  color: #ffffff;
+  color: var(--color-header-text-active);
   cursor: pointer;
   svg {
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
@@ -49,7 +45,7 @@ $primary-selected: #354d92;
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.5px;
-  color: #ffffff;
+  color: var(--color-header-text-active);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   user-select: none;
 }
@@ -70,8 +66,8 @@ $primary-selected: #354d92;
   letter-spacing: -.144px;
   padding: 4px 12px;
   margin-left: 4px;
-  border-left: 1px solid #ececec;
-  color: #ffffff;
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  color: var(--color-header-text-active);
 }
 
 .horizontal-nav {
@@ -87,40 +83,42 @@ $primary-selected: #354d92;
   gap: 8px;
   padding: 8px 16px;
   border-radius: 8px;
-  color: $primary-text-color !important;
+  color: var(--color-header-text) !important;
   transition: all 0.2s ease-in-out;
 
-  --mdc-text-button-label-text-color: #{$primary-text-color};
-  --mat-text-button-state-layer-color: #{$primary-text-color};
+  --mdc-text-button-label-text-color: var(--color-header-text);
+  --mat-text-button-state-layer-color: var(--color-header-text);
   --mat-text-button-ripple-color: rgba(255, 255, 255, 0.1);
 
   mat-icon {
     font-size: 20px;
     width: 20px;
     height: 20px;
-    color: $primary-text-color;
+    color: var(--color-header-text);
   }
 
   span {
     font-size: 14px;
     font-weight: 500;
-    color: $primary-text-color;
+    color: var(--color-header-text);
   }
 
   &:hover {
-    background-color: $primary-selected;
-    color: $primary-text-color;
+    background-color: var(--color-header-bg-hover);
+    color: var(--color-header-text);
 
     mat-icon, span {
-      color: $primary-text-color;
+      color: var(--color-header-text);
     }
   }
 
   &.active {
-    color: #ffffff;
+    background-color: var(--color-header-bg-active);
+    color: var(--color-header-text-active);
+    font-weight: 600;
 
     mat-icon, span {
-      color: white;
+      color: var(--color-header-text-active);
     }
   }
 }
@@ -143,7 +141,7 @@ $primary-selected: #354d92;
 
 .version-text {
   font-size: 12px;
-  color: $primary-text-color;
+  color: var(--color-header-text);
   opacity: 0.8;
   white-space: nowrap;
 }
