@@ -7,7 +7,7 @@
     @if (oauthService.getIdentityClaims()) {
       <div>
         <img
-          [src]="oauthService.getIdentityClaims()?.['picture'] ? oauthService.getIdentityClaims()?.['picture'] : '/assets/img/portrait_placeholder.png'"
+          [src]="profilePictureUrl()"
           [attr.alt]="'Profile picture for ' + oauthService.getIdentityClaims()?.['name'] + '. Click to open user menu.'"
           referrerpolicy="no-referrer"
           class="profile-image"
@@ -27,7 +27,7 @@
               role="group"
               [attr.aria-label]="'User information'">
               <img
-                [src]="oauthService.getIdentityClaims()?.['picture']"
+                [src]="profilePictureUrl()"
                 [attr.alt]="''"
                 referrerpolicy="no-referrer"
                 class="profile-image"

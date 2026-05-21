@@ -8,6 +8,7 @@ import {ButtonModule} from "primeng/button";
 import {MatButton} from "@angular/material/button";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatDivider} from "@angular/material/list";
+
 @Component({
   selector: 'sc-standalone-login',
   templateUrl: './login.component.html',
@@ -28,6 +29,12 @@ export class LoginComponent {
   isLocatedInMainMenu = input.required<boolean>();
   public oauthService: OAuthService = inject(OAuthService);
   public configService: ConfigService = inject(ConfigService);
+
+  // Computed signal for profile picture with fallback
+  protected readonly profilePictureUrl = computed(() => {
+    const claims = this.oauthService.getIdentityClaims();
+    return claims?.['picture'] || '/assets/img/portrait_placeholder.png';
+  });
 
   constructor() {
     this.configure();
