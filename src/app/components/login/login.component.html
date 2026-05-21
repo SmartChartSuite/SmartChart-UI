@@ -18,7 +18,7 @@
           [attr.aria-label]="'Open user menu for ' + oauthService.getIdentityClaims()?.['name']">
         <mat-menu
           #userMenu="matMenu"
-          style="width: 250px;"
+          class="wide-user-menu"
           [attr.aria-label]="'User menu'">
           <div
             mat-menu-item>
@@ -27,7 +27,7 @@
               role="group"
               [attr.aria-label]="'User information'">
               <img
-                [src]="oauthService.getIdentityClaims()?.['picture'] "
+                [src]="oauthService.getIdentityClaims()?.['picture']"
                 [attr.alt]="''"
                 referrerpolicy="no-referrer"
                 class="profile-image"

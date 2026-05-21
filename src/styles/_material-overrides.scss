@@ -75,3 +75,9 @@ $custom-typography: mat.m2-define-typography-config(
     outlined-label-text-color: var(--color-primary),
   ));
 }
+
+// User Menu Width Override
+.wide-user-menu.mat-mdc-menu-panel {
+  max-width: 350px !important;
+  min-width: 300px;
+}
