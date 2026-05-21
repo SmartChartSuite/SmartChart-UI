@@ -30,14 +30,20 @@ export class LoginComponent {
   public oauthService: OAuthService = inject(OAuthService);
   public configService: ConfigService = inject(ConfigService);
 
-  // Computed signal for profile picture with fallback
-  protected readonly profilePictureUrl = computed(() => {
-    const claims = this.oauthService.getIdentityClaims();
-    return claims?.['picture'] || '/assets/img/portrait_placeholder.png';
-  });
-
   constructor() {
     this.configure();
+  }
+
+  // Method for profile picture with fallback - called by Angular change detection
+  protected profilePictureUrl(): string {
+    const claims = this.oauthService.getIdentityClaims();
+    return claims?.['picture'] || '/assets/img/portrait_placeholder.png';
+  }
+
+  // Handle image loading errors by falling back to placeholder
+  protected onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = '/assets/img/portrait_placeholder.png';
   }
 
   private configure() {

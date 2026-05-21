@@ -8,6 +8,7 @@
       <div>
         <img
           [src]="profilePictureUrl()"
+          (error)="onImageError($event)"
           [attr.alt]="'Profile picture for ' + oauthService.getIdentityClaims()?.['name'] + '. Click to open user menu.'"
           referrerpolicy="no-referrer"
           class="profile-image"
@@ -28,6 +29,7 @@
               [attr.aria-label]="'User information'">
               <img
                 [src]="profilePictureUrl()"
+                (error)="onImageError($event)"
                 [attr.alt]="''"
                 referrerpolicy="no-referrer"
                 class="profile-image"
