@@ -2,56 +2,74 @@
   <div class="inputs-container">
 
     <!--Patient Name-->
-    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name">
-    </mat-form-field>
+    <p-floatlabel class="margin-right-md full-width">
+      <input
+        id="name"
+        type="text"
+        pInputText
+        formControlName="name"
+        class="full-width"
+      />
+      <label for="name">Name</label>
+    </p-floatlabel>
+
+
 
     <!--Gender-->
-    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
-      <mat-label>Gender</mat-label>
-      <mat-select formControlName="gender">
-        @for (gender of GENDER_LIST; track gender) {
-          <mat-option [value]="gender">{{ gender }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <p-floatlabel class="margin-right-md full-width">
+      <p-multiselect
+        inputId="gender"
+        [options]="GENDER_LIST"
+        formControlName="gender"
+        class="full-width"
+        appendTo="body"
+        display="chip"
+      ></p-multiselect>
+      <label for="gender">Gender</label>
+    </p-floatlabel>
 
     <!--DoB Range-->
-    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
-      <mat-label>DoB Range</mat-label>
-      <mat-date-range-input [formGroup]="dobRange" [rangePicker]="dobPicker">
-        <input matStartDate formControlName="dobStart" placeholder="Start date">
-        <input matEndDate formControlName="dobEnd" placeholder="End date">
-      </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="dobPicker"></mat-datepicker-toggle>
-
-      <mat-date-range-picker #dobPicker></mat-date-range-picker>
-    </mat-form-field>
+    <p-floatlabel class="margin-right-md full-width">
+      <p-datepicker
+        inputId="dobRange"
+        formControlName="dobRange"
+        selectionMode="range"
+        [readonlyInput]="true"
+        dateFormat="mm/dd/yy"
+        [showIcon]="true"
+        class="full-width"
+        appendTo="body"
+      ></p-datepicker>
+      <label for="dobRange">DoB Range</label>
+    </p-floatlabel>
 
     <!--Form Name-->
-    <mat-form-field appearance="outline" class="margin-right-md full-width" floatLabel="always">
-      <mat-label>Form Name</mat-label>
-      <mat-select formControlName="formName">
-        <!-- TODO replace formName.name with formName.title when proper API implementation is available for the grid -->
-        @for (formName of formList; track formName) {
-          <mat-option [value]="formName">{{ formName.name }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
+    <p-floatlabel class="margin-right-md full-width">
+      <p-select
+        inputId="formName"
+        [options]="formList"
+        formControlName="formName"
+        optionLabel="name"
+        class="full-width"
+        appendTo="body"
+      ></p-select>
+      <label for="formName">Form Name</label>
+    </p-floatlabel>
 
     <!--Started Range-->
-    <mat-form-field appearance="outline" class="full-width" floatLabel="always">
-      <mat-label>Started Range</mat-label>
-      <mat-date-range-input [formGroup]="startedRange" [rangePicker]="startedPicker">
-        <input matStartDate formControlName="start" placeholder="Start date">
-        <input matEndDate formControlName="end" placeholder="End date">
-      </mat-date-range-input>
-      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="startedPicker"></mat-datepicker-toggle>
-      <mat-date-range-picker #startedPicker></mat-date-range-picker>
-    </mat-form-field>
+    <p-floatlabel class="full-width">
+      <p-datepicker
+        inputId="startedRange"
+        formControlName="startedRange"
+        selectionMode="range"
+        [readonlyInput]="true"
+        dateFormat="mm/dd/yy"
+        [showIcon]="true"
+        class="full-width"
+        appendTo="body"
+      ></p-datepicker>
+      <label for="startedRange">Started Range</label>
+    </p-floatlabel>
 
     <!--Status-->
     <!--TODO render the status field when implement in the API -->
@@ -65,8 +83,8 @@
 <!--    </mat-form-field>-->
   </div>
 
-  <div>
-    <button matButton="outlined" class="primary-outlined" (click)="onClearForm()">Clear Filters</button>
+  <div class="margin-top-md">
+    <button matButton="filled" color="primary" (click)="onClearForm()">Clear Filters</button>
   </div>
 
 </form>

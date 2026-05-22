@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import { MatCardTitle } from '@angular/material/card';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-create-group-dialog',
@@ -16,13 +16,11 @@ import { MatIcon } from '@angular/material/icon';
     MatDialogContent,
     FormsModule,
     ReactiveFormsModule,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatError,
     MatButton,
     MatIcon,
-    MatDialogTitle
+    MatDialogTitle,
+    FloatLabelModule,
+    InputTextModule
   ]
 })
 export class CreateGroupDialogComponent {

@@ -18,3 +18,13 @@
   border-radius: 10px;
   margin-bottom: 1rem;
 }
+
+// Ensure consistent input heights across PrimeNG components
+input[pInputText],
+.p-inputtext,
+.p-select,
+.p-multiselect,
+.p-datepicker {
+  height: 40px;
+}
+

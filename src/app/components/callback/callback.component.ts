@@ -14,8 +14,8 @@ export class CallbackComponent implements OnInit {
               private router: Router) {}
 
   ngOnInit(): void {
-    // The OAuth service should have already processed the callback in the login component
-    // via loadDiscoveryDocumentAndTryLogin(), so we just need to navigate
+    // The OAuth service should have already processed the callback during app initialization
+    // via AuthService.configure(), so we just need to navigate
     this.readState();
   }
 

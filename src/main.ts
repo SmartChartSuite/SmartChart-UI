@@ -8,6 +8,7 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {ConfigService} from "./app/services/config/config.service";
 import {StateManagementService} from "./app/services/state-management/state-management.service";
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
+import {AuthService} from "./app/services/auth/auth.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
@@ -53,11 +54,21 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(OAuthModule.forRoot()),
     provideAppInitializer(() => {
       const configService = inject(ConfigService);
-      return configService.loadConfig();
-    }),
-    provideAppInitializer(() => {
       const stateManagementService = inject(StateManagementService);
-      return stateManagementService.initializeState();
+      const authService = inject(AuthService);
+
+      // Load config first, then initialize state and auth in parallel
+      return new Promise<void>((resolve, reject) => {
+        configService.loadConfig().subscribe({
+          next: () => {
+            Promise.all([
+              stateManagementService.initializeState(),
+              authService.configure()
+            ]).then(() => resolve()).catch(reject);
+          },
+          error: reject
+        });
+      });
     }),
     provideHttpClient(withInterceptorsFromDi()),
     {
