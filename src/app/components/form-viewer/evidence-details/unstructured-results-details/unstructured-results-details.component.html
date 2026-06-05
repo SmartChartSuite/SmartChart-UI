@@ -3,7 +3,7 @@
     <div class="flex-row">
       <span class="row-label">Date (Age At):</span> {{ nlpAnswerDTO?.dateAgeAt }}
     </div>
-    @for (answerComponent of nlpAnswer?.componentAnswerList | slice:1; track answerComponent; let i = $index) {
+    @for (answerComponent of nlpAnswer?.componentAnswerList; track answerComponent; let i = $index) {
       <div class="flex-row margin-top-sm">
         <span class="row-label">{{ answerComponent.label }}</span> : {{ answerComponent.value }}
       </div>
