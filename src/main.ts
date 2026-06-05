@@ -1,5 +1,5 @@
 import {provideAppInitializer, importProvidersFrom, inject} from "@angular/core";
-import {provideHttpClient, withInterceptorsFromDi, HTTP_INTERCEPTORS} from "@angular/common/http";
+import {provideHttpClient, withInterceptorsFromDi, withInterceptors, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {bootstrapApplication} from "@angular/platform-browser";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideRouter} from "@angular/router";
@@ -8,6 +8,7 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {ConfigService} from "./app/services/config/config.service";
 import {StateManagementService} from "./app/services/state-management/state-management.service";
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
+import {httpErrorInterceptor} from "./app/interceptors/http-error.interceptor";
 import {AuthService} from "./app/services/auth/auth.service";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
@@ -70,7 +71,10 @@ bootstrapApplication(AppComponent, {
         });
       });
     }),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(
+      withInterceptors([httpErrorInterceptor]),
+      withInterceptorsFromDi()
+    ),
     {
       provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true
     }

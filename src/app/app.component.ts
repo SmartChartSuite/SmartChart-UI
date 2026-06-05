@@ -8,12 +8,13 @@ import {LoadingComponent} from './components/loading/loading.component';
 import {RouterOutlet} from '@angular/router';
 import {LoginComponent} from './components/login/login.component';
 import {HeaderComponent} from "./components/header/header.component";
+import {ErrorMessageComponent} from "./components/error-message/error-message.component";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [LoadingComponent, RouterOutlet, LoginComponent, HeaderComponent]
+  imports: [LoadingComponent, RouterOutlet, LoginComponent, HeaderComponent, ErrorMessageComponent]
 })
 export class AppComponent {
   title = '';

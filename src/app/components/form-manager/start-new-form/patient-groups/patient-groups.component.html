@@ -3,8 +3,8 @@
     <div class="no-hint-section">
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Group</mat-label>
-        <mat-select (selectionChange)="onGroupSelected($event)" [(value)]="selectedGroup">
-          @for (group of patientGroups; track group) {
+        <mat-select (selectionChange)="onGroupSelected($event)" [value]="selectedGroup()">
+          @for (group of patientGroups(); track group) {
             <mat-option [value]="group">{{ group.groupName }}</mat-option>
           }
         </mat-select>
@@ -17,6 +17,6 @@
     </div>
   </div>
   <app-patient-summary-table
-    [patientSummaryData]="patientSummaryData"
+    [patientSummaryData]="patientSummaryData()"
   />
 </div>
