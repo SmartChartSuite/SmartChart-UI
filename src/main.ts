@@ -10,13 +10,12 @@ import {StateManagementService} from "./app/services/state-management/state-mana
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
 import {httpErrorInterceptor} from "./app/interceptors/http-error.interceptor";
 import {AuthService} from "./app/services/auth/auth.service";
-import {OAuthModule} from "angular-oauth2-oidc";
+import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig, OAuthResourceServerErrorHandler} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
 import {providePrimeNG} from "primeng/config";
 import Aura from '@primeuix/themes/aura';
 import {definePreset} from '@primeuix/themes';
-import Material from '@primeuix/themes/material';
 
 // Define custom Aura preset with custom primary color #213368
 const CustomAura = definePreset(Aura, {
@@ -53,6 +52,11 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes),
     provideNativeDateAdapter(),
     importProvidersFrom(OAuthModule.forRoot()),
+    {
+      provide: OAuthModuleConfig,
+      useFactory: (configService: ConfigService) => configService.oAuthModuleConfig,
+      deps: [ConfigService]
+    },
     provideAppInitializer(() => {
       const configService = inject(ConfigService);
       const stateManagementService = inject(StateManagementService);
@@ -75,6 +79,9 @@ bootstrapApplication(AppComponent, {
       withInterceptors([httpErrorInterceptor]),
       withInterceptorsFromDi()
     ),
+    {
+      provide: HTTP_INTERCEPTORS, useClass: DefaultOAuthInterceptor, multi: true
+    },
     {
       provide: HTTP_INTERCEPTORS, useClass: LoggingInterceptor, multi: true
     }

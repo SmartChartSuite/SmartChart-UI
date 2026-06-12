@@ -19,6 +19,11 @@ export class AuthService {
     this.oauthService.customQueryParams = this.configService.config.auth.customQueryParams;
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
 
+    // Configure resource server settings for the interceptor
+    if (this.configService.oAuthModuleConfig?.resourceServer) {
+      this.oauthService.setupAutomaticSilentRefresh();
+    }
+
     // Load discovery document and attempt login if returning from OAuth callback
     return this.oauthService.loadDiscoveryDocumentAndTryLogin();
   }
