@@ -151,7 +151,7 @@
                     <!--                          show progress spinner                                           -->
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
-
+<!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
                     @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                       <div class="margin-bottom-sm">
                         Suggested Answer:

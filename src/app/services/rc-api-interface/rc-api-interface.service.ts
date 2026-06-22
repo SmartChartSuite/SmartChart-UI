@@ -234,11 +234,11 @@ export class RcApiInterfaceService {
             });
 
             // Begin adding new properties
-            nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-prompt')?.valueString;
-            nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-answer')?.valueString;
-            nlpAnswer.resultValue = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'resultValue')?.valueString;
-            nlpAnswer.reasoning = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'reasoning')?.valueString;
-            nlpAnswer.evidenceText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'evidenceText')?.valueString;
+            // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-prompt')?.valueString;
+            // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-answer')?.valueString;
+            // nlpAnswer.resultValue = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'resultValue')?.valueString;
+            // nlpAnswer.reasoning = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'reasoning')?.valueString;
+            // nlpAnswer.evidenceText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'evidenceText')?.valueString;
             //end adding new properties
 
             let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList);
