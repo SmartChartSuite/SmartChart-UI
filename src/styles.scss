@@ -14,12 +14,15 @@ $custom-primary-palette: (
   200: #9ea7c8,
   300: #7784b2,
   400: #5a69a1,
-  500: #3d4f91,
-  600: #374889,
-  700: #2f3f7e,
-  800: #273674,
-  900: #1a2662,
-  950: #213368,
+  500: #213368,
+  600: #1c2a56,
+  700: #162044,
+  800: #101632,
+  900: #0a0c20,
+  A100: #c5cade,
+  A200: #9ea7c8,
+  A400: #5a69a1,
+  A700: #162044,
   contrast: (
     50: rgba(black, 0.87),
     100: rgba(black, 0.87),
@@ -31,20 +34,27 @@ $custom-primary-palette: (
     700: white,
     800: white,
     900: white,
-    950: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: white,
+    A700: white,
   )
 );
 
+$primary: mat.m2-define-palette($custom-primary-palette, 500);
+$accent: mat.m2-define-palette($custom-primary-palette, 500);
+
+$theme: mat.m2-define-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+  ),
+  typography: $custom-typography,
+  density: -1,
+));
+
 html {
-  @include mat.theme((
-    color: (
-      theme-type: light,
-      primary: mat.m2-define-palette($custom-primary-palette, 950),
-      tertiary: mat.$blue-palette,
-    ),
-    typography: $custom-typography,
-    density: -1,
-  ));
+  @include mat.all-component-themes($theme);
 }
 
 //** Component Wrappers **//
