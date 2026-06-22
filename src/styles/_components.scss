@@ -1,0 +1,306 @@
+// Component-specific styles
+// These are reusable component patterns used across the application
+@use 'variables' as *;
+
+// Description Box
+.description-box {
+  font-variant-caps: small-caps;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  margin: $spacing-sm;
+  background-color: var(--color-bg-description);
+}
+
+// Label Text
+.label-text {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: var(--color-text-secondary);
+}
+
+// Snackbar Offset
+.snackbar-offset {
+  transform: translateY(90vh) !important;
+}
+
+// Alert Component
+.alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin: 1rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+  line-height: 1.3em;
+
+  &.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+  }
+
+  &.alert-secondary {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+  }
+
+  &.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+
+  &.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+  &.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+
+  &.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+  }
+
+  &.alert-light {
+    color: #818182;
+    background-color: #fefefe;
+    border-color: #fdfdfe;
+  }
+
+  &.alert-dark {
+    color: #1b1e21;
+    background-color: #d6d8d9;
+    border-color: #c6c8ca;
+  }
+
+  .alert-heading {
+    color: inherit;
+  }
+
+  .alert-link {
+    font-weight: 700;
+    color: inherit;
+  }
+}
+
+// Centered Screen Container
+// Responsive container that centers content with appropriate padding
+// Mobile-first approach with progressive enhancement
+.centered-screen {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0.25rem;
+  min-height: 100vh;
+
+  .centered-content {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  // Mobile (376px and up)
+  @media screen and (min-width: 376px) {
+    padding: 0.5rem;
+  }
+
+  // Small mobile (426px and up)
+  @media screen and (min-width: 426px) {
+    padding: 0.5rem;
+
+    .centered-content {
+      padding: 0.5rem;
+    }
+  }
+
+  // Tablet portrait (640px and up)
+  @media screen and (min-width: 640px) {
+    padding: 0.75rem;
+    min-height: 100vh;
+  }
+
+  // Tablet (768px and up)
+  @media screen and (min-width: 768px) {
+    padding: 1rem;
+
+    .centered-content {
+      max-width: 720px;
+    }
+  }
+
+  // Tablet landscape (900px and up)
+  @media screen and (min-width: 900px) {
+    padding: 1rem;
+
+    .centered-content {
+      max-width: 860px;
+    }
+  }
+
+  // iPad (992px and up)
+  @media screen and (min-width: 992px) {
+    padding: 2.5rem;
+
+    .centered-content {
+      max-width: 960px;
+    }
+  }
+
+  // Desktop (1064px and up)
+  @media screen and (min-width: 1064px) {
+    padding: 2rem;
+
+    .centered-content {
+      max-width: 1200px;
+    }
+  }
+
+  // Large desktop (1092px and up)
+  @media screen and (min-width: 1092px) {
+    padding: 2rem;
+
+    .centered-content {
+      max-width: 1400px;
+    }
+  }
+}
+
+// Record Viewer Container
+// Note: Consider moving this to the specific component's SCSS file
+.viewer-container-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-content: stretch;
+  align-items: stretch;
+  overflow-y: hidden;
+
+  > .viewer-container-header {
+    display: flex;
+    flex-direction: row;
+    min-height: 2.25rem; // 36px
+
+    > .job-details-wrapper {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      width: 100%;
+      border-top: #dee2ea solid 1px;
+      border-bottom: #dee2ea solid 1px;
+      background-color: var(--color-bg-light);
+      align-items: center;
+      justify-content: end;
+
+      > .job-details-label {
+        font-weight: bold;
+      }
+
+      > .job-details-value {
+        display: flex;
+        flex-direction: row;
+        margin-right: $spacing-sm;
+        margin-left: $spacing-sm;
+      }
+
+      > .job-details-spinner {
+        margin-right: $spacing-sm;
+      }
+    }
+  }
+
+  > .viewer-container-body {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    scroll-behavior: smooth;
+    overflow-y: hidden;
+    align-content: stretch;
+    align-items: stretch;
+
+    > * {
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    > .viewer-container-body-content {
+      flex: 1;
+      padding: 2em;
+    }
+
+    > .viewer-container-body-side-explorer {
+      animation-name: open-explorer;
+      animation-duration: var(--transition-fast);
+      width: 30%;
+      border: 1px solid #c1d1ff;
+      border-radius: 0.25rem; // 4px
+
+      > .fhir-explorer-header {
+        justify-items: center;
+        text-align: center;
+        align-self: center;
+        display: flex;
+        flex-direction: row;
+        padding: $spacing-sm;
+        font-weight: bold;
+        font-size: larger;
+        background-color: var(--color-bg-explorer);
+        color: whitesmoke;
+
+        > * {
+          justify-items: center;
+          text-align: center;
+          align-self: center;
+        }
+
+        > .explorer-header-title {
+          margin-left: $spacing-md;
+          font-size: medium;
+          background-color: var(--color-bg-explorer);
+        }
+      }
+    }
+
+    > .viewer-container-body-side-explorer-expanded {
+      animation-name: open-explorer;
+      animation-duration: var(--transition-fast);
+      width: 45%;
+      border: 1px solid #c1d1ff;
+      border-radius: 0.25rem;
+
+      > .fhir-explorer-header {
+        justify-items: center;
+        text-align: center;
+        align-self: center;
+        display: flex;
+        flex-direction: row;
+        padding: $spacing-sm;
+        font-weight: bold;
+        font-size: larger;
+        background-color: var(--color-bg-explorer);
+        color: whitesmoke;
+
+        > * {
+          justify-items: center;
+          text-align: center;
+          align-self: center;
+        }
+
+        > .explorer-header-title {
+          margin-left: $spacing-md;
+          font-size: medium;
+          background-color: var(--color-bg-explorer);
+        }
+      }
+    }
+  }
+}

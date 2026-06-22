@@ -1,6 +1,8 @@
 <div class="app-wrapper">
-  <app-side-nav #sidenav (expandedStatusChangedEvent)="onExpandedStatusChanged($event)"></app-side-nav>
+  <app-header></app-header>
+
   <div #content class="app-content-wrapper">
+    <app-error-message></app-error-message>
     @if (oauthService.hasValidAccessToken()) {
       @if (loadingService.loading()) {
         <app-loading></app-loading>

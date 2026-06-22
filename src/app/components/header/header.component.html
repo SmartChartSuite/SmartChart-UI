@@ -1,0 +1,62 @@
+<header class="app-header">
+  <div class="logo-container">
+    <div class="logo" (click)="onPathSelected('/')">
+      <span class="logo-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Chart bars -->
+          <rect x="4" y="18" width="5" height="10" rx="1" fill="currentColor" opacity="0.7"/>
+          <rect x="11" y="12" width="5" height="16" rx="1" fill="currentColor" opacity="0.85"/>
+          <rect x="18" y="8" width="5" height="20" rx="1" fill="currentColor"/>
+          <rect x="25" y="14" width="5" height="14" rx="1" fill="currentColor" opacity="0.9"/>
+          <!-- Smart indicator (brain/circuit icon) -->
+          <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/>
+          <path d="M8 5 L8 3 M11 8 L13 8 M8 11 L8 13 M5 8 L3 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="logo-text">
+        <span class="logo-smart">Smart</span><span class="logo-chart">Chart</span>
+      </span>
+    </div>
+    <div class="logo-subtitle">Form-based Chart Abstraction</div>
+  </div>
+  @if (oauthService.hasValidAccessToken()) {
+    <nav class="horizontal-nav">
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/')"
+              [ngClass]="{'active': currentRoute() === '/'}">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </button>
+
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/forms')"
+              [ngClass]="{'active': currentRoute() === '/forms'}">
+        <mat-icon>person_search</mat-icon>
+        <span>Chart Abstractions</span>
+      </button>
+
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/form-viewer')"
+              [ngClass]="{'active': currentRoute() === '/form-viewer'}">
+        <mat-icon>list_alt</mat-icon>
+        <span>Current Chart</span>
+      </button>
+    </nav>
+  }
+  <div class="content-spacer"></div>
+  <div class="header-actions">
+    @if (oauthService.hasValidAccessToken()) {
+      <span class="icon">
+        <sc-standalone-login [isLocatedInMainMenu]="true"></sc-standalone-login>
+      </span>
+    } @else {
+      <button mat-button class="nav-item"
+              (click)="this.oauthService.initLoginFlow();"
+              [ngClass]="{'active': currentRoute() === '/form-viewer'}">
+        <mat-icon>login</mat-icon>
+        <span>Sign In</span>
+      </button>
+    }
+    <div class="version-text">{{ configService?.config?.version }}</div>
+  </div>
+</header>

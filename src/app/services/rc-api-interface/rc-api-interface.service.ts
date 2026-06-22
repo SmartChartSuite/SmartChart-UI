@@ -21,15 +21,24 @@ import {RcApiConfig} from "../../models/rc-api/rc-api-config";
   providedIn: 'root'
 })
 export class RcApiInterfaceService {
-  private base = "smartchartui"
+  // private base = "smartchartui"
+  // configEndpoint: string = `config`;
+  // patientEndpoint: string = `${this.base}/Patient`; // FHIR Conformant.
+  // groupEndpoint: string = `${this.base}/group`;
+  // questionnaireEndpoint: string = `${this.base}/questionnaire`;
+  // startJobsEndpoint: string = `${this.base}/batchjob?include_patient=True`;
+  // getJobPackageEndpoint: string = `forms`;
+  // getBatchJobsEndpoint: string = `${this.base}/batchjob`
+  // getResultsEndpoint: string = `${this.base}/results`
+
   configEndpoint: string = `config`;
-  patientEndpoint: string = `${this.base}/Patient`; // FHIR Conformant.
-  groupEndpoint: string = `${this.base}/group`;
-  questionnaireEndpoint: string = `${this.base}/questionnaire`;
-  startJobsEndpoint: string = `${this.base}/batchjob?include_patient=True`;
-  getJobPackageEndpoint: string = `forms`;
-  getBatchJobsEndpoint: string = `${this.base}/batchjob`
-  getResultsEndpoint: string = `${this.base}/results`
+  patientEndpoint: string = `Patient`; // FHIR Conformant.
+  groupEndpoint: string = `group`;
+  questionnaireEndpoint: string = `jobpackage`;
+  startJobsEndpoint: string = `batchjob?include_patient=True`;
+  getJobPackageEndpoint: string = `jobpackage`;
+  getBatchJobsEndpoint: string = `batchjob`
+  getResultsEndpoint: string = `batchjob`
   testResponse = testResponse;
 
   getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
@@ -132,8 +141,20 @@ export class RcApiInterfaceService {
   /**
    * Get a JobPackage questionnaire by the name of the Job Package using the standard RC API Endpoint.
    */
-  getJobPackage(jobPackage: string): Observable<any> {
-    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}/${jobPackage}`);
+  // getJobPackage(jobPackage: string): Observable<any> {
+  //   console.log(jobPackage);
+  //  //return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}/${jobPackage}`);
+  //   // TODO: see new api and refactor the code to handle accordingly
+  //   return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.getJobPackageEndpoint}?name=${jobPackage}`);
+  // }
+
+  getJobPackage(parameters: { key: string; value: string }): Observable<any> {
+    const params = { [parameters.key]: parameters.value };
+
+    return this.http.get<FhirBaseResource>(
+      this.configService.config.rcApiUrl + this.getJobPackageEndpoint,
+      { params }
+    );
   }
 
   /**
@@ -162,7 +183,7 @@ export class RcApiInterfaceService {
     );
   }
 
-  getBatchJob(id: string) {
+  getBatchJobById(id: string) {
     return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
   }
 
@@ -212,11 +233,26 @@ export class RcApiInterfaceService {
               return {label: component?.code?.coding?.[0]?.display, value: component.valueString} as AnswerComponent
             });
 
+            // Begin adding new properties
+            // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-prompt')?.valueString;
+            // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-answer')?.valueString;
+            // nlpAnswer.resultValue = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'resultValue')?.valueString;
+            // nlpAnswer.reasoning = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'reasoning')?.valueString;
+            // nlpAnswer.evidenceText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'evidenceText')?.valueString;
+            //end adding new properties
+
             let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList);
-            nlpAnswer.date = documentReference["date"]; // From DocumentReference
-            nlpAnswer.documentReferenceResource = documentReference;
-            nlpAnswer.fullText = atob(documentReference["content"][0]["attachment"]["data"]);
-            nlpAnswer.type = documentReference?.["type"]?.["coding"]?.[0]?.["display"];
+
+            if(documentReference){
+              nlpAnswer.date = documentReference["date"]; // From DocumentReference
+              nlpAnswer.documentReferenceResource = documentReference;
+              nlpAnswer.fullText = atob(documentReference["content"][0]["attachment"]["data"]);
+              nlpAnswer.type = documentReference?.["type"]?.["coding"]?.[0]?.["display"];
+            }
+            else {
+              console.warn("Document Reference Not Found!!!")
+            }
+
 
 
             if (!("nlpAnswers" in results[linkId])) {
@@ -257,7 +293,7 @@ export class RcApiInterfaceService {
 
   findDocumentReference(reference: string, evidenceBecList: BundleEntryComponent[]): FhirBaseResource {
     const bec = evidenceBecList.find(bec => bec.fullUrl === reference);
-    return bec.resource;
+    return bec?.resource ? bec.resource : null;
   }
 
   isRcApiObservation(resource: FhirBaseResource): boolean {

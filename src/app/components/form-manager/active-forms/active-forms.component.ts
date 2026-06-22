@@ -5,8 +5,6 @@ import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../services/utils/utils.service";
-import { MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import { MatIcon } from '@angular/material/icon';
 import { ActiveFormsFilterComponent } from './active-forms-filter/active-forms-filter.component';
 import { ActiveFormsGridComponent } from './active-forms-grid/active-forms-grid.component';
 
@@ -14,12 +12,10 @@ import { ActiveFormsGridComponent } from './active-forms-grid/active-forms-grid.
     selector: 'app-active-forms',
     templateUrl: './active-forms.component.html',
     styleUrl: './active-forms.component.scss',
-    imports: [MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, MatIcon, ActiveFormsFilterComponent, ActiveFormsGridComponent]
+    imports: [ActiveFormsFilterComponent, ActiveFormsGridComponent]
 })
 export class ActiveFormsComponent implements OnInit {
 
-  displayedColumns: string[] = ["name", "gender", 'dob', "formName", "started" ];
-  dataSource: MatTableDataSource<ActiveFormSummary> = new MatTableDataSource<ActiveFormSummary>([]);
   isLoading = signal(false);
   activeForms = signal<ActiveFormSummary[]>([]);
   activeFormsDeepCopy: ActiveFormSummary[] = [];

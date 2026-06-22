@@ -3,24 +3,27 @@
   <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="form-wrapper">
     <div class="form margin-top-sm">
       <div>
-        <mat-form-field id="groupName" appearance="outline" class="width-full" floatLabel="always">
-          <mat-label>Group Name</mat-label>
-          <input type="text"
-                 aria-label="Group Name"
-                 matInput
-                 formControlName="groupName"
-          >
-          @if (formGroup.controls.groupName.hasError('required')) {
-            <mat-error>Group Name is required</mat-error>
-          }
-        </mat-form-field>
+        <p-floatlabel class="width-full">
+          <input
+            id="groupName"
+            type="text"
+            pInputText
+            formControlName="groupName"
+            aria-label="Group Name"
+            class="width-full"
+          />
+          <label for="groupName">Group Name</label>
+        </p-floatlabel>
+        @if (formGroup.controls.groupName.hasError('required')) {
+          <small class="p-error">Group Name is required</small>
+        }
       </div>
       <div class="actions margin-top-md">
         <button mat-stroked-button (click)="onCancel()">
           <mat-icon>cancel</mat-icon>
           Cancel
         </button>
-        <button type="submit" mat-raised-button color="primary" style="margin-left: 1em">Save</button>
+        <button type="submit" mat-raised-button color="primary" class="margin-left-md">Save</button>
       </div>
 
     </div>

@@ -13,7 +13,7 @@ export class ConfigService {
   defaultLocalConfigPath = '../../assets/config/config.json'
   config: Config = new Config();
   authConfig: AuthConfig;
-  private oAuthModuleConfig: OAuthModuleConfig;
+  oAuthModuleConfig: OAuthModuleConfig;
   packageInfo = packageInfo;
 
   private http: HttpClient;
@@ -32,6 +32,7 @@ export class ConfigService {
         config.rcApiUrl = this.standardizeUrl(config.rcApiUrl);
         this.config = config;
         this.authConfig = this.buildAuthConfig(config);
+        this.oAuthModuleConfig = this.buildOAuthModuleConfig(config);
         return true;
       }),
       catchError(error => {
@@ -54,6 +55,16 @@ export class ConfigService {
       logoutUrl: config.auth.logoutUrl
     });
   }
+
+  buildOAuthModuleConfig(config: Config): OAuthModuleConfig {
+    return {
+      resourceServer: {
+        allowedUrls: [config.rcApiUrl],
+        sendAccessToken: true
+      }
+    };
+  }
+
   standardizeUrl(url: string): string {
     if (!url.endsWith("/")) {
       url = url.concat("/");

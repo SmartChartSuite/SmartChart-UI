@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import { MatRadioChange, MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {FormSummary} from "../../../../models/form-summary";
 import {PatientSummary} from "../../../../models/patient-summary";
@@ -13,7 +12,7 @@ import {MatOption, MatSelect} from "@angular/material/select";
     selector: 'app-form-selection',
     templateUrl: './form-selection.component.html',
     styleUrl: './form-selection.component.scss',
-  imports: [MatError, MatRadioGroup, FormsModule, MatRadioButton, MatLabel, MatFormField, MatSelect, MatOption]
+  imports: [MatError, FormsModule, MatLabel, MatFormField, MatSelect, MatOption]
 })
 export class FormSelectionComponent implements OnInit {
   isLoading = false;

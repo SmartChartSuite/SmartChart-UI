@@ -33,4 +33,9 @@ export class NlpAnswer {
   type: string;
   observationDisplay: string;
   componentAnswerList: AnswerComponent[];
+  llmPrompt: string;
+  llmAnswer: string;
+  evidenceText: string;
+  reasoning: string;
+  resultValue: string
 }

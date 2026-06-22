@@ -1,0 +1,38 @@
+// Animations and Keyframes
+
+// Explorer open animation
+@keyframes open-explorer {
+  from {
+    width: 0;
+  }
+  to {
+    width: 30%;
+  }
+}
+
+// Loading ellipsis animation
+@keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+// Webkit-prefixed version for older browsers
+@-webkit-keyframes ellipsis {
+  to {
+    width: 1.25em;
+  }
+}
+
+// Loading indicator
+.loading {
+  &:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    animation: ellipsis steps(4, end) 900ms infinite;
+    -webkit-animation: ellipsis steps(4, end) 900ms infinite;
+    content: "\2026"; // Ellipsis character
+    width: 0;
+  }
+}

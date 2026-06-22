@@ -5,7 +5,7 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, mergeMap, Observable, ReplaySubject, share, switchMap, takeWhile, tap, timer} from "rxjs";
+import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, takeWhile, tap, timer} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -20,7 +20,7 @@ import { PatientDetailsComponent } from "./patient-details/patient-details.compo
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatButton } from "@angular/material/button";
 import { MatNavList } from "@angular/material/list";
-import { NgClass, AsyncPipe } from "@angular/common";
+import {NgClass, AsyncPipe, JsonPipe} from "@angular/common";
 import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
@@ -39,14 +39,14 @@ import { FormattedTitlePipe } from "../../pipe/formatted-title.pipe";
     selector: 'app-form-viewer',
     templateUrl: './form-viewer.component.html',
     styleUrl: './form-viewer.component.scss',
-    imports: [PatientDetailsComponent, MatProgressSpinner, MatButton, MatNavList, NgClass, QuestionnaireIndexDirective, MatRadioGroup, FormsModule, MatRadioButton, MatFormField, MatInput, MatLabel, MatHint, FhirDateTimeComponent, HasEvidenceDirective, MatChip, MatTooltip, SetEvidenceDirective, MatIcon, EvidenceDetailsComponent, AsyncPipe, SuggestedAnswerFormatterPipe, FormattedTitlePipe]
+  imports: [PatientDetailsComponent, MatProgressSpinner, MatButton, MatNavList, NgClass, QuestionnaireIndexDirective, MatRadioGroup, FormsModule, MatRadioButton, MatFormField, MatInput, MatLabel, MatHint, FhirDateTimeComponent, HasEvidenceDirective, MatChip, MatTooltip, SetEvidenceDirective, MatIcon, EvidenceDetailsComponent, AsyncPipe, SuggestedAnswerFormatterPipe, FormattedTitlePipe, JsonPipe]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<any>(undefined);
   showDrawer = false;
-  activeFormSummary: ActiveFormSummary;
+  activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
   readonly TIMEZONES = TIMEZONES;
@@ -92,7 +92,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     // );
 
     let results$ = timer(0,10000).pipe(
-      takeWhile(() => !!this.activeFormSummary),
+      takeWhile(() => !!this.activeFormSummary()),
       takeWhile(() => !this.results || this.results?.status !== "complete"),
       switchMap(() => this.fetchResults()),
       share()
@@ -101,17 +101,24 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
     this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
-    let activeFormSummary$ = this.formManagerService.selectedActiveFormSummary$.pipe(
-      tap(value => this.activeFormSummary = value),
-      filter(value => !!value),
-      mergeMap(value=> this.rcApiInterfaceService.getJobPackage(value?.formName))
-    );
 
-    activeFormSummary$.subscribe({
-      next: result => { //TODO all properties should we accessed with '.' result.item instead of '[]'
-        result['item'] = result['item']?.map((item: any, index: number) => {
-          return index == 0 ? {...item, selected: true} : {...item, selected: false}
-        });
+    this.formManagerService.selectedActiveFormSummary$.pipe(
+      tap(value => this.activeFormSummary.set(value)),
+      filter(value => !!value),
+      mergeMap(value => this.rcApiInterfaceService.getJobPackage({
+        key: 'name',
+        value: value.formName
+      })),
+      map(response => Array.isArray(response) ? (response[0] ?? null) : response),
+      map(result => ({
+        ...result,
+        item: result?.item?.map((item: any, index: number) => ({
+          ...item,
+          selected: index === 0
+        }))
+      }))
+    ).subscribe({
+      next: result => {
         this.questionnaire.set(result);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.refreshTrigger$.next(1);
@@ -127,7 +134,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
   fetchResults() {
-    return this.rcApiInterfaceService.getBatchJobResults(this.activeFormSummary.batchId).pipe(
+    const activeForm = this.activeFormSummary();
+    return this.rcApiInterfaceService.getBatchJobResults(activeForm!.batchId).pipe(
+      tap(value => {console.log(value)}),
       tap(value => this.status = value.status),
       tap(value => this.completeCount = value.completeJobs),
       tap(value => this.totalCount = value.totalJobs),

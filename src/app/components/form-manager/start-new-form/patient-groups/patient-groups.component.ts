@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import { PatientSummary } from '../../../../models/patient-summary';
 import { PatientGroup } from '../../../../models/patient-group';
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
@@ -18,6 +18,10 @@ import { PatientSummaryTableComponent } from '../patient-summary-table/patient-s
     imports: [MatFormField, MatLabel, MatSelect, MatOption, MatButton, PatientSummaryTableComponent]
 })
 export class PatientGroupsComponent implements OnInit{
+  patientGroups = signal<PatientGroup[]>([]);
+  selectedGroup = signal<PatientGroup | undefined>(undefined);
+  patientSummaryData = signal<PatientSummary[]>([]);
+
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
@@ -25,16 +29,13 @@ export class PatientGroupsComponent implements OnInit{
     private dialog: MatDialog,
   ){}
 
-  patientSummaryData: PatientSummary[];
-  selectedGroup: PatientGroup;
-  patientGroups: PatientGroup[];
 
   ngOnInit(): void {
     this.rcApiInterfaceService.searchGroup().subscribe({
       next: value => {
-        this.patientGroups = value;
-        this.selectedGroup = this.patientGroups?.[0];
-        this.patientSummaryData = this.selectedGroup?.members;
+        this.patientGroups.set(value);
+        this.selectedGroup.set(this.patientGroups()?.[0]);
+        this.patientSummaryData.set(this.selectedGroup()?.members);
       },
       error: err => {
         this.utilsService.showErrorMessage();
@@ -57,6 +58,7 @@ export class PatientGroupsComponent implements OnInit{
 
 
   onGroupSelected(event: MatSelectChange) {
+    this.selectedGroup.set(event.value);
     this.formManagerService.setSelectedPatient(null);
     this.patientSummaryData = event.value.members;
   }

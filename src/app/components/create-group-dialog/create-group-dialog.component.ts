@@ -1,28 +1,27 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent } from "@angular/material/dialog";
+import {MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import { MatCardTitle } from '@angular/material/card';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
     selector: 'app-create-group-dialog',
     templateUrl: './create-group-dialog.component.html',
     styleUrl: './create-group-dialog.component.scss',
-    imports: [
-      MatCardTitle,
-      MatDialogContent,
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormField,
-      MatLabel,
-      MatInput,
-      MatError,
-      MatButton,
-      MatIcon
-    ]
+  imports: [
+    MatCardTitle,
+    MatDialogContent,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButton,
+    MatIcon,
+    MatDialogTitle,
+    FloatLabelModule,
+    InputTextModule
+  ]
 })
 export class CreateGroupDialogComponent {
 
@@ -33,6 +32,7 @@ export class CreateGroupDialogComponent {
   });
 
   onSubmit() {
+    if(this.formGroup.valid) {}
     this.dialogRef.close();
   }
 

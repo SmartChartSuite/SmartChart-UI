@@ -1,7 +1,7 @@
 {
   "version": "",
   "title": "SmartChart",
-  "rcApiUrl": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+  "rcApiUrl": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api-v1/",
   "auth": {
     "callbackUrl": "https://localhost:4200/",
     "domain": "dev-heat-gtri-smartchart.us.auth0.com",

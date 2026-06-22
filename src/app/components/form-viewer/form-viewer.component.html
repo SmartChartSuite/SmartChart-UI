@@ -1,12 +1,12 @@
 <div class="viewer-container-wrapper">
-  @if (activeFormSummary?.formName || activeFormSummary?.patientSummary) {
+  @if (activeFormSummary()?.formName || activeFormSummary()?.patientSummary) {
     <div class="viewer-container-header">
       <div class="form-name">
         {{ questionnaire()?.["title"] }}
       </div>
-      @if (activeFormSummary?.patientSummary) {
+      @if (activeFormSummary()?.patientSummary) {
         <div class="patient-details-component-wrapper">
-          <app-patient-details [patientSummary]="activeFormSummary?.patientSummary"/>
+          <app-patient-details [patientSummary]="activeFormSummary()?.patientSummary"/>
         </div>
       }
     </div>
@@ -30,7 +30,7 @@
     </div>
   }
   <div class="viewer-container-body">
-    @if (!activeFormSummary) {
+    @if (!activeFormSummary()) {
       <div class="viewer-container-body-content">
         <div class="margin-md">No chart has been selected, please load an existing form through the Charts.</div>
         <div class="margin-md">
@@ -137,8 +137,9 @@
                   } @else if (childItem["type"] == QuestionnaireItemType.text) {
                     <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="answerDictionary()[childItem?.linkId]"></textarea>
                   }
+<!--TODO refactor the code for has evidence directive-->
+<!--                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">-->
 
-                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">
                     <!--                      TODO: Handle status based scenarios per logic below                 -->
                     <!--                      if hasLogic                                                         -->
                     <!--                        if results[linkId} is found                                       -->
@@ -150,6 +151,7 @@
                     <!--                          show progress spinner                                           -->
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
+<!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
                     @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                       <div class="margin-bottom-sm">
                         Suggested Answer:
@@ -160,9 +162,11 @@
                         }
                       </div>
                     }
+<!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
+<!--                  <div>Resource** <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre></div>-->
 
                     @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
-                      <button mat-raised-button
+                      <button matButton="outlined" class="primary-outlined"
                               appSetEvidence [resultSet]="results?.['link' + childItem?.['linkId']]"
                               (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
@@ -171,7 +175,7 @@
                     }
                   </div>
                 </div>
-              </div>
+<!--              </div>-->
             }
           }
         }
@@ -207,7 +211,7 @@
             close
           </mat-icon>
         </div>
-        <app-evidence-details [activeFormSummary]="activeFormSummary"></app-evidence-details>
+        <app-evidence-details [activeFormSummary]="activeFormSummary()"></app-evidence-details>
       </div>
     }
   </div>

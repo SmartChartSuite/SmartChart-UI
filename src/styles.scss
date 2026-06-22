@@ -1,152 +1,51 @@
-
 // Custom Theming for Angular Material
 @use '@angular/material' as mat;
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+@use 'styles/variables' as *;
+@use 'styles/layout' as *;
+@use 'styles/utilities' as *;
+@use 'styles/components' as *;
+@use 'styles/material-overrides' as *;
+@use 'styles/prime' as *;
+
+// Define custom primary palette based on #213368
+$custom-primary-palette: (
+  50: #e8eaf2,
+  100: #c5cade,
+  200: #9ea7c8,
+  300: #7784b2,
+  400: #5a69a1,
+  500: #3d4f91,
+  600: #374889,
+  700: #2f3f7e,
+  800: #273674,
+  900: #1a2662,
+  950: #213368,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    950: white,
+  )
+);
 
 html {
   @include mat.theme((
     color: (
       theme-type: light,
-      primary: mat.$azure-palette,
+      primary: mat.m2-define-palette($custom-primary-palette, 950),
       tertiary: mat.$blue-palette,
     ),
-    typography: Inter,
-    density: -2,
+    typography: $custom-typography,
+    density: -1,
   ));
 }
-:root {
-  @include mat.form-field-overrides((
-    error-text-color: #991B1B,
-    filled-error-caret-color: #991B1B,
-    outlined-error-outline-color: #991B1B,
-    container-height: 40px,
-    container-vertical-padding: 8px,
-    filled-with-label-container-padding-top: 8px,
-    filled-with-label-container-padding-bottom: 8px,
-    outlined-input-text-placeholder-color: #999999,
-    trailing-icon-color: var(--zinc-400),
-  ));
-  @include mat.button-overrides((
-    filled-container-shape: 0.5rem,
-    outlined-container-shape: 0.5rem,
-    protected-container-shape: 0.5rem,
-    text-container-shape: 0.5rem,
-    tonal-container-shape: 0.5rem,
-
-  ));
-}
-
-// Override mat-form-field trailing icon size
-.mat-mdc-form-field {
-  .mat-mdc-form-field-icon-suffix {
-    .mat-mdc-icon-button.mat-mdc-button-base {
-      --mdc-icon-button-state-layer-size: 32px;
-      --mat-icon-button-state-layer-size: 32px;
-      width: var(--mat-icon-button-state-layer-size);
-      height: var(--mat-icon-button-state-layer-size);
-      padding: 6px;
-    }
-  }
-}
-
-/**** Root Containers ****/
-/** DO NOT EDIT WITHOUT REVIEW **/
-html, body { height: 100%; width: 100% }
-body { margin: 0; font-family: Inter, "Helvetica Neue", sans-serif; color:#333333 }
-app-root { display: flex; height: 100%; width: 100% }
-
-/**** Base SCSS Classes ****/
-/** DO NOT EDIT WITHOUT REVIEW **/
-.full-screen { height: 100%; width: 100%; }
-.flex {
-  display: flex;
-  align-items: stretch;
-  overflow: hidden;
-  justify-content: stretch;
-  > * {
-    flex: 0 0 auto;
-  }
-}
-.flex-col { @extend .flex; flex-direction: column; }
-.flex-row { @extend .flex; flex-direction: row; }
-.flex-col-simple { display: flex; flex-direction: column; }
-.flex-row-simple { display: flex; flex-direction: row; }
-
-/* Scrolling and Pointers */
-.scrollable { overflow-y: scroll; scroll-behavior: smooth; }
-.pointer { cursor: pointer; }
-
-.center-contents { justify-items: center; text-align: center; align-self: center; }
-
-.sans-serif { font-family: sans-serif }
-
-/* Colors */
-$primary: #3f51b5;
-$primary-transparent: #3f51b522;
-$dark: #212121;
-
-/* Margins and Paddings */
-$xs: 4px;
-$sm: 8px;
-$md: 16px;
-$lg: 24px;
-.margin-none { margin: 0; }
-.margin-sm { margin: $sm; }
-.margin-md { margin: $md; }
-.margin-lg { margin: $lg; }
-.padding-none { padding: 0; }
-.padding-xs { padding: $xs; }
-.padding-sm { padding: $sm; }
-.padding-md { padding: $md; }
-.padding-lg { padding: $lg; }
-// Add more of the following as needed.
-.margin-bottom-xs { margin-bottom: $xs; }
-.margin-bottom-sm { margin-bottom: $sm; }
-.margin-bottom-md { margin-bottom: $md; }
-.margin-bottom-lg { margin-bottom: $lg; }
-.margin-top-xs { margin-top: $xs; }
-.margin-top-sm { margin-top: $sm; }
-.margin-top-md { margin-top: $md; }
-.margin-top-lg { margin-top: $lg; }
-.margin-left-md { margin-left: $md; }
-.margin-left-sm { margin-left: $sm; }
-.margin-left-lg { margin-left: $lg; }
-.margin-right-md { margin-right: $md; }
-.margin-right-sm { margin-right: $sm; }
-.margin-right-lg { margin-right: $lg; }
-.padding-bottom-md { padding-bottom: $md; }
-.padding-top-md { padding-top: $md; }
-.padding-top-sm { padding-top: $sm; }
-.padding-bottom-md { padding-bottom: $md; }
-.padding-bottom-sm { padding-bottom: $sm; }
-.padding-left-md { padding-left: $md; }
-.padding-left-sm { padding-left: $sm; }
-.padding-right-md { padding-right: $md; }
-.border-radius-xs { border-radius: $xs; }
-// Standardized Border
-.border {
-  @extend .border-radius-xs;
-  border: 1px solid #cdcdcd;
-}
-
-//Helpers
-.w-full {
-  width: 100%;
-}
-.w-75 {
-  width: 75%;
-}
-.w-50 {
-  width: 50%;
-}
-.w-25 {
-  width: 25%;
-}
-.h-full {
-  height: 100%;
-}
-
 
 //** Component Wrappers **//
 // DO NOT USE THE FOLLOWING OUTSIDE OF app.component.html!!
@@ -176,211 +75,4 @@ $lg: 24px;
     @extend .scrollable; // Makes the content scrollable.
     flex: 1;             // Stretches to fill wrapper.
   }
-}
-
-.content-spacer{flex: 1 1 auto;}
-
-/*TODO: refactor copied code from raven */
-/** Record Viewer Container **/
-.viewer-container-wrapper {
-  @extend .full-screen;
-  @extend .flex-col-simple;
-  flex: 1;
-  align-content: stretch;
-  align-items: stretch;
-  overflow-y: hidden;
-  > .viewer-container-header {
-    @extend .flex-row-simple;
-    min-height: 36px;
-    > .job-details-wrapper {
-      @extend .flex-row-simple;
-      flex: 1;
-      width: 100%;
-      border-top: #dee2ea solid 1px;
-      border-bottom: #dee2ea solid 1px;
-      background-color: #F4F6FA;
-      display: flex;
-      align-items: center;
-      justify-content: end;
-      > .job-details-label {
-        font-weight: bold;
-      }
-      > .job-details-value {
-        @extend .flex-row-simple;
-        margin-right: $sm;
-        margin-left: $sm;
-      }
-      > .job-details-spinner {
-        margin-right: $sm;
-      }
-    }
-  }
-  > .viewer-container-body {
-    // @extend .padding-left-md;
-    // @extend .padding-right-md;
-    // @extend .padding-top-md;
-    @extend .flex-row-simple;
-    flex: 1;
-    scroll-behavior: smooth;
-    overflow-y: hidden;
-    align-content: stretch;
-    align-items: stretch;
-    > * {
-      @extend .scrollable;
-      scroll-behavior: smooth;
-      overflow-y: scroll;
-    }
-    > .viewer-container-body-content {
-      flex: 1;
-      padding: 2em;
-    }
-    > .viewer-container-body-side-explorer {
-      animation-name: open-explorer;
-      animation-duration: 0.1s;
-      width: 30%;
-      border: 1px solid #c1d1ff;
-      border-radius: 4px;
-      > .fhir-explorer-header {
-        @extend .center-contents;
-        @extend .flex-row-simple;
-        @extend .padding-sm;
-        font-weight: bold;
-        font-size: larger;
-        background-color: #354d92;
-        color: whitesmoke;
-        > * {
-          @extend .center-contents;
-        }
-        > .explorer-header-title {
-          @extend .margin-left-md;
-          font-size: medium;
-          background-color: #354d92;
-        }
-      }
-    }
-    > .viewer-container-body-side-explorer-expanded {
-      @extend .viewer-container-body-side-explorer;
-      width: 45%
-    }
-  }
-}
-@keyframes open-explorer {
-  from {width: 0;}
-  to {width: 30%;}
-}
-
-.description-box {
-  font-variant-caps: small-caps;
-  @extend .border;
-  @extend .margin-sm;
-  background-color: #3f51b522;
-}
-
-/** TODO add style for the class below*/
-.no-data-table-row {
-  @extend .margin-md
-}
-
-/** Begin Loading Data style. All the style does is adds ellipses after a text */
-
-.loading {
-  // TODO add style to the text
-}
-
-.loading:after {
-  overflow: hidden;
-  display: inline-block;
-  vertical-align: bottom;
-  -webkit-animation: ellipsis steps(4,end) 900ms infinite;
-  animation: ellipsis steps(4,end) 900ms infinite;
-  content: "\2026"; /* ascii code for the ellipsis character */
-  width: 0;
-}
-
-@keyframes ellipsis {
-  to {
-    width: 1.25em;
-  }
-}
-
-@-webkit-keyframes ellipsis {
-  to {
-    width: 1.25em;
-  }
-}
-/* END Loading Data style */
-
-
-.snackbar-offset{
-  transform: translateY(90vh) !important;
-}
-
-.label-text {
-  font-size: 1.1em;
-  font-weight: bold;
-  color: #535353;
-}
-
-.alert{
-  position: relative;
-  padding: 0.75rem 1.25rem;
-  margin: 1rem .5rem;
-  border: 1px solid transparent;
-  border-radius: 0.5rem;
-  font-size: .9em;
-  line-height: 1.3em;
-
-
-  &.alert-primary{
-    color: #004085;
-    background-color: #cce5ff;
-    border-color: #b8daff;
-  }
-  &.alert-secondary{
-    color: #383d41;
-    background-color: #e2e3e5;
-    border-color: #d6d8db;
-  }
-  &.alert-success{
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-  }
-  &.alert-danger{
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-  }
-  &.alert-warning{
-    color: #856404;
-    background-color: #fff3cd;
-    border-color: #ffeeba;
-  }
-  &.alert-info{
-    color: #0c5460;
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-  }
-  &.alert-light{
-    color: #818182;
-    background-color: #fefefe;
-    border-color: #fdfdfe;
-  }
-  &.alert-dark{
-    color: #1b1e21;
-    background-color: #d6d8d9;
-    border-color: #c6c8ca;
-  }
-  .alert-heading{
-    color: inherit;
-  }
-  .alert-link{
-    font-weight: 700;
-    color: inherit;
-  }
-}
-
-.centered-vertically{
-  display: flex;
-  align-items: center;
 }
