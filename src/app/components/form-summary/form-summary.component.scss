@@ -1,0 +1,86 @@
+.form-summary-container {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .summary-info {
+    margin-bottom: 15px;
+
+    p {
+      font-weight: 600;
+      color: #555;
+    }
+  }
+
+  .table-container {
+    overflow-x: auto;
+
+    .patient-grid-table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      thead {
+        background-color: #f5f5f5;
+
+        tr th {
+          padding: 12px;
+          text-align: left;
+          font-weight: 600;
+          color: #333;
+          border-bottom: 2px solid #ddd;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid #eee;
+
+          &:hover {
+            background-color: #f9f9f9;
+          }
+
+          td {
+            padding: 12px;
+            color: #666;
+
+            &.no-data {
+              text-align: center;
+              color: #999;
+              font-style: italic;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Ensure consistent button width in the table
+.form-summary-wrapper .p-datatable .p-button {
+  min-width: 180px;
+  width: 180px;
+}
+
+.inputs-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.full-width {
+  width: 100%
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+}
+
+.icon-button {
+  cursor: pointer;
+  margin: 0 8px;
+}

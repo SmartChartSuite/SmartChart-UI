@@ -10,15 +10,15 @@ import {StateManagementService} from "./app/services/state-management/state-mana
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
 import {httpErrorInterceptor} from "./app/interceptors/http-error.interceptor";
 import {AuthService} from "./app/services/auth/auth.service";
-import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig, OAuthResourceServerErrorHandler} from "angular-oauth2-oidc";
+import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
 import {providePrimeNG} from "primeng/config";
-import Aura from '@primeuix/themes/aura';
+import Material from '@primeuix/themes/material';
 import {definePreset} from '@primeuix/themes';
 
 // Define custom Aura preset with custom primary color #213368
-const CustomAura = definePreset(Aura, {
+const CustomMaterial = definePreset(Material, {
   semantic: {
     primary: {
       50: '#e8eaf2',
@@ -33,14 +33,14 @@ const CustomAura = definePreset(Aura, {
       900: '#1a2662',
       950: '#213368'
     }
-  }
+  },
 });
 
 bootstrapApplication(AppComponent, {
   providers: [
     providePrimeNG({
       theme: {
-        preset: CustomAura,
+        preset: CustomMaterial,
         options: {
           prefix: 'p',
           darkModeSelector: false,

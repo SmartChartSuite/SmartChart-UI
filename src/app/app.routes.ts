@@ -4,6 +4,7 @@ import { CallbackComponent } from "./components/callback/callback.component";
 import { LoginComponent } from "./components/login/login.component";
 import { FormManagerComponent } from "./components/form-manager/form-manager.component";
 import { FormViewerComponent } from "./components/form-viewer/form-viewer.component";
+import {FormSummaryComponent} from "./components/form-summary/form-summary.component";
 
 export const routes: Routes = [
   {
@@ -13,6 +14,10 @@ export const routes: Routes = [
   {
     path: 'forms',
     component: FormManagerComponent,
+  },
+  {
+    path: 'summary',
+    component: FormSummaryComponent,
   },
   {
     path: 'callback',

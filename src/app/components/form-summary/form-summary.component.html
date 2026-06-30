@@ -1,0 +1,154 @@
+<div class="component-wrapper form-summary-wrapper">
+  <div class="component-content">
+    <div class="centered-screen">
+      <div class="centered-content">
+        <div class="flex-row-simple justify-between items-center margin-top-lg">
+          <div class="label-text">My Jobs/Forms</div>
+          <div>
+            <p-button label="Start New Job"/>
+          </div>
+        </div>
+        <div class="margin-top-lg padding-md border">
+          <div>
+            <span class="label-text-small">Search Filters</span>
+            <span class="icon-button">
+              @if (filtersVisible()) {
+                <i class="pi pi-angle-up" pTooltip="Hide Filters" (click)="filtersVisible.set(false)"></i>
+              } @else {
+                <i class="pi pi-angle-right" pTooltip="Show Filters" (click)="filtersVisible.set(true)"></i>
+              }
+            </span>
+          </div>
+          <div>
+            @if (filtersVisible()) {
+              <form [formRoot]="form" class="margin-top-md" (keydown.enter)="$event.preventDefault()">
+                <div class="inputs-container">
+
+                  <p-floatlabel class="margin-right-md full-width">
+                    <p-multiselect
+                      inputId="status"
+                      [options]="STATUS_OPTIONS"
+                      [formField]="form.formStatus"
+                      optionLabel="display"
+                      optionValue="value"
+                      class="full-width"
+                      appendTo="body"
+                      display="chip"
+                    ></p-multiselect>
+                    <label for="status">Form Status</label>
+                  </p-floatlabel>
+
+
+                  <!--Patient Name-->
+                  <p-floatlabel class="margin-right-md full-width">
+                    <input
+                      id="name"
+                      type="text"
+                      pInputText
+                      [formField]="form.patientName"
+                      class="full-width"
+                    />
+                    <label for="name">Name</label>
+                  </p-floatlabel>
+
+                  <!--DoB Range-->
+                  <p-floatlabel class="margin-right-md full-width">
+                    <p-datepicker
+                      inputId="dobRange"
+                      [(ngModel)]="dobRangeValue"
+                      [ngModelOptions]="{standalone: true}"
+                      selectionMode="range"
+                      [readonlyInput]="true"
+                      dateFormat="mm/dd/yy"
+                      [showIcon]="true"
+                      class="full-width"
+                      appendTo="body"
+                      (ngModelChange)="onDobRangeChange($event)"
+                    ></p-datepicker>
+                    <label for="dobRange">DoB Range</label>
+                  </p-floatlabel>
+
+                  <!--Gender-->
+                  <p-floatlabel class="margin-right-md full-width">
+                    <p-multiselect
+                      inputId="gender"
+                      [options]="GENDER_OPTIONS"
+                      [formField]="form.gender"
+                      class="full-width"
+                      appendTo="body"
+                      display="chip"
+                    ></p-multiselect>
+                    <label for="gender">Gender</label>
+                  </p-floatlabel>
+                  <p-button (click)="onClearFilters()" label="Clear Filters" variant="outlined"
+                            styleClass="single-line-button-label"/>
+                </div>
+
+              </form>
+            }
+          </div>
+        </div>
+        <div class="margin-top-lg border">
+          <p-table
+            [value]="patients()"
+            [paginator]="true"
+            [rows]="10"
+            [totalRecords]="totalRecords()"
+            [loading]="isLoading()"
+            [lazy]="true"
+            (onLazyLoad)="loadPatients($event)"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+          >
+            <ng-template #header>
+              <tr>
+                <th>Form Status</th>
+                <th></th>
+                <th>Patient</th>
+                <th>Patient DoB</th>
+                <th>Patient Gender</th>
+                <th>Job Status</th>
+                <th>Date Ran</th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-patient>
+              <tr>
+                <td>
+                  {{ patient.formStatus | formStatusDisplay }}
+                </td>
+                <td>
+                  @if (patient.formStatus === FormStatus.NOT_STARTED) {
+                    <p-button label="Start New Form" icon="pi pi-plus" variant="outlined" severity="primary"
+                              styleClass="fixed-width-button single-line-button-label"/>
+                  } @else if (patient.formStatus === FormStatus.PREVIEW) {
+                    <p-button label="Preview" icon="pi pi-eye" variant="outlined" severity="help"
+                              styleClass="fixed-width-button single-line-button-label"/>
+                  }
+                  @if (patient.formStatus === FormStatus.IN_PROGRESS) {
+                    <p-button label="Continue Form" icon="pi pi-arrow-right" variant="outlined" severity="primary"
+                              styleClass="fixed-width-button single-line-button-label"/>
+                  } @else if (patient.formStatus === FormStatus.COMPLETE) {
+                    <p-button label="View form" icon="pi pi-file" variant="outlined" severity="success"
+                              styleClass="fixed-width-button single-line-button-label"/>
+                  }
+                </td>
+                <td>{{ patient.patientName.family }}, {{ patient.patientName.given }}</td>
+                <td>{{ patient.patientDob | date : 'MM/dd/yyyy' }}</td>
+                <td>{{ patient.patientGender }}</td>
+                <td>{{ patient.jobStatus }}</td>
+                <td>{{ patient.dateRan | date :'MM/dd/yyyy' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template #emptymessage>
+              <tr>
+                <td colspan="7" class="empty-message">
+                  No Patient found
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -16,6 +16,7 @@ import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resour
 import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
+import {PatientGridResponse} from "../../models/patient-grid-response";
 
 @Injectable({
   providedIn: 'root'
@@ -94,6 +95,11 @@ export class RcApiInterfaceService {
         return patientSummaryList;
       })
     )
+  }
+
+  getPatients(page: number, size: number){
+    // Load data from forms.json which already has data/total structure
+    return this.http.get<PatientGridResponse>('/assets/forms.json');
   }
 
   private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {
