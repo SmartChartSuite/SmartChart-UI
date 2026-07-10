@@ -17,7 +17,7 @@ import {providePrimeNG} from "primeng/config";
 import Material from '@primeuix/themes/material';
 import {definePreset} from '@primeuix/themes';
 
-// Define custom Aura preset with custom primary color #213368
+// Define custom Material preset with custom primary color #213368 and 508-compliant success color
 const CustomMaterial = definePreset(Material, {
   semantic: {
     primary: {
@@ -32,8 +32,28 @@ const CustomMaterial = definePreset(Material, {
       800: '#273674',
       900: '#1a2662',
       950: '#213368'
+    },
+    success: {
+      50: '#f0fdf4',
+      100: '#dcfce7',
+      200: '#bbf7d0',
+      300: '#86efac',
+      400: '#4ade80',
+      500: '#047857',
+      600: '#047857',
+      700: '#15803d',
+      800: '#166534',
+      900: '#14532d',
+      950: '#052e16'
+    },
+    colorScheme: {
+      light: {
+        success: {
+          contrastColor: '#ffffff'
+        }
+      }
     }
-  },
+  }
 });
 
 bootstrapApplication(AppComponent, {

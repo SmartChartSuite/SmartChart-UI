@@ -21,6 +21,9 @@
   --color-header-bg-hover: #354d92;
 
   // Colors - Semantic
+  --color-success: #047857;
+  --color-success-hover: #065f46;
+  --color-success-active: #064e3b;
   --color-error: #991B1B;
   --color-border: #DBDBDB;
   --color-text-primary: #333333;
@@ -30,6 +33,7 @@
   // Colors - Backgrounds
   --color-bg-light: #F4F6FA;
   --color-bg-gray: #f6f6f6;
+  --color-bg-table-header: #f5f5f5;
   --color-bg-explorer: #354d92;
   --color-bg-description: #21336822;
 
@@ -38,6 +42,7 @@
   --font-family-fallback: Roboto, "Helvetica Neue", sans-serif;
   --font-family-sans: sans-serif;
   --font-size-base: 1rem;  // 16px - base font size for the entire app
+  --font-size-sm: 0.875rem;  // 14px - smaller text for buttons, tables, etc.
 
   // Border radius
   --radius-xs: 0.25rem;
@@ -60,3 +65,4 @@ $color-primary-light: #e8eaf2;
 $color-primary-transparent: #21336822;
 $color-dark: #212121;
 $color-bg-gray: #f6f6f6;
+$color-success: #047857;

@@ -28,18 +28,66 @@ input[pInputText],
   height: 48px;
 }
 
+.p-button,
 .p-button .p-button-label,
 .p-datatable .p-datatable-thead > tr > th,
 .p-datatable-tbody > tr > td,
 .p-tooltip {
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family-primary);
+}
+
+// Improve PrimeNG button appearance
+.p-button {
+  font-weight: 50;
+  letter-spacing: 0.05em;
+
+  .p-button-label {
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    font-family: var(--font-family-primary);
+  }
+}
+
+// 508 Compliant Success Color Overrides
+// Force the success color to override any cached or default values
+.p-button-success {
+  --p-button-success-background: var(--color-success);
+  --p-button-success-border-color: var(--color-success);
+  --p-button-success-color: #ffffff;
+  --p-button-success-hover-background: var(--color-success-hover);
+  --p-button-success-hover-border-color: var(--color-success-hover);
+  --p-button-success-active-background: var(--color-success-active);
+  --p-button-success-active-border-color: var(--color-success-active);
+}
+
+.p-button-outlined.p-button-success {
+  --p-button-outlined-success-border-color: var(--color-success);
+  --p-button-outlined-success-color: var(--color-success);
+  --p-button-outlined-success-hover-background: rgba(4, 120, 87, 0.04);
+  --p-button-outlined-success-hover-border-color: var(--color-success);
+  --p-button-outlined-success-hover-color: var(--color-success);
+}
+
+
+
+
+// Paginator font size
+.p-paginator {
+  font-size: var(--font-size-sm);
+
+  .p-paginator-current {
+    font-size: var(--font-size-sm);
+  }
 }
 
 // Keep the background-color separate since only table headers need it
 .p-datatable .p-datatable-thead > tr > th {
-  background-color: #f5f5f5;
+  background-color: var(--color-bg-table-header);
 }
 // Utility class to prevent button labels from wrapping
 .single-line-button-label {
   white-space: nowrap;
 }
+
+

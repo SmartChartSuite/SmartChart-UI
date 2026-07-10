@@ -33,7 +33,7 @@ export class RcApiInterfaceService {
   // getResultsEndpoint: string = `${this.base}/results`
 
   configEndpoint: string = `config`;
-  patientEndpoint: string = `Patient`; // FHIR Conformant.
+  patientEndpoint: string = `patient`; // FHIR Conformant.
   groupEndpoint: string = `group`;
   questionnaireEndpoint: string = `jobpackage`;
   startJobsEndpoint: string = `batchjob?include_patient=True`;

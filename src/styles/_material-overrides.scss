@@ -1,11 +1,11 @@
 // Angular Material Component Overrides
 @use '@angular/material' as mat;
 
-// Define custom typography with 1rem (16px) base font size
+// Define custom typography - uses CSS variable for base font size
 $custom-typography: mat.m2-define-typography-config(
   $font-family: 'Inter, sans-serif',
-  $body-1: mat.m2-define-typography-level(1rem, 1.5rem, 400),
-  $body-2: mat.m2-define-typography-level(1rem, 1.5rem, 400),
+  $body-1: mat.m2-define-typography-level(var(--font-size-base), 1.5, 400),
+  $body-2: mat.m2-define-typography-level(var(--font-size-base), 1.5, 400),
 );
 
 @include mat.typography-hierarchy($custom-typography);
