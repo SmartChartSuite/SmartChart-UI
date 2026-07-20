@@ -41,6 +41,9 @@
       <div class="sub-nav">
         <mat-nav-list>
           <ul class="sub-menu">
+
+            <pre>{{ questionnaire() | json }}</pre>
+
             @for (item of questionnaire()?.["item"]; track item.linkId; let i = $index) {
 
                 <li class="sub-menu-item"

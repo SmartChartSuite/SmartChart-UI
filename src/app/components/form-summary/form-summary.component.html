@@ -51,6 +51,19 @@
                     <label for="name">Name</label>
                   </p-floatlabel>
 
+                  <!--Gender-->
+                  <p-floatlabel class="margin-right-md full-width">
+                    <p-multiselect
+                      inputId="gender"
+                      [options]="GENDER_OPTIONS"
+                      [formField]="form.gender"
+                      class="full-width"
+                      appendTo="body"
+                      display="chip"
+                    ></p-multiselect>
+                    <label for="gender">Gender</label>
+                  </p-floatlabel>
+
                   <!--DoB Range-->
                   <p-floatlabel class="margin-right-md full-width">
                     <p-datepicker
@@ -66,19 +79,6 @@
                       (ngModelChange)="onDobRangeChange($event)"
                     ></p-datepicker>
                     <label for="dobRange">DoB Range</label>
-                  </p-floatlabel>
-
-                  <!--Gender-->
-                  <p-floatlabel class="margin-right-md full-width">
-                    <p-multiselect
-                      inputId="gender"
-                      [options]="GENDER_OPTIONS"
-                      [formField]="form.gender"
-                      class="full-width"
-                      appendTo="body"
-                      display="chip"
-                    ></p-multiselect>
-                    <label for="gender">Gender</label>
                   </p-floatlabel>
                   <p-button (click)="onClearFilters()" label="Clear Filters" variant="outlined"
                             styleClass="single-line-button-label"/>

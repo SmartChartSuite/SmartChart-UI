@@ -69,12 +69,13 @@ export class FormSummaryComponent implements OnInit {
   private readonly filteredPatients = computed(() => {
     const allPts = this.allPatients();
     const formValue = this.form().value();
+    const dobRange = this.dobRangeValue(); // Track dobRangeValue signal
 
     let filtered = [...allPts];
 
     filtered = this.filterByName(filtered, formValue.patientName);
     filtered = this.filterByGender(filtered, formValue.gender);
-    filtered = this.filterByDobRange(filtered);
+    filtered = this.filterByDobRange(filtered, dobRange );
     filtered = this.filterByStatus(filtered, formValue.formStatus);
 
     return filtered;
@@ -128,8 +129,7 @@ export class FormSummaryComponent implements OnInit {
     );
   }
 
-  private filterByDobRange(patients: PatientGrid[]): PatientGrid[] {
-    const dobRange = this.dobRangeValue();
+  private filterByDobRange(patients: PatientGrid[], dobRange: Date[] | null): PatientGrid[] {
     if (!dobRange || !Array.isArray(dobRange) || dobRange.length === 0) {
       return patients;
     }
@@ -189,5 +189,6 @@ export class FormSummaryComponent implements OnInit {
 
   protected onClearFilters() {
     this.form().reset({...PATIENT_SEARCH_DATA_DEFAULT});
+    this.dobRangeValue.set(null);
   }
 }

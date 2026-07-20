@@ -1,5 +1,5 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, computed, ElementRef, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -34,6 +34,23 @@ import { MatIcon } from "@angular/material/icon";
 import { EvidenceDetailsComponent } from "./evidence-details/evidence-details.component";
 import { SuggestedAnswerFormatterPipe } from "../../pipe/suggested-answer-formatter.pipe";
 import { FormattedTitlePipe } from "../../pipe/formatted-title.pipe";
+import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
+
+export interface Item {
+  linkId: string;           // Required FHIR property
+  type?: string;            // QuestionnaireItemType
+  text?: string;            // Question text
+  value?: any;              // Custom property
+  item?: Item[];            // Nested items
+  answer?: any;             // Answer value
+  selected?: boolean;       // Custom property for UI state
+  extension?: any[];        // FHIR extensions
+  [key: string]: any;       // Allow additional dynamic properties
+}
+
+export interface Questionnaire extends FhirBaseResource {
+  item: Item[];
+}
 
 @Component({
     selector: 'app-form-viewer',
@@ -44,7 +61,9 @@ import { FormattedTitlePipe } from "../../pipe/formatted-title.pipe";
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
   answerDictionary = signal<FormAnswers | undefined>(undefined);
-  questionnaire = signal<any>(undefined);
+  questionnaire = signal<Questionnaire>(undefined);
+
+
   showDrawer = false;
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
