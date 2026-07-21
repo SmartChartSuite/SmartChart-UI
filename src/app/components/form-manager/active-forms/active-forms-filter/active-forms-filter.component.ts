@@ -3,11 +3,17 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular
 import {FormSummary} from "../../../../models/form-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {debounceTime} from "rxjs";
+import {MatFormField, MatLabel, MatHint, MatSuffix} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {
+  MatDateRangeInput,
+  MatStartDate,
+  MatEndDate,
+  MatDatepickerToggle,
+  MatDateRangePicker
+} from '@angular/material/datepicker';
 import {MatButton} from '@angular/material/button';
-import {MatFormField, MatHint, MatLabel} from "@angular/material/input";
-import {MatOption, MatSelect} from "@angular/material/select";
-import {MatDatepickerToggle, MatDateRangeInput, MatDateRangePicker} from "@angular/material/datepicker";
-
 
 @Component({
   selector: 'app-active-forms-filter',
@@ -16,16 +22,19 @@ import {MatDatepickerToggle, MatDateRangeInput, MatDateRangePicker} from "@angul
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    MatButton,
     MatFormField,
     MatLabel,
+    MatInput,
     MatSelect,
     MatOption,
     MatDateRangeInput,
+    MatStartDate,
+    MatEndDate,
     MatHint,
     MatDatepickerToggle,
+    MatSuffix,
     MatDateRangePicker,
-  ]
+    MatButton]
 })
 export class ActiveFormsFilterComponent implements OnInit {
   @Output() onFormValueChange = new EventEmitter<any>();
