@@ -16,6 +16,7 @@ import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resour
 import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
+import {PatientGridResponse} from "../../models/patient-grid-response";
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class RcApiInterfaceService {
   // getResultsEndpoint: string = `${this.base}/results`
 
   configEndpoint: string = `config`;
-  patientEndpoint: string = `Patient`; // FHIR Conformant.
+  patientEndpoint: string = `patient`; // FHIR Conformant.
   groupEndpoint: string = `group`;
   questionnaireEndpoint: string = `jobpackage`;
   startJobsEndpoint: string = `batchjob?include_patient=True`;
@@ -94,6 +95,11 @@ export class RcApiInterfaceService {
         return patientSummaryList;
       })
     )
+  }
+
+  getPatients(page: number, size: number){
+    // Load data from forms.json which already has data/total structure
+    return this.http.get<PatientGridResponse>('/assets/forms.json');
   }
 
   private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {

@@ -13,41 +13,10 @@ import {AuthService} from "./app/services/auth/auth.service";
 import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig, OAuthResourceServerErrorHandler} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
-import {providePrimeNG} from "primeng/config";
-import Aura from '@primeuix/themes/aura';
-import {definePreset} from '@primeuix/themes';
 
-// Define custom Aura preset with custom primary color #213368
-const CustomAura = definePreset(Aura, {
-  semantic: {
-    primary: {
-      50: '#e8eaf2',
-      100: '#c5cade',
-      200: '#9ea7c8',
-      300: '#7784b2',
-      400: '#5a69a1',
-      500: '#3d4f91',
-      600: '#374889',
-      700: '#2f3f7e',
-      800: '#273674',
-      900: '#1a2662',
-      950: '#213368'
-    }
-  }
-});
 
 bootstrapApplication(AppComponent, {
   providers: [
-    providePrimeNG({
-      theme: {
-        preset: CustomAura,
-        options: {
-          prefix: 'p',
-          darkModeSelector: false,
-          cssLayer: false
-        }
-      }
-    }),
     provideAnimations(),
     provideRouter(routes),
     provideNativeDateAdapter(),

@@ -4,8 +4,7 @@ import {MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogTit
 import { MatCardTitle } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputTextModule } from 'primeng/inputtext';
+import {MatError, MatFormField, MatInput, MatLabel} from "@angular/material/input";
 
 @Component({
     selector: 'app-create-group-dialog',
@@ -19,8 +18,10 @@ import { InputTextModule } from 'primeng/inputtext';
     MatButton,
     MatIcon,
     MatDialogTitle,
-    FloatLabelModule,
-    InputTextModule
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatInput,
   ]
 })
 export class CreateGroupDialogComponent {

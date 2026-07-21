@@ -4,11 +4,10 @@ import {FormSummary} from "../../../../models/form-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
 import {debounceTime} from "rxjs";
 import {MatButton} from '@angular/material/button';
-import {FloatLabelModule} from 'primeng/floatlabel';
-import {InputTextModule} from 'primeng/inputtext';
-import {SelectModule} from 'primeng/select';
-import {MultiSelectModule} from 'primeng/multiselect';
-import {DatePickerModule} from 'primeng/datepicker';
+import {MatFormField, MatHint, MatLabel} from "@angular/material/input";
+import {MatOption, MatSelect} from "@angular/material/select";
+import {MatDatepickerToggle, MatDateRangeInput, MatDateRangePicker} from "@angular/material/datepicker";
+
 
 @Component({
   selector: 'app-active-forms-filter',
@@ -18,11 +17,14 @@ import {DatePickerModule} from 'primeng/datepicker';
     FormsModule,
     ReactiveFormsModule,
     MatButton,
-    FloatLabelModule,
-    InputTextModule,
-    SelectModule,
-    MultiSelectModule,
-    DatePickerModule
+    MatFormField,
+    MatLabel,
+    MatSelect,
+    MatOption,
+    MatDateRangeInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatDateRangePicker,
   ]
 })
 export class ActiveFormsFilterComponent implements OnInit {
@@ -34,18 +36,28 @@ export class ActiveFormsFilterComponent implements OnInit {
   //TODO add from api call populating the radio buttons for the form names
   nameList: string[] = ['Any'];
 
+  dobRange = new FormGroup({
+    dobStart: new FormControl(null),
+    dobEnd: new FormControl(null),
+  });
+
+  startedRange = new FormGroup({
+    start: new FormControl(null),
+    end: new FormControl(null),
+  });
+
   searchResultsForm: FormGroup = new FormGroup({
     name: new FormControl(''),
-    gender: new FormControl([this.GENDER_LIST[0]]),
-    dobRange: new FormControl(null),
+    gender: new FormControl(this.GENDER_LIST[0]),
     formName: new FormControl(''),
-    startedRange: new FormControl(null),
     status: new FormControl(this.statusList[0]),
   });
 
   formList: FormSummary[] = [];
 
   constructor(private rcApiInterfaceService: RcApiInterfaceService) {
+    this.searchResultsForm.addControl('startedRange', this.startedRange);
+    this.searchResultsForm.addControl('dobRange', this.dobRange);
     this.searchResultsForm.disable();
 
     // Use effect to enable/disable form based on isLoading signal
@@ -74,7 +86,7 @@ export class ActiveFormsFilterComponent implements OnInit {
 
   onClearForm() {
     this.searchResultsForm.reset();
-    this.searchResultsForm.controls['gender'].setValue([this.GENDER_LIST[0]], {emitEvent: false});
+    this.searchResultsForm.controls['gender'].setValue(this.GENDER_LIST[0], {emitEvent: false});
     this.searchResultsForm.controls['status'].setValue(this.statusList[0], {emitEvent: false});
     this.searchResultsForm.controls['formName'].setValue(this.formList[0], {emitEvent: false});
   }

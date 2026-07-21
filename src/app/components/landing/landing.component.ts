@@ -8,14 +8,13 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
-import {Carousel} from "primeng/carousel";
 import {AppStep, APP_STEPS} from "../../models/app-step";
 
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
-  imports: [MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle, Carousel]
+  imports: [MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle]
 })
 export class LandingComponent implements OnInit {
   readonly steps: AppStep[] = APP_STEPS;

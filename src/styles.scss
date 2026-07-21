@@ -5,7 +5,6 @@
 @use 'styles/utilities' as *;
 @use 'styles/components' as *;
 @use 'styles/material-overrides' as *;
-@use 'styles/prime' as *;
 
 // Define custom primary palette based on #213368
 $custom-primary-palette: (

@@ -2,7 +2,6 @@ import {Component, inject, input} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
-import {ButtonModule} from "primeng/button";
 import {MatButton} from "@angular/material/button";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {MatDivider} from "@angular/material/list";
@@ -14,7 +13,6 @@ import {MatDivider} from "@angular/material/list";
   imports: [
     MatCardModule,
     MatIconModule,
-    ButtonModule,
     MatButton,
     MatMenuTrigger,
     MatMenu,
