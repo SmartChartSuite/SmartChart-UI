@@ -71,14 +71,14 @@
 
                     <div class="form-row">
 
-                      <!--Patient Name-->
+                      <!--Form Name-->
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>Form Name</mat-label>
-                        <input
-                          matInput
-                          type="text"
-                          [formField]="form.formName"
-                        />
+                        <mat-select [formField]="form.jobPackage">
+                          @for (formOption of formOptions(); track formOption.name) {
+                            <mat-option [value]="formOption.name">{{ formOption.title }}</mat-option>
+                          }
+                        </mat-select>
                       </mat-form-field>
 
                       <!--Job Status-->
@@ -178,6 +178,15 @@
                   {{ patient.patientGender | titlecase }}
                 </td>
               </ng-container>
+
+              <!-- Patient Gender Column -->
+              <ng-container matColumnDef="jobPackage">
+                <th mat-header-cell *matHeaderCellDef>Form Name</th>
+                <td mat-cell *matCellDef="let patient">
+                  {{ patient.jobPackage }}
+                </td>
+              </ng-container>
+
 
               <!-- Job Status Column -->
               <ng-container matColumnDef="batchJobStatus">

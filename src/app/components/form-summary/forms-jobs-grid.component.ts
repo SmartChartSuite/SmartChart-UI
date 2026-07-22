@@ -56,7 +56,7 @@ export class FormsJobsGridComponent implements OnInit {
   protected readonly FormStatus = FormStatus;
   protected readonly GENDER_OPTIONS = [...GENDER_OPTIONS];
   protected readonly STATUS_OPTIONS = [...STATUS_OPTIONS];
-  protected readonly displayedColumns: string[] = ['formStatus', 'actions', 'patient', 'patientDob', 'patientGender', 'batchJobStatus', 'dateRan'];
+  protected readonly displayedColumns: string[] = ['formStatus', 'actions', 'patient', 'patientDob', 'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan'];
 
   // Server-side pagination and data
   readonly patients = signal<PatientGrid[]>([]);
@@ -67,12 +67,24 @@ export class FormsJobsGridComponent implements OnInit {
 
   rcApiInterface = inject(RcApiInterfaceService);
   filtersVisible = signal<boolean>(false);
+  formOptions = signal<any[]>([]);
 
   // Initialize signal form
   patientSearchModal = signal<PatientSearchData>({...PATIENT_SEARCH_DATA_DEFAULT});
   form = form(this.patientSearchModal);
 
   ngOnInit(): void {
+    // Load form options
+    this.rcApiInterface.getQuestionTypes$.subscribe({
+      next: (forms) => {
+        this.formOptions.set(forms);
+      },
+      error: (err) => {
+        console.error('Error loading form options:', err);
+        this.formOptions.set([]);
+      }
+    });
+
     // Initial load
     this.loadPatients();
   }
@@ -95,9 +107,9 @@ export class FormsJobsGridComponent implements OnInit {
 
     [
       'patientName',
-      'formName',
       'patientGender',
       'questionnaireResponseStatus',
+      'jobPackage',
       'batchJobStatus',
     ].forEach((key) => {
       const value = formValue[key];

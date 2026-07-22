@@ -16,7 +16,6 @@ import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resour
 import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
-import {PatientGridResponse} from "../../models/patient-grid-response";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
 
 
@@ -24,15 +23,6 @@ import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.s
   providedIn: 'root'
 })
 export class RcApiInterfaceService {
-  // private base = "smartchartui"
-  // configEndpoint: string = `config`;
-  // patientEndpoint: string = `${this.base}/Patient`; // FHIR Conformant.
-  // groupEndpoint: string = `${this.base}/group`;
-  // questionnaireEndpoint: string = `${this.base}/questionnaire`;
-  // startJobsEndpoint: string = `${this.base}/batchjob?include_patient=True`;
-  // getJobPackageEndpoint: string = `forms`;
-  // getBatchJobsEndpoint: string = `${this.base}/batchjob`
-  // getResultsEndpoint: string = `${this.base}/results`
   private base  = this.configService.config.rcApiUrl;
   configEndpoint: string = `${this.base}config`;
   patientEndpoint: string = `${this.base}patient`; // FHIR Conformant.
@@ -113,7 +103,7 @@ export class RcApiInterfaceService {
         dobEndDate: 'dobEndDate',
         jobRunStartDate: 'jobRunStartDate',
         jobRunEndDate: 'jobRunEndDate',
-        formName: 'jobPackage',
+        jobPackage: 'jobPackage',
       };
 
       Object.entries(mappings).forEach(([filterKey, paramKey]) => {
