@@ -22,7 +22,7 @@
           }
           <div>
             @if (filtersVisible()) {
-              <form [formRoot]="form" class="margin-top-md" (submit)="onSearch()">
+              <form [formRoot]="form" class="margin-top-md">
 
                 <div class="inputs-container">
                   <div class="fields-section">
@@ -105,11 +105,12 @@
                   </div>
 
                   <div class="button-column">
-                    <button matButton="filled" color="primary" type=submit (click)="onSearch()" [disabled]="isLoading()">
+<!--                    <button matButton="filled" color="primary" type="button" (click)="onSearch()" [disabled]="isLoading()">-->
+                      <button matButton="filled" color="primary" type="submit" [disabled]="isLoading()">
                       <mat-icon>search</mat-icon>
                       Search
                     </button>
-                    <button matButton="outlined" type=button (click)="onClearFilters()" [disabled]="isLoading()">
+                    <button matButton="outlined" type="button" (click)="onClearFilters()" [disabled]="isLoading()">
                       <mat-icon>clear</mat-icon>
                       Clear Filters
                     </button>

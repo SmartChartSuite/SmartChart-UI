@@ -72,7 +72,14 @@ export class JobsFormsGridComponent implements OnInit {
 
   // Initialize signal form
   patientSearchModal = signal<PatientSearchData>({...PATIENT_SEARCH_DATA_DEFAULT});
-  form = form(this.patientSearchModal);
+
+  form = form(this.patientSearchModal, {
+    submission: {
+      action: async () => {
+        this.onSearch();
+      }
+    }
+  });
 
   ngOnInit(): void {
     // Load form options
