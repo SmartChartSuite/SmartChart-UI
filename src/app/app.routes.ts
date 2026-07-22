@@ -5,6 +5,7 @@ import { LoginComponent } from "./components/login/login.component";
 import { FormManagerComponent } from "./components/form-manager/form-manager.component";
 import { FormViewerComponent } from "./components/form-viewer/form-viewer.component";
 import {JobsFormsGridComponent} from "./components/jobs-forms-grid/jobs-forms-grid.component";
+import {AuthGuard} from "./guards/auth.guard";
 
 export const routes: Routes = [
   {
@@ -14,10 +15,12 @@ export const routes: Routes = [
   {
     path: 'forms',
     component: FormManagerComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'jobs-forms',
     component: JobsFormsGridComponent,
+    canActivate: [AuthGuard]
   },
   {
     path: 'callback',
@@ -29,6 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'form-viewer',
-    component: FormViewerComponent
+    component: FormViewerComponent,
+    canActivate: [AuthGuard]
   }
 ];

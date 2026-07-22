@@ -120,7 +120,6 @@ export class RcApiInterfaceService {
     }
 
     return this.http.get<Bundle>(`${this.getBatchJobsEndpoint}`, { params }).pipe(
-      tap(response => console.log(response)),
       map(response => this.jobsFormsHelper.toPatientData(response))
     );
   }
