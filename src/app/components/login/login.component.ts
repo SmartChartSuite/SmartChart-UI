@@ -22,7 +22,7 @@ import {MatDivider} from "@angular/material/list";
 })
 export class LoginComponent {
 
-  isLocatedInMainMenu = input.required<boolean>();
+  isLocatedInMainMenu = input<boolean>(false);
   public oauthService: OAuthService = inject(OAuthService);
 
   // Method for profile picture with fallback - called by Angular change detection

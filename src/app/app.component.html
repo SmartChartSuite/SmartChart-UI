@@ -3,14 +3,10 @@
 
   <div #content class="app-content-wrapper">
     <app-error-message></app-error-message>
-    @if (oauthService.hasValidAccessToken()) {
-      @if (loadingService.loading()) {
-        <app-loading></app-loading>
-      }
-      <router-outlet></router-outlet>
-    } @else {
-      <sc-standalone-login [isLocatedInMainMenu]="false"></sc-standalone-login>
+    @if (loadingService.loading()) {
+      <app-loading></app-loading>
     }
+    <router-outlet></router-outlet>
   </div>
 </div>
 

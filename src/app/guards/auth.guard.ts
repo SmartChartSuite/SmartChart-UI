@@ -7,10 +7,18 @@ import {OAuthService} from "angular-oauth2-oidc";
 })
 class PermissionsService {
 
-  constructor(private router: Router, private oauthService: OAuthService, ) {}
+  constructor(private router: Router, private oauthService: OAuthService) {}
 
   canActivate(next?: ActivatedRouteSnapshot, state?: RouterStateSnapshot): boolean {
-    return this.oauthService.hasValidAccessToken();
+    const hasValidToken = this.oauthService.hasValidAccessToken();
+
+    if (!hasValidToken) {
+      // Redirect to login if not authenticated
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    return true;
   }
 }
 
