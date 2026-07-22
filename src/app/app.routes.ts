@@ -30,10 +30,5 @@ export const routes: Routes = [
   {
     path: 'form-viewer',
     component: FormViewerComponent
-  },
-  // Wildcard route - redirect to root for non-existing paths
-  {
-    path: '**',
-    redirectTo: ''
   }
 ];
