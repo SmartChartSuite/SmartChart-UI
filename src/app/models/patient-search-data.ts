@@ -11,19 +11,19 @@ export interface DateRange {
 export interface PatientSearchData {
   patientName: string;
   formName: string;
-  gender: GenderOption[] | null;
+  patientGender: GenderOption[] | null;
   dobRange: DateRange;
-  formStatus: StatusOption[] | null;
-  jobStatus: StatusOption[] | null;
+  questionnaireResponseStatus: StatusOption[] | null;
+  batchJobStatus: StatusOption[] | null;
   jobRanDateRange: DateRange;
 }
 
 export const PATIENT_SEARCH_DATA_DEFAULT: PatientSearchData = {
   patientName: '',
   formName: '',
-  gender: null,
+  patientGender: null,
   dobRange: { start: null, end: null },
   jobRanDateRange: { start: null, end: null },
-  formStatus: null,
-  jobStatus: null,
+  questionnaireResponseStatus: null,
+  batchJobStatus: null,
 }

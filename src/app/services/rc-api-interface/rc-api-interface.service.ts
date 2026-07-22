@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, share, shareReplay} from "rxjs";
-import {HttpClient, HttpContext} from "@angular/common/http";
+import {map, Observable, share, shareReplay, tap} from "rxjs";
+import {HttpClient, HttpContext, HttpParams} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
@@ -17,6 +17,8 @@ import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {PatientGridResponse} from "../../models/patient-grid-response";
+import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
+
 
 @Injectable({
   providedIn: 'root'
@@ -31,15 +33,15 @@ export class RcApiInterfaceService {
   // getJobPackageEndpoint: string = `forms`;
   // getBatchJobsEndpoint: string = `${this.base}/batchjob`
   // getResultsEndpoint: string = `${this.base}/results`
-
-  configEndpoint: string = `config`;
-  patientEndpoint: string = `patient`; // FHIR Conformant.
-  groupEndpoint: string = `group`;
-  questionnaireEndpoint: string = `jobpackage`;
-  startJobsEndpoint: string = `batchjob?include_patient=True`;
-  getJobPackageEndpoint: string = `jobpackage`;
-  getBatchJobsEndpoint: string = `batchjob`
-  getResultsEndpoint: string = `batchjob`
+  private base  = this.configService.config.rcApiUrl;
+  configEndpoint: string = `${this.base}config`;
+  patientEndpoint: string = `${this.base}patient`; // FHIR Conformant.
+  groupEndpoint: string = `${this.base}group`;
+  questionnaireEndpoint: string = `${this.base}jobpackage`;
+  startJobsEndpoint: string = `${this.base}batchjob?include_patient=True`;
+  getJobPackageEndpoint: string = `${this.base}jobpackage`;
+  getBatchJobsEndpoint: string = `${this.base}batchjob`
+  getResultsEndpoint: string = `${this.base}results`
   testResponse = testResponse;
 
   getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
@@ -48,7 +50,8 @@ export class RcApiInterfaceService {
   );
 
   constructor(private configService: ConfigService,
-              private http: HttpClient) {
+              private http: HttpClient,
+              private jobsFormsHelper: JobsFormsHelperService) {
   }
 
   /**
@@ -56,7 +59,7 @@ export class RcApiInterfaceService {
    */
 
   getConfig(): Observable<RcApiConfig> {
-    return this.http.get<RcApiConfig>(this.configService.config.rcApiUrl + this.configEndpoint);
+    return this.http.get<RcApiConfig>(this.configEndpoint);
   }
 
   /**
@@ -64,7 +67,7 @@ export class RcApiInterfaceService {
    * @param id - The patient's FHIR ID.
    */
   readPatient(id: string): Observable<FhirBaseResource> {
-    return this.http.get<FhirBaseResource>(this.configService.config.rcApiUrl + `${this.patientEndpoint}/${id}`);
+    return this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
   }
 
   /**
@@ -73,7 +76,7 @@ export class RcApiInterfaceService {
    * TODO: TABLED FOR LATER
    */
   searchPatient(searchParameters?: PatientSearchParameters): Observable<PatientSummary[]> {
-    const searchPatientUrl = this.configService.config.rcApiUrl + `${this.patientEndpoint}`;
+    const searchPatientUrl = `${this.patientEndpoint}`;
     searchParameters = this.mapParameterKeysToFHIR(searchParameters);
 
     let patientSearch$: Observable<any>;
@@ -97,9 +100,39 @@ export class RcApiInterfaceService {
     )
   }
 
-  getPatients(page: number, size: number){
-    // Load data from forms.json which already has data/total structure
-    return this.http.get<PatientGridResponse>('/assets/forms.json');
+
+  getFormJobsPatientData(page: number = 0, size: number = 10, filters?: any): Observable<PatientData> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (filters) {
+      const mappings = {
+        patientName: 'patientName',
+        dobStartDate: 'dobStartDate',
+        dobEndDate: 'dobEndDate',
+        jobRunStartDate: 'jobRunStartDate',
+        jobRunEndDate: 'jobRunEndDate',
+        formName: 'jobPackage',
+      };
+
+      Object.entries(mappings).forEach(([filterKey, paramKey]) => {
+        if (filters[filterKey]) {
+          params = params.set(paramKey, filters[filterKey]);
+        }
+      });
+
+      ['patientGender', 'questionnaireResponseStatus', 'batchJobStatus'].forEach((key) => {
+        if (filters[key]?.length) {
+          params = params.set(key, filters[key].join(','));
+        }
+      });
+    }
+
+    return this.http.get<Bundle>(`${this.getBatchJobsEndpoint}`, { params }).pipe(
+      tap(response => console.log(response)),
+      map(response => this.jobsFormsHelper.toPatientData(response))
+    );
   }
 
   private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {
@@ -121,7 +154,7 @@ export class RcApiInterfaceService {
    * Search all Group resources. FHIR pass through for SmartChart UI.
    */
   searchGroup(): Observable<any> {
-    const groups$ = this.http.get<any[]>(this.configService.config.rcApiUrl + `${this.groupEndpoint}`).pipe(
+    const groups$ = this.http.get<any[]>(`${this.groupEndpoint}`).pipe(
       map(results => {
         const groupList: FhirBaseResource[] = results.filter(resource => resource.resourceType === "Group");
         const patientList: FhirBaseResource[] = results.filter(resource => resource.resourceType === "Patient");
@@ -135,7 +168,7 @@ export class RcApiInterfaceService {
    * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
    */
   getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
-    return this.http.get<FhirBaseResource[]>(this.configService.config.rcApiUrl + `${this.questionnaireEndpoint}`).pipe(
+    return this.http.get<FhirBaseResource[]>(`${this.questionnaireEndpoint}`).pipe(
       map(resultsList => {
         let formSummaryList: FormSummary[];
         formSummaryList = resultsList.map(questionnaireResource=> new FormSummary(questionnaireResource));
@@ -169,7 +202,7 @@ export class RcApiInterfaceService {
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    return this.http.post<StartJobsPostResponse>(this.configService.config.rcApiUrl + this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
+    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
   }
 
   /**
@@ -177,7 +210,7 @@ export class RcApiInterfaceService {
    * This is returned as a flat list of FHIR Parameter JSON objects.
    */
   getBatchJobs() {
-    return this.http.get<Parameters[]>(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + "?include_patient=True").pipe(
+    return this.http.get<Parameters[]>(this.getBatchJobsEndpoint + "?include_patient=True").pipe(
       map((response: Parameters[]) => {
         let activeJobList: ActiveFormSummary[] = [];
         response.forEach(parametersResource => {
@@ -190,11 +223,11 @@ export class RcApiInterfaceService {
   }
 
   getBatchJobById(id: string) {
-    return this.http.get(this.configService.config.rcApiUrl + this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
+    return this.http.get(this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
   }
 
   getBatchJobResults(id: string): Observable<Results> {
-    return this.http.get<Bundle>(this.configService.config.rcApiUrl + this.getResultsEndpoint + `/${id}`).pipe(
+    return this.http.get<Bundle>(this.getResultsEndpoint + `/${id}`).pipe(
       map((batchResultsBundle: Bundle) => {
         // TODO: Add validation if not bundle or structure is not as expected (e.g. location of statusObservation/patientResource)
         // TODO: Simplify/condense code once confirmed working

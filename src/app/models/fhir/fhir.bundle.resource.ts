@@ -9,6 +9,7 @@ import {Code, Decimal, Instant, Uri} from "./fhir.primitive";
 
 export class Bundle implements FhirBaseResource {
   resourceType: string = "Bundle";
+  total?: number;
   entry?: BundleEntryComponent[];
 }
 

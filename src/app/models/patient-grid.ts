@@ -2,17 +2,12 @@ import {FormStatusValue} from "./form-status";
 
 export type JobStatusValue = 'complete' | 'running';
 
-export interface PatientName {
-  family: string;
-  given: string;
-}
-
 export interface PatientGrid {
-  formStatus: FormStatusValue;
-  patientName: PatientName;
+  questionnaireResponseStatus: FormStatusValue;
+  patientName: string;
   patientDob: string;
-  patientGender: "Male" | "Female" | "Unknown" | "Other";
-  jobStatus: JobStatusValue;
-  dateRan: string;
+  patientGender: "male" | "female" | "unknown" | "other";
+  batchJobStatus: JobStatusValue;
+  jobStartDateTime: string;
   [key: string]: any;
 }
