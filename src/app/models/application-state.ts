@@ -9,4 +9,5 @@ export enum RouteState {
   LANDING,
   FORM_MANAGER,
   CURRENT_FORM,
+  JOBS_FORMS,
 }

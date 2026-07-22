@@ -23,14 +23,21 @@ export class CallbackComponent implements OnInit {
     this.stateManagementService.getState().subscribe({
       next: (value: ApplicationState) => {
         const lastComponent = value.currentRoute;
-        // TODO: Navigate to lastComponent
-        if (lastComponent === RouteState.LANDING) {
-          this.router.navigateByUrl("")
-        }
 
+        // Navigate to lastComponent based on the stored route state
+        if (lastComponent === RouteState.LANDING) {
+          this.router.navigateByUrl("");
+        } else if (lastComponent === RouteState.FORM_MANAGER) {
+          this.router.navigateByUrl("/forms");
+        } else if (lastComponent === RouteState.CURRENT_FORM) {
+          this.router.navigateByUrl("/form-viewer");
+        } else if (lastComponent === RouteState.JOBS_FORMS) {
+          this.router.navigateByUrl("/jobs-forms");
+        } else {
+          // Default fallback
+          this.router.navigateByUrl("");
+        }
       }
     });
   }
-
-
 }
