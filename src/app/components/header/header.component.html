@@ -41,6 +41,13 @@
         <mat-icon>list_alt</mat-icon>
         <span>Current Chart</span>
       </button>
+
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/jobs-forms')"
+              [ngClass]="{'active': currentRoute() === '/jobs-forms'}">
+        <mat-icon>grading</mat-icon>
+        <span>Jobs/Forms</span>
+      </button>
     </nav>
   }
   <div class="content-spacer"></div>

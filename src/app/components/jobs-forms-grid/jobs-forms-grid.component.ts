@@ -48,10 +48,10 @@ import {FormSummary} from "../../models/form-summary";
     MatSuffix,
     TitleCasePipe
   ],
-  templateUrl: './forms-jobs-grid.component.html',
-  styleUrl: './forms-jobs-grid.component.scss',
+  templateUrl: './jobs-forms-grid.component.html',
+  styleUrl: './jobs-forms-grid.component.scss',
 })
-export class FormsJobsGridComponent implements OnInit {
+export class JobsFormsGridComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   protected readonly FormStatus = FormStatus;

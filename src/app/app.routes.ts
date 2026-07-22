@@ -4,7 +4,7 @@ import { CallbackComponent } from "./components/callback/callback.component";
 import { LoginComponent } from "./components/login/login.component";
 import { FormManagerComponent } from "./components/form-manager/form-manager.component";
 import { FormViewerComponent } from "./components/form-viewer/form-viewer.component";
-import {FormsJobsGridComponent} from "./components/form-summary/forms-jobs-grid.component";
+import {JobsFormsGridComponent} from "./components/jobs-forms-grid/jobs-forms-grid.component";
 
 export const routes: Routes = [
   {
@@ -16,8 +16,8 @@ export const routes: Routes = [
     component: FormManagerComponent,
   },
   {
-    path: 'forms-jobs',
-    component: FormsJobsGridComponent,
+    path: 'jobs-forms',
+    component: JobsFormsGridComponent,
   },
   {
     path: 'callback',
