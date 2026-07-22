@@ -34,5 +34,11 @@ export const routes: Routes = [
     path: 'form-viewer',
     component: FormViewerComponent,
     canActivate: [AuthGuard]
+  },
+  // Wildcard route - MUST be last!
+  {
+    path: '**',
+    redirectTo: '',
+    pathMatch: 'full'
   }
 ];
