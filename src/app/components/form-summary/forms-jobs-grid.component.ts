@@ -21,6 +21,7 @@ import {MatTooltip} from "@angular/material/tooltip";
 import {MatIcon} from "@angular/material/icon";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule, PageEvent} from "@angular/material/paginator";
+import {FormSummary} from "../../models/form-summary";
 
 
 @Component({
@@ -67,7 +68,7 @@ export class FormsJobsGridComponent implements OnInit {
 
   rcApiInterface = inject(RcApiInterfaceService);
   filtersVisible = signal<boolean>(false);
-  formOptions = signal<any[]>([]);
+  formOptions = signal<FormSummary[]>([]);
 
   // Initialize signal form
   patientSearchModal = signal<PatientSearchData>({...PATIENT_SEARCH_DATA_DEFAULT});
