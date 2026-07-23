@@ -22,6 +22,9 @@ import {MatIcon} from "@angular/material/icon";
 import {MatTableModule} from "@angular/material/table";
 import {MatPaginator, MatPaginatorModule, PageEvent} from "@angular/material/paginator";
 import {FormSummary} from "../../models/form-summary";
+import {FormManagerService} from "../../services/form-manager/form-manager.service";
+import {Router} from "@angular/router";
+import {ActiveFormSummary} from "../../models/active-form-summary";
 
 
 @Component({
@@ -67,6 +70,9 @@ export class JobsFormsGridComponent implements OnInit {
   readonly isLoading = signal<boolean>(false);
 
   rcApiInterface = inject(RcApiInterfaceService);
+  formManagerService = inject(FormManagerService);
+  router = inject(Router);
+
   filtersVisible = signal<boolean>(false);
   formOptions = signal<FormSummary[]>([]);
 
@@ -192,5 +198,12 @@ export class JobsFormsGridComponent implements OnInit {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     return jobDate < thirtyDaysAgo;
+  }
+
+  protected async onSelectRecord(row) {
+    const patientResource = await this.rcApiInterface.getPatientPromise(row.patientId);
+    const activeFormSummary = new ActiveFormSummary(patientResource, row);
+    this.formManagerService.setSelectedActiveFormSummary(activeFormSummary);
+    this.router.navigate([`/form-viewer`]);
   }
 }

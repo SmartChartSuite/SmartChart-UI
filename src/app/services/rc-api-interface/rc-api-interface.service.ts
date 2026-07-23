@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {map, Observable, share, shareReplay, tap} from "rxjs";
+import {firstValueFrom, map, Observable, share, shareReplay} from "rxjs";
 import {HttpClient, HttpContext, HttpParams} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
@@ -56,8 +56,13 @@ export class RcApiInterfaceService {
    * Request a specific Patient resource from the EHR from RC API by their FHIR ID. FHIR pass through for SmartChart UI.
    * @param id - The patient's FHIR ID.
    */
-  readPatient(id: string): Observable<FhirBaseResource> {
+  getPatient(id: string): Observable<FhirBaseResource> {
     return this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
+  }
+
+  async getPatientPromise(id: string): Promise<FhirBaseResource> {
+    const patient$ = this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
+    return await firstValueFrom(patient$);
   }
 
   /**
@@ -179,8 +184,7 @@ export class RcApiInterfaceService {
   getJobPackage(parameters: { key: string; value: string }): Observable<any> {
     const params = { [parameters.key]: parameters.value };
 
-    return this.http.get<FhirBaseResource>(
-      this.configService.config.rcApiUrl + this.getJobPackageEndpoint,
+    return this.http.get<FhirBaseResource>(this.getJobPackageEndpoint,
       { params }
     );
   }
@@ -194,17 +198,30 @@ export class RcApiInterfaceService {
     return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
   }
 
-  /**
-   * This will return all Batch Jobs, which is functionally the list of "active" (completed, in progress, and otherwise terminated) cases.
-   * This is returned as a flat list of FHIR Parameter JSON objects.
-   */
+  // /**
+  //  * This will return all Batch Jobs, which is functionally the list of "active" (completed, in progress, and otherwise terminated) cases.
+  //  * This is returned as a flat list of FHIR Parameter JSON objects.
+  //  */
+  // getBatchJobs() {
+  //   return this.http.get<Parameters[]>(this.getBatchJobsEndpoint + "?include_patient=True").pipe(
+  //     map((response: Parameters[]) => {
+  //       let activeJobList: ActiveFormSummary[] = [];
+  //       response.forEach(parametersResource => {
+  //         // TODO: Fetch Patient, need to setup as merge map? What is the right approach here? @Plamen
+  //         activeJobList.push(new ActiveFormSummary(parametersResource));
+  //       });
+  //       return activeJobList;
+  //     })
+  //   );
+  // }
+
   getBatchJobs() {
-    return this.http.get<Parameters[]>(this.getBatchJobsEndpoint + "?include_patient=True").pipe(
-      map((response: Parameters[]) => {
+    return this.http.get<Bundle>(this.getBatchJobsEndpoint + "?include_patient=True").pipe(
+      map((response: Bundle) => {
         let activeJobList: ActiveFormSummary[] = [];
-        response.forEach(parametersResource => {
-          // TODO: Fetch Patient, need to setup as merge map? What is the right approach here? @Plamen
-          activeJobList.push(new ActiveFormSummary(parametersResource));
+        response.entry.forEach(parametersResource => {
+          const resource = parametersResource.resource as Parameters;
+          activeJobList.push(new ActiveFormSummary(resource));
         });
         return activeJobList;
       })
@@ -216,7 +233,7 @@ export class RcApiInterfaceService {
   }
 
   getBatchJobResults(id: string): Observable<Results> {
-    return this.http.get<Bundle>(this.getResultsEndpoint + `/${id}`).pipe(
+    return this.http.get<Bundle>(this.getBatchJobsEndpoint + `/${id}`).pipe(
       map((batchResultsBundle: Bundle) => {
         // TODO: Add validation if not bundle or structure is not as expected (e.g. location of statusObservation/patientResource)
         // TODO: Simplify/condense code once confirmed working

@@ -6,6 +6,7 @@ export interface PatientGrid {
   questionnaireResponseStatus: FormStatusValue;
   patientName: string;
   patientDob: string;
+  batchId: string;
   patientGender: "male" | "female" | "unknown" | "other";
   batchJobStatus: JobStatusValue;
   jobStartDateTime: string;

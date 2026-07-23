@@ -5,7 +5,7 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, takeWhile, tap, timer} from "rxjs";
+import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -26,7 +26,6 @@ import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { FhirDateTimeComponent } from "../fhir-date-time/fhir-date-time.component";
-import { HasEvidenceDirective } from "../../directives/has-evidence.directive";
 import { MatChip } from "@angular/material/chips";
 import { MatTooltip } from "@angular/material/tooltip";
 import { SetEvidenceDirective } from "../../directives/set-evidence.directive";
@@ -53,10 +52,33 @@ export interface Questionnaire extends FhirBaseResource {
 }
 
 @Component({
-    selector: 'app-form-viewer',
-    templateUrl: './form-viewer.component.html',
-    styleUrl: './form-viewer.component.scss',
-  imports: [PatientDetailsComponent, MatProgressSpinner, MatButton, MatNavList, NgClass, QuestionnaireIndexDirective, MatRadioGroup, FormsModule, MatRadioButton, MatFormField, MatInput, MatLabel, MatHint, FhirDateTimeComponent, HasEvidenceDirective, MatChip, MatTooltip, SetEvidenceDirective, MatIcon, EvidenceDetailsComponent, AsyncPipe, SuggestedAnswerFormatterPipe, FormattedTitlePipe, JsonPipe]
+  selector: 'app-form-viewer',
+  templateUrl: './form-viewer.component.html',
+  styleUrl: './form-viewer.component.scss',
+  imports: [
+    PatientDetailsComponent,
+    MatProgressSpinner,
+    MatButton,
+    MatNavList,
+    NgClass,
+    QuestionnaireIndexDirective,
+    MatRadioGroup,
+    FormsModule,
+    MatRadioButton,
+    MatFormField,
+    MatInput,
+    MatLabel,
+    MatHint,
+    FhirDateTimeComponent,
+    MatChip,
+    MatTooltip,
+    SetEvidenceDirective,
+    MatIcon,
+    EvidenceDetailsComponent,
+    AsyncPipe,
+    SuggestedAnswerFormatterPipe,
+    FormattedTitlePipe,
+  ]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
@@ -105,17 +127,17 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Results Handling
-    // let results$ = this.refreshTrigger$.pipe(
-    //   switchMap(() => this.fetchResults()),
-    //   share()
-    // );
-
-    let results$ = timer(0,10000).pipe(
-      takeWhile(() => !!this.activeFormSummary()),
-      takeWhile(() => !this.results || this.results?.status !== "complete"),
+    let results$ = this.refreshTrigger$.pipe(
       switchMap(() => this.fetchResults()),
       share()
-    )
+    );
+
+    // let results$ = timer(0,10000).pipe(
+    //   takeWhile(() => !!this.activeFormSummary()),
+    //   takeWhile(() => !this.results || this.results?.status !== "complete"),
+    //   switchMap(() => this.fetchResults()),
+    //   share()
+    // )
     results$.subscribe(value => this.results = value);
 
     this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;

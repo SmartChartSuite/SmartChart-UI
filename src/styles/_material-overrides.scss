@@ -22,7 +22,6 @@ $custom-typography: mat.m2-define-typography-config(
 
   // Select Overrides
   @include mat.select-overrides((
-    trigger-text-size: 0.875rem,
     trigger-text-line-height: 1.25rem,
   ));
 

@@ -137,18 +137,18 @@
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let patient">
                   @if (patient.questionnaireResponseStatus === FormStatus.PREVIEW) {
-                    <button mat-stroked-button color="accent" class="action-button">
+                    <button mat-stroked-button color="accent" class="action-button" (click)="onSelectRecord(patient)">
                       <mat-icon>visibility</mat-icon>
                       Preview
                     </button>
                   }
                   @if (patient.questionnaireResponseStatus === FormStatus.IN_PROGRESS) {
-                    <button mat-stroked-button color="primary" class="action-button">
+                    <button mat-stroked-button color="primary" class="action-button" (click)="onSelectRecord(patient)">
                       <mat-icon>arrow_forward</mat-icon>
                       Continue Form
                     </button>
                   } @else if (patient.questionnaireResponseStatus === FormStatus.COMPLETE) {
-                    <button mat-stroked-button color="primary" class="action-button">
+                    <button mat-stroked-button color="primary" class="action-button" (click)="onSelectRecord(patient)">
                       <mat-icon>description</mat-icon>
                       View form
                     </button>

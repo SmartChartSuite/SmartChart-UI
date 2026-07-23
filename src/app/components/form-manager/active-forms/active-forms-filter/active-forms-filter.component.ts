@@ -2,7 +2,6 @@ import {Component, effect, EventEmitter, input, OnInit, Output} from '@angular/c
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FormSummary} from "../../../../models/form-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
-import {debounceTime} from "rxjs";
 import {MatFormField, MatLabel, MatHint, MatSuffix} from '@angular/material/form-field';
 import {MatInput} from '@angular/material/input';
 import {MatSelect, MatOption} from '@angular/material/select';
@@ -78,9 +77,11 @@ export class ActiveFormsFilterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchResultsForm.valueChanges.pipe(debounceTime(250)).subscribe(value => {
+    //     this.searchResultsForm.valueChanges.pipe(debounceTime(250)).subscribe(value => {
+    this.searchResultsForm.valueChanges.subscribe(value => {
       this.onFormValueChange.emit(value);
     });
+
     this.rcApiInterfaceService.getQuestionTypes$.subscribe({
       next: value => {
         this.formList = JSON.parse(JSON.stringify(value));
@@ -90,7 +91,7 @@ export class ActiveFormsFilterComponent implements OnInit {
       error: err => {
         console.error(err);
       }
-    })
+    });
   }
 
   onClearForm() {
