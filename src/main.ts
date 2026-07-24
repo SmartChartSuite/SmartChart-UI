@@ -10,7 +10,7 @@ import {StateManagementService} from "./app/services/state-management/state-mana
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
 import {httpErrorInterceptor} from "./app/interceptors/http-error.interceptor";
 import {AuthService} from "./app/services/auth/auth.service";
-import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig, OAuthResourceServerErrorHandler} from "angular-oauth2-oidc";
+import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
 
@@ -44,7 +44,7 @@ bootstrapApplication(AppComponent, {
         });
       });
     }),
-    provideHttpClient(withXhr(), 
+    provideHttpClient(withXhr(),
       withInterceptors([httpErrorInterceptor]),
       withInterceptorsFromDi()
     ),

@@ -20,7 +20,7 @@ import { PatientDetailsComponent } from "./patient-details/patient-details.compo
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatButton } from "@angular/material/button";
 import { MatNavList } from "@angular/material/list";
-import {NgClass, AsyncPipe, JsonPipe} from "@angular/common";
+import {NgClass, AsyncPipe} from "@angular/common";
 import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";

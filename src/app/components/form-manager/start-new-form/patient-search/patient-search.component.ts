@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import { MatRadioChange, MatRadioGroup, MatRadioButton } from "@angular/material/radio";
+import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {searchByType, searchByTypes} from "../../../../models/search-by-types";
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {PatientSummary} from "../../../../models/patient-summary";
