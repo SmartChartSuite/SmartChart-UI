@@ -1,52 +1,33 @@
 import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import {provideMomentDateAdapter} from "@angular/material-moment-adapter";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
 import { MatFormField, MatLabel, MatHint, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
-import { NgxMatTimepickerDirective, NgxMatTimepickerComponent } from 'ngx-mat-timepicker';
-import { MatIcon } from '@angular/material/icon';
+import {MatTimepickerInput, MatTimepickerModule} from "@angular/material/timepicker";
 
 const timeRegex = /([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]{1,9})?/;
 const dateRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?/;
 const dateTimeRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]{1,9})?)?)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)?)?)?/;
 
-// See the Moment.js docs for the meaning of these formats:
-// https://momentjs.com/docs/#/displaying/format/
-export const DATE_FORMATS = {
-  parse: {
-    dateInput: 'YYYY-MM-DD',
-  },
-  display: {
-    dateInput: 'YYYY-MM-DD',
-    monthYearLabel: 'YYYY-MM',
-    dateA11yLabel: 'MM',
-    monthYearA11yLabel: 'YYYY-MM',
-  },
-};
-
 @Component({
-    selector: 'app-fhir-date-time',
-    templateUrl: './fhir-date-time.component.html',
-    styleUrl: './fhir-date-time.component.scss',
-    providers: [
-        provideMomentDateAdapter(DATE_FORMATS),
-    ],
-    imports: [
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormField,
-      MatLabel,
-      MatInput,
-      MatDatepickerInput,
-      MatHint,
-      MatDatepickerToggle,
-      MatSuffix,
-      MatDatepicker,
-      NgxMatTimepickerDirective,
-      MatIcon,
-      NgxMatTimepickerComponent]
+  selector: 'app-fhir-date-time',
+  templateUrl: './fhir-date-time.component.html',
+  styleUrl: './fhir-date-time.component.scss',
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatSuffix,
+    MatDatepicker,
+    MatTimepickerInput,
+    MatTimepickerModule
+  ]
 })
 export class FhirDateTimeComponent implements OnChanges, OnInit {
 
@@ -61,19 +42,28 @@ export class FhirDateTimeComponent implements OnChanges, OnInit {
   private readonly dateTimeRegex = dateTimeRegex;
 
 
-  form = new FormGroup({});
+  form = new FormGroup({
+    date: new FormControl(null),
+    time: new FormControl(null)
+  });
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['questionType']?.currentValue == QuestionnaireItemType.time){
-      this.form.addControl('time', new FormControl(this.inputValue, Validators.required));
-    }
-    if (changes['questionType']?.currentValue == QuestionnaireItemType.date && !this.form.contains('date')){
-      this.form.addControl('date', new FormControl(new Date(this.inputValue), Validators.required));
-    }
-    if (changes['questionType']?.currentValue == QuestionnaireItemType.dateTime){
-      this.form.addControl('date', new FormControl(this.getDateFromISOString(this.inputValue, 'date'), Validators.required));
-      this.form.addControl('time', new FormControl(this.getDateFromISOString(this.inputValue, 'time'), Validators.required));
-      // this.form.addControl('timezone', new FormControl(this.getTimezone(this.inputValue), Validators.required));
+    // Set validators when questionType changes
+    if (changes['questionType']?.currentValue) {
+      const questionType = changes['questionType'].currentValue;
+
+      if (questionType === QuestionnaireItemType.time) {
+        this.form.controls['time'].setValidators(Validators.required);
+        this.form.controls['time'].updateValueAndValidity();
+      } else if (questionType === QuestionnaireItemType.date) {
+        this.form.controls['date'].setValidators(Validators.required);
+        this.form.controls['date'].updateValueAndValidity();
+      } else if (questionType === QuestionnaireItemType.dateTime) {
+        this.form.controls['date'].setValidators(Validators.required);
+        this.form.controls['time'].setValidators(Validators.required);
+        this.form.controls['date'].updateValueAndValidity();
+        this.form.controls['time'].updateValueAndValidity();
+      }
     }
 
     if (changes['inputValue']?.currentValue ){
