@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { MatRadioChange, MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {searchByType, searchByTypes} from "../../../../models/search-by-types";
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -20,6 +20,7 @@ import { Subject, takeUntil } from 'rxjs';
     selector: 'app-patient-search',
     templateUrl: './patient-search.component.html',
     styleUrl: './patient-search.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatCard, MatCardContent, MatLabel, MatRadioGroup, FormsModule, MatRadioButton, ReactiveFormsModule, MatFormField, MatInput, MatError, MatButton, MatIcon, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatHint, PatientSummaryTableComponent, DatePipe]
 })
 export class PatientSearchComponent implements OnInit, OnDestroy {

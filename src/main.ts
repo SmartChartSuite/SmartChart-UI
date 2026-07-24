@@ -1,5 +1,5 @@
 import {provideAppInitializer, importProvidersFrom, inject} from "@angular/core";
-import {provideHttpClient, withInterceptorsFromDi, withInterceptors, HTTP_INTERCEPTORS} from "@angular/common/http";
+import {provideHttpClient, withInterceptorsFromDi, withInterceptors, HTTP_INTERCEPTORS, withXhr} from "@angular/common/http";
 import {bootstrapApplication} from "@angular/platform-browser";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideRouter} from "@angular/router";
@@ -44,7 +44,7 @@ bootstrapApplication(AppComponent, {
         });
       });
     }),
-    provideHttpClient(
+    provideHttpClient(withXhr(), 
       withInterceptors([httpErrorInterceptor]),
       withInterceptorsFromDi()
     ),

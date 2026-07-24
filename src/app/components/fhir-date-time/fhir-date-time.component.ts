@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
 import { MatFormField, MatLabel, MatHint, MatSuffix } from '@angular/material/form-field';
@@ -14,6 +14,7 @@ const dateTimeRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1
   selector: 'app-fhir-date-time',
   templateUrl: './fhir-date-time.component.html',
   styleUrl: './fhir-date-time.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

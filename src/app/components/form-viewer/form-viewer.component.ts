@@ -1,5 +1,5 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -55,6 +55,7 @@ export interface Questionnaire extends FhirBaseResource {
   selector: 'app-form-viewer',
   templateUrl: './form-viewer.component.html',
   styleUrl: './form-viewer.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     PatientDetailsComponent,
     MatProgressSpinner,

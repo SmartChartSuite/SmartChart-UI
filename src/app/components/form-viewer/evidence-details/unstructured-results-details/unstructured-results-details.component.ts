@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {openDocumentViewerModal} from "../../document-viewer-modal/document-viewer-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {NlpAnswer} from "../../../../models/results";
@@ -17,6 +17,7 @@ import { SlicePipe } from '@angular/common';
     templateUrl: './unstructured-results-details.component.html',
     styleUrl: './unstructured-results-details.component.scss',
     encapsulation: ViewEncapsulation.None,
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatCard, MatCardContent, MatIconButton, MatTooltip, MatIcon, SlicePipe]
 })
 export class UnstructuredResultsDetailsComponent implements OnChanges{

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from "@angular/material/table";
 import {StructuredEvidenceDTO} from "../../../../models/dto/structured-evidence-dto/structured-evidence-dto";
 import {EvidenceViewerService} from "../../../../services/evidence-viewer/evidence-viewer.service";
@@ -15,6 +15,7 @@ import { dateFormat } from '../../../../pipe/date-format.pipe';
     selector: 'app-structured-results-details',
     templateUrl: './structured-results-details.component.html',
     styleUrl: './structured-results-details.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTable, MatSort, NgFor, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatPaginator, AsyncPipe, CamelCaseToTitleCasePipe, ConcatDataToStrPipe]
 })
 export class StructuredResultsDetailsComponent implements OnChanges, OnInit, AfterViewInit{

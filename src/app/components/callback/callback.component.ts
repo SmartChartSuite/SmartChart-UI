@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {ApplicationState, RouteState} from "../../models/application-state";
 import {Router} from "@angular/router";
@@ -6,6 +6,7 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'app-callback',
     templateUrl: './callback.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './callback.component.scss',
 })
 export class CallbackComponent implements OnInit {

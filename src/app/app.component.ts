@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef} from '@angular/core';
+import {Component, ChangeDetectorRef, ChangeDetectionStrategy} from '@angular/core';
 import {ConfigService} from "./services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "./services/state-management/state-management.service";
@@ -14,6 +14,7 @@ import {ErrorMessageComponent} from "./components/error-message/error-message.co
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [LoadingComponent, RouterOutlet, LoginComponent, HeaderComponent, ErrorMessageComponent]
 })
 export class AppComponent {

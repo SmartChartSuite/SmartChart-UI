@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {MatDialog, MatDialogConfig, MatDialogRef, MatDialogContent, MatDialogTitle} from "@angular/material/dialog";
 import { MatCardTitle } from '@angular/material/card';
@@ -10,6 +10,7 @@ import {MatError, MatFormField, MatInput, MatLabel} from "@angular/material/inpu
     selector: 'app-create-group-dialog',
     templateUrl: './create-group-dialog.component.html',
     styleUrl: './create-group-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCardTitle,
     MatDialogContent,

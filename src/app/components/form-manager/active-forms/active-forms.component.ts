@@ -1,7 +1,6 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
-import {MatTableDataSource} from "@angular/material/table";
 import {Router} from "@angular/router";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../../services/utils/utils.service";
@@ -12,6 +11,7 @@ import { ActiveFormsGridComponent } from './active-forms-grid/active-forms-grid.
     selector: 'app-active-forms',
     templateUrl: './active-forms.component.html',
     styleUrl: './active-forms.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [ActiveFormsFilterComponent, ActiveFormsGridComponent]
 })
 export class ActiveFormsComponent implements OnInit {

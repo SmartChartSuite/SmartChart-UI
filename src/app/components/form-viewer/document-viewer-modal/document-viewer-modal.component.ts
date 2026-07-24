@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog";
 import {SafeHtml} from "@angular/platform-browser";
 import { MatButton } from '@angular/material/button';
@@ -8,6 +8,7 @@ import { MatButton } from '@angular/material/button';
     selector: 'app-document-viewer-modal',
     templateUrl: './document-viewer-modal.component.html',
     styleUrl: './document-viewer-modal.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
       MatDialogTitle,
       MatDialogContent,

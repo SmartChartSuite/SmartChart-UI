@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
@@ -10,6 +10,7 @@ import { ActiveFormsComponent } from './active-forms/active-forms.component';
     selector: 'app-form-manager',
     templateUrl: './form-manager.component.html',
     styleUrl: './form-manager.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTabGroup, MatTab, StartNewFormComponent, ActiveFormsComponent]
 })
 export class FormManagerComponent implements OnInit{
