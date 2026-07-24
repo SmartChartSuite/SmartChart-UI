@@ -75,8 +75,8 @@
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>Form Name</mat-label>
                         <mat-select [formField]="form.jobPackage">
-                          @for (formOption of formOptions(); track formOption.name) {
-                            <mat-option [value]="formOption.name">{{ formOption.title }}</mat-option>
+                          @for (fn of formNames(); track fn.name) {
+                            <mat-option [value]="fn.name">{{ fn.title }}</mat-option>
                           }
                         </mat-select>
                       </mat-form-field>
@@ -106,11 +106,11 @@
 
                   <div class="button-column">
 <!--                    <button matButton="filled" color="primary" type="button" (click)="onSearch()" [disabled]="isLoading()">-->
-                      <button matButton="filled" color="primary" type="submit" [disabled]="isLoading()">
+                      <button matButton="filled" color="primary" type="submit" [disabled]="patientResource.isLoading()">
                       <mat-icon>search</mat-icon>
                       Search
                     </button>
-                    <button matButton="outlined" type="button" (click)="onClearFilters()" [disabled]="isLoading()">
+                    <button matButton="outlined" type="button" (click)="onClearFilters()" [disabled]="patientResource.isLoading()">
                       <mat-icon>clear</mat-icon>
                       Clear Filters
                     </button>
@@ -216,7 +216,7 @@
               <!-- Loading state - shows when data is empty and loading -->
               <tr class="mat-row" *matNoDataRow>
                 <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-                  @if (isLoading()) {
+                  @if (patientResource.isLoading()) {
                     <div class="loading-row">
                       Loading data. Please wait<span class="loading-ellipsis"></span>
                     </div>

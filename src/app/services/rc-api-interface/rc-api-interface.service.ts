@@ -60,11 +60,6 @@ export class RcApiInterfaceService {
     return this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
   }
 
-  async getPatientPromise(id: string): Promise<FhirBaseResource> {
-    const patient$ = this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
-    return await firstValueFrom(patient$);
-  }
-
   /**
    * Search all Patient resources. FHIR pass through for SmartChart UI.
    * TODO: Implement search (in addition to read) endpoint that can handle parameters in the API
