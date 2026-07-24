@@ -182,6 +182,10 @@ export class RcApiInterfaceService {
     return this.http.get<FhirBaseResource>(this.getJobPackageEndpoint,
       { params }
     );
+
+    // return this.http.get<FhirBaseResource>('assets/temp/ui-for-testing.json',
+    //   { params }
+    // );
   }
 
   /**

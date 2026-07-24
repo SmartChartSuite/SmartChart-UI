@@ -1,10 +1,11 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ChangeDetectionStrategy} from '@angular/core';
 import {HttpErrorService} from '../../services/http-error/http-error.service';
 
 @Component({
   selector: 'app-error-message',
   imports: [],
   templateUrl: './error-message.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './error-message.component.scss',
 })
 export class ErrorMessageComponent {

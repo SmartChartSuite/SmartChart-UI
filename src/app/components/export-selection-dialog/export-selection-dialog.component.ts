@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {
   MatDialog,
@@ -17,6 +17,7 @@ import {MatIcon} from '@angular/material/icon';
   selector: 'app-export-selection-dialog',
   templateUrl: './export-selection-dialog.component.html',
   styleUrl: './export-selection-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatDialogTitle,
     MatDialogContent,

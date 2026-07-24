@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {PatientSummary} from "../../../models/patient-summary";
 import {FormSummary} from "../../../models/form-summary";
 import {FormManagerService} from "../../../services/form-manager/form-manager.service";
@@ -17,6 +17,7 @@ import { MatIcon } from '@angular/material/icon';
     selector: 'app-start-new-form',
     templateUrl: './start-new-form.component.html',
     styleUrl: './start-new-form.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatCard, MatCardContent, MatTabGroup, MatTab, PatientSearchComponent, PatientGroupsComponent, FormSelectionComponent, MatTooltip, MatButton, MatIcon]
 })
 export class StartNewFormComponent implements OnInit {

@@ -4,7 +4,8 @@ import {
   EventEmitter,
   input,
   Output,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow } from "@angular/material/table";
 import {ActiveFormSummary} from "../../../../models/active-form-summary";
@@ -15,6 +16,7 @@ import { NgClass, TitleCasePipe, DatePipe } from '@angular/common';
     selector: 'app-active-forms-grid',
     templateUrl: './active-forms-grid.component.html',
     styleUrl: './active-forms-grid.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [NgClass, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatNoDataRow, MatPaginator, TitleCasePipe, DatePipe]
 })
 export class ActiveFormsGridComponent {

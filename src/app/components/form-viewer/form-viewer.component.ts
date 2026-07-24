@@ -1,5 +1,5 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -20,7 +20,7 @@ import { PatientDetailsComponent } from "./patient-details/patient-details.compo
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatButton } from "@angular/material/button";
 import { MatNavList } from "@angular/material/list";
-import {NgClass, AsyncPipe, JsonPipe} from "@angular/common";
+import {NgClass, AsyncPipe} from "@angular/common";
 import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
@@ -55,6 +55,7 @@ export interface Questionnaire extends FhirBaseResource {
   selector: 'app-form-viewer',
   templateUrl: './form-viewer.component.html',
   styleUrl: './form-viewer.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     PatientDetailsComponent,
     MatProgressSpinner,

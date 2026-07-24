@@ -1,5 +1,5 @@
 import {provideAppInitializer, importProvidersFrom, inject} from "@angular/core";
-import {provideHttpClient, withInterceptorsFromDi, withInterceptors, HTTP_INTERCEPTORS} from "@angular/common/http";
+import {provideHttpClient, withInterceptorsFromDi, withInterceptors, HTTP_INTERCEPTORS, withXhr} from "@angular/common/http";
 import {bootstrapApplication} from "@angular/platform-browser";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideRouter} from "@angular/router";
@@ -10,7 +10,7 @@ import {StateManagementService} from "./app/services/state-management/state-mana
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
 import {httpErrorInterceptor} from "./app/interceptors/http-error.interceptor";
 import {AuthService} from "./app/services/auth/auth.service";
-import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig, OAuthResourceServerErrorHandler} from "angular-oauth2-oidc";
+import {OAuthModule, DefaultOAuthInterceptor, OAuthModuleConfig} from "angular-oauth2-oidc";
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
 
@@ -44,7 +44,7 @@ bootstrapApplication(AppComponent, {
         });
       });
     }),
-    provideHttpClient(
+    provideHttpClient(withXhr(),
       withInterceptors([httpErrorInterceptor]),
       withInterceptorsFromDi()
     ),
