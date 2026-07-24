@@ -11,5 +11,6 @@ export interface PatientGrid {
   batchJobStatus: JobStatusValue;
   jobStartDateTime: string;
   patientId: string;
+  jobPackage: string;
   [key: string]: any;
 }
