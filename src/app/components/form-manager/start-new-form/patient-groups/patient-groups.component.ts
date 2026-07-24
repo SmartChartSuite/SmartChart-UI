@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, OnInit, signal, ChangeDetectionStrategy} from '@angular/core';
 import { PatientSummary } from '../../../../models/patient-summary';
 import { PatientGroup } from '../../../../models/patient-group';
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
@@ -15,6 +15,7 @@ import { PatientSummaryTableComponent } from '../patient-summary-table/patient-s
     selector: 'app-patient-groups',
     templateUrl: './patient-groups.component.html',
     styleUrl: './patient-groups.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatFormField, MatLabel, MatSelect, MatOption, MatButton, PatientSummaryTableComponent]
 })
 export class PatientGroupsComponent implements OnInit{

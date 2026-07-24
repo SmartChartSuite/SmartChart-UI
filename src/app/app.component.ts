@@ -1,4 +1,4 @@
-import {Component, ChangeDetectorRef} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ConfigService} from "./services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {StateManagementService} from "./services/state-management/state-management.service";
@@ -6,7 +6,6 @@ import {RouteState} from "./models/application-state";
 import {LoadingService} from "./services/loading/loading.service";
 import {LoadingComponent} from './components/loading/loading.component';
 import {RouterOutlet} from '@angular/router';
-import {LoginComponent} from './components/login/login.component';
 import {HeaderComponent} from "./components/header/header.component";
 import {ErrorMessageComponent} from "./components/error-message/error-message.component";
 
@@ -14,7 +13,8 @@ import {ErrorMessageComponent} from "./components/error-message/error-message.co
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  imports: [LoadingComponent, RouterOutlet, LoginComponent, HeaderComponent, ErrorMessageComponent]
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [LoadingComponent, RouterOutlet, HeaderComponent, ErrorMessageComponent]
 })
 export class AppComponent {
   title = '';

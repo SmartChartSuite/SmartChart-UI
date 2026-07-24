@@ -4,6 +4,7 @@ import {
   Input,
   OnChanges, OnInit,
   SimpleChanges, ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import {PatientSummary} from "../../../../models/patient-summary";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
@@ -17,6 +18,7 @@ import { AsyncPipe, TitleCasePipe, DatePipe } from '@angular/common';
     selector: 'app-patient-summary-table',
     templateUrl: './patient-summary-table.component.html',
     styleUrl: './patient-summary-table.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTableModule, MatPaginatorModule, MatIcon, AsyncPipe, TitleCasePipe, DatePipe]
 })
 export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, OnInit {

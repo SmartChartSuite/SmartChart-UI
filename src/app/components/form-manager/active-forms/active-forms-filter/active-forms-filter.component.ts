@@ -1,4 +1,4 @@
-import {Component, effect, EventEmitter, input, OnInit, Output} from '@angular/core';
+import {Component, effect, EventEmitter, input, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {FormSummary} from "../../../../models/form-summary";
 import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
@@ -18,6 +18,7 @@ import {MatButton} from '@angular/material/button';
   selector: 'app-active-forms-filter',
   templateUrl: './active-forms-filter.component.html',
   styleUrl: './active-forms-filter.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     FormsModule,
     ReactiveFormsModule,

@@ -16,9 +16,10 @@ export class ActiveFormSummary {
     // Type guard: Check if second parameter is provided (second constructor pattern)
     if (patientGridDto !== undefined) {
       // Second constructor: (patientResource, patientGridDto)
+      console.log(patientGridDto);
       this.patientSummary = new PatientSummary(parametersOrPatientResource as FhirBaseResource);
       this.batchId = patientGridDto.batchId;
-      this.formName = '';
+      this.formName = patientGridDto.jobPackage;
       this.started = '';
       this.status = '';
     } else {

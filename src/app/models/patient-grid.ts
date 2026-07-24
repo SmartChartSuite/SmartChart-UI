@@ -10,5 +10,6 @@ export interface PatientGrid {
   patientGender: "male" | "female" | "unknown" | "other";
   batchJobStatus: JobStatusValue;
   jobStartDateTime: string;
+  jobPackage: string;
   [key: string]: any;
 }

@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
@@ -20,6 +20,7 @@ import { SortByDatePipe } from '../../../pipe/sort-by-date.pipe';
     selector: 'app-evidence-details',
     templateUrl: './evidence-details.component.html',
     styleUrl: './evidence-details.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe]
 })
 export class EvidenceDetailsComponent implements OnChanges{

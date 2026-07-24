@@ -1,4 +1,4 @@
-import {Component, inject, input} from '@angular/core';
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
@@ -10,6 +10,7 @@ import {MatDivider} from "@angular/material/list";
   selector: 'sc-standalone-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [
     MatCardModule,
     MatIconModule,

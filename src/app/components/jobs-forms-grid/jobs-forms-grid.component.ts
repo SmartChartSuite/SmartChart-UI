@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, signal, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {DatePipe, TitleCasePipe} from "@angular/common";
 import {FormStatus, STATUS_OPTIONS} from "../../models/form-status";
@@ -52,6 +52,7 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
     TitleCasePipe
   ],
   templateUrl: './jobs-forms-grid.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './jobs-forms-grid.component.scss',
 })
 export class JobsFormsGridComponent implements OnInit {

@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {StateManagementService} from "../../services/state-management/state-management.service";
 import {RouteState} from "../../models/application-state";
 import {window} from "rxjs";
@@ -14,6 +14,7 @@ import {AppStep, APP_STEPS} from "../../models/app-step";
   selector: 'app-landing',
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle]
 })
 export class LandingComponent implements OnInit {
