@@ -1,11 +1,11 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, signal, computed, ViewChild, ChangeDetectionStrategy, inject} from '@angular/core';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, map, mergeMap, Observable, ReplaySubject, switchMap, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -13,7 +13,7 @@ import { TIMEZONES } from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
 import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
-import { FormControl, FormGroup, FormsModule } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import {openExportFileDialog} from "../export-selection-dialog/export-selection-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import { PatientDetailsComponent } from "./patient-details/patient-details.component";
@@ -60,110 +60,116 @@ import {Item, Questionnaire} from "../../models/questionnaire";
   ]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
+  // Services using inject()
+  private readonly rcApiInterfaceService = inject(RcApiInterfaceService);
+  private readonly formManagerService = inject(FormManagerService);
+  private readonly router = inject(Router);
+  private readonly stateManagementService = inject(StateManagementService);
+  private readonly utilsService = inject(UtilsService);
+  private readonly outputMapper = inject(FormOutputMappingService);
+  private readonly dialog = inject(MatDialog);
+
+  protected readonly evidenceViewerService = inject(EvidenceViewerService);
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
+  protected readonly TIMEZONES = TIMEZONES;
 
-  answerDictionary = signal<FormAnswers | undefined>(undefined);
-  questionnaire = signal<Questionnaire | undefined>(undefined);
-  activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
-  results = signal<Results | undefined>(undefined);
+  // Core state signals
+  protected readonly answerDictionary = signal<FormAnswers | undefined>(undefined);
+  protected readonly questionnaire = signal<Questionnaire | undefined>(undefined);
+  protected readonly activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
+  protected readonly results = signal<Results | undefined>(undefined);
 
-  showDrawer = false;
+  // UI state signals
+  protected readonly showDrawer = signal(false);
+  protected readonly selectedMenuItemIndex = signal(0);
+  protected readonly selectedEvidenceIndex = signal<number | null>(null);
 
-  selectedMenuItemIndex = 0;
-  selectedEvidenceIndex: number | null = null;
-  readonly TIMEZONES = TIMEZONES;
-
-
-  evidenceViewerExpanded$: Observable<boolean>;
-  @ViewChild('top') topScroll: ElementRef;
-
-  // Refresh Evidence Trigger
-  refreshTrigger$ = new ReplaySubject(1);
-  status: string = "fetching"; // Initial State
-  completeCount: number = 0; // Initial State
-  totalCount: number = 0; // Initial State
-  percentComplete: number = 0; // Initial State
-
-  exportTypes: string[] = ['json', 'pdf']
-
-  exportForm = new FormGroup({
-    exportType: new FormControl(this.exportTypes[0])
+  // Computed signals for derived state
+  protected readonly jobStatus = computed(() => {
+    const r = this.results();
+    return {
+      status: r?.status ?? 'fetching',
+      completeCount: r?.completeJobs ?? 0,
+      totalCount: r?.totalJobs ?? 0,
+      percentComplete: ((r?.completeJobs ?? 0) / (r?.totalJobs || 1)) * 100
+    };
   });
 
-  constructor(
-    private rcApiInterfaceService: RcApiInterfaceService,
-    private formManagerService: FormManagerService,
-    public router: Router,
-    private stateManagementService: StateManagementService,
-    private utilsService: UtilsService,
-    public evidenceViewerService: EvidenceViewerService,
-    private outputMapper: FormOutputMappingService,
-    private dialog: MatDialog,
-  ) {
-  }
+  protected readonly currentSection = computed(() => {
+    const q = this.questionnaire();
+    const index = this.selectedMenuItemIndex();
+    return q?.item?.[index];
+  });
+
+  // Observables
+  protected evidenceViewerExpanded$: Observable<boolean>;
+
+  @ViewChild('top') topScroll!: ElementRef;
+
+  // Refresh trigger
+  private readonly refreshTrigger$ = new ReplaySubject<number>(1);
 
   ngOnDestroy(): void {
     //TODO Maybe we need to save the current state of the form so the user can go back and forward?
   }
 
   ngOnInit(): void {
-    // Results Handling
-    let results$ = this.refreshTrigger$.pipe(
-      switchMap(() => this.fetchResults()),
-      share()
-    );
+    this.setupResultsPolling();
+    this.setupFormLoader();
+    this.setupEvidenceViewer();
+  }
 
-    results$.subscribe(value => this.results.set(value));
+  private setupResultsPolling(): void {
+    this.refreshTrigger$
+      .pipe(switchMap(() => this.fetchResults()))
+      .subscribe(results => this.results.set(results));
+  }
 
+  private setupFormLoader(): void {
+    this.formManagerService.selectedActiveFormSummary$
+      .pipe(
+        tap(summary => this.activeFormSummary.set(summary)),
+        switchMap(summary => {
+          if (!summary) return [];
+          return this.loadQuestionnaire(summary.formName);
+        })
+      )
+      .subscribe({
+        next: questionnaire => this.initializeQuestionnaire(questionnaire),
+        error: () => this.utilsService.showErrorMessage()
+      });
+  }
+
+  private setupEvidenceViewer(): void {
     this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
-
-    this.formManagerService.selectedActiveFormSummary$.pipe(
-      // tap(value => console.log(value)),
-      tap(value => this.activeFormSummary.set(value)),
-      filter(value => !!value),
-      mergeMap(value => this.rcApiInterfaceService.getJobPackage({
-        key: 'name',
-        value: value.formName
-      })),
-      tap(value => {console.log(value)}),
-      map(response => Array.isArray(response) ? (response[0] ?? null) : response),
-      map(result => ({
-        ...result,
-        item: result?.item?.map((item: any, index: number) => ({
-          ...item,
-          selected: index === 0
-        }))
-      }))
-    ).subscribe({
-      next: result => {
-        const questionnaireClass = new Questionnaire(result);
-        this.questionnaire.set(questionnaireClass);
-        this.answerDictionary.set(new FormAnswers(this.questionnaire()));
-        this.refreshTrigger$.next(1);
-      },
-      error: err => {
-        console.error(err);
-        this.utilsService.showErrorMessage();
-      }
-    });
-
-    // Expand the evidence viewer for a larger screen device. This may need a bit of testing
     this.evidenceViewerService.setViewerExpanded(window.screen.width >= 1440);
   }
 
-  fetchResults() {
+  private loadQuestionnaire(formName: string): Observable<any> {
+    return this.rcApiInterfaceService.getJobPackage({ key: 'name', value: formName })
+      .pipe(
+        map(response => Array.isArray(response) ? response[0] : response)
+      );
+  }
+
+  private initializeQuestionnaire(data: any): void {
+    this.questionnaire.set(new Questionnaire(data));
+    this.answerDictionary.set(new FormAnswers(this.questionnaire()));
+    this.selectQuestionnaireSection(0);
+    this.refreshTrigger$.next(1);
+  }
+
+  private fetchResults(): Observable<Results> {
     const activeForm = this.activeFormSummary();
-    return this.rcApiInterfaceService.getBatchJobResults(activeForm!.batchId).pipe(
-      tap(value => this.status = value.status),
-      tap(value => this.completeCount = value.completeJobs),
-      tap(value => this.totalCount = value.totalJobs),
-      tap(value => this.percentComplete = value.completeJobs / value.totalJobs * 100)
-    );
+    if (!activeForm) {
+      throw new Error('No active form summary available');
+    }
+    return this.rcApiInterfaceService.getBatchJobResults(activeForm.batchId);
   }
 
   selectQuestionnaireSection(index: number): void {
-    this.selectedMenuItemIndex = index;
+    this.selectedMenuItemIndex.set(index);
 
     this.questionnaire.update(current => {
       if (!current?.item) return current;
@@ -176,89 +182,92 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  onSubmit() {
-    openExportFileDialog(
-      this.dialog,
-      {})
-      .subscribe(
-        exportType => {
-          if(exportType == "json"){
-            const questionnaireResponse = this.outputMapper.mapToFhir(this.answerDictionary(), this.questionnaire());
-            const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
-            const link = document.createElement('a');
-
-            link.href = URL.createObjectURL(blob);
-            link.download = `FHIR_Question_Response.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body?.removeChild(link);
-            URL.revokeObjectURL(link.href);
-          }
-          else if (exportType == "pdf"){
-            //TODO implement the pdf export
-          }
-        })
+  nextSection(): void {
+    const currentIndex = this.selectedMenuItemIndex();
+    const itemLength = this.questionnaire()?.item?.length ?? 0;
+    if (currentIndex < itemLength - 1) {
+      this.selectQuestionnaireSection(currentIndex + 1);
+      this.scrollToTop();
+    }
   }
 
-  selectPatientForm() {
+  previousSection(): void {
+    const currentIndex = this.selectedMenuItemIndex();
+    if (currentIndex > 0) {
+      this.selectQuestionnaireSection(currentIndex - 1);
+      this.scrollToTop();
+    }
+  }
+
+
+  onSubmit(): void {
+    openExportFileDialog(this.dialog, {})
+      .subscribe(exportType => {
+        if (exportType === 'json') {
+          this.exportAsJson();
+        } else if (exportType === 'pdf') {
+          // TODO: implement PDF export
+        }
+      });
+  }
+
+  private exportAsJson(): void {
+    const questionnaireResponse = this.outputMapper.mapToFhir(
+      this.answerDictionary(),
+      this.questionnaire()
+    );
+
+    const blob = new Blob([JSON.stringify(questionnaireResponse)], { type: 'application/json' });
+    const link = document.createElement('a');
+
+    link.href = URL.createObjectURL(blob);
+    link.download = 'FHIR_Question_Response.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  }
+
+  selectPatientForm(): void {
     this.router.navigate(['/forms']);
   }
 
   truncateIntegerAnswer(questionType: QuestionnaireItemType, i: number, j: number): void {
     if (questionType !== QuestionnaireItemType.integer) return;
 
-    const current = this.questionnaire();
-    const answer = current?.item?.[i]?.item?.[j]?.answer;
+    this.questionnaire.update(current => {
+      const answer = current?.item?.[i]?.item?.[j]?.answer;
+      if (answer == null) return current;
 
-    if (answer == null) return;
-
-    // Create a shallow copy to avoid mutating the signal's value
-    const updated = structuredClone(current);
-    updated.item[i].item[j].answer = Math.trunc(answer);
-
-    this.questionnaire.set(updated);
+      const updated = structuredClone(current);
+      updated.item[i].item[j].answer = Math.trunc(answer);
+      return updated;
+    });
   }
 
-
-  scrollToTop() {
-    this.topScroll.nativeElement.scrollTop = 0;
+  scrollToTop(): void {
+    this.topScroll?.nativeElement?.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-
-  protected getQuestionCount(item: Item) {
-    console.log(item);
-    if(!item || !item.item?.length){
-      return 0;
-    }
-    let questionCount = 0;
-    questionCount = item?.item.filter(element => element?.type !='display')?.length || 0;
-    return questionCount;
+  protected getQuestionCount(item: Item): number {
+    if (!item?.item?.length) return 0;
+    return item.item.filter(element => element?.type !== 'display').length;
   }
 
-  protected getEvidenceCount(linkId: string, results: Results): number | string {
-    if (!results || !linkId) {
-      return 'ERROR';
-    }
-    const evidence = results[`link${linkId}`]?.['evidence'];
+  protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
+    if (!results || !linkId) return 'ERROR';
+
+    const evidence = results[`link${linkId}`]?.evidence;
     return evidence ? evidence.length : 'ERROR';
   }
 
-  protected getQuestionsWithEvidenceCount(item: Item, results: Results): number {
-    if (!item || !item.item?.length || !results) {
-      return 0;
-    }
+  protected getQuestionsWithEvidenceCount(item: Item, results: Results | undefined): number {
+    if (!item?.item?.length || !results) return 0;
 
-    let questionsWithEvidenceCount = 0;
-
-    for (const childItem of item.item) {
+    return item.item.reduce((count, childItem) => {
       const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
-      if (typeof evidenceCount === 'number' && evidenceCount > 0) {
-        questionsWithEvidenceCount++;
-      }
-    }
-
-    return questionsWithEvidenceCount;
+      return count + (typeof evidenceCount === 'number' && evidenceCount > 0 ? 1 : 0);
+    }, 0);
   }
 
 }

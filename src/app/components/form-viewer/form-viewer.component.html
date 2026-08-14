@@ -16,10 +16,10 @@
           Form Job Status:
         </div>
         <div class="job-details-value">
-          {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
+          {{ jobStatus().status }} - {{ jobStatus().completeCount }}/{{ jobStatus().totalCount }} ({{ jobStatus().percentComplete.toFixed(0) }}%)
         </div>
         <div class="job-details-spinner">
-          @if (status === "complete") {
+          @if (jobStatus().status === "complete") {
             <mat-spinner mode="determinate" color="primary" value="100" [diameter]="16"/>
           } @else {
             <mat-spinner [diameter]="16" color="accent"/>
@@ -44,8 +44,8 @@
             @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
 
                 <li class="sub-menu-item"
-                  [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
-                  (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
+                  [ngClass]="selectedMenuItemIndex() == i ? 'selected-menu-item' : ''"
+                  (click)="selectQuestionnaireSection(i); selectedEvidenceIndex.set(null); showDrawer.set(false); scrollToTop();">
                   {{ item.text }}
                   @if(getQuestionsWithEvidenceCount(item, results()) > 0){
                     <span class="sparkles-icon" aria-hidden="true"
@@ -67,9 +67,9 @@
             <div class="margin-top-md item-text">{{ item.text }}</div>
 
             @for (childItem of (item.item); track childItem; let j = $index) {
-              <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
+              <div class="question-item" [ngClass]="showDrawer() ? 'full-size-question-item': ''">
                 <div class="question-label"
-                     [ngClass]="(j == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                     [ngClass]="(j == selectedEvidenceIndex() && showDrawer()) ? 'selected-evidence': ''">
                   <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item['item']"></span>
                   <span class="margin-left-sm">{{ childItem.text }}</span>
                 </div>
@@ -189,7 +189,7 @@
                     @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button matButton="outlined" class="primary-outlined"
                               appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
-                              (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
+                              (click)="(selectedEvidenceIndex() == j && showDrawer()) ? showDrawer.set(false) : showDrawer.set(true); selectedEvidenceIndex.set(j)">
                         View Evidence
                         ({{ getEvidenceCount(childItem?.linkId, results()) }})
                       </button>
@@ -202,19 +202,19 @@
         }
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
-           [ngClass]="(this.evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
-           [hidden]="!showDrawer">
+           [ngClass]="(evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
+           [hidden]="!showDrawer()">
         <div class="fhir-explorer-header">
-          @if (this.evidenceViewerExpanded$ | async) {
+          @if (evidenceViewerExpanded$ | async) {
             <mat-icon
-              (click)="evidenceViewerService.setViewerExpanded(false);"
+              (click)="evidenceViewerService.setViewerExpanded(false)"
               matTooltip="Collapse"
               class="pointer">
               chevron_right
             </mat-icon>
           } @else {
             <mat-icon
-              (click)="evidenceViewerService.setViewerExpanded(true);"
+              (click)="evidenceViewerService.setViewerExpanded(true)"
               matTooltip="Expand"
               class="pointer">
               chevron_left
@@ -225,7 +225,7 @@
           </span>
           <span class="content-spacer"></span>
           <mat-icon
-            (click)="showDrawer = false;"
+            (click)="showDrawer.set(false)"
             aria-label="Close Evidence Viewer"
             matTooltip="Close Evidence Viewer"
             class="pointer">
@@ -241,18 +241,22 @@
       <div class="content-spacer"></div>
 
       <button matButton="outlined" type="submit" class="wide-button"
-              [disabled]="selectedMenuItemIndex == 0"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex); scrollToTop()">
+              [disabled]="selectedMenuItemIndex() === 0"
+              (click)="previousSection()">
         <mat-icon>chevron_left</mat-icon>
         Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex - 1]?.text : '' }}
+        @if (selectedMenuItemIndex() > 0) {
+          Section: {{ questionnaire()?.item?.[selectedMenuItemIndex() - 1]?.text }}
+        }
       </button>
 
       <button matButton="outlined" type="submit"  class="margin-left-sm wide-button"
-              [disabled]="(questionnaire()?.item?.length - 1) == selectedMenuItemIndex"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex); scrollToTop()">
+              [disabled]="selectedMenuItemIndex() >= (questionnaire()?.item?.length ?? 0) - 1"
+              (click)="nextSection()">
         Next
-        Section{{ (selectedMenuItemIndex < questionnaire()?.item?.length - 1) ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex + 1]?.text : '' }}
+        @if (selectedMenuItemIndex() < (questionnaire()?.item?.length ?? 0) - 1) {
+          Section: {{ questionnaire()?.item?.[selectedMenuItemIndex() + 1]?.text }}
+        }
         <mat-icon iconPositionEnd>chevron_right</mat-icon>
       </button>
 
