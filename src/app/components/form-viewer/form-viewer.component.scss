@@ -150,6 +150,17 @@ $selected-nave-menu-item-color: #424242;
   }
 }
 
-.suggested-answer{
+.suggested-answer {
   background-color: $sub-nav-select !important;
+}
+
+.sparkles-icon {
+  margin: 0 8px;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  display: inline-block;
+  -webkit-mask: url('/assets/img/sparkles.svg') no-repeat center;
+  -webkit-mask-size: contain;
+  background-color: var(--color-primary);
 }

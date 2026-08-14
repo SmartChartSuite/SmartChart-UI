@@ -20,7 +20,7 @@ import { PatientDetailsComponent } from "./patient-details/patient-details.compo
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatButton } from "@angular/material/button";
 import { MatNavList } from "@angular/material/list";
-import {NgClass, AsyncPipe} from "@angular/common";
+import {NgClass, AsyncPipe, JsonPipe} from "@angular/common";
 import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
@@ -79,6 +79,7 @@ export interface Questionnaire extends FhirBaseResource {
     AsyncPipe,
     SuggestedAnswerFormatterPipe,
     FormattedTitlePipe,
+    JsonPipe,
   ]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
@@ -93,7 +94,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectedEvidenceIndex: number | null = null;
   readonly TIMEZONES = TIMEZONES;
 
-  results: Results;
+  results = signal<Results | undefined>(undefined);
   evidenceViewerExpanded$: Observable<boolean>;
   @ViewChild('top') topScroll: ElementRef;
 
@@ -139,7 +140,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     //   switchMap(() => this.fetchResults()),
     //   share()
     // )
-    results$.subscribe(value => this.results = value);
+    results$.subscribe(value => this.results.set(value));
 
     this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
@@ -232,6 +233,42 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   scrollToTop() {
     this.topScroll.nativeElement.scrollTop = 0;
+  }
+
+
+  protected getQuestionCount(item: Item) {
+    console.log(item);
+    if(!item || !item.item?.length){
+      return 0;
+    }
+    let questionCount = 0;
+    questionCount = item?.item.filter(element => element?.type !='display')?.length || 0;
+    return questionCount;
+  }
+
+  protected getEvidenceCount(linkId: string, results: Results): number | string {
+    if (!results || !linkId) {
+      return 'ERROR';
+    }
+    const evidence = results[`link${linkId}`]?.['evidence'];
+    return evidence ? evidence.length : 'ERROR';
+  }
+
+  protected getQuestionsWithEvidenceCount(item: Item, results: Results): number {
+    if (!item || !item.item?.length || !results) {
+      return 0;
+    }
+
+    let questionsWithEvidenceCount = 0;
+
+    for (const childItem of item.item) {
+      const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
+      if (typeof evidenceCount === 'number' && evidenceCount > 0) {
+        questionsWithEvidenceCount++;
+      }
+    }
+
+    return questionsWithEvidenceCount;
   }
 
 }

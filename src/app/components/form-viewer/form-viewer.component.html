@@ -6,7 +6,7 @@
       </div>
       @if (activeFormSummary()?.patientSummary) {
         <div class="patient-details-component-wrapper">
-          <app-patient-details [patientSummary]="$safeNavigationMigration(activeFormSummary()?.patientSummary)"/>
+          <app-patient-details [patientSummary]="activeFormSummary()?.patientSummary"/>
         </div>
       }
     </div>
@@ -41,13 +41,20 @@
       <div class="sub-nav">
         <mat-nav-list>
           <ul class="sub-menu">
-            @for (item of questionnaire()?.["item"]; track item.linkId; let i = $index) {
+            @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
 
                 <li class="sub-menu-item"
                   [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
                   (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
-                  {{ item | formattedTitle : results }}
-              </li>
+                  {{ item.text }}
+                  @if(getQuestionsWithEvidenceCount(item, results()) > 0){
+                    <span class="sparkles-icon" aria-hidden="true"
+                          matTooltipPosition="above"
+                          [matTooltip]="`Found evidence for ${getQuestionsWithEvidenceCount(item, results())} out of ${getQuestionCount(item)} questions.`">
+                    </span>
+                  }
+
+                </li>
             }
           </ul>
         </mat-nav-list>
@@ -73,12 +80,12 @@
                       <mat-radio-group [(ngModel)]="answerDictionary()[childItem?.linkId]">
                         @if (childItem?.['answerOption'].length <= 3) {
                           <mat-radio-button class="margin-right-md"
-                                            [value]="$safeNavigationMigration(option?.['valueString'])">{{ option?.['valueString'] }}
+                                            [value]="option?.['valueString']">{{ option?.['valueString'] }}
                           </mat-radio-button>
                         } @else {
                           <!-- There are too many options to render in the same line -->
                           <div>
-                            <mat-radio-button [value]="$safeNavigationMigration(option?.['valueString'])">
+                            <mat-radio-button [value]="option?.['valueString']">
                               {{ option?.['valueString'] }}
                             </mat-radio-button>
                           </div>
@@ -152,10 +159,10 @@
                     <!--                      else results[linkId] not found AND if results.status is complete    -->
                     <!--                      show "No evidence found"                                            -->
 <!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
-                    @if (results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+                    @if (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
                       <div class="margin-bottom-sm">
                         Suggested Answer:
-                        @for (item of ($safeNavigationMigration(results?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) | suggestedAnswer); track item) {
+                        @for (item of (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
                           <span class="margin-left-sm" (click)="answerDictionary()[childItem?.linkId]=item;">
                             <mat-chip class="suggested-answer" matTooltip="Click to fill the answer">{{ item }}</mat-chip>
                           </span>
@@ -163,14 +170,14 @@
                       </div>
                     }
 <!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
-<!--                  <div>Resource** <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre></div>-->
+<!--                  <div>Resource** <pre>{{ results()?.["link" + childItem?.["linkId"]] | json }}</pre>-->
 
-                    @if (results?.["link" + childItem?.["linkId"]]?.["evidence"] && results?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                    @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
                       <button matButton="outlined" class="primary-outlined"
-                              appSetEvidence [resultSet]="$safeNavigationMigration(results?.['link' + childItem?.['linkId']])"
+                              appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
                               (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
                         View Evidence
-                        ({{ results?.["link" + childItem?.["linkId"]]?.["evidence"] ? results?.["link" + childItem?.["linkId"]]?.["evidence"]?.length : "ERROR" }})
+                        ({{ getEvidenceCount(childItem?.linkId, results()) }})
                       </button>
                     }
                   </div>
