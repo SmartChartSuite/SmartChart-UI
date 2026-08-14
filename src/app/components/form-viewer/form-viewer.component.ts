@@ -61,17 +61,19 @@ import {Item, Questionnaire} from "../../models/questionnaire";
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
+
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<Questionnaire | undefined>(undefined);
-
+  activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
+  results = signal<Results | undefined>(undefined);
 
   showDrawer = false;
-  activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
+
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
   readonly TIMEZONES = TIMEZONES;
 
-  results = signal<Results | undefined>(undefined);
+
   evidenceViewerExpanded$: Observable<boolean>;
   @ViewChild('top') topScroll: ElementRef;
 
@@ -111,12 +113,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       share()
     );
 
-    // let results$ = timer(0,10000).pipe(
-    //   takeWhile(() => !!this.activeFormSummary()),
-    //   takeWhile(() => !this.results || this.results?.status !== "complete"),
-    //   switchMap(() => this.fetchResults()),
-    //   share()
-    // )
     results$.subscribe(value => this.results.set(value));
 
     this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
@@ -141,7 +137,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       }))
     ).subscribe({
       next: result => {
-        console.log(result);
         const questionnaireClass = new Questionnaire(result);
         this.questionnaire.set(questionnaireClass);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
@@ -167,14 +162,20 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     );
   }
 
-  selectQuestionnaireSection(index: number) {
+  selectQuestionnaireSection(index: number): void {
     this.selectedMenuItemIndex = index;
-    const currentQuestionnaire = this.questionnaire();
-    if (currentQuestionnaire) {
-      currentQuestionnaire['item'] = currentQuestionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
-      this.questionnaire.set(currentQuestionnaire);
-    }
+
+    this.questionnaire.update(current => {
+      if (!current?.item) return current;
+
+      current.item.forEach((item, i) => {
+        item.selected = i === index;
+      });
+
+      return current;
+    });
   }
+
 
   onSubmit() {
     openExportFileDialog(
@@ -203,13 +204,22 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   selectPatientForm() {
     this.router.navigate(['/forms']);
   }
-  setValue(questionType: QuestionnaireItemType, questionnaire: any, i: number, j: number) {
-    const currentQuestionnaire = this.questionnaire();
-    if(questionType == QuestionnaireItemType.integer && currentQuestionnaire?.item[i]?.item[j]?.answer){
-       currentQuestionnaire.item[i].item[j].answer = Math.trunc(currentQuestionnaire.item[i].item[j].answer);
-       this.questionnaire.set(currentQuestionnaire);
-    }
+
+  truncateIntegerAnswer(questionType: QuestionnaireItemType, i: number, j: number): void {
+    if (questionType !== QuestionnaireItemType.integer) return;
+
+    const current = this.questionnaire();
+    const answer = current?.item?.[i]?.item?.[j]?.answer;
+
+    if (answer == null) return;
+
+    // Create a shallow copy to avoid mutating the signal's value
+    const updated = structuredClone(current);
+    updated.item[i].item[j].answer = Math.trunc(answer);
+
+    this.questionnaire.set(updated);
   }
+
 
   scrollToTop() {
     this.topScroll.nativeElement.scrollTop = 0;

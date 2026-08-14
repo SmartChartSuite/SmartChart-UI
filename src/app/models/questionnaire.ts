@@ -88,7 +88,5 @@ export class Questionnaire implements FhirBaseResource {
         this[key] = questionnaireResource[key];
       }
     });
-
-    console.log(this.item);
   }
 }

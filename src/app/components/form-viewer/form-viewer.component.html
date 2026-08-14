@@ -123,7 +123,7 @@
                   } @else if (childItem["type"] == QuestionnaireItemType.integer) {
                     <mat-form-field
                       appearance="outline" class="question-input"
-                      (keyup)="setValue(QuestionnaireItemType.integer, questionnaire(), i, j)">
+                      (keyup)="truncateIntegerAnswer(QuestionnaireItemType.integer, i, j)">
                       <input type="number" matInput
                         [ngModel]="answerDictionary().get(childItem?.linkId)"
                         (ngModelChange)="answerDictionary().set(childItem?.linkId, $event)">
