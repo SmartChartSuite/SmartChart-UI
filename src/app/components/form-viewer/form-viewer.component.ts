@@ -20,36 +20,17 @@ import { PatientDetailsComponent } from "./patient-details/patient-details.compo
 import { MatProgressSpinner } from "@angular/material/progress-spinner";
 import { MatButton } from "@angular/material/button";
 import { MatNavList } from "@angular/material/list";
-import {NgClass, AsyncPipe, JsonPipe} from "@angular/common";
+import {NgClass, AsyncPipe} from "@angular/common";
 import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
 import { FhirDateTimeComponent } from "../fhir-date-time/fhir-date-time.component";
-import { MatChip } from "@angular/material/chips";
 import { MatTooltip } from "@angular/material/tooltip";
 import { SetEvidenceDirective } from "../../directives/set-evidence.directive";
 import { MatIcon } from "@angular/material/icon";
 import { EvidenceDetailsComponent } from "./evidence-details/evidence-details.component";
-import { SuggestedAnswerFormatterPipe } from "../../pipe/suggested-answer-formatter.pipe";
-import { FormattedTitlePipe } from "../../pipe/formatted-title.pipe";
-import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
-
-export interface Item {
-  linkId: string;           // Required FHIR property
-  type?: string;            // QuestionnaireItemType
-  text?: string;            // Question text
-  value?: any;              // Custom property
-  item?: Item[];            // Nested items
-  answer?: any;             // Answer value
-  selected?: boolean;       // Custom property for UI state
-  extension?: any[];        // FHIR extensions
-  [key: string]: any;       // Allow additional dynamic properties
-}
-
-export interface Questionnaire extends FhirBaseResource {
-  item: Item[];
-}
+import {Item, Questionnaire} from "../../models/questionnaire";
 
 @Component({
   selector: 'app-form-viewer',
@@ -71,21 +52,17 @@ export interface Questionnaire extends FhirBaseResource {
     MatLabel,
     MatHint,
     FhirDateTimeComponent,
-    MatChip,
     MatTooltip,
     SetEvidenceDirective,
     MatIcon,
     EvidenceDetailsComponent,
     AsyncPipe,
-    SuggestedAnswerFormatterPipe,
-    FormattedTitlePipe,
-    JsonPipe,
   ]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
   answerDictionary = signal<FormAnswers | undefined>(undefined);
-  questionnaire = signal<Questionnaire>(undefined);
+  questionnaire = signal<Questionnaire | undefined>(undefined);
 
 
   showDrawer = false;
@@ -146,12 +123,14 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
 
     this.formManagerService.selectedActiveFormSummary$.pipe(
+      // tap(value => console.log(value)),
       tap(value => this.activeFormSummary.set(value)),
       filter(value => !!value),
       mergeMap(value => this.rcApiInterfaceService.getJobPackage({
         key: 'name',
         value: value.formName
       })),
+      tap(value => {console.log(value)}),
       map(response => Array.isArray(response) ? (response[0] ?? null) : response),
       map(result => ({
         ...result,
@@ -162,7 +141,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       }))
     ).subscribe({
       next: result => {
-        this.questionnaire.set(result);
+        console.log(result);
+        const questionnaireClass = new Questionnaire(result);
+        this.questionnaire.set(questionnaireClass);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.refreshTrigger$.next(1);
       },
@@ -179,7 +160,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   fetchResults() {
     const activeForm = this.activeFormSummary();
     return this.rcApiInterfaceService.getBatchJobResults(activeForm!.batchId).pipe(
-      tap(value => {console.log(value)}),
       tap(value => this.status = value.status),
       tap(value => this.completeCount = value.completeJobs),
       tap(value => this.totalCount = value.totalJobs),

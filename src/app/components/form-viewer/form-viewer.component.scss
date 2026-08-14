@@ -106,11 +106,12 @@ $selected-nave-menu-item-color: #424242;
 }
 
 .nav-controls {
-  margin: 4px 16px 0 16px;
-  padding: 8px;
+  margin-bottom: 42px;
+  padding: 16px;
   display: flex;
-  border-radius: 4px;
-  background-color: #E0E0E0;
+  min-height: 60px; // Ensure minimum height
+  border-top: #dee2ea solid 1px;
+  background-color: var(--color-bg-light);
 }
 
 .wide-button{
