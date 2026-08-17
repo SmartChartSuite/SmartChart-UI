@@ -6,6 +6,42 @@ export class Results {
   status: string;
   completeJobs: number;
   totalJobs: number;
+
+  constructor(data?: any) {
+    if (data) {
+      Object.assign(this, data);
+    }
+  }
+
+  /**
+   * Get the ResultSet for a specific linkId
+   * @param linkId The link identifier
+   * @returns The ResultSet or null if not found
+   */
+  getLinkResult(linkId: string): ResultSet | null {
+    if (!linkId) return null;
+    const key = `link${linkId}`;
+    return this[key] || null;
+  }
+
+  /**
+   * Check if evidence exists for a given linkId
+   * @param linkId The link identifier
+   * @returns true if evidence exists and has items
+   */
+  hasEvidence(linkId: string): boolean {
+    const result = this.getLinkResult(linkId);
+    return !!(result?.evidence && result.evidence.length > 0);
+  }
+
+  /**
+   * Get the count of evidence items for a given linkId
+   * @param linkId The link identifier
+   * @returns The number of evidence items, or 0 if none exist
+   */
+  getEvidenceCount(linkId: string): number {
+    return this.getLinkResult(linkId)?.evidence?.length || 0;
+  }
 }
 
 export class ResultSet {

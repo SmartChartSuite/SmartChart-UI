@@ -189,7 +189,10 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     if (!activeForm) {
       throw new Error('No active form summary available');
     }
-    return this.rcApiInterfaceService.getBatchJobResults(activeForm.batchId);
+    return this.rcApiInterfaceService.getBatchJobResults(activeForm.batchId)
+      .pipe(
+        map(data => new Results(data))
+      );
   }
 
   selectQuestionnaireSection(index: number): void {
@@ -277,17 +280,14 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
     if (!results || !linkId) return 'ERROR';
-
-    const evidence = results[`link${linkId}`]?.evidence;
-    return evidence ? evidence.length : 'ERROR';
+    return results.getEvidenceCount(linkId) || 'ERROR';
   }
 
   protected getQuestionsWithEvidenceCount(item: Item, results: Results | undefined): number {
     if (!item?.item?.length || !results) return 0;
 
     return item.item.reduce((count, childItem) => {
-      const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
-      return count + (typeof evidenceCount === 'number' && evidenceCount > 0 ? 1 : 0);
+      return count + (results.hasEvidence(childItem.linkId) ? 1 : 0);
     }, 0);
   }
 

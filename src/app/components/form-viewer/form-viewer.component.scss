@@ -33,8 +33,8 @@ $sub-nav-select: #dee2f4;
   display: flex;
   background-color: whitesmoke;
   border-radius: 4px;
-  font-weight: bold;
-  padding: 4px;
+  font-weight: 500;
+  padding: 4px 8px;
 }
 
 /* Begin sidenav style */
@@ -80,8 +80,7 @@ $selected-nave-menu-item-color: #424242;
 
 .selected-evidence {
   @extend .question-label;
-  background-color: $dark-background-color;
-  color: whitesmoke;
+  border: 1px solid $dark-background-color;
 }
 
 .question-input {

@@ -191,12 +191,12 @@
 <!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
 <!--                  <div>Resource** <pre>{{ results()?.["link" + childItem?.["linkId"]] | json }}</pre>-->
 <!--                  </div>-->
-                    @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                    @if (results()?.hasEvidence(childItem.linkId)) {
                       <button matButton="outlined" type="button" class="primary-outlined"
-                              appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
+                              appSetEvidence [resultSet]="results()?.getLinkResult(childItem.linkId)"
                               (click)="(selectedEvidenceIndex() == j && showDrawer()) ? showDrawer.set(false) : showDrawer.set(true); selectedEvidenceIndex.set(j)">
                         View Evidence
-                        ({{ getEvidenceCount(childItem?.linkId, results()) }})
+                        ({{ results()?.getEvidenceCount(childItem.linkId) }})
                       </button>
                     }
                   </div>
