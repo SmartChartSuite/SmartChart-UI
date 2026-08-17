@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy, signal} from '@angular/core';
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {searchByType, searchByTypes} from "../../../../models/search-by-types";
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -26,6 +26,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class PatientSearchComponent implements OnInit, OnDestroy {
 
   protected readonly SearchByType = searchByType;
+  isLoading=signal<boolean>(false)
 
   searchTypeList: searchByType[] = searchByTypes;
 
@@ -57,7 +58,6 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
     this.searchForm.get('selectedSearchCriteria')?.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: searchByType) => {
-        console.log(value);
         this.updateFormValidators(value);
       });
 
@@ -166,14 +166,17 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
   }
 
   private executeSearch(searchParams: PatientSearchParameters) {
+    this.isLoading.set(true);
     this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
       next: value => {
         this.patientSummaryData = value;
         this.searchExecuted = true;
+        this.isLoading.set(false);
       },
       error: err => {
         console.error(err);
         this.utilsService.showErrorMessage();
+        this.isLoading.set(false);
       }
     });
   }

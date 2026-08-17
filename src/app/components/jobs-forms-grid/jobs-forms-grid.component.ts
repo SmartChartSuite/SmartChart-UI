@@ -26,6 +26,8 @@ import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '
 import { ActiveFormSummary } from '../../models/active-form-summary';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
 import {FormSummary} from "../../models/form-summary";
+import {openStartNewJobModal} from "../start-new-job-modal/start-new-job-modal.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-forms-jobs-grid',
@@ -61,6 +63,8 @@ export class JobsFormsGridComponent {
   private readonly rcApiInterface = inject(RcApiInterfaceService);
   private readonly formManagerService = inject(FormManagerService);
   private readonly router = inject(Router);
+
+  private dialog: MatDialog = inject(MatDialog);
 
   protected readonly FormStatus = FormStatus;
   protected readonly GENDER_OPTIONS = [...GENDER_OPTIONS];
@@ -187,5 +191,13 @@ export class JobsFormsGridComponent {
     });
 
     return filters;
+  }
+
+  protected onStartNewJob() {
+    openStartNewJobModal(this.dialog).subscribe(value => {if(value?.refreshRequired) {
+      //TODO need to know what to trigger here
+      this.onClearFilters();
+    }});
+
   }
 }
