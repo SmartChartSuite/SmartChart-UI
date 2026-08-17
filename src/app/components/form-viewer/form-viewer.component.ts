@@ -5,15 +5,15 @@ import {FormManagerService} from "../../services/form-manager/form-manager.servi
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, map, mergeMap, Observable, ReplaySubject, switchMap, tap} from "rxjs";
+import {map, Observable, ReplaySubject, switchMap, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 import { TIMEZONES } from '../../../assets/const/timezones';
-import {FormAnswers} from "../../models/form-answers";
 import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
-import { FormsModule } from "@angular/forms";
+import { FormGroup, ReactiveFormsModule } from "@angular/forms";
+import {FormHelperService} from "../../services/form-helper/form-helper.service";
 import {openExportFileDialog} from "../export-selection-dialog/export-selection-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import { PatientDetailsComponent } from "./patient-details/patient-details.component";
@@ -25,8 +25,9 @@ import { QuestionnaireIndexDirective } from "../../directives/questionnaire-inde
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
 import { MatInput } from "@angular/material/input";
-import { FhirDateTimeComponent } from "../fhir-date-time/fhir-date-time.component";
 import { MatTooltip } from "@angular/material/tooltip";
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { MatTimepickerInput, MatTimepickerModule } from "@angular/material/timepicker";
 import { SetEvidenceDirective } from "../../directives/set-evidence.directive";
 import { MatIcon } from "@angular/material/icon";
 import { EvidenceDetailsComponent } from "./evidence-details/evidence-details.component";
@@ -45,14 +46,18 @@ import {Item, Questionnaire} from "../../models/questionnaire";
     NgClass,
     QuestionnaireIndexDirective,
     MatRadioGroup,
-    FormsModule,
+    ReactiveFormsModule,
     MatRadioButton,
     MatFormField,
     MatInput,
     MatLabel,
     MatHint,
-    FhirDateTimeComponent,
     MatTooltip,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatDatepicker,
+    MatTimepickerInput,
+    MatTimepickerModule,
     SetEvidenceDirective,
     MatIcon,
     EvidenceDetailsComponent,
@@ -68,13 +73,14 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   private readonly utilsService = inject(UtilsService);
   private readonly outputMapper = inject(FormOutputMappingService);
   private readonly dialog = inject(MatDialog);
+  private readonly formHelperService = inject(FormHelperService);
 
   protected readonly evidenceViewerService = inject(EvidenceViewerService);
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
   protected readonly TIMEZONES = TIMEZONES;
 
   // Core state signals
-  protected readonly answerDictionary = signal<FormAnswers | undefined>(undefined);
+  protected formGroup!: FormGroup;
   protected readonly questionnaire = signal<Questionnaire | undefined>(undefined);
   protected readonly activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   protected readonly results = signal<Results | undefined>(undefined);
@@ -110,7 +116,11 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   private readonly refreshTrigger$ = new ReplaySubject<number>(1);
 
   ngOnDestroy(): void {
-    //TODO Maybe we need to save the current state of the form so the user can go back and forward?
+    // Save the current form state to session storage
+    const activeForm = this.activeFormSummary();
+    if (activeForm?.batchId && this.formGroup) {
+      this.stateManagementService.saveFormState(activeForm.batchId, this.formGroup.value);
+    }
   }
 
   ngOnInit(): void {
@@ -155,9 +165,23 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   private initializeQuestionnaire(data: any): void {
     this.questionnaire.set(new Questionnaire(data));
-    this.answerDictionary.set(new FormAnswers(this.questionnaire()));
+    this.initializeFormGroup();
     this.selectQuestionnaireSection(0);
     this.refreshTrigger$.next(1);
+  }
+
+  private initializeFormGroup(): void {
+    // Service creates and manages the entire form
+    this.formGroup = this.formHelperService.buildFormGroupFromQuestionnaire(this.questionnaire());
+
+    // Restore saved form state if available
+    const activeForm = this.activeFormSummary();
+    if (activeForm?.batchId) {
+      const savedState = this.stateManagementService.getFormState(activeForm.batchId);
+      if (savedState) {
+        this.formHelperService.populateFormGroup(this.formGroup, savedState);
+      }
+    }
   }
 
   private fetchResults(): Observable<Results> {
@@ -213,7 +237,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
   private exportAsJson(): void {
     const questionnaireResponse = this.outputMapper.mapToFhir(
-      this.answerDictionary(),
+      this.formGroup.value as any,
       this.questionnaire()
     );
 
@@ -226,23 +250,20 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
+
+    // Clear saved form state after successful submission
+    const activeForm = this.activeFormSummary();
+    if (activeForm?.batchId) {
+      this.stateManagementService.clearFormState(activeForm.batchId);
+    }
   }
 
   selectPatientForm(): void {
     this.router.navigate(['/forms']);
   }
 
-  truncateIntegerAnswer(questionType: QuestionnaireItemType, i: number, j: number): void {
-    if (questionType !== QuestionnaireItemType.integer) return;
-
-    this.questionnaire.update(current => {
-      const answer = current?.item?.[i]?.item?.[j]?.answer;
-      if (answer == null) return current;
-
-      const updated = structuredClone(current);
-      updated.item[i].item[j].answer = Math.trunc(answer);
-      return updated;
-    });
+  protected getDateTimeFormGroup(linkId: string): FormGroup {
+    return this.formGroup.get(`${linkId}_dateTime`) as unknown as FormGroup;
   }
 
   scrollToTop(): void {

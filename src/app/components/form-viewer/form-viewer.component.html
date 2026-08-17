@@ -62,11 +62,12 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content" #top>
-        @for (item of questionnaire()?.item; track item; let i = $index) {
-          @if (item.selected) {
-            <div class="margin-top-md item-text">{{ item.text }}</div>
+        <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+          @for (item of questionnaire()?.item; track item; let i = $index) {
+            @if (item.selected) {
+              <div class="margin-top-md item-text">{{ item.text }}</div>
 
-            @for (childItem of (item.item); track childItem; let j = $index) {
+              @for (childItem of (item.item); track childItem; let j = $index) {
               <div class="question-item" [ngClass]="showDrawer() ? 'full-size-question-item': ''">
                 <div class="question-label"
                      [ngClass]="(j == selectedEvidenceIndex() && showDrawer()) ? 'selected-evidence': ''">
@@ -76,10 +77,8 @@
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
                   @if (childItem.type == QuestionnaireItemType.choice) {
-                    @for (option of childItem?.answerOption; track option) {
-                      <mat-radio-group
-                        [ngModel]="answerDictionary().get(childItem?.linkId)"
-                        (ngModelChange)="answerDictionary().set(childItem?.linkId, $event)">
+                    <mat-radio-group [formControlName]="childItem?.linkId">
+                      @for (option of childItem?.answerOption; track option) {
                         @if (childItem?.answerOption.length <= 3) {
                           <mat-radio-button class="margin-right-md"
                                             [value]="option">{{ option }}
@@ -92,13 +91,11 @@
                             </mat-radio-button>
                           </div>
                         }
-                      </mat-radio-group>
-                    }
+                      }
+                    </mat-radio-group>
                   } @else if (childItem.type == QuestionnaireItemType.string) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="text" matInput
-                        [ngModel]="answerDictionary().get(childItem?.linkId)"
-                        (ngModelChange)="answerDictionary().set(childItem?.linkId, $event)">
+                      <input type="text" matInput [formControlName]="childItem?.linkId">
                     </mat-form-field>
 
                   } @else if (childItem["type"] == QuestionnaireItemType.quantity) {
@@ -107,56 +104,64 @@
                         appearance="outline"
                         class="value-unit-input margin-right-md">
                         <mat-label>Value</mat-label>
-                        <input type="number" matInput
-                          [ngModel]="answerDictionary().get(childItem?.linkId)?.value"
-                          (ngModelChange)="answerDictionary().get(childItem?.linkId).value = $event">
+                        <input type="number" matInput [formControlName]="childItem?.linkId + '_value'">
                       </mat-form-field>
                       <mat-form-field
                         appearance="outline"
                         class="value-unit-input margin-left-md">
                         <mat-label>Unit</mat-label>
-                        <input type="text" matInput
-                          [ngModel]="answerDictionary().get(childItem?.linkId)?.unit"
-                          (ngModelChange)="answerDictionary().get(childItem?.linkId).unit = $event">
+                        <input type="text" matInput [formControlName]="childItem?.linkId + '_unit'">
                       </mat-form-field>
                     </div>
                   } @else if (childItem["type"] == QuestionnaireItemType.integer) {
-                    <mat-form-field
-                      appearance="outline" class="question-input"
-                      (keyup)="truncateIntegerAnswer(QuestionnaireItemType.integer, i, j)">
-                      <input type="number" matInput
-                        [ngModel]="answerDictionary().get(childItem?.linkId)"
-                        (ngModelChange)="answerDictionary().set(childItem?.linkId, $event)">
+                    <mat-form-field appearance="outline" class="question-input">
+                      <input type="number" matInput [formControlName]="childItem?.linkId">
                       <mat-hint>Only whole numbers are allowed</mat-hint>
                     </mat-form-field>
                   } @else if (childItem["type"] == QuestionnaireItemType.decimal) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="number" matInput
-                        [ngModel]="answerDictionary().get(childItem?.linkId)"
-                        (ngModelChange)="answerDictionary().set(childItem?.linkId, $event)">
+                      <input type="number" matInput [formControlName]="childItem?.linkId">
                     </mat-form-field>
                   } @else if (childItem["type"] == QuestionnaireItemType.date) {
-                    <app-fhir-date-time
-                      (onDateTimeUpdated)="answerDictionary().set(childItem?.linkId, $event.value)"
-                      [questionType]="QuestionnaireItemType.date"
-                      [inputValue]="answerDictionary().get(childItem?.linkId)"
-                    ></app-fhir-date-time>
+                    <div [formGroup]="getDateTimeFormGroup(childItem?.linkId)" class="date-time-inputs">
+                      <mat-form-field appearance="outline" class="margin-right-lg">
+                        <mat-label>Date</mat-label>
+                        <input matInput [matDatepicker]="datePicker" formControlName='date'>
+                        <mat-hint>Date Format: YYYY-MM-DD</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #datePicker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
                   } @else if (childItem["type"] == QuestionnaireItemType.time) {
-                    <app-fhir-date-time
-                      (onDateTimeUpdated)="answerDictionary().set(childItem?.linkId, $event.value)"
-                      [questionType]="QuestionnaireItemType.time"
-                      [inputValue]="answerDictionary().get(childItem?.linkId)"
-                    ></app-fhir-date-time>
+                    <div [formGroup]="getDateTimeFormGroup(childItem?.linkId)" class="date-time-inputs">
+                      <mat-form-field appearance="outline" class="margin-right-lg">
+                        <mat-label>Time</mat-label>
+                        <input matInput [matTimepicker]="timePicker" formControlName='time'>
+                        <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
+                        <mat-timepicker #timePicker/>
+                        <mat-hint>Time Format: HH-MM</mat-hint>
+                      </mat-form-field>
+                    </div>
                   } @else if (childItem["type"] == QuestionnaireItemType.dateTime) {
-                    <app-fhir-date-time
-                      (onDateTimeUpdated)="answerDictionary().set(childItem?.linkId, $event.value)"
-                      [questionType]="QuestionnaireItemType.dateTime"
-                      [inputValue]="answerDictionary().get(childItem?.linkId)"
-                    ></app-fhir-date-time>
+                    <div [formGroup]="getDateTimeFormGroup(childItem?.linkId)" class="date-time-inputs">
+                      <mat-form-field appearance="outline" class="margin-right-lg">
+                        <mat-label>Date</mat-label>
+                        <input matInput [matDatepicker]="dateTimePicker" formControlName='date'>
+                        <mat-hint>Date Format: YYYY-MM-DD</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="dateTimePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #dateTimePicker></mat-datepicker>
+                      </mat-form-field>
+                      <mat-form-field appearance="outline" class="margin-right-lg">
+                        <mat-label>Time</mat-label>
+                        <input matInput [matTimepicker]="dateTimeTimePicker" formControlName='time'>
+                        <mat-timepicker-toggle matIconSuffix [for]="dateTimeTimePicker"/>
+                        <mat-timepicker #dateTimeTimePicker/>
+                        <mat-hint>Time Format: HH-MM</mat-hint>
+                      </mat-form-field>
+                    </div>
                   } @else if (childItem["type"] == QuestionnaireItemType.text) {
                     <textarea rows="8" class="question-input sans-serif"
-                      [ngModel]="answerDictionary().get(childItem?.linkId)"
-                      (ngModelChange)="answerDictionary().set(childItem?.linkId, $event)"></textarea>
+                      [formControlName]="childItem?.linkId"></textarea>
                   }
 <!--TODO refactor the code for has evidence directive-->
 <!--                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">-->
@@ -185,9 +190,9 @@
 <!--                    }-->
 <!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
 <!--                  <div>Resource** <pre>{{ results()?.["link" + childItem?.["linkId"]] | json }}</pre>-->
-
+<!--                  </div>-->
                     @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
-                      <button matButton="outlined" class="primary-outlined"
+                      <button matButton="outlined" type="button" class="primary-outlined"
                               appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
                               (click)="(selectedEvidenceIndex() == j && showDrawer()) ? showDrawer.set(false) : showDrawer.set(true); selectedEvidenceIndex.set(j)">
                         View Evidence
@@ -196,10 +201,10 @@
                     }
                   </div>
                 </div>
-<!--              </div>-->
+              }
             }
           }
-        }
+        </form>
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
            [ngClass]="(evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
@@ -240,7 +245,7 @@
     <div class="nav-controls">
       <div class="content-spacer"></div>
 
-      <button matButton="outlined" type="submit" class="wide-button"
+      <button matButton="outlined" type="button" class="wide-button"
               [disabled]="selectedMenuItemIndex() === 0"
               (click)="previousSection()">
         <mat-icon>chevron_left</mat-icon>
@@ -250,7 +255,7 @@
         }
       </button>
 
-      <button matButton="outlined" type="submit"  class="margin-left-sm wide-button"
+      <button matButton="outlined" type="button" class="margin-left-sm wide-button"
               [disabled]="selectedMenuItemIndex() >= (questionnaire()?.item?.length ?? 0) - 1"
               (click)="nextSection()">
         Next

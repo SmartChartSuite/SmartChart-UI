@@ -8,6 +8,9 @@ import {NgClass} from "@angular/common";
 import {LoginComponent} from "../login/login.component";
 import {toSignal} from "@angular/core/rxjs-interop";
 import {filter, map} from "rxjs/operators";
+import {combineLatest} from "rxjs";
+import {FormManagerService} from "../../services/form-manager/form-manager.service";
+import {StateManagementService} from "../../services/state-management/state-management.service";
 
 @Component({
   selector: 'app-header',
@@ -25,6 +28,8 @@ export class HeaderComponent {
   configService = inject(ConfigService);
   oauthService = inject(OAuthService);
   router = inject(Router);
+  private formManagerService = inject(FormManagerService);
+  private stateManagementService = inject(StateManagementService);
 
   private routerEvents = toSignal(
     this.router.events.pipe(
@@ -35,6 +40,21 @@ export class HeaderComponent {
   );
 
   protected readonly currentRoute = computed(() => this.routerEvents() ?? '');
+
+  protected readonly hasActiveFormWithState = toSignal(
+    combineLatest([
+      this.formManagerService.selectedActiveFormSummary$,
+      this.stateManagementService.getState()
+    ]).pipe(
+      map(([activeForm, appState]) => {
+        if (!activeForm?.batchId || !appState?.formStates) {
+          return false;
+        }
+        return !!appState.formStates[activeForm.batchId];
+      })
+    ),
+    { initialValue: false }
+  );
 
   protected onPathSelected(path: string) {
     this.router.navigate([path]);

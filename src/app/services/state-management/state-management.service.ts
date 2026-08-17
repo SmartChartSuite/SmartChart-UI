@@ -10,7 +10,8 @@ export class StateManagementService {
   private applicationState$: BehaviorSubject<ApplicationState>;
 
   private defaultState: ApplicationState = {
-    currentRoute: RouteState.LANDING
+    currentRoute: RouteState.LANDING,
+    formStates: {}
   }
 
   constructor() {
@@ -49,6 +50,41 @@ export class StateManagementService {
    */
   setCurrentRoute(route: RouteState) {
     this.setState({currentRoute: route});
+  }
+
+  /**
+   * Save form state to session storage
+   * @param batchId Unique identifier for the form
+   * @param formValues Form values to save
+   */
+  saveFormState(batchId: string, formValues: any): void {
+    const currentState = this.applicationState$.value;
+    const updatedFormStates = {
+      ...currentState.formStates,
+      [batchId]: formValues
+    };
+    this.setState({ formStates: updatedFormStates });
+  }
+
+  /**
+   * Retrieve saved form state from session storage
+   * @param batchId Unique identifier for the form
+   * @returns Saved form values or null if not found
+   */
+  getFormState(batchId: string): any | null {
+    const formStates = this.applicationState$.value.formStates;
+    return formStates?.[batchId] || null;
+  }
+
+  /**
+   * Clear saved form state from session storage
+   * @param batchId Unique identifier for the form
+   */
+  clearFormState(batchId: string): void {
+    const currentState = this.applicationState$.value;
+    const updatedFormStates = { ...currentState.formStates };
+    delete updatedFormStates[batchId];
+    this.setState({ formStates: updatedFormStates });
   }
 
   writeToSession(state: ApplicationState) {
