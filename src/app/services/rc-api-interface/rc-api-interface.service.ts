@@ -17,6 +17,7 @@ import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
+import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
 
 
 @Injectable({
@@ -356,5 +357,9 @@ export class RcApiInterfaceService {
     else {
       return false;
     }
+  }
+
+  saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, batchJobId: string) {
+    return this.http.post<any>(`${this.base}response?batch_job_id=${batchJobId}`, questionnaireResponse)
   }
 }

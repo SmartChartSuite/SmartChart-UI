@@ -244,10 +244,18 @@
 
       <div class="content-spacer"></div>
 
-      <button mat-raised-button type="submit" (click)="onSubmit()">
+      <button matButton="filled" type="button" (click)="onExport()">
         <mat-icon>download</mat-icon>
-        Save/Export
+        Export
       </button>
+      <span class="margin-left-sm">
+      <button matButton="filled" color="primary" type="submit" (click)="onSave()">
+        <mat-icon>send</mat-icon>
+        Save
+      </button>
+      </span>
+
+
 
     </div>
   }

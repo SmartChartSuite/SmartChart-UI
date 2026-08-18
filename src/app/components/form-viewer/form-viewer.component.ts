@@ -1,5 +1,6 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy, inject, DestroyRef} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
@@ -111,6 +112,8 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     exportType: new FormControl(this.exportTypes[0])
   });
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
@@ -140,12 +143,15 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     //   switchMap(() => this.fetchResults()),
     //   share()
     // )
-    results$.subscribe(value => this.results.set(value));
+    results$.pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(value => this.results.set(value));
 
     this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
 
     this.formManagerService.selectedActiveFormSummary$.pipe(
+      takeUntilDestroyed(this.destroyRef),
       tap(value => this.activeFormSummary.set(value)),
       filter(value => !!value),
       mergeMap(value => this.rcApiInterfaceService.getJobPackage({
@@ -196,14 +202,14 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit() {
+  onExport() {
     openExportFileDialog(
       this.dialog,
       {})
       .subscribe(
         exportType => {
           if(exportType == "json"){
-            const questionnaireResponse = this.outputMapper.mapToFhir(this.answerDictionary(), this.questionnaire());
+            const questionnaireResponse = this.outputMapper.mapQrToFhir(this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
             const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
             const link = document.createElement('a');
 
@@ -270,5 +276,20 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
     return questionsWithEvidenceCount;
   }
+
+  protected onSave() {
+    const questionnaireResponse = this.outputMapper.mapQrToFhir(this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
+    const batchJobId = this.activeFormSummary().batchId;
+    this.rcApiInterfaceService.saveQuestionnaire(questionnaireResponse, batchJobId).subscribe({
+      next: (response) => {
+        this.utilsService.showSuccessMessage("Form Saved Successfully");
+      },
+      error: (error) => {
+        console.error(error);
+        this.utilsService.showErrorMessage("Error Saving Form");
+      }
+    });
+  }
+
 
 }
