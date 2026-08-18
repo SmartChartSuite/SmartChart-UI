@@ -81,6 +81,7 @@ $selected-nave-menu-item-color: #424242;
 .selected-evidence {
   @extend .question-label;
   border: 1px solid $dark-background-color;
+  color: $dark-background-color;
 }
 
 .question-input {
@@ -135,7 +136,7 @@ $selected-nave-menu-item-color: #424242;
       margin: 4px 0;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       font-weight: 400;
 
       &:hover{
@@ -155,10 +156,10 @@ $selected-nave-menu-item-color: #424242;
 }
 
 .sparkles-icon {
-  margin: 0 8px;
+  margin-left: auto;
   width: 24px;
   height: 24px;
-  vertical-align: middle;
+  flex-shrink: 0;
   display: inline-block;
   -webkit-mask: url('/assets/img/sparkles.svg') no-repeat center;
   -webkit-mask-size: contain;

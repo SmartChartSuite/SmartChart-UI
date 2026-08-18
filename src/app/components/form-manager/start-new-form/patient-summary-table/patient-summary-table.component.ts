@@ -4,7 +4,7 @@ import {
   Input,
   OnChanges, OnInit,
   SimpleChanges, ViewChild,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy, input
 } from '@angular/core';
 import {PatientSummary} from "../../../../models/patient-summary";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
@@ -22,6 +22,8 @@ import { AsyncPipe, TitleCasePipe, DatePipe } from '@angular/common';
     imports: [MatTableModule, MatPaginatorModule, MatIcon, AsyncPipe, TitleCasePipe, DatePipe]
 })
 export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, OnInit {
+  isLoading  = input.required();
+  searchExecuted  = input<boolean>(true);
 
   constructor(private formManagerService: FormManagerService) {
   }
