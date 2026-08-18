@@ -21,7 +21,10 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button matButton mat-dialog-close type="button" (click)="onClose()">Cancel</button>
-  <button matButton="filled" color="primary"  cdkFocusInitial type="submit"
-          [disabled]="!(selectedPatient() && selectedForm())" (click)="onStart()">Start Job</button>
+  <button matButton="outlined" mat-dialog-close type="button" (click)="onClose()">Cancel</button>
+  <div class=margin-left-sm [matTooltip]="!(selectedPatient() && selectedForm()) ? 'Please select both a patient and a form to start the job' : ''"
+       matTooltipPosition="above">
+    <button matButton="filled" color="primary" cdkFocusInitial type="submit"
+            [disabled]="!(selectedPatient() && selectedForm())" (click)="onStart()">Start Job</button>
+  </div>
 </mat-dialog-actions>

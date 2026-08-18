@@ -12,8 +12,8 @@ import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import {PatientGroupsComponent} from "../form-manager/start-new-form/patient-groups/patient-groups.component";
 import {PatientSearchComponent} from "../form-manager/start-new-form/patient-search/patient-search.component";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
-import {PatientSummary} from "../../models/patient-summary";
 import {UtilsService} from "../../services/utils/utils.service";
+import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
   selector: 'app-start-new-job-modal',
@@ -28,7 +28,8 @@ import {UtilsService} from "../../services/utils/utils.service";
     MatTab,
     MatTabGroup,
     PatientGroupsComponent,
-    PatientSearchComponent
+    PatientSearchComponent,
+    MatTooltip
   ],
   templateUrl: './start-new-job-modal.component.html',
   styleUrl: './start-new-job-modal.component.scss',
@@ -92,7 +93,7 @@ export class StartNewJobModalComponent {
 
   /** Closes the modal dialog */
   onClose() {
-    this.dialogRef.close({refreshRequired: true});
+    this.dialogRef.close({refreshRequired: false});
     this.formManagerService.setSelectedPatient(null);
   }
 

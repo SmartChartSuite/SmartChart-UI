@@ -32,26 +32,21 @@
         (click)="setSelectedPatient(row)">
     </tr>
     <!-- Loading state - shows when data is empty and loading -->
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-        @if (isLoading()) {
-          <div class="loading-row">
-            Loading data. Please wait<span class="loading-ellipsis"></span>
-          </div>
-        } @else {
-          <div class="loading-row">
-            No Records Found
-          </div>
-        }
-      </td>
-    </tr>
-
-    <!--  TODO: Render only after a search has been executed-->
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-        <span class="no-data-table-row">No records found</span>
-      </td>
-    </tr>
+    @if (searchExecuted()) {
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          @if (isLoading()) {
+            <div class="loading-row">
+              Loading data. Please wait<span class="loading-ellipsis"></span>
+            </div>
+          } @else {
+            <div class="loading-row">
+              No Records Found
+            </div>
+          }
+        </td>
+      </tr>
+    }
   </table>
 
   <mat-paginator [pageSizeOptions]="[10, 20]"></mat-paginator>

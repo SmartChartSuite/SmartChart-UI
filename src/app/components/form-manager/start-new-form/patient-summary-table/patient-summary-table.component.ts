@@ -22,7 +22,8 @@ import { AsyncPipe, TitleCasePipe, DatePipe } from '@angular/common';
     imports: [MatTableModule, MatPaginatorModule, MatIcon, AsyncPipe, TitleCasePipe, DatePipe]
 })
 export class PatientSummaryTableComponent implements OnChanges, AfterViewInit, OnInit {
-  isLoading  = input.required()
+  isLoading  = input.required();
+  searchExecuted  = input<boolean>(true);
 
   constructor(private formManagerService: FormManagerService) {
   }
