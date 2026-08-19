@@ -199,23 +199,13 @@
 
               <!-- Date Ran Column -->
               <ng-container matColumnDef="dateRan">
-                <th mat-header-cell *matHeaderCellDef>Date Ran</th>
+                <th mat-header-cell *matHeaderCellDef>Date / Time Ran</th>
                 <td mat-cell *matCellDef="let patient">
                   <div class="icon-with-text">
                     @if (staleJobFound(patient)) {
                       <mat-icon color="warn">warning</mat-icon>
                     }
-                    <span>{{ patient.jobStartDateTime | date :'MM/dd/yyyy'  }}</span>
-                  </div>
-                </td>
-              </ng-container>
-
-              <!-- Date Ran Column -->
-              <ng-container matColumnDef="timeRan">
-                <th mat-header-cell *matHeaderCellDef>Time Ran</th>
-                <td mat-cell *matCellDef="let patient">
-                  <div class="icon-with-text">
-                    <span>{{ patient.jobStartDateTime | date :'HH:mm:ss'  }}</span>
+                    <span>{{ patient.jobStartDateTime | date :'MM/dd/yyyy'  }}<br>{{ patient.jobStartDateTime | date :'HH:mm:ss'  }}</span>
                   </div>
                 </td>
               </ng-container>
