@@ -17,10 +17,16 @@ export class JobsFormsHelperService {
    */
   flattenFhirParameters(parameters: any[] = []): Record<string, any> {
     return parameters.reduce((acc, param) => {
-      const value = param.valueString ?? param.valueCode ?? param.valueDate ??
-                    param.valueDateTime ?? param.valueInteger ?? param.resource;
+      let value = param.valueString ?? param.valueCode ?? param.valueDate ??
+                  param.valueDateTime ?? param.valueInteger ?? param.resource ??
+                  param.valueReference?.reference ?? param.valueReference;
 
-      if (param.name) {
+      // Special handling for batchJobQuestionnaireResponse - extract ID and rename
+      if (param.name === 'batchJobQuestionnaireResponse' && typeof value === 'string') {
+        // Extract ID from "QuestionnaireResponse/3670aead-8b33-4ce6-90a4-fc2150dd0593"
+        const parts = value.split('/');
+        acc['questionnaireResponseId'] = parts.length > 1 ? parts[1] : value;
+      } else if (param.name) {
         acc[param.name] = value;
       }
       return acc;

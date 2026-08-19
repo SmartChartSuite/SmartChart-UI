@@ -35,14 +35,12 @@
         <span>Chart Abstractions</span>
       </button>
 
-      @if (hasActiveFormWithState()) {
-        <button mat-button class="nav-item"
-                (click)="onPathSelected('/form-viewer')"
-                [ngClass]="{'active': currentRoute() === '/form-viewer'}">
-          <mat-icon>list_alt</mat-icon>
-          <span>Current Chart</span>
-        </button>
-      }
+      <button mat-button class="nav-item"
+              (click)="onPathSelected('/form-viewer')"
+              [ngClass]="{'active': currentRoute() === '/form-viewer'}">
+        <mat-icon>list_alt</mat-icon>
+        <span>Current Chart</span>
+      </button>
 
       <button mat-button class="nav-item"
               (click)="onPathSelected('/jobs-forms')"

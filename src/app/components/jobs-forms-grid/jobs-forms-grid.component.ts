@@ -143,8 +143,9 @@ export class JobsFormsGridComponent {
 
   protected async onSelectRecord(row: PatientGrid): Promise<void> {
     const patient = await firstValueFrom(this.rcApiInterface.getPatient(row.patientId));
+    const qr = await firstValueFrom(this.rcApiInterface.getQuestionnaireResponse(row.questionnaireResponseId));
+    this.formManagerService.setSelectedQuestionnaireResponse(qr);
     const activeFormSummary = new ActiveFormSummary(patient, row);
-
     this.formManagerService.setSelectedActiveFormSummary(activeFormSummary);
     await this.router.navigate(['/form-viewer']);
   }

@@ -84,6 +84,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly questionnaire = signal<Questionnaire | undefined>(undefined);
   protected readonly activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   protected readonly results = signal<Results | undefined>(undefined);
+  protected questionnaireResponseId: string = '';
 
   // UI state signals
   protected readonly showDrawer = signal(false);
@@ -116,16 +117,12 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   private readonly refreshTrigger$ = new ReplaySubject<number>(1);
 
   ngOnDestroy(): void {
-    // Save the current form state to session storage
-    const activeForm = this.activeFormSummary();
-    if (activeForm?.batchId && this.formGroup) {
-      this.stateManagementService.saveFormState(activeForm.batchId, this.formGroup.value);
-    }
   }
 
   ngOnInit(): void {
     this.setupResultsPolling();
     this.setupFormLoader();
+    this.setupQuestionnaireResponseLoader();
     this.setupEvidenceViewer();
   }
 
@@ -148,6 +145,21 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         next: questionnaire => this.initializeQuestionnaire(questionnaire),
         error: () => this.utilsService.showErrorMessage()
       });
+  }
+
+  private setupQuestionnaireResponseLoader(): void {
+    this.formManagerService.selectedFormQuestionnaireResponse$
+      .pipe(
+        tap(qr => {
+          if (qr) {
+            this.questionnaireResponseId = qr.id || '';
+            if (this.formGroup) {
+              this.formHelperService.populateFormGroupFromQuestionnaireResponse(this.formGroup, qr);
+            }
+          }
+        })
+      )
+      .subscribe();
   }
 
   private setupEvidenceViewer(): void {
@@ -173,15 +185,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   private initializeFormGroup(): void {
     // Service creates and manages the entire form
     this.formGroup = this.formHelperService.buildFormGroupFromQuestionnaire(this.questionnaire());
-
-    // Restore saved form state if available
-    const activeForm = this.activeFormSummary();
-    if (activeForm?.batchId) {
-      const savedState = this.stateManagementService.getFormState(activeForm.batchId);
-      if (savedState) {
-        this.formHelperService.populateFormGroup(this.formGroup, savedState);
-      }
-    }
   }
 
   private fetchResults(): Observable<Results> {
@@ -227,6 +230,25 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   }
 
 
+  onSave(): void {
+    const questionnaireResponse = this.outputMapper.mapToFhir(
+      this.formGroup.value as any,
+      this.questionnaire(),
+      this.activeFormSummary()
+    );
+
+    this.rcApiInterfaceService.updateQuestionnaireResponse(questionnaireResponse, this.questionnaireResponseId)
+      .subscribe({
+        next: () => {
+          this.utilsService.showSuccessMessage("Form Saved Successfully");
+        },
+        error: (error) => {
+          console.error(error);
+          this.utilsService.showErrorMessage("Error Saving Form");
+        }
+      });
+  }
+
   onSubmit(): void {
     openExportFileDialog(this.dialog, {})
       .subscribe(exportType => {
@@ -253,12 +275,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
-
-    // Clear saved form state after successful submission
-    const activeForm = this.activeFormSummary();
-    if (activeForm?.batchId) {
-      this.stateManagementService.clearFormState(activeForm.batchId);
-    }
   }
 
   selectPatientForm(): void {

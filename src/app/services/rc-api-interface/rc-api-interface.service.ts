@@ -17,6 +17,7 @@ import {ShowLoading} from "../loading/show-loading";
 import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
+import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
 
 
 @Injectable({
@@ -356,5 +357,13 @@ export class RcApiInterfaceService {
     else {
       return false;
     }
+  }
+
+  updateQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse, questionnaireResponseId: string) {
+    return this.http.put<any>(`${this.base}response/${questionnaireResponseId}`, questionnaireResponse)
+  }
+
+  getQuestionnaireResponse(qrId: string): Observable<QuestionnaireResponse> {
+    return this.http.get<QuestionnaireResponse>(`${this.base}response/${qrId}`);
   }
 }

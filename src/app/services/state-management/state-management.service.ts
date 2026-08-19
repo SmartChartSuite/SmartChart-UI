@@ -10,8 +10,7 @@ export class StateManagementService {
   private applicationState$: BehaviorSubject<ApplicationState>;
 
   private defaultState: ApplicationState = {
-    currentRoute: RouteState.LANDING,
-    formStates: {}
+    currentRoute: RouteState.LANDING
   }
 
   constructor() {
@@ -52,41 +51,6 @@ export class StateManagementService {
     this.setState({currentRoute: route});
   }
 
-  /**
-   * Save form state to session storage
-   * @param batchId Unique identifier for the form
-   * @param formValues Form values to save
-   */
-  saveFormState(batchId: string, formValues: any): void {
-    const currentState = this.applicationState$.value;
-    const updatedFormStates = {
-      ...currentState.formStates,
-      [batchId]: formValues
-    };
-    this.setState({ formStates: updatedFormStates });
-  }
-
-  /**
-   * Retrieve saved form state from session storage
-   * @param batchId Unique identifier for the form
-   * @returns Saved form values or null if not found
-   */
-  getFormState(batchId: string): any | null {
-    const formStates = this.applicationState$.value.formStates;
-    return formStates?.[batchId] || null;
-  }
-
-  /**
-   * Clear saved form state from session storage
-   * @param batchId Unique identifier for the form
-   */
-  clearFormState(batchId: string): void {
-    const currentState = this.applicationState$.value;
-    const updatedFormStates = { ...currentState.formStates };
-    delete updatedFormStates[batchId];
-    this.setState({ formStates: updatedFormStates });
-  }
-
   writeToSession(state: ApplicationState) {
     sessionStorage.setItem("applicationState", JSON.stringify(state));
   }
@@ -100,4 +64,34 @@ export class StateManagementService {
       return JSON.parse(applicationState) as ApplicationState;
     }
   }
+
+  // /**
+  //  * Save form state to session storage for a specific batch
+  //  * @param batchId The batch ID to save state for
+  //  * @param formValue The form values to save
+  //  */
+  // saveFormState(batchId: string, formValue: any): void {
+  //   const key = `formState_${batchId}`;
+  //   sessionStorage.setItem(key, JSON.stringify(formValue));
+  // }
+  //
+  // /**
+  //  * Get saved form state from session storage for a specific batch
+  //  * @param batchId The batch ID to retrieve state for
+  //  * @returns The saved form state or null if not found
+  //  */
+  // getFormState(batchId: string): any | null {
+  //   const key = `formState_${batchId}`;
+  //   const savedState = sessionStorage.getItem(key);
+  //   return savedState ? JSON.parse(savedState) : null;
+  // }
+  //
+  // /**
+  //  * Clear saved form state from session storage for a specific batch
+  //  * @param batchId The batch ID to clear state for
+  //  */
+  // clearFormState(batchId: string): void {
+  //   const key = `formState_${batchId}`;
+  //   sessionStorage.removeItem(key);
+  // }
 }

@@ -33,8 +33,22 @@ export class QuestionnaireResponseItem extends BackboneElement {
 
 export class QuestionnaireResponseItemAnswer extends BackboneElement {
   // value[x] 0..1 - Choice of Data Type
+  valueBoolean?: boolean;
+  valueDecimal?: number;
+  valueInteger?: number;
+  valueDate?: string;
+  valueDateTime?: string;
+  valueTime?: string;
+  valueString?: string;
+  valueUri?: string;
   valueCoding?: Coding;
   valueReference?: Reference;
+  valueQuantity?: {
+    value?: number;
+    unit?: string;
+    system?: string;
+    code?: string;
+  };
 
   // Recursive item.
   item?: QuestionnaireResponseItem[];

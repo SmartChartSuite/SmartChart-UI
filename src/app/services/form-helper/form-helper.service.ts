@@ -160,4 +160,112 @@ export class FormHelperService {
       }
     });
   }
+
+  /**
+   * Populates the form group from a FHIR QuestionnaireResponse
+   * Recursively processes the nested item structure and extracts answers
+   * @param formGroup The reactive form group to populate
+   * @param questionnaireResponse The FHIR QuestionnaireResponse
+   */
+  populateFormGroupFromQuestionnaireResponse(formGroup: FormGroup, questionnaireResponse: any): void {
+    if (!questionnaireResponse?.item || !formGroup) {
+      return;
+    }
+
+    // Recursively process items to extract answers
+    const processItems = (items: any[]) => {
+      items.forEach(item => {
+        if (item.linkId && item.answer && item.answer.length > 0) {
+          const answer = item.answer[0]; // Take first answer
+          const control = formGroup.get(item.linkId);
+
+          if (control) {
+            // Map different FHIR answer types to form control values
+            if (answer.valueString !== undefined) {
+              control.setValue(answer.valueString, { emitEvent: false });
+            } else if (answer.valueInteger !== undefined) {
+              control.setValue(answer.valueInteger, { emitEvent: false });
+            } else if (answer.valueDecimal !== undefined) {
+              control.setValue(answer.valueDecimal, { emitEvent: false });
+            } else if (answer.valueBoolean !== undefined) {
+              control.setValue(answer.valueBoolean, { emitEvent: false });
+            } else if (answer.valueDate !== undefined) {
+              this.setDateTimeControl(formGroup, item.linkId, answer.valueDate, QuestionnaireItemType.date);
+            } else if (answer.valueTime !== undefined) {
+              this.setDateTimeControl(formGroup, item.linkId, answer.valueTime, QuestionnaireItemType.time);
+            } else if (answer.valueDateTime !== undefined) {
+              this.setDateTimeControl(formGroup, item.linkId, answer.valueDateTime, QuestionnaireItemType.dateTime);
+            } else if (answer.valueCoding !== undefined) {
+              const value = answer.valueCoding.display || answer.valueCoding.code;
+              control.setValue(value, { emitEvent: false });
+            } else if (answer.valueQuantity !== undefined) {
+              // For quantity types, set both value and unit controls
+              const valueControl = formGroup.get(`${item.linkId}_value`);
+              const unitControl = formGroup.get(`${item.linkId}_unit`);
+              if (valueControl) {
+                valueControl.setValue(answer.valueQuantity.value, { emitEvent: false });
+              }
+              if (unitControl) {
+                unitControl.setValue(answer.valueQuantity.unit || answer.valueQuantity.code, { emitEvent: false });
+              }
+            }
+          }
+        }
+
+        // Process nested items recursively
+        if (item.item && item.item.length > 0) {
+          processItems(item.item);
+        }
+      });
+    };
+
+    processItems(questionnaireResponse.item);
+  }
+
+  /**
+   * Helper method to set date/time controls from FHIR values
+   */
+  private setDateTimeControl(formGroup: FormGroup, linkId: string, value: string, type: QuestionnaireItemType): void {
+    const dateTimeGroup = formGroup.get(`${linkId}_dateTime`) as FormGroup;
+    const mainControl = formGroup.get(linkId);
+
+    if (!dateTimeGroup) {
+      // If no dateTime group exists, just set the main control
+      if (mainControl) {
+        mainControl.setValue(value, { emitEvent: false });
+      }
+      return;
+    }
+
+    const dateControl = dateTimeGroup.get('date');
+    const timeControl = dateTimeGroup.get('time');
+
+    if (type === QuestionnaireItemType.date) {
+      // Parse date string (YYYY-MM-DD)
+      if (dateControl) {
+        dateControl.setValue(new Date(value), { emitEvent: false });
+      }
+    } else if (type === QuestionnaireItemType.time) {
+      // Parse time string (HH:mm:ss)
+      if (timeControl) {
+        const timePart = value.split(':').slice(0, 2).join(':'); // Get HH:mm
+        timeControl.setValue(timePart, { emitEvent: false });
+      }
+    } else if (type === QuestionnaireItemType.dateTime) {
+      // Parse datetime string (YYYY-MM-DDTHH:mm:ss.sssZ)
+      const [datePart, timePart] = value.split('T');
+      if (dateControl && datePart) {
+        dateControl.setValue(new Date(datePart), { emitEvent: false });
+      }
+      if (timeControl && timePart) {
+        const time = timePart.split(':').slice(0, 2).join(':'); // Get HH:mm
+        timeControl.setValue(time, { emitEvent: false });
+      }
+    }
+
+    // Also set the main control for consistency
+    if (mainControl) {
+      mainControl.setValue(value, { emitEvent: false });
+    }
+  }
 }
