@@ -3,6 +3,9 @@ import {BehaviorSubject, Subject} from "rxjs";
 import {PatientSummary} from "../../models/patient-summary";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
+import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
+import {Questionnaire} from "../../components/form-viewer/form-viewer.component";
+import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +39,12 @@ export class FormManagerService {
   selectedActiveFormSummary$ = this.selectedActiveFormSummary.asObservable();
   setSelectedActiveFormSummary(activeFormSummary: ActiveFormSummary){
     this.selectedActiveFormSummary.next(activeFormSummary);
+  }
+
+  private selectedQuestionnaireResponse= new BehaviorSubject<QuestionnaireResponse>(null);
+  selectedFormQuestionnaireResponse$ = this.selectedQuestionnaireResponse.asObservable();
+  setSelectedQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse){
+    this.selectedQuestionnaireResponse.next(questionnaireResponse);
   }
 
   constructor() { }

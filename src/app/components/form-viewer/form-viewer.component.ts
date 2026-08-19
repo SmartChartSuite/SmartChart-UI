@@ -1,12 +1,12 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy, inject, DestroyRef} from '@angular/core';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, take, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -33,7 +33,6 @@ import { SetEvidenceDirective } from "../../directives/set-evidence.directive";
 import { MatIcon } from "@angular/material/icon";
 import { EvidenceDetailsComponent } from "./evidence-details/evidence-details.component";
 import { SuggestedAnswerFormatterPipe } from "../../pipe/suggested-answer-formatter.pipe";
-import { FormattedTitlePipe } from "../../pipe/formatted-title.pipe";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 
 export interface Item {
@@ -79,14 +78,13 @@ export interface Questionnaire extends FhirBaseResource {
     EvidenceDetailsComponent,
     AsyncPipe,
     SuggestedAnswerFormatterPipe,
-    FormattedTitlePipe,
-    JsonPipe,
   ]
 })
 export class FormViewerComponent implements OnInit, OnDestroy {
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<Questionnaire>(undefined);
+  questionnaireResponseId: string = ''
 
 
   showDrawer = false;
@@ -137,12 +135,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       share()
     );
 
-    // let results$ = timer(0,10000).pipe(
-    //   takeWhile(() => !!this.activeFormSummary()),
-    //   takeWhile(() => !this.results || this.results?.status !== "complete"),
-    //   switchMap(() => this.fetchResults()),
-    //   share()
-    // )
     results$.pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(value => this.results.set(value));
@@ -170,12 +162,34 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       next: result => {
         this.questionnaire.set(result);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
+
+        // Check if QuestionnaireResponse was already set before this component loaded
+        // BehaviorSubject will emit its current value to new subscribers
+        // So we need to manually check and populate if it exists
+        this.formManagerService.selectedFormQuestionnaireResponse$.pipe(
+          take(1)
+        ).subscribe(qr => {
+          if (qr) {
+            this.questionnaireResponseId = qr.id;
+            this.populateAnswersFromQuestionnaireResponse(qr);
+          }
+        });
+
         this.refreshTrigger$.next(1);
       },
       error: err => {
         console.error(err);
         this.utilsService.showErrorMessage();
       }
+    });
+
+    // Subscribe to QuestionnaireResponse - must be after form initialization to ensure answerDictionary exists
+    this.formManagerService.selectedFormQuestionnaireResponse$.pipe(
+      takeUntilDestroyed(this.destroyRef),
+      filter(qr => !!qr)
+    ).subscribe(questionnaireResponse => {
+      this.questionnaireResponseId = questionnaireResponse.id;
+      this.populateAnswersFromQuestionnaireResponse(questionnaireResponse);
     });
 
     // Expand the evidence viewer for a larger screen device. This may need a bit of testing
@@ -185,7 +199,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   fetchResults() {
     const activeForm = this.activeFormSummary();
     return this.rcApiInterfaceService.getBatchJobResults(activeForm!.batchId).pipe(
-      tap(value => {console.log(value)}),
       tap(value => this.status = value.status),
       tap(value => this.completeCount = value.completeJobs),
       tap(value => this.totalCount = value.totalJobs),
@@ -280,7 +293,9 @@ export class FormViewerComponent implements OnInit, OnDestroy {
   protected onSave() {
     const questionnaireResponse = this.outputMapper.mapQrToFhir(this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
     const batchJobId = this.activeFormSummary().batchId;
-    this.rcApiInterfaceService.saveQuestionnaire(questionnaireResponse, batchJobId).subscribe({
+    this.rcApiInterfaceService.updateQuestionnaireResponse(questionnaireResponse, this.questionnaireResponseId).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (response) => {
         this.utilsService.showSuccessMessage("Form Saved Successfully");
       },
@@ -289,6 +304,61 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         this.utilsService.showErrorMessage("Error Saving Form");
       }
     });
+  }
+
+  /**
+   * Populates the form answers from a FHIR QuestionnaireResponse
+   * Maps the answers from the QuestionnaireResponse to the answerDictionary
+   */
+  private populateAnswersFromQuestionnaireResponse(questionnaireResponse: any): void {
+    if (!questionnaireResponse?.item || !this.answerDictionary()) {
+      return;
+    }
+
+    const currentAnswers = this.answerDictionary();
+
+    // Recursively process items to extract answers
+    const processItems = (items: any[]) => {
+      items.forEach(item => {
+        if (item.linkId && item.answer && item.answer.length > 0) {
+          const answer = item.answer[0]; // Take first answer
+
+          // Map different answer types to the answerDictionary
+          if (answer.valueString !== undefined) {
+            currentAnswers[item.linkId] = answer.valueString;
+          } else if (answer.valueInteger !== undefined) {
+            currentAnswers[item.linkId] = answer.valueInteger;
+          } else if (answer.valueDecimal !== undefined) {
+            currentAnswers[item.linkId] = answer.valueDecimal;
+          } else if (answer.valueBoolean !== undefined) {
+            currentAnswers[item.linkId] = answer.valueBoolean;
+          } else if (answer.valueDate !== undefined) {
+            currentAnswers[item.linkId] = answer.valueDate;
+          } else if (answer.valueTime !== undefined) {
+            currentAnswers[item.linkId] = answer.valueTime;
+          } else if (answer.valueDateTime !== undefined) {
+            currentAnswers[item.linkId] = answer.valueDateTime;
+          } else if (answer.valueCoding !== undefined) {
+            currentAnswers[item.linkId] = answer.valueCoding.display || answer.valueCoding.code;
+          } else if (answer.valueQuantity !== undefined) {
+            currentAnswers[item.linkId] = {
+              value: answer.valueQuantity.value,
+              unit: answer.valueQuantity.unit || answer.valueQuantity.code
+            };
+          }
+        }
+
+        // Process nested items recursively
+        if (item.item && item.item.length > 0) {
+          processItems(item.item);
+        }
+      });
+    };
+
+    processItems(questionnaireResponse.item);
+
+    // Update the signal to trigger UI refresh
+    this.answerDictionary.set({...currentAnswers});
   }
 
 

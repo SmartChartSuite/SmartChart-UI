@@ -359,7 +359,11 @@ export class RcApiInterfaceService {
     }
   }
 
-  saveQuestionnaire(questionnaireResponse: QuestionnaireResponse, batchJobId: string) {
-    return this.http.post<any>(`${this.base}response?batch_job_id=${batchJobId}`, questionnaireResponse)
+  updateQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse, questionnaireResponseId: string) {
+    return this.http.put<any>(`${this.base}response/${questionnaireResponseId}`, questionnaireResponse)
+  }
+
+  getQuestionnaireResponse(qrId: string): Observable<QuestionnaireResponse> {
+    return this.http.get<QuestionnaireResponse>(`${this.base}response/${qrId}`);
   }
 }
