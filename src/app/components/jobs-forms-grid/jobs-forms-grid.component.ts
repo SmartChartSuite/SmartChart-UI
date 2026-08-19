@@ -71,7 +71,7 @@ export class JobsFormsGridComponent {
   protected readonly STATUS_OPTIONS = [...STATUS_OPTIONS];
   protected readonly displayedColumns: string[] = [
     'formStatus', 'actions', 'patient', 'patientDob',
-    'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan'
+    'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan', 'timeRan'
   ];
 
   // Show/hide the filters form

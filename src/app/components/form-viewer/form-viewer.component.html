@@ -43,18 +43,18 @@
           <ul class="sub-menu">
             @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
 
-                <li class="sub-menu-item"
+              <li class="sub-menu-item"
                   [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
                   (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
-                  {{ item.text }}
-                  @if(getQuestionsWithEvidenceCount(item, results()) > 0){
-                    <span class="sparkles-icon" aria-hidden="true"
-                          matTooltipPosition="above"
-                          [matTooltip]="`Found evidence for ${getQuestionsWithEvidenceCount(item, results())} out of ${getQuestionCount(item)} questions.`">
+                {{ item.text }}
+                @if (getQuestionsWithEvidenceCount(item, results()) > 0) {
+                  <span class="sparkles-icon" aria-hidden="true"
+                        matTooltipPosition="above"
+                        [matTooltip]="`Found evidence for ${getQuestionsWithEvidenceCount(item, results())} out of ${getQuestionCount(item)} questions.`">
                     </span>
-                  }
+                }
 
-                </li>
+              </li>
             }
           </ul>
         </mat-nav-list>
@@ -142,47 +142,49 @@
                       [inputValue]="answerDictionary()[childItem?.linkId]"
                     ></app-fhir-date-time>
                   } @else if (childItem["type"] == QuestionnaireItemType.text) {
-                    <textarea rows="8" class="question-input sans-serif"  [(ngModel)]="answerDictionary()[childItem?.linkId]"></textarea>
+                    <textarea rows="8" class="question-input sans-serif"
+                              [(ngModel)]="answerDictionary()[childItem?.linkId]"></textarea>
                   }
-<!--TODO refactor the code for has evidence directive-->
-<!--                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">-->
+                  <!--TODO refactor the code for has evidence directive-->
+                  <!--                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">-->
 
-                    <!--                      TODO: Handle status based scenarios per logic below                 -->
-                    <!--                      if hasLogic                                                         -->
-                    <!--                        if results[linkId} is found                                       -->
-                    <!--                          if cqlAnswer                                                    -->
-                    <!--                            show suggested answer                                         -->
-                    <!--                          if evidence                                                     -->
-                    <!--                            show evidence button                                          -->
-                    <!--                      else results[linkId] not found AND if results.status is in progress -->
-                    <!--                          show progress spinner                                           -->
-                    <!--                      else results[linkId] not found AND if results.status is complete    -->
-                    <!--                      show "No evidence found"                                            -->
-<!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
-                    @if (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
-                      <div class="margin-bottom-sm">
-                        Suggested Answer:
-                        @for (item of (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
-                          <span class="margin-left-sm" (click)="answerDictionary()[childItem?.linkId]=item;">
-                            <mat-chip class="suggested-answer" matTooltip="Click to fill the answer">{{ item }}</mat-chip>
+                  <!--                      TODO: Handle status based scenarios per logic below                 -->
+                  <!--                      if hasLogic                                                         -->
+                  <!--                        if results[linkId} is found                                       -->
+                  <!--                          if cqlAnswer                                                    -->
+                  <!--                            show suggested answer                                         -->
+                  <!--                          if evidence                                                     -->
+                  <!--                            show evidence button                                          -->
+                  <!--                      else results[linkId] not found AND if results.status is in progress -->
+                  <!--                          show progress spinner                                           -->
+                  <!--                      else results[linkId] not found AND if results.status is complete    -->
+                  <!--                      show "No evidence found"                                            -->
+                  <!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
+                  @if (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+                    <div class="margin-bottom-sm">
+                      Suggested Answer:
+                      @for (item of (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
+                        <span class="margin-left-sm" (click)="answerDictionary()[childItem?.linkId]=item;">
+                            <mat-chip class="suggested-answer"
+                                      matTooltip="Click to fill the answer">{{ item }}</mat-chip>
                           </span>
-                        }
-                      </div>
-                    }
-<!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
-<!--                  <div>Resource** <pre>{{ results()?.["link" + childItem?.["linkId"]] | json }}</pre>-->
+                      }
+                    </div>
+                  }
+                  <!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
+                  <!--                  <div>Resource** <pre>{{ results()?.["link" + childItem?.["linkId"]] | json }}</pre>-->
 
-                    @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
-                      <button matButton="outlined" class="primary-outlined"
-                              appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
-                              (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
-                        View Evidence
-                        ({{ getEvidenceCount(childItem?.linkId, results()) }})
-                      </button>
-                    }
-                  </div>
+                  @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                    <button matButton="outlined" class="primary-outlined"
+                            appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
+                            (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
+                      View Evidence
+                      ({{ getEvidenceCount(childItem?.linkId, results()) }})
+                    </button>
+                  }
                 </div>
-<!--              </div>-->
+              </div>
+              <!--              </div>-->
             }
           }
         }
