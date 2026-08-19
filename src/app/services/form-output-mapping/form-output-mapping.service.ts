@@ -4,6 +4,7 @@ import {FormAnswers, QuantityAnswer} from "../../models/form-answers";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
+import {ActiveFormSummary} from "../../models/active-form-summary";
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +14,15 @@ export class FormOutputMappingService {
   constructor() { }
 
 
-  mapToFhir(formAnswers: FormAnswers, questionnaire: FhirBaseResource): QuestionnaireResponse {
+  mapQrToFhir(formAnswers: FormAnswers, questionnaire: FhirBaseResource, activeFormSummary?: ActiveFormSummary): QuestionnaireResponse {
     let qr = new QuestionnaireResponse();
 
     qr.status = QuestionnaireResponseStatus.inProgress; // REQUIRED FIELD
     if(Object.keys(questionnaire).includes("url")) {
       qr.questionnaire = questionnaire["url"];
+    }
+    if(activeFormSummary){
+      qr.subject = { reference: `Patient/${activeFormSummary.patientSummary.fhirId }` }
     }
 
     // TODO: Handle subject, author, and source.

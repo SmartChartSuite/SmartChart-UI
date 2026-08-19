@@ -76,29 +76,6 @@
   }
 }
 
-.loading-ellipsis::after {
-  display: inline-block;
-  animation: ellipsis 1.2s infinite steps(4, end);
-  content: "...";
-  width: 1.5em;
-  text-align: left;
-}
-
-@keyframes ellipsis {
-  0% { content: ""; }
-  25% { content: "."; }
-  50% { content: ".."; }
-  75% { content: "..."; }
-  100% { content: ""; }
-}
-
-.loading-row {
-  text-align: center;
-  padding: 1rem;
-  font-weight: 600;
-  color: rgba(0, 0, 0, 0.6);
-}
-
 .warning-icon-sm{
   scale: 0.8;
   cursor: pointer

@@ -16,12 +16,13 @@ import { PatientSummaryTableComponent } from '../patient-summary-table/patient-s
     templateUrl: './patient-groups.component.html',
     styleUrl: './patient-groups.component.scss',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatFormField, MatLabel, MatSelect, MatOption, MatButton, PatientSummaryTableComponent]
+    imports: [MatFormField, MatLabel, MatSelect, MatOption, PatientSummaryTableComponent]
 })
 export class PatientGroupsComponent implements OnInit{
   patientGroups = signal<PatientGroup[]>([]);
   selectedGroup = signal<PatientGroup | undefined>(undefined);
   patientSummaryData = signal<PatientSummary[]>([]);
+  isLoading = signal<boolean>(false);
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -32,15 +33,18 @@ export class PatientGroupsComponent implements OnInit{
 
 
   ngOnInit(): void {
+    this.isLoading.set(true);
     this.rcApiInterfaceService.searchGroup().subscribe({
       next: value => {
         this.patientGroups.set(value);
         this.selectedGroup.set(this.patientGroups()?.[0]);
         this.patientSummaryData.set(this.selectedGroup()?.members);
+        this.isLoading.set(false);
       },
       error: err => {
         this.utilsService.showErrorMessage();
         console.error(err);
+        this.isLoading.set(false);
       }
     });
   }

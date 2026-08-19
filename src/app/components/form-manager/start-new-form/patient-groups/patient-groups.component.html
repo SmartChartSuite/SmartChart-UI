@@ -1,22 +1,22 @@
-<div class="margin-md">
-  <div class="centered-controls">
-    <div class="no-hint-section">
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Group</mat-label>
-        <mat-select (selectionChange)="onGroupSelected($event)" [value]="selectedGroup()">
-          @for (group of patientGroups(); track group) {
-            <mat-option [value]="group">{{ group.groupName }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <div class="margin-left-md">
-      <button matButton="outlined" class="primary-outlined" (click)="onCreateNewGroup()">
-        Create New Group
-      </button>
-    </div>
+<div class="centered-controls">
+  <div class="no-hint-section">
+    <mat-form-field appearance="outline" class="form-selector">
+      <mat-label>Group</mat-label>
+      <mat-select (selectionChange)="onGroupSelected($event)" [value]="selectedGroup()">
+        @for (group of patientGroups(); track group) {
+          <mat-option [value]="group">{{ group.groupName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
-  <app-patient-summary-table
-    [patientSummaryData]="patientSummaryData()"
-  />
+<!--  <div class="margin-left-md">-->
+<!--    <button matButton="outlined" class="primary-outlined" (click)="onCreateNewGroup()">-->
+<!--      Create New Group-->
+<!--    </button>-->
+<!--  </div>-->
 </div>
+<app-patient-summary-table
+  [isLoading]="isLoading()"
+  [patientSummaryData]="patientSummaryData()"
+/>
+

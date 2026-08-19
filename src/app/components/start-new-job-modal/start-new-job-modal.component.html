@@ -1,0 +1,30 @@
+<div mat-dialog-title>Start New Job</div>
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="form-selector">
+    <mat-label>Select Form</mat-label>
+    <mat-select [ngModel]="selectedForm()"
+                (ngModelChange)="selectedForm.set($event)"
+                aria-labelledby="select-form-label">
+      @for (form of formList(); track form) {
+        <mat-option [value]="form">{{ form.title }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-tab-group color="primary" mat-stretch-tabs="false">
+    <mat-tab label="Search For Patient">
+      <app-patient-search/>
+    </mat-tab>
+    <mat-tab label="Select Patient by Group">
+      <app-patient-groups/>
+    </mat-tab>
+  </mat-tab-group>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button matButton="outlined" mat-dialog-close type="button" (click)="onClose()">Cancel</button>
+  <div class=margin-left-sm [matTooltip]="!(selectedPatient() && selectedForm()) ? 'Please select both a patient and a form to start the job' : ''"
+       matTooltipPosition="above">
+    <button matButton="filled" color="primary" cdkFocusInitial type="submit"
+            [disabled]="!(selectedPatient() && selectedForm())" (click)="onStart()">Start Job</button>
+  </div>
+</mat-dialog-actions>

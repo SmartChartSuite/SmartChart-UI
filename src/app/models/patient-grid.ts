@@ -12,5 +12,6 @@ export interface PatientGrid {
   jobStartDateTime: string;
   patientId: string;
   jobPackage: string;
+  questionnaireResponseId?: string;
   [key: string]: any;
 }
