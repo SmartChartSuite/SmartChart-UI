@@ -4,7 +4,6 @@ import {
   ElementRef,
   OnInit,
   signal,
-  computed,
   viewChild,
   ChangeDetectionStrategy,
   inject,
@@ -20,7 +19,6 @@ import {filter, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs"
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
-import {TIMEZONES} from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
 import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
@@ -43,33 +41,9 @@ import {SetEvidenceDirective} from "../../directives/set-evidence.directive";
 import {MatIcon} from "@angular/material/icon";
 import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
 import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
-import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
-
-export interface AnswerOption {
-  valueString?: string;
-
-  [key: string]: any;
-}
-
-export interface Item {
-  linkId: string;           // Required FHIR property
-  type?: string;            // QuestionnaireItemType
-  text?: string;            // Question text
-  value?: unknown;          // Custom property
-  item?: Item[];            // Nested items
-  answer?: unknown;         // Answer value
-  selected?: boolean;       // Custom property for UI state
-  answerOption?: AnswerOption[];
-  extension?: unknown[];    // FHIR extensions
-
-  [key: string]: unknown;   // Allow additional dynamic properties
-}
-
-export interface Questionnaire extends FhirBaseResource {
-  title?: string;
-  item: Item[];
-}
+import {Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
+import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
 
 @Component({
   selector: 'app-form-viewer',
@@ -99,7 +73,7 @@ export interface Questionnaire extends FhirBaseResource {
     SuggestedAnswerFormatterPipe,
   ]
 })
-export class FormViewerComponent implements OnInit {
+export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private readonly rcApiInterfaceService = inject(RcApiInterfaceService);
   private readonly formManagerService = inject(FormManagerService);
   readonly router = inject(Router);
@@ -111,11 +85,16 @@ export class FormViewerComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
-  readonly TIMEZONES = TIMEZONES;
 
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<Questionnaire | undefined>(undefined);
   questionnaireResponseId = '';
+
+  /**
+   * Serialized snapshot of the answers as they were last loaded or saved. Used
+   * to detect unsaved changes when the user attempts to leave the form.
+   */
+  private savedAnswersSnapshot = '';
 
   showDrawer = false;
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
@@ -173,6 +152,7 @@ export class FormViewerComponent implements OnInit {
       next: result => {
         this.questionnaire.set(result ?? undefined);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
+        this.captureAnswersSnapshot();
         this.refreshTrigger$.next(1);
       },
       error: err => {
@@ -326,6 +306,7 @@ export class FormViewerComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: () => {
+        this.captureAnswersSnapshot();
         this.utilsService.showSuccessMessage("Form Saved Successfully");
       },
       error: (error) => {
@@ -387,5 +368,26 @@ export class FormViewerComponent implements OnInit {
 
     // Update the signal (new reference) to trigger UI refresh
     this.answerDictionary.set({...currentAnswers});
+
+    // The loaded QuestionnaireResponse represents the persisted state, so treat
+    // it as the clean baseline for unsaved-changes detection.
+    this.captureAnswersSnapshot();
+  }
+
+  /**
+   * Records the current answers as the clean baseline. Called after the form is
+   * loaded, populated from a saved response, or successfully saved.
+   */
+  private captureAnswersSnapshot(): void {
+    this.savedAnswersSnapshot = this.serializeAnswers();
+  }
+
+  private serializeAnswers(): string {
+    return JSON.stringify(this.answerDictionary() ?? {});
+  }
+
+  /** True when the current answers differ from the last saved/loaded snapshot. */
+  hasUnsavedChanges(): boolean {
+    return this.serializeAnswers() !== this.savedAnswersSnapshot;
   }
 }

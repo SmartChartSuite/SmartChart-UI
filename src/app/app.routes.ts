@@ -6,6 +6,7 @@ import { FormManagerComponent } from "./components/form-manager/form-manager.com
 import { FormViewerComponent } from "./components/form-viewer/form-viewer.component";
 import {JobsFormsGridComponent} from "./components/jobs-forms-grid/jobs-forms-grid.component";
 import {AuthGuard} from "./guards/auth.guard";
+import {unsavedChangesGuard} from "./guards/unsaved-changes.guard";
 
 export const routes: Routes = [
   {
@@ -33,7 +34,8 @@ export const routes: Routes = [
   {
     path: 'form-viewer',
     component: FormViewerComponent,
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    canDeactivate: [unsavedChangesGuard]
   },
   // Wildcard route - MUST be last!
   {
