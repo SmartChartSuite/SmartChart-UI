@@ -1,53 +1,73 @@
 import {ActiveFormSummary} from "../../models/active-form-summary";
-import {Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, ChangeDetectionStrategy, inject, DestroyRef} from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnInit,
+  signal,
+  computed,
+  viewChild,
+  ChangeDetectionStrategy,
+  inject,
+  DestroyRef
+} from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {Router} from "@angular/router";
 import {RouteState} from "../../models/application-state";
 import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, map, mergeMap, Observable, ReplaySubject, share, switchMap, take, tap} from "rxjs";
+import {filter, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
-import { TIMEZONES } from '../../../assets/const/timezones';
+import {TIMEZONES} from '../../../assets/const/timezones';
 import {FormAnswers} from "../../models/form-answers";
 import {FormOutputMappingService} from "../../services/form-output-mapping/form-output-mapping.service";
 import {QuestionnaireItemType} from "../../models/fhir/valuesets/questionnaire-item-type";
-import { FormControl, FormGroup, FormsModule } from "@angular/forms";
+import {FormControl, FormGroup, FormsModule} from "@angular/forms";
 import {openExportFileDialog} from "../export-selection-dialog/export-selection-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
-import { PatientDetailsComponent } from "./patient-details/patient-details.component";
-import { MatProgressSpinner } from "@angular/material/progress-spinner";
-import { MatButton } from "@angular/material/button";
-import { MatNavList } from "@angular/material/list";
-import {NgClass, AsyncPipe, JsonPipe} from "@angular/common";
-import { QuestionnaireIndexDirective } from "../../directives/questionnaire-index.directive";
-import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
-import { MatFormField, MatLabel, MatHint } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
-import { FhirDateTimeComponent } from "../fhir-date-time/fhir-date-time.component";
-import { MatChip } from "@angular/material/chips";
-import { MatTooltip } from "@angular/material/tooltip";
-import { SetEvidenceDirective } from "../../directives/set-evidence.directive";
-import { MatIcon } from "@angular/material/icon";
-import { EvidenceDetailsComponent } from "./evidence-details/evidence-details.component";
-import { SuggestedAnswerFormatterPipe } from "../../pipe/suggested-answer-formatter.pipe";
+import {PatientDetailsComponent} from "./patient-details/patient-details.component";
+import {MatProgressSpinner} from "@angular/material/progress-spinner";
+import {MatButton} from "@angular/material/button";
+import {MatNavList} from "@angular/material/list";
+import {NgClass} from "@angular/common";
+import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
+import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
+import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
+import {FhirDateTimeComponent} from "../fhir-date-time/fhir-date-time.component";
+import {MatChip} from "@angular/material/chips";
+import {MatTooltip} from "@angular/material/tooltip";
+import {SetEvidenceDirective} from "../../directives/set-evidence.directive";
+import {MatIcon} from "@angular/material/icon";
+import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
+import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
+import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
+
+export interface AnswerOption {
+  valueString?: string;
+
+  [key: string]: any;
+}
 
 export interface Item {
   linkId: string;           // Required FHIR property
   type?: string;            // QuestionnaireItemType
   text?: string;            // Question text
-  value?: any;              // Custom property
+  value?: unknown;          // Custom property
   item?: Item[];            // Nested items
-  answer?: any;             // Answer value
+  answer?: unknown;         // Answer value
   selected?: boolean;       // Custom property for UI state
-  extension?: any[];        // FHIR extensions
-  [key: string]: any;       // Allow additional dynamic properties
+  answerOption?: AnswerOption[];
+  extension?: unknown[];    // FHIR extensions
+
+  [key: string]: unknown;   // Allow additional dynamic properties
 }
 
 export interface Questionnaire extends FhirBaseResource {
+  title?: string;
   item: Item[];
 }
 
@@ -76,61 +96,53 @@ export interface Questionnaire extends FhirBaseResource {
     SetEvidenceDirective,
     MatIcon,
     EvidenceDetailsComponent,
-    AsyncPipe,
     SuggestedAnswerFormatterPipe,
   ]
 })
-export class FormViewerComponent implements OnInit, OnDestroy {
-  protected readonly QuestionnaireItemType = QuestionnaireItemType;
-  answerDictionary = signal<FormAnswers | undefined>(undefined);
-  questionnaire = signal<Questionnaire>(undefined);
-  questionnaireResponseId: string = ''
+export class FormViewerComponent implements OnInit {
+  private readonly rcApiInterfaceService = inject(RcApiInterfaceService);
+  private readonly formManagerService = inject(FormManagerService);
+  readonly router = inject(Router);
+  private readonly stateManagementService = inject(StateManagementService);
+  private readonly utilsService = inject(UtilsService);
+  readonly evidenceViewerService = inject(EvidenceViewerService);
+  private readonly outputMapper = inject(FormOutputMappingService);
+  private readonly dialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
 
+  protected readonly QuestionnaireItemType = QuestionnaireItemType;
+  readonly TIMEZONES = TIMEZONES;
+
+  answerDictionary = signal<FormAnswers | undefined>(undefined);
+  questionnaire = signal<Questionnaire | undefined>(undefined);
+  questionnaireResponseId = '';
 
   showDrawer = false;
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
-  readonly TIMEZONES = TIMEZONES;
 
   results = signal<Results | undefined>(undefined);
-  evidenceViewerExpanded$: Observable<boolean>;
-  @ViewChild('top') topScroll: ElementRef;
+  evidenceViewerExpanded = toSignal(this.evidenceViewerService.viewerExpanded$, {initialValue: false});
+
+  private readonly topScroll = viewChild<ElementRef<HTMLElement>>('top');
 
   // Refresh Evidence Trigger
-  refreshTrigger$ = new ReplaySubject(1);
-  status: string = "fetching"; // Initial State
-  completeCount: number = 0; // Initial State
-  totalCount: number = 0; // Initial State
-  percentComplete: number = 0; // Initial State
+  private readonly refreshTrigger$ = new ReplaySubject<number>(1);
+  status = 'fetching'; // Initial State
+  completeCount = 0; // Initial State
+  totalCount = 0; // Initial State
+  percentComplete = 0; // Initial State
 
-  exportTypes: string[] = ['json', 'pdf']
+  exportTypes: string[] = ['json', 'pdf'];
 
   exportForm = new FormGroup({
     exportType: new FormControl(this.exportTypes[0])
   });
 
-  private destroyRef = inject(DestroyRef);
-
-  constructor(
-    private rcApiInterfaceService: RcApiInterfaceService,
-    private formManagerService: FormManagerService,
-    public router: Router,
-    private stateManagementService: StateManagementService,
-    private utilsService: UtilsService,
-    public evidenceViewerService: EvidenceViewerService,
-    private outputMapper: FormOutputMappingService,
-    private dialog: MatDialog,
-  ) {
-  }
-
-  ngOnDestroy(): void {
-    //TODO Maybe we need to save the current state of the form so the user can go back and forward?
-  }
-
   ngOnInit(): void {
     // Results Handling
-    let results$ = this.refreshTrigger$.pipe(
+    const results$ = this.refreshTrigger$.pipe(
       switchMap(() => this.fetchResults()),
       share()
     );
@@ -139,7 +151,6 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(value => this.results.set(value));
 
-    this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
     this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
 
     this.formManagerService.selectedActiveFormSummary$.pipe(
@@ -151,30 +162,17 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         value: value.formName
       })),
       map(response => Array.isArray(response) ? (response[0] ?? null) : response),
-      map(result => ({
+      map((result: Questionnaire | null) => result ? {
         ...result,
-        item: result?.item?.map((item: any, index: number) => ({
+        item: result.item?.map((item, index) => ({
           ...item,
           selected: index === 0
         }))
-      }))
+      } : null)
     ).subscribe({
       next: result => {
-        this.questionnaire.set(result);
+        this.questionnaire.set(result ?? undefined);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
-
-        // Check if QuestionnaireResponse was already set before this component loaded
-        // BehaviorSubject will emit its current value to new subscribers
-        // So we need to manually check and populate if it exists
-        this.formManagerService.selectedFormQuestionnaireResponse$.pipe(
-          take(1)
-        ).subscribe(qr => {
-          if (qr) {
-            this.questionnaireResponseId = qr.id;
-            this.populateAnswersFromQuestionnaireResponse(qr);
-          }
-        });
-
         this.refreshTrigger$.next(1);
       },
       error: err => {
@@ -183,10 +181,12 @@ export class FormViewerComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Subscribe to QuestionnaireResponse - must be after form initialization to ensure answerDictionary exists
+    // Populate answers whenever a QuestionnaireResponse is available. Note the
+    // BehaviorSubject emits its current value to new subscribers, so this also
+    // covers the case where a response was set before this component loaded.
     this.formManagerService.selectedFormQuestionnaireResponse$.pipe(
       takeUntilDestroyed(this.destroyRef),
-      filter(qr => !!qr)
+      filter((qr): qr is QuestionnaireResponse => !!qr)
     ).subscribe(questionnaireResponse => {
       this.questionnaireResponseId = questionnaireResponse.id;
       this.populateAnswersFromQuestionnaireResponse(questionnaireResponse);
@@ -196,76 +196,106 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     this.evidenceViewerService.setViewerExpanded(window.screen.width >= 1440);
   }
 
-  fetchResults() {
+  private fetchResults() {
     const activeForm = this.activeFormSummary();
     return this.rcApiInterfaceService.getBatchJobResults(activeForm!.batchId).pipe(
-      tap(value => this.status = value.status),
-      tap(value => this.completeCount = value.completeJobs),
-      tap(value => this.totalCount = value.totalJobs),
-      tap(value => this.percentComplete = value.completeJobs / value.totalJobs * 100)
+      tap(value => {
+        this.status = value.status;
+        this.completeCount = value.completeJobs;
+        this.totalCount = value.totalJobs;
+        this.percentComplete = value.completeJobs / value.totalJobs * 100;
+      })
     );
   }
 
-  selectQuestionnaireSection(index: number) {
+  selectQuestionnaireSection(index: number): void {
     this.selectedMenuItemIndex = index;
-    const currentQuestionnaire = this.questionnaire();
-    if (currentQuestionnaire) {
-      currentQuestionnaire['item'] = currentQuestionnaire.item.map((element: any, i) => i == this.selectedMenuItemIndex ? {...element, selected: true}: {...element, selected: false});
-      this.questionnaire.set(currentQuestionnaire);
-    }
+    this.questionnaire.update(current => current ? {
+      ...current,
+      item: current.item.map((element, i) => ({
+        ...element,
+        selected: i === index
+      }))
+    } : current);
   }
 
-  onExport() {
-    openExportFileDialog(
-      this.dialog,
-      {})
-      .subscribe(
-        exportType => {
-          if(exportType == "json"){
-            const questionnaireResponse = this.outputMapper.mapQrToFhir(this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
-            const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
-            const link = document.createElement('a');
-
-            link.href = URL.createObjectURL(blob);
-            link.download = `FHIR_Question_Response.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body?.removeChild(link);
-            URL.revokeObjectURL(link.href);
-          }
-          else if (exportType == "pdf"){
-            //TODO implement the pdf export
-          }
-        })
+  onSectionSelected(index: number): void {
+    this.selectQuestionnaireSection(index);
+    this.selectedEvidenceIndex = null;
+    this.showDrawer = false;
+    this.scrollToTop();
   }
 
-  selectPatientForm() {
+  goToPreviousSection(): void {
+    this.selectQuestionnaireSection(this.selectedMenuItemIndex - 1);
+    this.scrollToTop();
+  }
+
+  goToNextSection(): void {
+    this.selectQuestionnaireSection(this.selectedMenuItemIndex + 1);
+    this.scrollToTop();
+  }
+
+  toggleEvidenceDrawer(index: number): void {
+    this.showDrawer = !(this.selectedEvidenceIndex === index && this.showDrawer);
+    this.selectedEvidenceIndex = index;
+  }
+
+  onExport(): void {
+    openExportFileDialog(this.dialog, {})
+      .subscribe(exportType => {
+        if (exportType === 'json') {
+          const questionnaireResponse = this.outputMapper.mapQrToFhir(
+            this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
+          const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
+          const link = document.createElement('a');
+
+          link.href = URL.createObjectURL(blob);
+          link.download = `FHIR_Question_Response.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body?.removeChild(link);
+          URL.revokeObjectURL(link.href);
+        } else if (exportType === 'pdf') {
+          //TODO implement the pdf export
+        }
+      });
+  }
+
+  selectPatientForm(): void {
     this.router.navigate(['/forms']);
   }
-  setValue(questionType: QuestionnaireItemType, questionnaire: any, i: number, j: number) {
-    const currentQuestionnaire = this.questionnaire();
-    if(questionType == QuestionnaireItemType.integer && currentQuestionnaire?.item[i]?.item[j]?.answer){
-       currentQuestionnaire.item[i].item[j].answer = Math.trunc(currentQuestionnaire.item[i].item[j].answer);
-       this.questionnaire.set(currentQuestionnaire);
+
+  setValue(questionType: QuestionnaireItemType, i: number, j: number): void {
+    if (questionType !== QuestionnaireItemType.integer) {
+      return;
+    }
+    this.questionnaire.update(current => {
+      const answer = current?.item?.[i]?.item?.[j]?.answer;
+      if (current && answer != null) {
+        const next = structuredClone(current);
+        next.item[i].item![j].answer = Math.trunc(answer as number);
+        return next;
+      }
+      return current;
+    });
+  }
+
+  scrollToTop(): void {
+    const el = this.topScroll()?.nativeElement;
+    if (el) {
+      el.scrollTop = 0;
     }
   }
 
-  scrollToTop() {
-    this.topScroll.nativeElement.scrollTop = 0;
-  }
-
-
-  protected getQuestionCount(item: Item) {
-    console.log(item);
-    if(!item || !item.item?.length){
+  protected getQuestionCount(item: Item): number {
+    if (!item || !item.item?.length) {
       return 0;
     }
-    let questionCount = 0;
-    questionCount = item?.item.filter(element => element?.type !='display')?.length || 0;
-    return questionCount;
+    return item.item.filter(element => element?.type !== 'display').length;
   }
 
-  protected getEvidenceCount(linkId: string, results: Results): number | string {
+  protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
     if (!results || !linkId) {
       return 'ERROR';
     }
@@ -273,13 +303,12 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     return evidence ? evidence.length : 'ERROR';
   }
 
-  protected getQuestionsWithEvidenceCount(item: Item, results: Results): number {
+  protected getQuestionsWithEvidenceCount(item: Item, results: Results | undefined): number {
     if (!item || !item.item?.length || !results) {
       return 0;
     }
 
     let questionsWithEvidenceCount = 0;
-
     for (const childItem of item.item) {
       const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
       if (typeof evidenceCount === 'number' && evidenceCount > 0) {
@@ -290,13 +319,13 @@ export class FormViewerComponent implements OnInit, OnDestroy {
     return questionsWithEvidenceCount;
   }
 
-  protected onSave() {
-    const questionnaireResponse = this.outputMapper.mapQrToFhir(this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
-    const batchJobId = this.activeFormSummary().batchId;
+  protected onSave(): void {
+    const questionnaireResponse = this.outputMapper.mapQrToFhir(
+      this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
     this.rcApiInterfaceService.updateQuestionnaireResponse(questionnaireResponse, this.questionnaireResponseId).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: (response) => {
+      next: () => {
         this.utilsService.showSuccessMessage("Form Saved Successfully");
       },
       error: (error) => {
@@ -310,17 +339,16 @@ export class FormViewerComponent implements OnInit, OnDestroy {
    * Populates the form answers from a FHIR QuestionnaireResponse
    * Maps the answers from the QuestionnaireResponse to the answerDictionary
    */
-  private populateAnswersFromQuestionnaireResponse(questionnaireResponse: any): void {
-    if (!questionnaireResponse?.item || !this.answerDictionary()) {
+  private populateAnswersFromQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse): void {
+    const currentAnswers = this.answerDictionary();
+    if (!questionnaireResponse?.item || !currentAnswers) {
       return;
     }
 
-    const currentAnswers = this.answerDictionary();
-
     // Recursively process items to extract answers
-    const processItems = (items: any[]) => {
+    const processItems = (items: any[]): void => {
       items.forEach(item => {
-        if (item.linkId && item.answer && item.answer.length > 0) {
+        if (item.linkId && item.answer?.length > 0) {
           const answer = item.answer[0]; // Take first answer
 
           // Map different answer types to the answerDictionary
@@ -349,7 +377,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
         }
 
         // Process nested items recursively
-        if (item.item && item.item.length > 0) {
+        if (item.item?.length > 0) {
           processItems(item.item);
         }
       });
@@ -357,9 +385,7 @@ export class FormViewerComponent implements OnInit, OnDestroy {
 
     processItems(questionnaireResponse.item);
 
-    // Update the signal to trigger UI refresh
+    // Update the signal (new reference) to trigger UI refresh
     this.answerDictionary.set({...currentAnswers});
   }
-
-
 }
