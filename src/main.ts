@@ -21,8 +21,7 @@ bootstrapApplication(AppComponent, {
     provideAnimations(),
     provideRouter(routes),
     provideNativeDateAdapter(),
-    // Force a deterministic base href of "/". The deployed index.html can end
-    // up with an empty <base href> (the Docker build runs
+    // Force a deterministic base href of "/".
     // `ng build --base-href $BASE_HREF` with BASE_HREF unset), which makes
     // Angular's Location normalize deep routes with a trailing slash on
     // refresh (e.g. /jobs-forms -> /jobs-forms/). Pinning APP_BASE_HREF avoids

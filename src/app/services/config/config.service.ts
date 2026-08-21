@@ -10,16 +10,6 @@ import {AuthConfig, OAuthModuleConfig} from "angular-oauth2-oidc";
 })
 export class ConfigService {
 
-  // Absolute, root-anchored path to the runtime config.
-  //
-  // The app is served from the domain root and config.json always lives at
-  // /assets/config/config.json. Using a leading "/" anchors the request to
-  // the site root so it is independent of the current route, the DOM
-  // <base href>, and any trailing slash. A base-href-relative or "../"
-  // relative path resolves against the *current route's* URL instead, so
-  // refreshing a deep route like /jobs-forms shifts resolution to
-  // /jobs-forms/assets/config/config.json, which 404s (or falls through to
-  // index.html), stalling app init and rendering a blank page.
   defaultLocalConfigPath = '/assets/config/config.json'
   config: Config = new Config();
   authConfig: AuthConfig;
@@ -35,7 +25,6 @@ export class ConfigService {
   }
 
   loadConfig() {
-    console.log(this.defaultLocalConfigPath);
     return this.http.get<Config>(this.defaultLocalConfigPath).pipe(
       map((config: Config) => {
         config.version = "v" + this.packageInfo.version;
