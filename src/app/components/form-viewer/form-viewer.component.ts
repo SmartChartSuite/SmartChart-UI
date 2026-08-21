@@ -11,11 +11,8 @@ import {
 } from '@angular/core';
 import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
-import {FormManagerService} from "../../services/form-manager/form-manager.service";
-import {Router} from "@angular/router";
-import {RouteState} from "../../models/application-state";
-import {StateManagementService} from "../../services/state-management/state-management.service";
-import {filter, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
+import {filter, forkJoin, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -44,6 +41,7 @@ import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatte
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
 import {Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
+import {PatientGrid} from "../../models/patient-grid";
 
 @Component({
   selector: 'app-form-viewer',
@@ -75,9 +73,7 @@ import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private readonly rcApiInterfaceService = inject(RcApiInterfaceService);
-  private readonly formManagerService = inject(FormManagerService);
-  readonly router = inject(Router);
-  private readonly stateManagementService = inject(StateManagementService);
+  private readonly route = inject(ActivatedRoute);
   private readonly utilsService = inject(UtilsService);
   readonly evidenceViewerService = inject(EvidenceViewerService);
   private readonly outputMapper = inject(FormOutputMappingService);
@@ -89,6 +85,12 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<Questionnaire | undefined>(undefined);
   questionnaireResponseId = '';
+
+  /**
+   * QuestionnaireResponse loaded from the route params, applied to the form
+   * once the questionnaire definition has been fetched and initialized.
+   */
+  private pendingQuestionnaireResponse: QuestionnaireResponse | undefined;
 
   /**
    * Serialized snapshot of the answers as they were last loaded or saved. Used
@@ -130,15 +132,38 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(value => this.results.set(value));
 
-    this.stateManagementService.setCurrentRoute(RouteState.CURRENT_FORM);
-
-    this.formManagerService.selectedActiveFormSummary$.pipe(
+    // Load the form entirely from the route params. This makes /form-viewer
+    // deep-linkable and removes any dependency on in-memory / session state.
+    this.route.paramMap.pipe(
       takeUntilDestroyed(this.destroyRef),
-      tap(value => this.activeFormSummary.set(value)),
-      filter(value => !!value),
-      mergeMap(value => this.rcApiInterfaceService.getJobPackage({
+      map(params => ({
+        batchId: params.get('batchId'),
+        patientId: params.get('patientId'),
+        formName: params.get('formName'),
+        questionnaireResponseId: params.get('questionnaireResponseId')
+      })),
+      filter(params => !!params.batchId && !!params.patientId && !!params.formName && !!params.questionnaireResponseId),
+      switchMap(params =>
+        forkJoin({
+          patient: this.rcApiInterfaceService.getPatient(params.patientId!),
+          questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(params.questionnaireResponseId!)
+        }).pipe(
+          map(({patient, questionnaireResponse}) => ({params, patient, questionnaireResponse}))
+        )
+      ),
+      tap(({params, patient, questionnaireResponse}) => {
+        // Rebuild the ActiveFormSummary from the fetched patient + route params.
+        this.activeFormSummary.set(new ActiveFormSummary(patient, {
+          batchId: params.batchId!,
+          jobPackage: params.formName!,
+          questionnaireResponseId: params.questionnaireResponseId!
+        } as PatientGrid));
+        this.pendingQuestionnaireResponse = questionnaireResponse;
+        this.questionnaireResponseId = questionnaireResponse.id;
+      }),
+      mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
         key: 'name',
-        value: value.formName
+        value: params.formName!
       })),
       map(response => Array.isArray(response) ? (response[0] ?? null) : response),
       map((result: Questionnaire | null) => result ? {
@@ -153,23 +178,16 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.questionnaire.set(result ?? undefined);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.captureAnswersSnapshot();
+        // Apply the saved answers from the loaded QuestionnaireResponse.
+        if (this.pendingQuestionnaireResponse) {
+          this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
+        }
         this.refreshTrigger$.next(1);
       },
       error: err => {
         console.error(err);
         this.utilsService.showErrorMessage();
       }
-    });
-
-    // Populate answers whenever a QuestionnaireResponse is available. Note the
-    // BehaviorSubject emits its current value to new subscribers, so this also
-    // covers the case where a response was set before this component loaded.
-    this.formManagerService.selectedFormQuestionnaireResponse$.pipe(
-      takeUntilDestroyed(this.destroyRef),
-      filter((qr): qr is QuestionnaireResponse => !!qr)
-    ).subscribe(questionnaireResponse => {
-      this.questionnaireResponseId = questionnaireResponse.id;
-      this.populateAnswersFromQuestionnaireResponse(questionnaireResponse);
     });
 
     // Expand the evidence viewer for a larger screen device. This may need a bit of testing
@@ -240,10 +258,6 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
           //TODO implement the pdf export
         }
       });
-  }
-
-  selectPatientForm(): void {
-    this.router.navigate(['/forms']);
   }
 
   setValue(questionType: QuestionnaireItemType, i: number, j: number): void {

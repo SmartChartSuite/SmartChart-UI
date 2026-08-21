@@ -7,7 +7,6 @@ import {provideNativeDateAdapter} from "@angular/material/core";
 import {APP_BASE_HREF} from "@angular/common";
 
 import {ConfigService} from "./app/services/config/config.service";
-import {StateManagementService} from "./app/services/state-management/state-management.service";
 import {LoggingInterceptor} from "./app/services/loading/loading.interceptor";
 import {httpErrorInterceptor} from "./app/interceptors/http-error.interceptor";
 import {AuthService} from "./app/services/auth/auth.service";
@@ -35,10 +34,9 @@ bootstrapApplication(AppComponent, {
     },
     provideAppInitializer(() => {
       const configService = inject(ConfigService);
-      const stateManagementService = inject(StateManagementService);
       const authService = inject(AuthService);
 
-      // Load config first, then initialize state and auth in parallel
+      // Load config first, then initialize auth
       return new Promise<void>((resolve, reject) => {
         configService.loadConfig().subscribe({
           next: (loaded) => {
@@ -49,10 +47,7 @@ bootstrapApplication(AppComponent, {
               ));
               return;
             }
-            Promise.all([
-              stateManagementService.initializeState(),
-              authService.configure()
-            ]).then(() => resolve()).catch(reject);
+            authService.configure().then(() => resolve()).catch(reject);
           },
           error: reject
         });

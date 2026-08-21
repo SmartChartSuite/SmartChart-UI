@@ -30,14 +30,6 @@
     </div>
   }
   <div class="viewer-container-body">
-    @if (!activeFormSummary()) {
-      <div class="viewer-container-body-content">
-        <div class="margin-md">No chart has been selected, please load an existing form through the Charts.</div>
-        <div class="margin-md">
-          <button mat-raised-button (click)="selectPatientForm()">Go to Ongoing Chart Abstractions</button>
-        </div>
-      </div>
-    } @else {
       <div class="sub-nav">
         <mat-nav-list>
           <ul class="sub-menu">
@@ -227,7 +219,6 @@
         </div>
         <app-evidence-details [activeFormSummary]="activeFormSummary()"></app-evidence-details>
       </div>
-    }
   </div>
   @if ((questionnaire()?.item?.length ?? 0) > 0) {
     <div class="nav-controls">

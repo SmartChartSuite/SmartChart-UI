@@ -54,8 +54,15 @@ export class ActiveFormsComponent implements OnInit {
   }
 
   onActiveFormSelected(activeFormSummary: ActiveFormSummary) {
-    this.formManagerService.setSelectedActiveFormSummary(activeFormSummary);
-    this.router.navigate([`/form-viewer`]);
+    // Navigate directly to the form-viewer with everything it needs to load
+    // the form from the API via route params.
+    this.router.navigate([
+      '/form-viewer',
+      activeFormSummary.batchId,
+      activeFormSummary.patientSummary.fhirId,
+      activeFormSummary.formName,
+      activeFormSummary.questionnaireResponseId
+    ]);
   }
 
   /**

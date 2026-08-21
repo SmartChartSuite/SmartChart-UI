@@ -1,7 +1,4 @@
-import {Component, inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {StateManagementService} from "../../services/state-management/state-management.service";
-import {RouteState} from "../../models/application-state";
-import {window} from "rxjs";
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {
   MatAccordion,
   MatExpansionPanel,
@@ -17,14 +14,7 @@ import {AppStep, APP_STEPS} from "../../models/app-step";
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle]
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent {
   readonly steps: AppStep[] = APP_STEPS;
-  protected stateManagementService = inject(StateManagementService);
-
-  protected readonly window = window;
-
-  ngOnInit(): void {
-    this.stateManagementService.setCurrentRoute(RouteState.LANDING);
-  }
-
 }
+

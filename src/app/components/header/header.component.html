@@ -36,13 +36,6 @@
       </button>
 
       <button mat-button class="nav-item"
-              (click)="onPathSelected('/form-viewer')"
-              [ngClass]="{'active': currentRoute() === '/form-viewer'}">
-        <mat-icon>list_alt</mat-icon>
-        <span>Current Chart</span>
-      </button>
-
-      <button mat-button class="nav-item"
               (click)="onPathSelected('/jobs-forms')"
               [ngClass]="{'active': currentRoute() === '/jobs-forms'}">
         <mat-icon>grading</mat-icon>
@@ -58,8 +51,7 @@
       </span>
     } @else {
       <button mat-button class="nav-item"
-              (click)="this.oauthService.initLoginFlow();"
-              [ngClass]="{'active': currentRoute() === '/form-viewer'}">
+              (click)="signIn()">
         <mat-icon>login</mat-icon>
         <span>Sign In</span>
       </button>
