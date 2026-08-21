@@ -10,7 +10,7 @@ import {AuthConfig, OAuthModuleConfig} from "angular-oauth2-oidc";
 })
 export class ConfigService {
 
-  defaultLocalConfigPath = '../../assets/config/config.json'
+  defaultLocalConfigPath = '/assets/config/config.json'
   config: Config = new Config();
   authConfig: AuthConfig;
   oAuthModuleConfig: OAuthModuleConfig;
@@ -25,8 +25,7 @@ export class ConfigService {
   }
 
   loadConfig() {
-    let configPath = this.defaultLocalConfigPath;
-    return this.http.get<Config>(configPath).pipe(
+    return this.http.get<Config>(this.defaultLocalConfigPath).pipe(
       map((config: Config) => {
         config.version = "v" + this.packageInfo.version;
         config.rcApiUrl = this.standardizeUrl(config.rcApiUrl);
@@ -71,6 +70,7 @@ export class ConfigService {
     }
     return url;
   }
+
   getModuleConfig(): OAuthModuleConfig {
     return this.oAuthModuleConfig;
   }

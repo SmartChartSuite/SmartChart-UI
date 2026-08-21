@@ -4,6 +4,7 @@ import {bootstrapApplication} from "@angular/platform-browser";
 import {provideAnimations} from "@angular/platform-browser/animations";
 import {provideRouter} from "@angular/router";
 import {provideNativeDateAdapter} from "@angular/material/core";
+import {APP_BASE_HREF} from "@angular/common";
 
 import {ConfigService} from "./app/services/config/config.service";
 import {StateManagementService} from "./app/services/state-management/state-management.service";
@@ -20,6 +21,12 @@ bootstrapApplication(AppComponent, {
     provideAnimations(),
     provideRouter(routes),
     provideNativeDateAdapter(),
+    // Force a deterministic base href of "/".
+    // `ng build --base-href $BASE_HREF` with BASE_HREF unset), which makes
+    // Angular's Location normalize deep routes with a trailing slash on
+    // refresh (e.g. /jobs-forms -> /jobs-forms/). Pinning APP_BASE_HREF avoids
+    // depending on the DOM <base href> value.
+    {provide: APP_BASE_HREF, useValue: '/'},
     importProvidersFrom(OAuthModule.forRoot()),
     {
       provide: OAuthModuleConfig,
@@ -34,7 +41,14 @@ bootstrapApplication(AppComponent, {
       // Load config first, then initialize state and auth in parallel
       return new Promise<void>((resolve, reject) => {
         configService.loadConfig().subscribe({
-          next: () => {
+          next: (loaded) => {
+            if (!loaded) {
+              reject(new Error(
+                'Failed to load runtime configuration (assets/config/config.json). ' +
+                'Verify the file is deployed and served at the app base href.'
+              ));
+              return;
+            }
             Promise.all([
               stateManagementService.initializeState(),
               authService.configure()

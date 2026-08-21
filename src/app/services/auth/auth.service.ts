@@ -16,7 +16,7 @@ export class AuthService {
    */
   configure(): Promise<boolean> {
     this.oauthService.configure(this.configService.authConfig);
-    this.oauthService.customQueryParams = this.configService.config.auth.customQueryParams;
+    this.oauthService.customQueryParams = this.configService.config.auth?.customQueryParams;
     this.oauthService.tokenValidationHandler = new JwksValidationHandler();
 
     // Configure resource server settings for the interceptor
