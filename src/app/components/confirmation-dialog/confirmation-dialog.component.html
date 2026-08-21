@@ -4,7 +4,7 @@
 </div>
 <div mat-dialog-actions align="end">
   @if (!data.isPrimaryButtonLeft) {
-    <button  matButton="filled" (click)="onSecondaryClick()" [class]="data.isSecondaryActionDanger ? 'btn-danger' : ''">
+    <button  matButton="outlined" (click)="onSecondaryClick()" [class]="data.isSecondaryActionDanger ? 'btn-danger' : ''">
       {{ data.secondaryActionBtnTitle }}
     </button>
     <button  matButton="filled" color="primary" (click)="onDefaultClick()" cdkFocusInitial>
@@ -15,7 +15,7 @@
     <button  matButton="filled" color="primary" (click)="onDefaultClick()" cdkFocusInitial>
       {{ data.primaryActionBtnTitle }}
     </button>
-    <button  matButton="filled" (click)="onSecondaryClick()" [class]="data.isSecondaryActionDanger ? 'btn-danger' : ''">
+    <button  matButton="outlined" (click)="onSecondaryClick()" [class]="data.isSecondaryActionDanger ? 'btn-danger' : ''">
       {{ data.secondaryActionBtnTitle }}
     </button>
   }
