@@ -34,7 +34,14 @@ bootstrapApplication(AppComponent, {
       // Load config first, then initialize state and auth in parallel
       return new Promise<void>((resolve, reject) => {
         configService.loadConfig().subscribe({
-          next: () => {
+          next: (loaded) => {
+            if (!loaded) {
+              reject(new Error(
+                'Failed to load runtime configuration (assets/config/config.json). ' +
+                'Verify the file is deployed and served at the app base href.'
+              ));
+              return;
+            }
             Promise.all([
               stateManagementService.initializeState(),
               authService.configure()

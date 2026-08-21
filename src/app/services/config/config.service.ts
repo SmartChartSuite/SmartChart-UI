@@ -1,5 +1,4 @@
-import { Injectable, inject } from '@angular/core';
-import { PlatformLocation } from '@angular/common';
+import { Injectable } from '@angular/core';
 import {catchError, map, of} from "rxjs";
 import {Config} from "../../models/config";
 import packageInfo from '../../../../package.json';
@@ -11,19 +10,23 @@ import {AuthConfig, OAuthModuleConfig} from "angular-oauth2-oidc";
 })
 export class ConfigService {
 
-  // Path to the runtime config, relative to the app's base href.
-  // NOTE: this must NOT start with "../" or "/". A "../"-relative path is
-  // resolved against the *current route's* URL, so refreshing a deep route
-  // like /smartchart/forms/ (with a trailing slash) shifts the resolution and
-  // 404s the config, which stalls app init and renders a blank page.
-  defaultLocalConfigPath = 'assets/config/config.json'
+  // Absolute, root-anchored path to the runtime config.
+  //
+  // The app is served from the domain root and config.json always lives at
+  // /assets/config/config.json. Using a leading "/" anchors the request to
+  // the site root so it is independent of the current route, the DOM
+  // <base href>, and any trailing slash. A base-href-relative or "../"
+  // relative path resolves against the *current route's* URL instead, so
+  // refreshing a deep route like /jobs-forms shifts resolution to
+  // /jobs-forms/assets/config/config.json, which 404s (or falls through to
+  // index.html), stalling app init and rendering a blank page.
+  defaultLocalConfigPath = '/assets/config/config.json'
   config: Config = new Config();
   authConfig: AuthConfig;
   oAuthModuleConfig: OAuthModuleConfig;
   packageInfo = packageInfo;
 
   private http: HttpClient;
-  private platformLocation = inject(PlatformLocation);
 
   public apiUrl = "";
 
@@ -32,8 +35,8 @@ export class ConfigService {
   }
 
   loadConfig() {
-    const configPath = this.resolveFromBaseHref(this.defaultLocalConfigPath);
-    return this.http.get<Config>(configPath).pipe(
+    console.log(this.defaultLocalConfigPath);
+    return this.http.get<Config>(this.defaultLocalConfigPath).pipe(
       map((config: Config) => {
         config.version = "v" + this.packageInfo.version;
         config.rcApiUrl = this.standardizeUrl(config.rcApiUrl);
@@ -77,18 +80,6 @@ export class ConfigService {
       url = url.concat("/");
     }
     return url;
-  }
-
-  /**
-   * Resolve a path against the app's base href so it does not depend on the
-   * current route's URL. This makes runtime fetches (e.g. config.json) work
-   * consistently whether the app is served at "/" or a subpath like
-   * "/smartchart/", and regardless of any trailing slash on the route.
-   */
-  private resolveFromBaseHref(path: string): string {
-    const baseHref = this.platformLocation.getBaseHrefFromDOM() || '/';
-    const base = baseHref.endsWith('/') ? baseHref : baseHref + '/';
-    return base + path.replace(/^\.*\/*/, '');
   }
 
   getModuleConfig(): OAuthModuleConfig {

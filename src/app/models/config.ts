@@ -5,7 +5,7 @@ export class Config {
   version: string = "";
   title: string = "";
   rcApiUrl: string = "";
-  auth: AuthConfig;
+  auth: AuthConfig = new AuthConfig();
 }
 
 export class AuthConfig {
