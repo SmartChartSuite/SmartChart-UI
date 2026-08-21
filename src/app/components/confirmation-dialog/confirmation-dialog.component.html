@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<div mat-dialog-content class="dialog-text">
+  <span [innerHTML]="data.content"></span>
+</div>
+<div mat-dialog-actions align="end">
+  @if (!data.isPrimaryButtonLeft) {
+    <button  matButton="outlined" (click)="onSecondaryClick()" [class]="data.isSecondaryActionDanger ? 'btn-danger' : ''">
+      {{ data.secondaryActionBtnTitle }}
+    </button>
+    <button  matButton="filled" color="primary" (click)="onDefaultClick()" cdkFocusInitial>
+      {{ data.primaryActionBtnTitle }}
+    </button>
+  }
+  @if (data.isPrimaryButtonLeft) {
+    <button  matButton="filled" color="primary" (click)="onDefaultClick()" cdkFocusInitial>
+      {{ data.primaryActionBtnTitle }}
+    </button>
+    <button  matButton="outlined" (click)="onSecondaryClick()" [class]="data.isSecondaryActionDanger ? 'btn-danger' : ''">
+      {{ data.secondaryActionBtnTitle }}
+    </button>
+  }
+</div>
+

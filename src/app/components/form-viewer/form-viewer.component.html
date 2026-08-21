@@ -2,7 +2,7 @@
   @if (activeFormSummary()?.formName || activeFormSummary()?.patientSummary) {
     <div class="viewer-container-header">
       <div class="form-name">
-        {{ questionnaire()?.["title"] }}
+        {{ questionnaire()?.title }}
       </div>
       @if (activeFormSummary()?.patientSummary) {
         <div class="patient-details-component-wrapper">
@@ -42,18 +42,17 @@
         <mat-nav-list>
           <ul class="sub-menu">
             @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
-
+              @let evidenceCount = getQuestionsWithEvidenceCount(item, results());
               <li class="sub-menu-item"
-                  [ngClass]="selectedMenuItemIndex == i ? 'selected-menu-item' : ''"
-                  (click)="selectQuestionnaireSection(i); this.selectedEvidenceIndex = null; showDrawer=false; scrollToTop();">
+                  [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
+                  (click)="onSectionSelected(i)">
                 {{ item.text }}
-                @if (getQuestionsWithEvidenceCount(item, results()) > 0) {
+                @if (evidenceCount > 0) {
                   <span class="sparkles-icon" aria-hidden="true"
                         matTooltipPosition="above"
-                        [matTooltip]="`Found evidence for ${getQuestionsWithEvidenceCount(item, results())} out of ${getQuestionCount(item)} questions.`">
-                    </span>
+                        [matTooltip]="'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.'">
+                  </span>
                 }
-
               </li>
             }
           </ul>
@@ -62,91 +61,98 @@
 
       <!-- Begin actual form rendering -->
       <div class="viewer-container-body-content" #top>
-        @for (item of questionnaire()?.["item"]; track item; let i = $index) {
-          @if (item["selected"]) {
-            <div class="margin-top-md item-text">{{ item["text"] }}</div>
+        @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
+          @if (item.selected) {
+            <div class="margin-top-md item-text">{{ item.text }}</div>
 
-            @for (childItem of (item["item"]); track childItem; let j = $index) {
+            @for (childItem of item.item; track childItem.linkId; let j = $index) {
               <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
                 <div class="question-label"
-                     [ngClass]="(j == selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
-                  <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item['item']"></span>
-                  <span class="margin-left-sm">{{ childItem["text"] }}</span>
+                     [ngClass]="(j === selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                  <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
+                  <span class="margin-left-sm">{{ childItem.text }}</span>
                 </div>
 
                 <div class="margin-left-md margin-right-sm margin-top-xs">
-                  @if (childItem["type"] == QuestionnaireItemType.choice) {
-                    <mat-radio-group [(ngModel)]="answerDictionary()[childItem?.linkId]">
-                      @for (option of childItem?.['answerOption']; track option) {
-                        @if (childItem?.['answerOption'].length <= 3) {
-                          <mat-radio-button class="margin-right-md"
-                                            [value]="option?.['valueString']">{{ option?.['valueString'] }}
-                          </mat-radio-button>
-                        } @else {
-                          <!-- There are too many options to render in the same line -->
-                          <div>
-                            <mat-radio-button [value]="option?.['valueString']">
-                              {{ option?.['valueString'] }}
+                  @switch (childItem.type) {
+                    @case (QuestionnaireItemType.choice) {
+                      <mat-radio-group [(ngModel)]="answerDictionary()![childItem.linkId]">
+                        @for (option of childItem.answerOption; track option) {
+                          @if (childItem.answerOption!.length <= 3) {
+                            <mat-radio-button class="margin-right-md"
+                                              [value]="option.valueString">{{ option.valueString }}
                             </mat-radio-button>
-                          </div>
+                          } @else {
+                            <!-- There are too many options to render in the same line -->
+                            <div>
+                              <mat-radio-button [value]="option.valueString">
+                                {{ option.valueString }}
+                              </mat-radio-button>
+                            </div>
+                          }
                         }
-                      }
-                    </mat-radio-group>
-                  } @else if (childItem["type"] == QuestionnaireItemType.string) {
-                    <mat-form-field appearance="outline" class="question-input">
-                      <input type="text" matInput [(ngModel)]="answerDictionary()[childItem?.linkId]">
-                    </mat-form-field>
-
-                  } @else if (childItem["type"] == QuestionnaireItemType.quantity) {
-                    <div class="flex">
-                      <mat-form-field
-                        appearance="outline"
-                        class="value-unit-input margin-right-md">
-                        <mat-label>Value</mat-label>
-                        <input type="number" matInput [(ngModel)]="answerDictionary()[childItem?.linkId].value">
+                      </mat-radio-group>
+                    }
+                    @case (QuestionnaireItemType.string) {
+                      <mat-form-field appearance="outline" class="question-input">
+                        <input type="text" matInput [(ngModel)]="answerDictionary()![childItem.linkId]">
                       </mat-form-field>
+                    }
+                    @case (QuestionnaireItemType.quantity) {
+                      <div class="flex">
+                        <mat-form-field
+                          appearance="outline"
+                          class="value-unit-input margin-right-md">
+                          <mat-label>Value</mat-label>
+                          <input type="number" matInput [(ngModel)]="answerDictionary()![childItem.linkId].value">
+                        </mat-form-field>
+                        <mat-form-field
+                          appearance="outline"
+                          class="value-unit-input margin-left-md">
+                          <mat-label>Unit</mat-label>
+                          <input type="text" matInput [(ngModel)]="answerDictionary()![childItem.linkId].unit">
+                        </mat-form-field>
+                      </div>
+                    }
+                    @case (QuestionnaireItemType.integer) {
                       <mat-form-field
-                        appearance="outline"
-                        class="value-unit-input margin-left-md">
-                        <mat-label>Unit</mat-label>
-                        <input type="text" matInput [(ngModel)]="answerDictionary()[childItem?.linkId].unit">
+                        appearance="outline" class="question-input"
+                        (keyup)="setValue(QuestionnaireItemType.integer, i, j)">
+                        <input type="number" matInput [(ngModel)]="answerDictionary()![childItem.linkId]">
+                        <mat-hint>Only whole numbers are allowed</mat-hint>
                       </mat-form-field>
-                    </div>
-                  } @else if (childItem["type"] == QuestionnaireItemType.integer) {
-                    <mat-form-field
-                      appearance="outline" class="question-input"
-                      (keyup)="setValue(QuestionnaireItemType.integer, questionnaire(), i, j)">
-                      <input type="number" matInput [(ngModel)]="answerDictionary()[childItem?.linkId]">
-                      <mat-hint>Only whole numbers are allowed</mat-hint>
-                    </mat-form-field>
-                  } @else if (childItem["type"] == QuestionnaireItemType.decimal) {
-                    <mat-form-field appearance="outline" class="question-input">
-                      <input type="number" matInput [(ngModel)]="answerDictionary()[childItem?.linkId]">
-                    </mat-form-field>
-                  } @else if (childItem["type"] == QuestionnaireItemType.date) {
-                    <app-fhir-date-time
-                      (onDateTimeUpdated)="answerDictionary()[childItem?.linkId] = $event.value;"
-                      [questionType]="QuestionnaireItemType.date"
-                      [inputValue]="answerDictionary()[childItem?.linkId]"
-                    ></app-fhir-date-time>
-                  } @else if (childItem["type"] == QuestionnaireItemType.time) {
-                    <app-fhir-date-time
-                      (onDateTimeUpdated)="answerDictionary()[childItem?.linkId] = $event.value;"
-                      [questionType]="QuestionnaireItemType.time"
-                      [inputValue]="answerDictionary()[childItem?.linkId]"
-                    ></app-fhir-date-time>
-                  } @else if (childItem["type"] == QuestionnaireItemType.dateTime) {
-                    <app-fhir-date-time
-                      (onDateTimeUpdated)="answerDictionary()[childItem?.linkId] = $event.value;"
-                      [questionType]="QuestionnaireItemType.dateTime"
-                      [inputValue]="answerDictionary()[childItem?.linkId]"
-                    ></app-fhir-date-time>
-                  } @else if (childItem["type"] == QuestionnaireItemType.text) {
-                    <textarea rows="8" class="question-input sans-serif"
-                              [(ngModel)]="answerDictionary()[childItem?.linkId]"></textarea>
+                    }
+                    @case (QuestionnaireItemType.decimal) {
+                      <mat-form-field appearance="outline" class="question-input">
+                        <input type="number" matInput [(ngModel)]="answerDictionary()![childItem.linkId]">
+                      </mat-form-field>
+                    }
+                    @case (QuestionnaireItemType.date) {
+                      <app-fhir-date-time
+                        (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
+                        [questionType]="QuestionnaireItemType.date"
+                        [inputValue]="answerDictionary()![childItem.linkId]"
+                      ></app-fhir-date-time>
+                    }
+                    @case (QuestionnaireItemType.time) {
+                      <app-fhir-date-time
+                        (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
+                        [questionType]="QuestionnaireItemType.time"
+                        [inputValue]="answerDictionary()![childItem.linkId]"
+                      ></app-fhir-date-time>
+                    }
+                    @case (QuestionnaireItemType.dateTime) {
+                      <app-fhir-date-time
+                        (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
+                        [questionType]="QuestionnaireItemType.dateTime"
+                        [inputValue]="answerDictionary()![childItem.linkId]"
+                      ></app-fhir-date-time>
+                    }
+                    @case (QuestionnaireItemType.text) {
+                      <textarea rows="8" class="question-input sans-serif"
+                                [(ngModel)]="answerDictionary()![childItem.linkId]"></textarea>
+                    }
                   }
-                  <!--TODO refactor the code for has evidence directive-->
-                  <!--                  <div *appHasEvidence="childItem['extension']" class="margin-left-sm margin-bottom-md">-->
 
                   <!--                      TODO: Handle status based scenarios per logic below                 -->
                   <!--                      if hasLogic                                                         -->
@@ -160,49 +166,48 @@
                   <!--                      else results[linkId] not found AND if results.status is complete    -->
                   <!--                      show "No evidence found"                                            -->
                   <!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
-                  @if (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"]) {
+
+                  @let resultSet = results()?.["link" + childItem.linkId];
+                  @if (resultSet?.["cqlAnswer"]?.["valueString"]) {
                     <div class="margin-bottom-sm">
                       Suggested Answer:
-                      @for (item of (results()?.["link" + childItem?.["linkId"]]?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track item) {
-                        <span class="margin-left-sm" (click)="answerDictionary()[childItem?.linkId]=item;">
-                            <mat-chip class="suggested-answer"
-                                      matTooltip="Click to fill the answer">{{ item }}</mat-chip>
-                          </span>
+                      @for (suggested of (resultSet?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track suggested) {
+                        <span class="margin-left-sm" (click)="answerDictionary()![childItem.linkId] = suggested">
+                          <mat-chip class="suggested-answer"
+                                    matTooltip="Click to fill the answer">{{ suggested }}</mat-chip>
+                        </span>
                       }
                     </div>
                   }
-                  <!--                  <div>Child *** <pre>{{ childItem?.["linkId"]?.["evidence"] | json }}</pre></div>-->
-                  <!--                  <div>Resource** <pre>{{ results()?.["link" + childItem?.["linkId"]] | json }}</pre>-->
 
-                  @if (results()?.["link" + childItem?.["linkId"]]?.["evidence"] && results()?.["link" + childItem?.["linkId"]]?.["evidence"].length > 0) {
+                  @if (resultSet?.["evidence"] && resultSet["evidence"].length > 0) {
                     <button matButton="outlined" class="primary-outlined"
-                            appSetEvidence [resultSet]="results()?.['link' + childItem?.['linkId']]"
-                            (click)="(selectedEvidenceIndex == j && showDrawer) ? showDrawer=false : showDrawer=true; selectedEvidenceIndex=j">
+                            appSetEvidence [resultSet]="resultSet"
+                            (click)="toggleEvidenceDrawer(j)">
                       View Evidence
-                      ({{ getEvidenceCount(childItem?.linkId, results()) }})
+                      ({{ getEvidenceCount(childItem.linkId, results()) }})
                     </button>
                   }
                 </div>
               </div>
-              <!--              </div>-->
             }
           }
         }
       </div>
       <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
-           [ngClass]="(this.evidenceViewerExpanded$ | async) ? 'viewer-container-body-side-explorer-expanded': ''"
+           [ngClass]="evidenceViewerExpanded() ? 'viewer-container-body-side-explorer-expanded': ''"
            [hidden]="!showDrawer">
         <div class="fhir-explorer-header">
-          @if (this.evidenceViewerExpanded$ | async) {
+          @if (evidenceViewerExpanded()) {
             <mat-icon
-              (click)="evidenceViewerService.setViewerExpanded(false);"
+              (click)="evidenceViewerService.setViewerExpanded(false)"
               matTooltip="Collapse"
               class="pointer">
               chevron_right
             </mat-icon>
           } @else {
             <mat-icon
-              (click)="evidenceViewerService.setViewerExpanded(true);"
+              (click)="evidenceViewerService.setViewerExpanded(true)"
               matTooltip="Expand"
               class="pointer">
               chevron_left
@@ -213,7 +218,7 @@
           </span>
           <span class="content-spacer"></span>
           <mat-icon
-            (click)="showDrawer = false;"
+            (click)="showDrawer = false"
             aria-label="Close Evidence Viewer"
             matTooltip="Close Evidence Viewer"
             class="pointer">
@@ -224,23 +229,23 @@
       </div>
     }
   </div>
-  @if (questionnaire()?.["item"]?.length > 0) {
+  @if ((questionnaire()?.item?.length ?? 0) > 0) {
     <div class="nav-controls">
       <div class="content-spacer"></div>
 
       <button mat-flat-button type="submit" class="wide-button"
-              [disabled]="selectedMenuItemIndex == 0"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex - 1; selectQuestionnaireSection(selectedMenuItemIndex); scrollToTop()">
+              [disabled]="selectedMenuItemIndex === 0"
+              (click)="goToPreviousSection()">
         <mat-icon>chevron_left</mat-icon>
         Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire()?.['item']?.[selectedMenuItemIndex - 1]?.['text'] : '' }}
+        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex - 1]?.text : '' }}
       </button>
 
       <button mat-flat-button type="submit" class="margin-left-sm wide-button"
-              [disabled]="(questionnaire()?.['item']?.length -1) == selectedMenuItemIndex"
-              (click)="selectedMenuItemIndex = selectedMenuItemIndex + 1; selectQuestionnaireSection(selectedMenuItemIndex); scrollToTop()">
+              [disabled]="(questionnaire()!.item.length - 1) === selectedMenuItemIndex"
+              (click)="goToNextSection()">
         Next
-        Section{{ (selectedMenuItemIndex < questionnaire()?.['item']?.length - 1) ? ': ' + questionnaire()?.['item']?.[selectedMenuItemIndex + 1]?.['text'] : '' }}
+        Section{{ (selectedMenuItemIndex < questionnaire()!.item.length - 1) ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex + 1]?.text : '' }}
         <mat-icon iconPositionEnd>chevron_right</mat-icon>
       </button>
 
