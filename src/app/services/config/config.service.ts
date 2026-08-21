@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { PlatformLocation } from '@angular/common';
 import {catchError, map, of} from "rxjs";
 import {Config} from "../../models/config";
 import packageInfo from '../../../../package.json';
@@ -10,13 +11,19 @@ import {AuthConfig, OAuthModuleConfig} from "angular-oauth2-oidc";
 })
 export class ConfigService {
 
-  defaultLocalConfigPath = '../../assets/config/config.json'
+  // Path to the runtime config, relative to the app's base href.
+  // NOTE: this must NOT start with "../" or "/". A "../"-relative path is
+  // resolved against the *current route's* URL, so refreshing a deep route
+  // like /smartchart/forms/ (with a trailing slash) shifts the resolution and
+  // 404s the config, which stalls app init and renders a blank page.
+  defaultLocalConfigPath = 'assets/config/config.json'
   config: Config = new Config();
   authConfig: AuthConfig;
   oAuthModuleConfig: OAuthModuleConfig;
   packageInfo = packageInfo;
 
   private http: HttpClient;
+  private platformLocation = inject(PlatformLocation);
 
   public apiUrl = "";
 
@@ -25,7 +32,7 @@ export class ConfigService {
   }
 
   loadConfig() {
-    let configPath = this.defaultLocalConfigPath;
+    const configPath = this.resolveFromBaseHref(this.defaultLocalConfigPath);
     return this.http.get<Config>(configPath).pipe(
       map((config: Config) => {
         config.version = "v" + this.packageInfo.version;
@@ -71,6 +78,19 @@ export class ConfigService {
     }
     return url;
   }
+
+  /**
+   * Resolve a path against the app's base href so it does not depend on the
+   * current route's URL. This makes runtime fetches (e.g. config.json) work
+   * consistently whether the app is served at "/" or a subpath like
+   * "/smartchart/", and regardless of any trailing slash on the route.
+   */
+  private resolveFromBaseHref(path: string): string {
+    const baseHref = this.platformLocation.getBaseHrefFromDOM() || '/';
+    const base = baseHref.endsWith('/') ? baseHref : baseHref + '/';
+    return base + path.replace(/^\.*\/*/, '');
+  }
+
   getModuleConfig(): OAuthModuleConfig {
     return this.oAuthModuleConfig;
   }
