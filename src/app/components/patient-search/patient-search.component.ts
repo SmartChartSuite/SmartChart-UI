@@ -1,11 +1,11 @@
 import {Component, OnDestroy, OnInit, ChangeDetectionStrategy, signal} from '@angular/core';
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
-import {searchByType, searchByTypes} from "../../../../models/search-by-types";
+import {searchByType, searchByTypes} from "../../models/search-by-types";
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import {PatientSummary} from "../../../../models/patient-summary";
-import {RcApiInterfaceService} from "../../../../services/rc-api-interface/rc-api-interface.service";
-import {PatientSearchParameters} from "../../../../models/rc-api/patient-search-parameters";
-import {UtilsService} from "../../../../services/utils/utils.service";
+import {PatientSummary} from "../../models/patient-summary";
+import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
+import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
+import {UtilsService} from "../../services/utils/utils.service";
 import { MatLabel, MatFormField, MatError, MatSuffix, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';

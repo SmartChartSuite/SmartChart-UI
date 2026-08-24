@@ -6,11 +6,11 @@ import {
   SimpleChanges, ViewChild,
   ChangeDetectionStrategy, input
 } from '@angular/core';
-import {PatientSummary} from "../../../../models/patient-summary";
+import {PatientSummary} from "../../models/patient-summary";
 import { MatTableDataSource, MatTableModule } from "@angular/material/table";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import {Observable} from "rxjs";
-import {FormManagerService} from "../../../../services/form-manager/form-manager.service";
+import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import { MatIcon } from '@angular/material/icon';
 import { AsyncPipe, TitleCasePipe, DatePipe } from '@angular/common';
 
