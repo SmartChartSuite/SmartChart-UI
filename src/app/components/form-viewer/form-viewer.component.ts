@@ -260,6 +260,20 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       });
   }
 
+  /**
+   * Stores a choice selection as the full FHIR Coding object (code + display)
+   * so the QuestionnaireResponse can emit a complete valueCoding. The radio
+   * group binds to the scalar `code`; here we resolve it back to the matching
+   * answerOption's Coding.
+   */
+  protected onChoiceSelected(item: Item, code: string): void {
+    const selected = item.answerOption?.find(option => option.valueCoding?.code === code)?.valueCoding;
+    this.answerDictionary.update(current => ({
+      ...current,
+      [item.linkId]: selected ? {code: selected.code, display: selected.display} : ''
+    }) as FormAnswers);
+  }
+
   setValue(questionType: QuestionnaireItemType, i: number, j: number): void {
     if (questionType !== QuestionnaireItemType.integer) {
       return;
@@ -362,7 +376,12 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
           } else if (answer.valueDateTime !== undefined) {
             currentAnswers[item.linkId] = answer.valueDateTime;
           } else if (answer.valueCoding !== undefined) {
-            currentAnswers[item.linkId] = answer.valueCoding.display || answer.valueCoding.code;
+            // Choice answers are stored as the full Coding object so the radio
+            // group can round-trip them (matched via compareCoding by code).
+            currentAnswers[item.linkId] = {
+              code: answer.valueCoding.code,
+              display: answer.valueCoding.display
+            };
           } else if (answer.valueQuantity !== undefined) {
             currentAnswers[item.linkId] = {
               value: answer.valueQuantity.value,

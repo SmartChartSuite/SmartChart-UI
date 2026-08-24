@@ -80,8 +80,14 @@ export class FormOutputMappingService {
               break;
             }
             case QuestionnaireItemType.choice: {
-              // Note: Handling in R4 is unclear, looking forward to R5 type "string" is assumed for this system.
-              answer["valueString"] = formAnswers[qrChildItem.linkId];
+              // valueCoding preserving both the code and the display.
+              const coding = formAnswers[qrChildItem.linkId];
+              if (coding && typeof coding === 'object') {
+                answer["valueCoding"] = {
+                  code: coding.code,
+                  display: coding.display
+                };
+              }
               break;
             }
             case QuestionnaireItemType.openChoice: {
