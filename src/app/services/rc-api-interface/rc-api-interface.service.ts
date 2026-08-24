@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
-import {firstValueFrom, map, Observable, share, shareReplay} from "rxjs";
+import {map, Observable, share, shareReplay} from "rxjs";
 import {HttpClient, HttpContext, HttpParams} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
@@ -31,7 +31,7 @@ export class RcApiInterfaceService {
   questionnaireEndpoint: string = `${this.base}jobpackage`;
   startJobsEndpoint: string = `${this.base}batchjob?include_patient=True`;
   getJobPackageEndpoint: string = `${this.base}jobpackage`;
-  getBatchJobsEndpoint: string = `${this.base}batchjob`
+  batchJobsEndpoint: string = `${this.base}batchjob`
   getResultsEndpoint: string = `${this.base}results`
   testResponse = testResponse;
 
@@ -120,7 +120,7 @@ export class RcApiInterfaceService {
       });
     }
 
-    return this.http.get<Bundle>(`${this.getBatchJobsEndpoint}`, { params }).pipe(
+    return this.http.get<Bundle>(`${this.batchJobsEndpoint}`, { params }).pipe(
       map(response => this.jobsFormsHelper.toPatientData(response))
     );
   }
@@ -216,7 +216,7 @@ export class RcApiInterfaceService {
   // }
 
   getBatchJobs() {
-    return this.http.get<Bundle>(this.getBatchJobsEndpoint + "?include_patient=True").pipe(
+    return this.http.get<Bundle>(this.batchJobsEndpoint + "?include_patient=True").pipe(
       map((response: Bundle) => {
         let activeJobList: ActiveFormSummary[] = [];
         response.entry.forEach(parametersResource => {
@@ -229,11 +229,11 @@ export class RcApiInterfaceService {
   }
 
   getBatchJobById(id: string) {
-    return this.http.get(this.getBatchJobsEndpoint + `/${id}?include_patient=True`)
+    return this.http.get(this.batchJobsEndpoint + `/${id}?include_patient=True`)
   }
 
   getBatchJobResults(id: string): Observable<Results> {
-    return this.http.get<Bundle>(this.getBatchJobsEndpoint + `/${id}`).pipe(
+    return this.http.get<Bundle>(this.batchJobsEndpoint + `/${id}`).pipe(
       map((batchResultsBundle: Bundle) => {
         // TODO: Add validation if not bundle or structure is not as expected (e.g. location of statusObservation/patientResource)
         // TODO: Simplify/condense code once confirmed working
@@ -365,5 +365,9 @@ export class RcApiInterfaceService {
 
   getQuestionnaireResponse(qrId: string): Observable<QuestionnaireResponse> {
     return this.http.get<QuestionnaireResponse>(`${this.base}response/${qrId}`);
+  }
+
+  deleteBatchJob(batchJobId: string) {
+    return this.http.delete(`${this.batchJobsEndpoint}/${batchJobId}`);
   }
 }
