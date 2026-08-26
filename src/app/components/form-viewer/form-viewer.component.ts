@@ -26,7 +26,7 @@ import {PatientDetailsComponent} from "./patient-details/patient-details.compone
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatButton} from "@angular/material/button";
 import {MatNavList} from "@angular/material/list";
-import {NgClass} from "@angular/common";
+import {JsonPipe, NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
@@ -69,6 +69,7 @@ import {PatientGrid} from "../../models/patient-grid";
     MatIcon,
     EvidenceDetailsComponent,
     SuggestedAnswerFormatterPipe,
+    JsonPipe,
   ]
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {

@@ -30,7 +30,7 @@
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>Form Status</mat-label>
                         <mat-select [formField]="form.questionnaireResponseStatus" multiple>
-                          @for (status of STATUS_OPTIONS; track status.value) {
+                          @for (status of FORM_STATUS_OPTIONS; track status.value) {
                             <mat-option [value]="status.value">{{ status.display }}</mat-option>
                           }
                         </mat-select>
@@ -85,7 +85,7 @@
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>Job Status</mat-label>
                         <mat-select [formField]="form.batchJobStatus" multiple>
-                          @for (status of STATUS_OPTIONS; track status.value) {
+                          @for (status of JOB_STATUS_OPTIONS; track status.value) {
                             <mat-option [value]="status.value">{{ status.display }}</mat-option>
                           }
                         </mat-select>
