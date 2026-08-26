@@ -62,9 +62,9 @@ export class PatientGroupsComponent implements OnInit{
   }
 
 
-  onGroupSelected(event: MatSelectChange) {
+  onGroupSelected(event: MatSelectChange<PatientGroup>) {
     this.selectedGroup.set(event.value);
     this.formManagerService.setSelectedPatient(null);
-    this.patientSummaryData = event.value.members;
+    this.patientSummaryData.set(event.value.members);
   }
 }
