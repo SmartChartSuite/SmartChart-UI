@@ -1,3 +1,4 @@
+import {FormStatusValue} from "./form-status";
 import {ValueDisplay} from "./value-display";
 
 export type JobStatusValue = 'complete' | 'running' | 'pending';
@@ -20,7 +21,8 @@ export const FormStatus = {
 } as const;
 
 export interface PatientGrid {
-  questionnaireResponseStatus: JobStatusValue;
+  // Form status (distinct from the job status in `batchJobStatus`)
+  questionnaireResponseStatus: FormStatusValue;
   patientName: string;
   patientDob: string;
   batchId: string;
