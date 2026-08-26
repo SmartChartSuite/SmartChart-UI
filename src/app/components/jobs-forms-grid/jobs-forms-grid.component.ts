@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import { catchError, filter, interval, of } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -18,7 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { RcApiInterfaceService } from '../../services/rc-api-interface/rc-api-interface.service';
 import { FormStatus, FORM_STATUS_OPTIONS } from '../../models/form-status';
-import {JOB_STATUS_OPTIONS, PatientGrid} from '../../models/patient-grid';
+import { FormStatus as JobStatus, JOB_STATUS_OPTIONS, PatientGrid } from '../../models/patient-grid';
 import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
@@ -156,7 +156,7 @@ export class JobsFormsGridComponent {
   }
 
   protected staleJobFound(patient: PatientGrid): boolean {
-    if (patient.batchJobStatus === FormStatus.COMPLETE || !patient.jobStartDateTime) {
+    if (patient.batchJobStatus === JobStatus.COMPLETE || !patient.jobStartDateTime) {
       return false;
     }
 
