@@ -39,7 +39,7 @@ import {MatIcon} from "@angular/material/icon";
 import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
 import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
-import {Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
+import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
 import {PatientGrid} from "../../models/patient-grid";
 
@@ -262,16 +262,47 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   /**
-   * Stores a choice selection as the full FHIR Coding object (code + display)
-   * so the QuestionnaireResponse can emit a complete valueCoding. The radio
-   * group binds to the scalar `code`; here we resolve it back to the matching
-   * answerOption's Coding.
+   * The scalar value the radio group binds to for a given option, supporting
+   * both `valueCoding` (uses the code) and `valueString` (uses the string).
    */
-  protected onChoiceSelected(item: Item, code: string): void {
-    const selected = item.answerOption?.find(option => option.valueCoding?.code === code)?.valueCoding;
+  protected getOptionValue(option: AnswerOption): string | undefined {
+    return option.valueCoding ? option.valueCoding.code : option.valueString;
+  }
+
+  /** The human-readable label for an option, for either format. */
+  protected getOptionLabel(option: AnswerOption): string | undefined {
+    return option.valueCoding ? option.valueCoding.display : option.valueString;
+  }
+
+  /**
+   * The scalar value currently selected for a choice item, derived from the
+   * stored answer. Coding answers are stored as `{code, display}` objects, so
+   * the code is returned; string answers are returned as-is.
+   */
+  protected getSelectedChoiceValue(item: Item): string | undefined {
+    const answer = this.answerDictionary()?.[item.linkId];
+    if (answer && typeof answer === 'object') {
+      return answer.code;
+    }
+    return answer;
+  }
+
+  /**
+   * Stores a choice selection. For `valueCoding` options the full Coding
+   * (code + display) is stored so the QuestionnaireResponse can emit a complete
+   * valueCoding; for `valueString` options the plain string is stored. The
+   * radio group binds to the scalar value; here we resolve it back to the
+   * matching answerOption.
+   */
+  protected onChoiceSelected(item: Item, value: string): void {
+    const selected = item.answerOption?.find(
+      option => this.getOptionValue(option) === value
+    );
     this.answerDictionary.update(current => ({
       ...current,
-      [item.linkId]: selected ? {code: selected.code, display: selected.display} : ''
+      [item.linkId]: selected?.valueCoding
+        ? {code: selected.valueCoding.code, display: selected.valueCoding.display}
+        : (selected?.valueString ?? '')
     }) as FormAnswers);
   }
 

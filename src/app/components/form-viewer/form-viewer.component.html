@@ -69,18 +69,18 @@
                 @switch (childItem.type) {
                   @case (QuestionnaireItemType.choice) {
                     <mat-radio-group
-                      [ngModel]="answerDictionary()![childItem.linkId]?.code"
+                      [ngModel]="getSelectedChoiceValue(childItem)"
                       (ngModelChange)="onChoiceSelected(childItem, $event)">
-                      @for (option of childItem.answerOption; track option.valueCoding?.code) {
+                      @for (option of childItem.answerOption; track getOptionValue(option)) {
                         @if (childItem.answerOption!.length <= 3) {
                           <mat-radio-button class="margin-right-md"
-                                            [value]="option.valueCoding?.code">{{ option.valueCoding?.display }}
+                                            [value]="getOptionValue(option)">{{ getOptionLabel(option) }}
                           </mat-radio-button>
                         } @else {
                           <!-- There are too many options to render in the same line -->
                           <div>
-                            <mat-radio-button [value]="option.valueCoding?.code">
-                              {{ option.valueCoding?.display }}
+                            <mat-radio-button [value]="getOptionValue(option)">
+                              {{ getOptionLabel(option) }}
                             </mat-radio-button>
                           </div>
                         }

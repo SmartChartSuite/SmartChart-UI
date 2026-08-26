@@ -3,6 +3,7 @@ import {Coding} from "../types/coding";
 
 export interface AnswerOption {
   valueCoding?: Coding;
+  valueString?: string;
 
   [key: string]: any;
 }

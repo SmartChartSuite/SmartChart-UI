@@ -80,13 +80,17 @@ export class FormOutputMappingService {
               break;
             }
             case QuestionnaireItemType.choice: {
-              // valueCoding preserving both the code and the display.
-              const coding = formAnswers[qrChildItem.linkId];
-              if (coding && typeof coding === 'object') {
+              // Choice answers may be a FHIR Coding (code + display) or a plain
+              // string, depending on whether the answerOption used valueCoding
+              // or valueString. Emit the matching QuestionnaireResponse value.
+              const choice = formAnswers[qrChildItem.linkId];
+              if (choice && typeof choice === 'object') {
                 answer["valueCoding"] = {
-                  code: coding.code,
-                  display: coding.display
+                  code: choice.code,
+                  display: choice.display
                 };
+              } else if (choice) {
+                answer["valueString"] = choice;
               }
               break;
             }
