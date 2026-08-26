@@ -35,7 +35,7 @@ export class LoginComponent {
    */
   protected signIn(): void {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '';
-    this.oauthService.initImplicitFlow(returnUrl);
+    this.oauthService.initLoginFlow(returnUrl);
   }
 
   // Method for profile picture with fallback - called by Angular change detection
