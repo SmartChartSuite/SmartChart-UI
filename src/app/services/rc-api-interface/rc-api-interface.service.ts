@@ -14,7 +14,6 @@ import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {AnswerComponent, NlpAnswer, Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {ShowLoading} from "../loading/show-loading";
-import testResponse from '../../../assets/temp/ui-for-testing.json';
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
@@ -33,7 +32,6 @@ export class RcApiInterfaceService {
   getJobPackageEndpoint: string = `${this.base}jobpackage`;
   batchJobsEndpoint: string = `${this.base}batchjob`
   getResultsEndpoint: string = `${this.base}results`
-  testResponse = testResponse;
 
   getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
     map(response => response.sort((a, b) => a.title.localeCompare(b.title))),

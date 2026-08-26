@@ -1,4 +1,5 @@
-import {Component, OnDestroy, OnInit, ChangeDetectionStrategy, signal} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy, signal} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import { MatRadioGroup, MatRadioButton } from "@angular/material/radio";
 import {searchByType, searchByTypes} from "../../models/search-by-types";
 import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -13,7 +14,6 @@ import { MatIcon } from '@angular/material/icon';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
 import { PatientSummaryTableComponent } from '../patient-summary-table/patient-summary-table.component';
 import { DatePipe } from '@angular/common';
-import { Subject, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-patient-search',
@@ -22,7 +22,7 @@ import { Subject, takeUntil } from 'rxjs';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatLabel, MatRadioGroup, FormsModule, MatRadioButton, ReactiveFormsModule, MatFormField, MatInput, MatError, MatButton, MatIcon, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatHint, PatientSummaryTableComponent, DatePipe]
 })
-export class PatientSearchComponent implements OnInit, OnDestroy {
+export class PatientSearchComponent implements OnInit {
 
   protected readonly SearchByType = searchByType;
   isLoading= signal<boolean>(false);
@@ -32,9 +32,7 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
 
   searchForm: FormGroup;
 
-  patientSummaryData: PatientSummary[];
-
-  private destroy$ = new Subject<void>();
+  patientSummaryData = signal<PatientSummary[]>([]);
 
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
@@ -54,7 +52,7 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Subscribe to selectedSearchCriteria changes to update validators
     this.searchForm.get('selectedSearchCriteria')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe((value: searchByType) => {
         this.updateFormValidators();
       });
@@ -62,11 +60,6 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
     // Initialize validators based on default value
     this.updateFormValidators();
     this.searchExecuted.set(false);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private updateFormValidators() {
@@ -165,16 +158,17 @@ export class PatientSearchComponent implements OnInit, OnDestroy {
   private executeSearch(searchParams: PatientSearchParameters) {
     this.isLoading.set(true);
     this.searchExecuted.set(true);
-    this.rcApiInterfaceService.searchPatient(searchParams).subscribe({
-      next: value => {
-        this.patientSummaryData = value;
-        this.isLoading.set(false);
-      },
-      error: err => {
-        console.error(err);
-        this.utilsService.showErrorMessage();
-        this.isLoading.set(false);
-      }
-    });
+    this.rcApiInterfaceService.searchPatient(searchParams)
+      .subscribe({
+        next: value => {
+          this.patientSummaryData.set(value);
+          this.isLoading.set(false);
+        },
+        error: err => {
+          console.error(err);
+          this.utilsService.showErrorMessage();
+          this.isLoading.set(false);
+        }
+      });
   }
 }

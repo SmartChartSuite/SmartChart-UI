@@ -70,8 +70,4 @@ export class ConfigService {
     }
     return url;
   }
-
-  getModuleConfig(): OAuthModuleConfig {
-    return this.oAuthModuleConfig;
-  }
 }

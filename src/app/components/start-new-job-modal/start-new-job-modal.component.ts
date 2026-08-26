@@ -1,4 +1,4 @@
-import {Component, Inject, inject, signal} from '@angular/core';
+import {Component, Inject, inject, OnInit, signal} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
@@ -34,7 +34,7 @@ import {MatTooltip} from "@angular/material/tooltip";
   templateUrl: './start-new-job-modal.component.html',
   styleUrl: './start-new-job-modal.component.scss',
 })
-export class StartNewJobModalComponent {
+export class StartNewJobModalComponent implements OnInit {
   dialogRef: MatDialogRef<any> = inject(MatDialogRef);
   data = signal<any | null>(null);
   protected readonly formList = signal<FormSummary[]>([]);
