@@ -105,8 +105,7 @@
                   </div>
 
                   <div class="button-column">
-<!--                    <button matButton="filled" color="primary" type="button" (click)="onSearch()" [disabled]="isLoading()">-->
-                      <button matButton="filled" color="primary" type="submit" [disabled]="patientResource.isLoading()">
+                    <button matButton="filled" color="primary" type="submit" [disabled]="patientResource.isLoading()">
                       <mat-icon>search</mat-icon>
                       Search
                     </button>
@@ -188,7 +187,6 @@
                 </td>
               </ng-container>
 
-
               <!-- Job Status Column -->
               <ng-container matColumnDef="batchJobStatus">
                 <th mat-header-cell *matHeaderCellDef>Job Status</th>
@@ -202,11 +200,32 @@
                 <th mat-header-cell *matHeaderCellDef>Date / Time Ran</th>
                 <td mat-cell *matCellDef="let patient">
                   <div class="icon-with-text">
-                    @if (staleJobFound(patient)) {
-                      <mat-icon color="warn">warning</mat-icon>
-                    }
                     <span>{{ patient.jobStartDateTime | date :'MM/dd/yyyy'  }}<br>{{ patient.jobStartDateTime | date :'HH:mm:ss'  }}</span>
                   </div>
+                </td>
+              </ng-container>
+
+              <!-- Warning column (for now only used for stale jobs) -->
+              <ng-container matColumnDef="warning">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let patient">
+                  <div class="icon-with-text">
+                    @if (staleJobFound(patient)) {
+                      <span class="pointer" matTooltip="Warning: This job is over 30 days old">
+                        <mat-icon>running_with_errors</mat-icon>
+                      </span>
+                    }
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Actions column. For now used for delete job -->
+              <ng-container matColumnDef="buttons">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let patient">
+                    <button matIconButton color="warn" aria-label="Example icon button with a delete icon" matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
                 </td>
               </ng-container>
 

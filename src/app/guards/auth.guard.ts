@@ -13,8 +13,11 @@ class PermissionsService {
     const hasValidToken = this.oauthService.hasValidAccessToken();
 
     if (!hasValidToken) {
-      // Redirect to login if not authenticated
-      this.router.navigate(['/login']);
+      // Not authenticated: send the user to login, remembering the page they
+      // originally requested so we can return them there after they sign in.
+      this.router.navigate(['/login'], {
+        queryParams: state?.url ? { returnUrl: state.url } : undefined
+      });
       return false;
     }
 

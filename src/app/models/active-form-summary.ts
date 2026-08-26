@@ -19,6 +19,7 @@ export class ActiveFormSummary {
       this.patientSummary = new PatientSummary(parametersOrPatientResource as FhirBaseResource);
       this.batchId = patientGridDto.batchId;
       this.formName = patientGridDto.jobPackage;
+      this.questionnaireResponseId = patientGridDto.questionnaireResponseId ?? '';
       this.started = '';
       this.status = '';
     } else {
@@ -34,12 +35,17 @@ export class ActiveFormSummary {
       this.formName = Parameters.getValue(parametersResource, "jobPackage") as string;
       this.started = Parameters.getValue(parametersResource, "jobStartDateTime") as string;
       this.status = Parameters.getValue(parametersResource, "batchJobStatus") as string;
+      const qrParam = parametersResource.parameter.find(p => p?.["name"] === "batchJobQuestionnaireResponse") as any;
+      const qrReference = (qrParam?.valueReference?.reference ?? qrParam?.valueString ?? '') as string;
+      const referenceParts = qrReference.split('/');
+      this.questionnaireResponseId = referenceParts.length > 1 ? referenceParts[1] : qrReference;
     }
   }
 
   batchId: string;
   patientSummary: PatientSummary;
   formName: string; // Equivalent to JobPackage in the Parameters.
+  questionnaireResponseId: string;
   started: string; // TODO: Parse to DateTime
   status: string;
 

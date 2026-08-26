@@ -40,6 +40,14 @@ export class HeaderComponent {
     this.router.navigate([path]);
   }
 
+  /**
+   * Starts the OAuth login flow, passing the current page URL as OAuth state so
+   * the callback returns the user to where they were after signing in.
+   */
+  protected signIn() {
+    this.oauthService.initLoginFlow(this.router.url);
+  }
+
   protected onLogout() {
     this.oauthService.logOut();
   }

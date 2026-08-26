@@ -10,7 +10,6 @@ import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import { SlicePipe } from '@angular/common';
 
 @Component({
     selector: 'app-unstructured-results-details',
@@ -18,7 +17,7 @@ import { SlicePipe } from '@angular/common';
     styleUrl: './unstructured-results-details.component.scss',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatCard, MatCardContent, MatIconButton, MatTooltip, MatIcon, SlicePipe]
+    imports: [MatCard, MatCardContent, MatIconButton, MatTooltip, MatIcon]
 })
 export class UnstructuredResultsDetailsComponent implements OnChanges{
   @Input() nlpAnswer: NlpAnswer;

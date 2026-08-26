@@ -1,5 +1,6 @@
 import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
 import {OAuthService} from "angular-oauth2-oidc";
+import {ActivatedRoute} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButton} from "@angular/material/button";
@@ -25,6 +26,17 @@ export class LoginComponent {
 
   isLocatedInMainMenu = input<boolean>(false);
   public oauthService: OAuthService = inject(OAuthService);
+  private readonly route = inject(ActivatedRoute);
+
+  /**
+   * Starts the OAuth login flow, passing the originally requested page (from the
+   * `returnUrl` query param) as OAuth state so the callback can return the user
+   * there after signing in.
+   */
+  protected signIn(): void {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '';
+    this.oauthService.initImplicitFlow(returnUrl);
+  }
 
   // Method for profile picture with fallback - called by Angular change detection
   protected profilePictureUrl(): string {

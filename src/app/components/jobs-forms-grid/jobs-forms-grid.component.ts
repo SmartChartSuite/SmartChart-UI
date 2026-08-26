@@ -1,12 +1,12 @@
-import { Component, computed, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, ViewChild } from '@angular/core';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import {catchError, firstValueFrom, of, tap} from 'rxjs';
+import {catchError, of} from 'rxjs';
 
-import { MatButton } from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
@@ -18,16 +18,16 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 import { RcApiInterfaceService } from '../../services/rc-api-interface/rc-api-interface.service';
-import { FormManagerService } from '../../services/form-manager/form-manager.service';
 import { FormStatus, STATUS_OPTIONS } from '../../models/form-status';
 import { PatientGrid } from '../../models/patient-grid';
 import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
-import { ActiveFormSummary } from '../../models/active-form-summary';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
+import { UtilsService } from '../../services/utils/utils.service';
 import {FormSummary} from "../../models/form-summary";
 import {openStartNewJobModal} from "../start-new-job-modal/start-new-job-modal.component";
 import {MatDialog} from "@angular/material/dialog";
+import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog.component";
 
 @Component({
   selector: 'app-forms-jobs-grid',
@@ -52,7 +52,8 @@ import {MatDialog} from "@angular/material/dialog";
     MatTableModule,
     MatPaginatorModule,
     MatSuffix,
-    TitleCasePipe
+    TitleCasePipe,
+    MatIconButton
   ],
   templateUrl: './jobs-forms-grid.component.html',
   styleUrl: './jobs-forms-grid.component.scss',
@@ -61,8 +62,9 @@ export class JobsFormsGridComponent {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private readonly rcApiInterface = inject(RcApiInterfaceService);
-  private readonly formManagerService = inject(FormManagerService);
   private readonly router = inject(Router);
+  private readonly utilsService = inject(UtilsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private dialog: MatDialog = inject(MatDialog);
 
@@ -71,7 +73,7 @@ export class JobsFormsGridComponent {
   protected readonly STATUS_OPTIONS = [...STATUS_OPTIONS];
   protected readonly displayedColumns: string[] = [
     'formStatus', 'actions', 'patient', 'patientDob',
-    'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan'
+    'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan',  'warning', 'buttons'
   ];
 
   // Show/hide the filters form
@@ -142,16 +144,19 @@ export class JobsFormsGridComponent {
   }
 
   protected async onSelectRecord(row: PatientGrid): Promise<void> {
-    const patient = await firstValueFrom(this.rcApiInterface.getPatient(row.patientId));
-    const qr = await firstValueFrom(this.rcApiInterface.getQuestionnaireResponse(row.questionnaireResponseId));
-    this.formManagerService.setSelectedQuestionnaireResponse(qr);
-    const activeFormSummary = new ActiveFormSummary(patient, row);
-    this.formManagerService.setSelectedActiveFormSummary(activeFormSummary);
-    await this.router.navigate(['/form-viewer']);
+    // Pass everything the form-viewer needs to load itself directly via the
+    // route params.
+    await this.router.navigate([
+      '/form-viewer',
+      row.batchId,
+      row.patientId,
+      row.jobPackage,
+      row.questionnaireResponseId
+    ]);
   }
 
   protected staleJobFound(patient: PatientGrid): boolean {
-    if (patient.questionnaireResponseStatus === FormStatus.COMPLETE || !patient.jobStartDateTime) {
+    if (patient.batchJobStatus === FormStatus.COMPLETE || !patient.jobStartDateTime) {
       return false;
     }
 
@@ -201,4 +206,36 @@ export class JobsFormsGridComponent {
     }});
 
   }
+
+  private deleteJob(batchId: string): void {
+    this.rcApiInterface.deleteBatchJob(batchId).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next: () => {
+        this.utilsService.showSuccessMessage('Job/Form deleted successfully');
+        // Reload the grid so the deleted row is removed.
+        this.patientResource.reload();
+      },
+      error: (err) => {
+        console.error('Error deleting job:', err);
+        this.utilsService.showErrorMessage('Error deleting Job/Form');
+      }
+    });
+  }
+
+  protected onDeleteJob(patient: PatientGrid) {
+    return openConfirmationDialog(this.dialog, {
+      title: "Delete Job/Form",
+      content: "WARNING: You are about to delete the form and associated jobs. This action cannot be undone. Do you wish to continue?",
+      primaryActionBtnTitle: "Yes, continue",
+      secondaryActionBtnTitle: "Leave Without Saving",
+      width: "40em",
+      isPrimaryButtonLeft: false,
+      isSecondaryActionDanger: true
+    }).subscribe(value => {
+      if(value == 'primaryAction') {
+        this.deleteJob(patient.batchId)
+      }
+    })
+  };
 }

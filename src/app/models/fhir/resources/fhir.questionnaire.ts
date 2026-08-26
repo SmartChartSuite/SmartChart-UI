@@ -1,7 +1,8 @@
 import {FhirBaseResource} from "../fhir.base.resource";
+import {Coding} from "../types/coding";
 
 export interface AnswerOption {
-  valueString?: string;
+  valueCoding?: Coding;
 
   [key: string]: any;
 }

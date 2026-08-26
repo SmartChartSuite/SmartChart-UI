@@ -1,7 +1,6 @@
-import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {StateManagementService} from "../../services/state-management/state-management.service";
-import {ApplicationState, RouteState} from "../../models/application-state";
+import {Component, OnInit, ChangeDetectionStrategy, inject} from '@angular/core';
 import {Router} from "@angular/router";
+import {OAuthService} from "angular-oauth2-oidc";
 
 @Component({
     selector: 'app-callback',
@@ -11,34 +10,17 @@ import {Router} from "@angular/router";
 })
 export class CallbackComponent implements OnInit {
 
-  constructor(protected stateManagementService: StateManagementService,
-              private router: Router) {}
+  private readonly router = inject(Router);
+  private readonly oauthService = inject(OAuthService);
 
   ngOnInit(): void {
-    // The OAuth service should have already processed the callback during app initialization
-    // via AuthService.configure(), so we just need to navigate
-    this.readState();
-  }
-
-  readState() {
-    this.stateManagementService.getState().subscribe({
-      next: (value: ApplicationState) => {
-        const lastComponent = value.currentRoute;
-
-        // Navigate to lastComponent based on the stored route state
-        if (lastComponent === RouteState.LANDING) {
-          this.router.navigateByUrl("");
-        } else if (lastComponent === RouteState.FORM_MANAGER) {
-          this.router.navigateByUrl("/forms");
-        } else if (lastComponent === RouteState.CURRENT_FORM) {
-          this.router.navigateByUrl("/form-viewer");
-        } else if (lastComponent === RouteState.JOBS_FORMS) {
-          this.router.navigateByUrl("/jobs-forms");
-        } else {
-          // Default fallback
-          this.router.navigateByUrl("");
-        }
-      }
-    });
+    // The OAuth service has already processed the callback during app
+    // initialization via AuthService.configure(). If the user was redirected to
+    // login from a protected page, that page's URL was passed as OAuth state, so
+    // return them there. Otherwise fall back to the home page.
+    const returnUrl = this.oauthService.state
+      ? decodeURIComponent(this.oauthService.state)
+      : '';
+    this.router.navigateByUrl(returnUrl || "/");
   }
 }

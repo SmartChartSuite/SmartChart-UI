@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { LandingComponent } from "./components/landing/landing.component";
 import { CallbackComponent } from "./components/callback/callback.component";
 import { LoginComponent } from "./components/login/login.component";
-import { FormManagerComponent } from "./components/form-manager/form-manager.component";
 import { FormViewerComponent } from "./components/form-viewer/form-viewer.component";
 import {JobsFormsGridComponent} from "./components/jobs-forms-grid/jobs-forms-grid.component";
 import {AuthGuard} from "./guards/auth.guard";
@@ -12,11 +11,6 @@ export const routes: Routes = [
   {
     path: '',
     component: LandingComponent
-  },
-  {
-    path: 'forms',
-    component: FormManagerComponent,
-    canActivate: [AuthGuard]
   },
   {
     path: 'jobs-forms',
@@ -32,7 +26,9 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: 'form-viewer',
+    // Form viewer loaded directly from route params. All jobs have a saved
+    // QuestionnaireResponse, so every segment is required.
+    path: 'form-viewer/:batchId/:patientId/:formName/:questionnaireResponseId',
     component: FormViewerComponent,
     canActivate: [AuthGuard],
     canDeactivate: [unsavedChangesGuard]

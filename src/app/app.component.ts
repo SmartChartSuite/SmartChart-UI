@@ -1,8 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
-import {ConfigService} from "./services/config/config.service";
-import {OAuthService} from "angular-oauth2-oidc";
-import {StateManagementService} from "./services/state-management/state-management.service";
-import {RouteState} from "./models/application-state";
+import {Component, ChangeDetectionStrategy, inject} from '@angular/core';
 import {LoadingService} from "./services/loading/loading.service";
 import {LoadingComponent} from './components/loading/loading.component';
 import {RouterOutlet} from '@angular/router';
@@ -17,21 +13,5 @@ import {ErrorMessageComponent} from "./components/error-message/error-message.co
   imports: [LoadingComponent, RouterOutlet, HeaderComponent, ErrorMessageComponent]
 })
 export class AppComponent {
-  title = '';
-  currentRoute: RouteState | undefined; //TODO: REMOVE
-
-  constructor(
-    config: ConfigService,
-    public oauthService: OAuthService,
-    private applicationState: StateManagementService,
-    public loadingService: LoadingService,
-  ) {
-    this.title = config.config.title;
-
-    this.applicationState.getState().subscribe({
-      next: value => {
-        this.currentRoute = value.currentRoute; // TODO: REMOVE
-      }
-    });
-  }
+  protected readonly loadingService = inject(LoadingService);
 }
