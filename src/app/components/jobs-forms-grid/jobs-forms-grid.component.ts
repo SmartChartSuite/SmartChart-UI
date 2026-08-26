@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import {catchError, of} from 'rxjs';
+import { catchError, filter, interval, of } from 'rxjs';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -16,10 +16,9 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-
 import { RcApiInterfaceService } from '../../services/rc-api-interface/rc-api-interface.service';
-import { FormStatus, STATUS_OPTIONS } from '../../models/form-status';
-import { PatientGrid } from '../../models/patient-grid';
+import { FormStatus, FORM_STATUS_OPTIONS } from '../../models/form-status';
+import {JOB_STATUS_OPTIONS, PatientGrid} from '../../models/patient-grid';
 import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
@@ -70,7 +69,8 @@ export class JobsFormsGridComponent {
 
   protected readonly FormStatus = FormStatus;
   protected readonly GENDER_OPTIONS = [...GENDER_OPTIONS];
-  protected readonly STATUS_OPTIONS = [...STATUS_OPTIONS];
+  protected readonly FORM_STATUS_OPTIONS = [...FORM_STATUS_OPTIONS];
+  protected readonly JOB_STATUS_OPTIONS = [...JOB_STATUS_OPTIONS];
   protected readonly displayedColumns: string[] = [
     'formStatus', 'actions', 'patient', 'patientDob',
     'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan',  'warning', 'buttons'
