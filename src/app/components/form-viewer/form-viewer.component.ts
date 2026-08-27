@@ -9,7 +9,7 @@ import {
   inject,
   DestroyRef
 } from '@angular/core';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
 import {filter, forkJoin, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
@@ -100,12 +100,17 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private savedAnswersSnapshot = '';
 
   showDrawer = false;
+  /**
+   * Collapsed state of the left-hand section navigation. When collapsed the
+   * sub-nav shrinks to a narrow strip (only the expand toggle is shown),
+   * giving the questions and evidence sections more room.
+   */
+  menuCollapsed = signal(false);
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
 
   results = signal<Results | undefined>(undefined);
-  evidenceViewerExpanded = toSignal(this.evidenceViewerService.viewerExpanded$, {initialValue: false});
 
   private readonly topScroll = viewChild<ElementRef<HTMLElement>>('top');
 
@@ -236,8 +241,12 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   toggleEvidenceDrawer(index: number): void {
-    this.showDrawer = !(this.selectedEvidenceIndex === index && this.showDrawer);
     this.selectedEvidenceIndex = index;
+  }
+
+  /** Toggles the left-hand section navigation between expanded and collapsed. */
+  toggleMenu(): void {
+    this.menuCollapsed.update(collapsed => !collapsed);
   }
 
   onExport(): void {

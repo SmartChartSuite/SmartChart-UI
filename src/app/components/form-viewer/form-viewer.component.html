@@ -29,38 +29,66 @@
       </div>
     </div>
   }
-  <div class="viewer-container-body">
+  <div class="viewer-container-body" [ngClass]="menuCollapsed() ? 'menu-collapsed' : ''">
     <div class="sub-nav">
-      <mat-nav-list>
+      <div class="fhir-explorer-header sub-nav-header">
+        @if (!menuCollapsed()) {
+          <span class="explorer-header-title">
+            Sections
+          </span>
+          <span class="content-spacer"></span>
+        }
+        <mat-icon
+          class="pointer sub-nav-toggle"
+          (click)="toggleMenu()"
+          [matTooltip]="menuCollapsed() ? 'Expand sections' : 'Collapse sections'">
+          {{ menuCollapsed() ? 'chevron_right' : 'chevron_left' }}
+        </mat-icon>
+      </div>
+
+      <mat-nav-list class="section-scroll-body">
         <ul class="sub-menu">
           @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
             @let evidenceCount = getQuestionsWithEvidenceCount(item, results());
-            <li class="sub-menu-item"
-                [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
-                (click)="onSectionSelected(i)">
-              {{ item.text }}
-              @if (evidenceCount > 0) {
-                <span class="sparkles-icon" aria-hidden="true"
-                      matTooltipPosition="above"
-                      [matTooltip]="'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.'">
-                  </span>
-              }
-            </li>
+            @if (!menuCollapsed()) {
+              <li class="sub-menu-item"
+                  [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
+                  (click)="onSectionSelected(i)">
+                {{ i + 1 }}. {{ item.text }}
+                @if (evidenceCount > 0) {
+                  <span class="sparkles-icon" aria-hidden="true"
+                        matTooltipPosition="above"
+                        [matTooltip]="'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.'">
+                    </span>
+                }
+              </li>
+            } @else {
+              <li class="sub-menu-item" [matTooltip]="item.text" [matTooltipPosition]="'right'"
+                  [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
+                  (click)="onSectionSelected(i)">
+                <span class="pointer">{{ i + 1 }}.</span>
+            }
           }
         </ul>
       </mat-nav-list>
     </div>
 
     <!-- Begin actual form rendering -->
-    <div class="viewer-container-body-content" #top>
+    <div class="viewer-container-body-content">
+      <div class="fhir-explorer-header">
+        <span class="explorer-header-title">
+            Questions
+          </span>
+      </div>
+      <div class="section-scroll-body" #top>
       @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
         @if (item.selected) {
           <div class="margin-top-md item-text">{{ item.text }}</div>
 
           @for (childItem of item.item; track childItem.linkId; let j = $index) {
-            <div class="question-item" [ngClass]="showDrawer ? 'full-size-question-item': ''">
+            <div class="question-item full-size-question-item">
               <div class="question-label"
-                   [ngClass]="(j === selectedEvidenceIndex && showDrawer) ? 'selected-evidence': ''">
+                   [ngClass]="(j === selectedEvidenceIndex) ? 'selected-evidence': ''">
                 <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
                 <span class="margin-left-sm">{{ childItem.text }}</span>
               </div>
@@ -189,39 +217,23 @@
           }
         }
       }
+      </div>
     </div>
-    <div class="viewer-container-body-side-content viewer-container-body-side-explorer"
-         [ngClass]="evidenceViewerExpanded() ? 'viewer-container-body-side-explorer-expanded': ''"
-         [hidden]="!showDrawer">
+    <div class="viewer-container-body-side-content viewer-container-body-side-explorer">
       <div class="fhir-explorer-header">
-        @if (evidenceViewerExpanded()) {
-          <mat-icon
-            (click)="evidenceViewerService.setViewerExpanded(false)"
-            matTooltip="Collapse"
-            class="pointer">
-            chevron_right
-          </mat-icon>
-        } @else {
-          <mat-icon
-            (click)="evidenceViewerService.setViewerExpanded(true)"
-            matTooltip="Expand"
-            class="pointer">
-            chevron_left
-          </mat-icon>
-        }
         <span class="explorer-header-title">
             Evidence
           </span>
-        <span class="content-spacer"></span>
-        <mat-icon
-          (click)="showDrawer = false"
-          aria-label="Close Evidence Viewer"
-          matTooltip="Close Evidence Viewer"
-          class="pointer">
-          close
-        </mat-icon>
       </div>
-      <app-evidence-details [activeFormSummary]="activeFormSummary()"></app-evidence-details>
+      <div class="section-scroll-body">
+        @if (selectedEvidenceIndex !== null) {
+          <app-evidence-details [activeFormSummary]="activeFormSummary()"></app-evidence-details>
+        } @else {
+          <div class="evidence-empty-state">
+            Select "View Evidence" on a question to see supporting evidence here.
+          </div>
+        }
+      </div>
     </div>
   </div>
   @if ((questionnaire()?.item?.length ?? 0) > 0) {
