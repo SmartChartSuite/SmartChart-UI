@@ -18,7 +18,7 @@ import { dateFormat } from '../../../../pipe/date-format.pipe';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [MatTable, MatSort, NgFor, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatTooltip, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatPaginator, AsyncPipe, CamelCaseToTitleCasePipe, ConcatDataToStrPipe]
 })
-export class StructuredResultsDetailsComponent implements OnChanges, OnInit, AfterViewInit{
+export class StructuredResultsDetailsComponent implements OnChanges, AfterViewInit{
   @Input() structuredEvidenceDto: StructuredEvidenceDTO[] = [];
   @Input() displayedColumns: string[] = []; // Allows the user to enter the table columns of their choice in the order they need
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -49,9 +49,5 @@ export class StructuredResultsDetailsComponent implements OnChanges, OnInit, Aft
       }
       this.columns = this.columns.filter(column=> column != 'sortFilterDate');
     }
-  }
-
-  ngOnInit(): void {
-    this.evidenceViewerExpanded$ = this.evidenceViewerService.viewerExpanded$;
   }
 }

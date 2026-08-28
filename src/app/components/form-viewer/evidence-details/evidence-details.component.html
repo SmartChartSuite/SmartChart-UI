@@ -78,3 +78,8 @@
     }
   </mat-card-content>
 </mat-card>
+@for(structured of evidence.structured; let i=$index; track i){
+  <app-structured-evidence [evidence]="structured"></app-structured-evidence>
+<!--  <pre>{{ structured | json }}</pre>-->
+}
+

@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} fro
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {NlpAnswer, ResultSet} from "../../../models/results";
+import {Evidence} from "../../../models/parsed-results";
 import {filter} from "rxjs";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {
@@ -15,13 +16,16 @@ import { EvidenceFilterComponent } from './evidence-filter/evidence-filter.compo
 import { StructuredResultsDetailsComponent } from './structured-results-details/structured-results-details.component';
 import { UnstructuredResultsDetailsComponent } from './unstructured-results-details/unstructured-results-details.component';
 import { SortByDatePipe } from '../../../pipe/sort-by-date.pipe';
+import {JsonPipe} from "@angular/common";
+import {StructuredEvidenceComponent} from "./structured-evidence/structured-evidence.component";
+import {StructuredEvidenceHelperService} from "../../../services/evidence-viewer/structured-evidence-helper.service";
 
 @Component({
     selector: 'app-evidence-details',
     templateUrl: './evidence-details.component.html',
     styleUrl: './evidence-details.component.scss',
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe]
+  imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe, JsonPipe, StructuredEvidenceComponent]
 })
 export class EvidenceDetailsComponent implements OnChanges{
 
@@ -36,11 +40,14 @@ export class EvidenceDetailsComponent implements OnChanges{
   combinedDTODeepCopy: CombinedStructuredEvidenceDTO;
   combinedDTO: CombinedStructuredEvidenceDTO = {observations: [], procedures: [], conditions: [], medicationRequests: [], encounters : []};
 
+  evidence: Evidence = {structured: [], unstructured: []};
+
   isDateFilterExpanded = false;
 
   //Deep copy all resources for filtering operations because the API does not handle filtering or sorting
   nlpAnswersDeepCopy: NlpAnswer[] = [];
-  constructor(private evidenceViewerService: EvidenceViewerService) {
+  constructor(private evidenceViewerService: EvidenceViewerService,
+              private structuredEvidenceHelper: StructuredEvidenceHelperService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -50,6 +57,7 @@ export class EvidenceDetailsComponent implements OnChanges{
           filter(value=> Object.keys(value).length !== 0))
         .subscribe({
           next: (resultSet: ResultSet) => {
+            console.log(resultSet)
             const evidenceList = resultSet.evidence;
             const [cqlResources, nlpResources] = evidenceList.reduce(([cqlResources, nlpResources], resource) => {
               (resource.resourceType === "DocumentReference" ? nlpResources : cqlResources).push(resource);
@@ -59,10 +67,20 @@ export class EvidenceDetailsComponent implements OnChanges{
             this.nlpResources = nlpResources;
             this.nlpAnswers = resultSet.nlpAnswers;
 
+            this.evidence = {
+              // Structured evidence: non-DocumentReference FHIR resources, grouped and sorted.
+              structured: this.structuredEvidenceHelper.parseStructuredEvidence(cqlResources),
+              // Unstructured evidence: raw NLP answers, copied as-is (not grouped for now).
+              unstructured: resultSet.nlpAnswers ?? []
+            };
+            console.log(this.evidence);
+
             this.combinedDTO = new CombinedStructuredEvidenceDTO(cqlResources, this.activeFormSummary.patientSummary);
             //preserve a copy in case the results are filtered.
             this.nlpAnswersDeepCopy = this.deepCopy(this.nlpAnswers);
             this.combinedDTODeepCopy = this.deepCopy(this.combinedDTO);
+
+
           }
         })
     }

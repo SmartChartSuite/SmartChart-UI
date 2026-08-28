@@ -1,0 +1,28 @@
+<pre>{{ evidence()?.resourceType }} — name: {{ evidence()?.name }} system: {{ evidence()?.system }} code: {{ evidence()?.code }} — Latest Date: {{ evidence()?.latestDate | date }} — Most Recent: {{ evidence()?.highlight }} (count: {{ evidence()?.resources?.length }})</pre>
+<div class="margin-left-md">
+  @for (resource of evidence()?.resources; let i = $index; track i) {
+    <div class="margin-left-lg">
+      @if (resource.resourceType == 'Observation') {
+        <pre>{{ resource.details.value }}</pre>
+      }
+      @else if (resource.resourceType == 'Condition') {
+        <div>Onset: {{ resource.details.onset | date }} Abatement: {{ resource.details.abatement | date }}</div>
+      }
+      @else if (resource.resourceType == 'MedicationRequest') {
+        Dosage Instructions <pre>{{ resource.details.dosageInstructions }}</pre>
+      }
+      @else if (resource.resourceType == 'Encounter') {
+        <div>Period - Start: {{ resource.details.start | date }} / End: {{ resource.details.end | date }}</div>
+      }
+      @else if (resource.resourceType == 'Procedure') {
+        <div>Status: {{ resource.details.status }}</div>
+        <div>Category: {{ resource.details.category }}</div>
+        <div>Reason: {{ resource.details.reason }}</div>
+      }
+
+      <!-- Date Used For Sorting -->
+      <div>Most Recent Date: {{ resource.dateForSorting | date }}</div>
+    </div>
+  }
+</div>
+<div> _______________________________________</div>

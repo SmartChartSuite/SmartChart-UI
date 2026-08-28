@@ -195,9 +195,6 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.utilsService.showErrorMessage();
       }
     });
-
-    // Expand the evidence viewer for a larger screen device. This may need a bit of testing
-    this.evidenceViewerService.setViewerExpanded(window.screen.width >= 1440);
   }
 
   private fetchResults() {
