@@ -21,6 +21,10 @@ export interface MedicationRequestDetails {
 export interface EncounterDetails {
   start?: string;
   end?: string;
+  type?: string;
+  reasonText?: string;
+  reasonCode?: string;
+  reasonSystem?: string;
 }
 
 /** Procedure-specific rendered details. */

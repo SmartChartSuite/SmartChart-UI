@@ -1,28 +1,137 @@
-<pre>{{ evidence()?.resourceType }} — name: {{ evidence()?.name }} system: {{ evidence()?.system }} code: {{ evidence()?.code }} — Latest Date: {{ evidence()?.latestDate | date }} — Most Recent: {{ evidence()?.highlight }} (count: {{ evidence()?.resources?.length }})</pre>
-<div class="margin-left-md">
-  @for (resource of evidence()?.resources; let i = $index; track i) {
-    <div class="margin-left-lg">
-      @if (resource.resourceType == 'Observation') {
-        <pre>{{ resource.details.value }}</pre>
-      }
-      @else if (resource.resourceType == 'Condition') {
-        <div>Onset: {{ resource.details.onset | date }} Abatement: {{ resource.details.abatement | date }}</div>
-      }
-      @else if (resource.resourceType == 'MedicationRequest') {
-        Dosage Instructions <pre>{{ resource.details.dosageInstructions }}</pre>
-      }
-      @else if (resource.resourceType == 'Encounter') {
-        <div>Period - Start: {{ resource.details.start | date }} / End: {{ resource.details.end | date }}</div>
-      }
-      @else if (resource.resourceType == 'Procedure') {
-        <div>Status: {{ resource.details.status }}</div>
-        <div>Category: {{ resource.details.category }}</div>
-        <div>Reason: {{ resource.details.reason }}</div>
-      }
+<mat-expansion-panel togglePosition="before" class="evidence-panel">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <div class="header-row">
+        <div class="title-rows section-name">
+          <span class="title-resource-type">{{ evidence()?.resourceType }}</span>
+          <span class="title-value">
+            <span [matTooltip]="evidence()?.name ?? ''"
+                  [matTooltipDisabled]="!isLongerThan(evidence()?.name, 60)">
+              {{ truncate(evidence()?.name, 60) }}
+            </span>
+            ({{ evidence()?.system }} {{ evidence()?.code }})
+          </span>
+        </div>
 
-      <!-- Date Used For Sorting -->
-      <div>Most Recent Date: {{ resource.dateForSorting | date }}</div>
-    </div>
+        <div class="title-rows section-count">
+          <span>{{ evidence()?.resources?.length }} results</span>
+        </div>
+
+        <div class="section-recent">
+          <div class="title-rows">
+            <span class="title-resource-type">Most Recent Date</span>
+            <span class="title-value">{{ evidence()?.latestDate | date }}</span>
+          </div>
+
+          @if (evidence()?.highlight) {
+            <div class="title-rows">
+              <span class="title-resource-type">
+                {{ evidence()?.resourceType == 'Procedure' ? 'Most Recent Reason' : 'Most Recent Value' }}
+              </span>
+              <span class="title-value"
+                    [matTooltip]="evidence()?.highlight ?? ''"
+                    [matTooltipDisabled]="!isLongerThan(evidence()?.highlight, 20)">
+                {{ truncate(evidence()?.highlight, 20) }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  @if (evidence()?.resourceType == 'Observation') {
+    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef class="nowrap">Date</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.dateForSorting | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef>Value</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.value }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="observationColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: observationColumns"></tr>
+    </table>
+  } @else if (evidence()?.resourceType == 'Condition') {
+    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+      <ng-container matColumnDef="onset">
+        <th mat-header-cell *matHeaderCellDef class="nowrap">Onset</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.details.onset | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="abatement">
+        <th mat-header-cell *matHeaderCellDef>Abatement</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.abatement | date }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="conditionColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: conditionColumns"></tr>
+    </table>
+  } @else if (evidence()?.resourceType == 'Encounter') {
+    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+      <ng-container matColumnDef="start">
+        <th mat-header-cell *matHeaderCellDef class="nowrap">Start</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.details.start | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="end">
+        <th mat-header-cell *matHeaderCellDef class="nowrap">End</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.details.end | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.type }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reasonText">
+        <th mat-header-cell *matHeaderCellDef>Reason</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.reasonText }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reasonCode">
+        <th mat-header-cell *matHeaderCellDef>Reason Code</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.reasonCode }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="reasonSystem">
+        <th mat-header-cell *matHeaderCellDef>Reason System</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.reasonSystem }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="encounterColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: encounterColumns"></tr>
+    </table>
+  } @else if (evidence()?.resourceType == 'MedicationRequest') {
+    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef class="nowrap">Date</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.dateForSorting | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="dosage">
+        <th mat-header-cell *matHeaderCellDef>Dosage</th>
+        <td mat-cell *matCellDef="let resource">{{ resource.details.dosageInstructions }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="medicationColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: medicationColumns"></tr>
+    </table>
+  } @else {
+    @for (resource of evidence()?.resources; let i = $index; track i) {
+      <div class="margin-left-md padding-bottom-md">
+        @if (resource.resourceType == 'Procedure') {
+          <div>Status: {{ resource.details.status }}</div>
+          <div>Category: {{ resource.details.category }}</div>
+          <div>Reason: {{ resource.details.reason }}</div>
+        }
+
+        <!-- Date Used For Sorting -->
+        <div>Date: {{ resource.dateForSorting | date }}</div>
+      </div>
+    }
   }
-</div>
-<div> _______________________________________</div>
+</mat-expansion-panel>

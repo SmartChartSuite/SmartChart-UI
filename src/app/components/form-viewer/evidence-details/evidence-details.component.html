@@ -1,3 +1,15 @@
+<div class="margin-md">
+  <h3>Structured Evidence</h3>
+  @if (evidence.structured?.length) {
+    <mat-accordion multi>
+      @for (structured of evidence.structured; let i = $index; track i) {
+        <app-structured-evidence [evidence]="structured"></app-structured-evidence>
+      }
+    </mat-accordion>
+  } @else {
+    No Structured Evidence Found
+  }
+</div>
 <mat-card class="margin-sm">
   <mat-card-header>
     <mat-card-title-group>
@@ -36,7 +48,7 @@
         [structuredEvidenceDto]="dto | sortByDate: 'sortFilterDate' : 'desc'">
       </app-structured-results-details>
     }
-    @if(!cqlResources?.length){
+    @if (!cqlResources?.length) {
       No Structured Evidence Found
     }
   </mat-card-content>
@@ -78,8 +90,5 @@
     }
   </mat-card-content>
 </mat-card>
-@for(structured of evidence.structured; let i=$index; track i){
-  <app-structured-evidence [evidence]="structured"></app-structured-evidence>
-<!--  <pre>{{ structured | json }}</pre>-->
-}
+
 

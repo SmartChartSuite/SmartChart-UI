@@ -133,7 +133,11 @@ export class StructuredEvidenceHelperService {
         resourceType: 'Encounter',
         details: {
           start: resource?.['period']?.['start'],
-          end: resource?.['period']?.['end']
+          end: resource?.['period']?.['end'],
+          type: resource?.['type']?.[0]?.['text'] ?? resource?.['type']?.[0]?.['coding']?.[0]?.['display'],
+          reasonText: resource?.['reasonCode']?.[0]?.['text'],
+          reasonCode: coding?.code,
+          reasonSystem: this.codeResolver.getSystemFromEnum(coding?.system)
         }
       };
     } else if (resourceType === 'Procedure') {

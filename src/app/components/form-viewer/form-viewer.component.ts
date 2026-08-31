@@ -26,7 +26,7 @@ import {PatientDetailsComponent} from "./patient-details/patient-details.compone
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatButton} from "@angular/material/button";
 import {MatNavList} from "@angular/material/list";
-import {JsonPipe, NgClass} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
@@ -69,7 +69,6 @@ import {PatientGrid} from "../../models/patient-grid";
     MatIcon,
     EvidenceDetailsComponent,
     SuggestedAnswerFormatterPipe,
-    JsonPipe,
   ]
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {
@@ -136,7 +135,14 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
     results$.pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(value => this.results.set(value));
+    ).subscribe(value => {
+      this.results.set(value);
+      // On first load, auto-select the first question in the initially-selected
+      // section (mirrors clicking a section).
+      if (this.selectedEvidenceIndex === null) {
+        this.selectFirstQuestion(this.selectedMenuItemIndex);
+      }
+    });
 
     // Load the form entirely from the route params. This makes /form-viewer
     // deep-linkable and removes any dependency on in-memory / session state.
@@ -225,6 +231,24 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     this.selectedEvidenceIndex = null;
     this.showDrawer = false;
     this.scrollToTop();
+    this.selectFirstQuestion(index);
+  }
+
+  /**
+   * Selects the first question in the section and renders its evidence. If the
+   * first question has no evidence, the evidence viewer renders its empty state
+   * ("No ... Evidence Found").
+   */
+  private selectFirstQuestion(sectionIndex: number): void {
+    const section = this.questionnaire()?.item?.[sectionIndex];
+    const results = this.results();
+    if (!section?.item?.length || !results) {
+      return;
+    }
+
+    this.selectedEvidenceIndex = 0;
+    const resultSet = results[`link${section.item[0].linkId}`];
+    this.evidenceViewerService.setEvidence(resultSet ?? {evidence: [], nlpAnswers: []});
   }
 
   goToPreviousSection(): void {

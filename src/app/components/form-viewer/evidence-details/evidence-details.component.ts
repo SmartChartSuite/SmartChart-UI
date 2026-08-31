@@ -8,26 +8,29 @@ import {ActiveFormSummary} from "../../../models/active-form-summary";
 import {
   CombinedStructuredEvidenceDTO
 } from "../../../models/dto/structured-evidence-dto/combined-structured-evidence-dto";
-import { MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatCardContent } from '@angular/material/card';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIcon } from '@angular/material/icon';
-import { EvidenceFilterComponent } from './evidence-filter/evidence-filter.component';
-import { StructuredResultsDetailsComponent } from './structured-results-details/structured-results-details.component';
-import { UnstructuredResultsDetailsComponent } from './unstructured-results-details/unstructured-results-details.component';
-import { SortByDatePipe } from '../../../pipe/sort-by-date.pipe';
+import {MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatCardContent} from '@angular/material/card';
+import {MatIconButton, MatButton} from '@angular/material/button';
+import {MatTooltip} from '@angular/material/tooltip';
+import {MatIcon} from '@angular/material/icon';
+import {EvidenceFilterComponent} from './evidence-filter/evidence-filter.component';
+import {StructuredResultsDetailsComponent} from './structured-results-details/structured-results-details.component';
+import {
+  UnstructuredResultsDetailsComponent
+} from './unstructured-results-details/unstructured-results-details.component';
+import {SortByDatePipe} from '../../../pipe/sort-by-date.pipe';
 import {JsonPipe} from "@angular/common";
 import {StructuredEvidenceComponent} from "./structured-evidence/structured-evidence.component";
+import {MatExpansionModule} from "@angular/material/expansion";
 import {StructuredEvidenceHelperService} from "../../../services/evidence-viewer/structured-evidence-helper.service";
 
 @Component({
-    selector: 'app-evidence-details',
-    templateUrl: './evidence-details.component.html',
-    styleUrl: './evidence-details.component.scss',
-    changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe, JsonPipe, StructuredEvidenceComponent]
+  selector: 'app-evidence-details',
+  templateUrl: './evidence-details.component.html',
+  styleUrl: './evidence-details.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe, StructuredEvidenceComponent, MatExpansionModule]
 })
-export class EvidenceDetailsComponent implements OnChanges{
+export class EvidenceDetailsComponent implements OnChanges {
 
   @Input() activeFormSummary!: ActiveFormSummary | undefined;
   documentsSortDirection: 'asc' | 'desc' = 'desc';
@@ -38,7 +41,13 @@ export class EvidenceDetailsComponent implements OnChanges{
   protected readonly Object = Object;
 
   combinedDTODeepCopy: CombinedStructuredEvidenceDTO;
-  combinedDTO: CombinedStructuredEvidenceDTO = {observations: [], procedures: [], conditions: [], medicationRequests: [], encounters : []};
+  combinedDTO: CombinedStructuredEvidenceDTO = {
+    observations: [],
+    procedures: [],
+    conditions: [],
+    medicationRequests: [],
+    encounters: []
+  };
 
   evidence: Evidence = {structured: [], unstructured: []};
 
@@ -46,19 +55,20 @@ export class EvidenceDetailsComponent implements OnChanges{
 
   //Deep copy all resources for filtering operations because the API does not handle filtering or sorting
   nlpAnswersDeepCopy: NlpAnswer[] = [];
+
   constructor(private evidenceViewerService: EvidenceViewerService,
               private structuredEvidenceHelper: StructuredEvidenceHelperService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['activeFormSummary']?.currentValue){
+    if (changes['activeFormSummary']?.currentValue) {
       this.evidenceViewerService.resultSet$
         .pipe(
-          filter(value=> Object.keys(value).length !== 0))
+          filter(value => Object.keys(value).length !== 0))
         .subscribe({
           next: (resultSet: ResultSet) => {
             console.log(resultSet)
-            const evidenceList = resultSet.evidence;
+            const evidenceList = resultSet.evidence ?? [];
             const [cqlResources, nlpResources] = evidenceList.reduce(([cqlResources, nlpResources], resource) => {
               (resource.resourceType === "DocumentReference" ? nlpResources : cqlResources).push(resource);
               return [cqlResources, nlpResources];
@@ -89,7 +99,7 @@ export class EvidenceDetailsComponent implements OnChanges{
   onFilterByDateRange(event: any) {
     this.combinedDTO = this.deepCopy(this.combinedDTODeepCopy);
     this.nlpAnswers = this.nlpAnswersDeepCopy;
-    if(event.startDate && event.endDate){
+    if (event.startDate && event.endDate) {
       this.combinedDTO = this.deepCopy(this.combinedDTODeepCopy);
       this.nlpAnswers = this.nlpAnswersDeepCopy;
       this.combinedDTO = this.applyDateFilterToStructuredResources(
@@ -99,7 +109,13 @@ export class EvidenceDetailsComponent implements OnChanges{
   }
 
   private applyDateFilterToStructuredResources(structuredResources: CombinedStructuredEvidenceDTO, startDate, endDate): CombinedStructuredEvidenceDTO {
-    let result: CombinedStructuredEvidenceDTO = { observations: [], encounters: [], medicationRequests: [], procedures: [], conditions: [] };
+    let result: CombinedStructuredEvidenceDTO = {
+      observations: [],
+      encounters: [],
+      medicationRequests: [],
+      procedures: [],
+      conditions: []
+    };
     Object.keys(structuredResources).forEach(key => {
       result[key] = structuredResources[key].filter(item =>
         new Date(item.sortFilterDate) >= new Date(startDate) && new Date(item.sortFilterDate) <= new Date(endDate))
@@ -108,15 +124,15 @@ export class EvidenceDetailsComponent implements OnChanges{
   }
 
   private applyDateFilterToUnstructuredResources(unstructuredResources: NlpAnswer[], startDate, endDate): NlpAnswer[] {
-    if(!unstructuredResources){
+    if (!unstructuredResources) {
       return null;
     }
-    return  unstructuredResources.filter(item =>
+    return unstructuredResources.filter(item =>
       new Date(item.date) >= new Date(startDate) && new Date(item.date) <= new Date(endDate));
   }
 
-  private deepCopy(object: any){
-    if(!object){
+  private deepCopy(object: any) {
+    if (!object) {
       return null;
     }
     return JSON.parse(JSON.stringify(object));
