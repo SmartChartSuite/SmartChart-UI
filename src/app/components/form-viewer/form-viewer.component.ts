@@ -144,8 +144,15 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       }
     });
 
-    // Load the form entirely from the route params. This makes /form-viewer
-    // deep-linkable and removes any dependency on in-memory / session state.
+    this.loadFormFromRoute();
+  }
+
+  /**
+   * Loads the form from the route so /form-viewer remains deep-linkable and
+   * does not depend on in-memory or session state.
+   */
+  private loadFormFromRoute(): void {
+    // Read all identifiers needed to load the patient, response, and form.
     this.route.paramMap.pipe(
       takeUntilDestroyed(this.destroyRef),
       map(params => ({
@@ -155,6 +162,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         questionnaireResponseId: params.get('questionnaireResponseId')
       })),
       filter(params => !!params.batchId && !!params.patientId && !!params.formName && !!params.questionnaireResponseId),
+      // Load the patient and saved answers together before loading the form.
       switchMap(params =>
         forkJoin({
           patient: this.rcApiInterfaceService.getPatient(params.patientId!),
@@ -164,7 +172,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         )
       ),
       tap(({params, patient, questionnaireResponse}) => {
-        // Rebuild the ActiveFormSummary from the fetched patient + route params.
+        // Store the route-backed form context for the viewer and API calls.
         this.activeFormSummary.set(new ActiveFormSummary(patient, {
           batchId: params.batchId!,
           jobPackage: params.formName!,
@@ -173,11 +181,13 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.pendingQuestionnaireResponse = questionnaireResponse;
         this.questionnaireResponseId = questionnaireResponse.id;
       }),
+      // Fetch the questionnaire definition after the route context is ready.
       mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
         key: 'name',
         value: params.formName!
       })),
       map(response => Array.isArray(response) ? (response[0] ?? null) : response),
+      // Mark the first section as selected before rendering the questionnaire.
       map((result: Questionnaire | null) => result ? {
         ...result,
         item: result.item?.map((item, index) => ({
@@ -190,7 +200,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.questionnaire.set(result ?? undefined);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.captureAnswersSnapshot();
-        // Apply the saved answers from the loaded QuestionnaireResponse.
+        // Apply persisted answers after the questionnaire structure is ready.
         if (this.pendingQuestionnaireResponse) {
           this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
         }
@@ -246,8 +256,16 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       return;
     }
 
-    this.selectedEvidenceIndex = 0;
-    const resultSet = results[`link${section.item[0].linkId}`];
+    const firstQuestionIndex = section.item.findIndex(
+      item => item.type !== QuestionnaireItemType.display
+    );
+    if (firstQuestionIndex === -1) {
+      return;
+    }
+
+    this.selectedEvidenceIndex = firstQuestionIndex;
+    const firstQuestion = section.item[firstQuestionIndex];
+    const resultSet = results[`link${firstQuestion.linkId}`];
     this.evidenceViewerService.setEvidence(resultSet ?? {evidence: [], nlpAnswers: []});
   }
 

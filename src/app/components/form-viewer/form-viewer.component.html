@@ -67,6 +67,7 @@
                   [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
                   (click)="onSectionSelected(i)">
                 <span class="pointer">{{ i + 1 }}.</span>
+                <span class="sparkles-icon" aria-hidden="true"></span>
             }
           }
         </ul>

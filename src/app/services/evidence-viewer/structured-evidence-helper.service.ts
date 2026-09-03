@@ -70,11 +70,11 @@ export class StructuredEvidenceHelperService {
   /**
    * The type-specific highlight surfaced to the group header, taken from the
    * most-recent resource:
-   *  - Observation:       value
-   *  - Procedure:         reason
-   *  - MedicationRequest: dosage instructions
-   *  - Condition:         none
-   *  - Encounter:         none
+   *  - Observation:        value
+   *  - Procedure:          reason
+   *  - MedicationRequest:  none
+   *  - Condition:          none
+   *  - Encounter:          none
    */
   private getHighlight(resource: ParsedResource | undefined): string | undefined {
     if (!resource) return undefined;
@@ -82,8 +82,6 @@ export class StructuredEvidenceHelperService {
       return resource.details.value;
     } else if (resource.resourceType === 'Procedure') {
       return resource.details.reason;
-    } else if (resource.resourceType === 'MedicationRequest') {
-      return resource.details.dosageInstructions;
     } else {
       return undefined;
     }

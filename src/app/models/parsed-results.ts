@@ -110,7 +110,6 @@ export interface ParsedCodeGroup {
    * taken from the first (most recent) resource:
    *  - Observation:       most recent value
    *  - Procedure:         most recent reason
-   *  - MedicationRequest: most recent dosage
    */
   highlight?: string;
   /** Parsed resources belonging to this code group, sorted by date (most recent first). */
