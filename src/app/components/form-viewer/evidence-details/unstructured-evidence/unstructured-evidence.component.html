@@ -1,0 +1,51 @@
+<section class="border padding-md" aria-label="Evidence assertions">
+  <div>
+    <span class="label-text margin-right-md">Most Recent Assertion:</span>
+    <span>{{ evidence().mostRecentAssertionSuggestion }}</span>
+  </div>
+  <div class="margin-top-sm">
+    <span class="label-text margin-right-md">Most Common Assertion:</span>
+    <span>{{ evidence().mostCommonAssertionSuggestion }}</span>
+  </div>
+</section>
+<section class="padding-md" aria-label="Supporting evidence">
+  <div class="label-text margin-right-md">Evidence supporting:</div>
+  <mat-chip-set aria-label="Supporting evidence choices">
+    @for (el of evidence().supportingEvidence | sortByDate: 'date' : 'asc'; track el) {
+      <mat-chip-option
+        [selected]="selectedEvidence() === el"
+        (click)="onSelectEvidence(el)">{{ el.assertion }}
+      </mat-chip-option>
+    }
+  </mat-chip-set>
+</section>
+@if (selectedEvidence(); as selected) {
+  <section class="border padding-md" aria-label="Selected evidence">
+    <div class="flex items-center justify-between">
+      <div class="flex-row-simple items-center">
+        <span class="label-text margin-right-sm">Date:</span>
+        <span>{{ selected.date | date }} (Age at: {{ ageAt() }})</span>
+      </div>
+      <div class="flex-row-simple items-center">
+        <span class="label-text margin-right-sm margin-left-md">Result Value:</span>
+        <span>{{ selected.assertion }}</span>
+      </div>
+      <button
+        matButton="outlined"
+        class="margin-left-md"
+        type="button"
+        (click)="onViewEvidence(selected)">
+        <mat-icon aria-hidden="true">article</mat-icon>
+        View Source
+      </button>
+    </div>
+    <div class="margin-top-md">
+      <span class="label-text margin-right-sm">Evidence Text:</span>
+      <span>{{ selected.text }}</span>
+    </div>
+    <div class="margin-top-md">
+      <span class="label-text margin-right-sm">Evidence Reasoning:</span>
+      <span>{{ selected.reasoning }}</span>
+    </div>
+  </section>
+}

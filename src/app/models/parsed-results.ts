@@ -1,4 +1,5 @@
 import {NlpAnswer} from "./results";
+import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
 /** Observation-specific rendered details. */
 export interface ObservationDetails {
@@ -123,11 +124,44 @@ export interface ParsedCodeGroup {
 export type StructuredEvidence = ParsedCodeGroup[];
 
 /**
+ * A single piece of supporting evidence, extracted straight from the resources
+ * returned by the API: the answer Observation carries the assertion and the
+ * evidence text, the DocumentReference carries the date and the source.
+ */
+export interface SupportingEvidence {
+  /** The assertion this evidence supports (e.g. "No", "Not reported"). */
+  assertion: string;
+  /** The reasoning associated with the assertion. */
+  reasoning?: string;
+  /** The evidence text surfaced to the user. */
+  text: string;
+  /** The date of the document the evidence was found in (ISO string). */
+  date: string;
+  /** The type of document the evidence was found in (e.g. "Progress Notes"). */
+  source: string;
+  /** The DocumentReference the evidence was found in, when it can be resolved. */
+  resource?: FhirBaseResource;
+}
+
+/**
+ * The unstructured branch of the evidence: the assertion suggestions derived
+ * from the NLP answers plus the supporting evidence that backs them.
+ */
+export interface UnstructuredEvidence {
+  /** The assertion suggested by the most recent NLP answer. */
+  mostRecentAssertionSuggestion: string;
+  /** The assertion suggested most often across the NLP answers. */
+  mostCommonAssertionSuggestion: string;
+  /** The supporting evidence backing the suggestions. */
+  supportingEvidence: SupportingEvidence[];
+}
+
+/**
  * The parsed evidence, split into two top-level branches:
  *  - structured: FHIR resources (Observation, Condition, etc.) grouped by resourceType.
- *  - unstructured: raw NLP answers, copied as-is (not grouped for now).
+ *  - unstructured: assertion suggestions and supporting evidence from NLP answers.
  */
 export interface Evidence {
   structured: StructuredEvidence;
-  unstructured: NlpAnswer[];
+  unstructured: UnstructuredEvidence;
 }

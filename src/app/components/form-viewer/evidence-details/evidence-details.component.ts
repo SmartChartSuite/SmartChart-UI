@@ -18,17 +18,18 @@ import {
   UnstructuredResultsDetailsComponent
 } from './unstructured-results-details/unstructured-results-details.component';
 import {SortByDatePipe} from '../../../pipe/sort-by-date.pipe';
-import {JsonPipe} from "@angular/common";
 import {StructuredEvidenceComponent} from "./structured-evidence/structured-evidence.component";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {StructuredEvidenceHelperService} from "../../../services/evidence-viewer/structured-evidence-helper.service";
+import {UnstructuredEvidenceHelperService} from "../../../services/evidence-viewer/unstructured-evidence-helper.service";
+import {UnstructuredEvidenceComponent} from "./unstructured-evidence/unstructured-evidence.component";
 
 @Component({
   selector: 'app-evidence-details',
   templateUrl: './evidence-details.component.html',
   styleUrl: './evidence-details.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe, StructuredEvidenceComponent, MatExpansionModule]
+  imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe, StructuredEvidenceComponent, MatExpansionModule, UnstructuredEvidenceComponent]
 })
 export class EvidenceDetailsComponent implements OnChanges {
 
@@ -49,7 +50,14 @@ export class EvidenceDetailsComponent implements OnChanges {
     encounters: []
   };
 
-  evidence: Evidence = {structured: [], unstructured: []};
+  evidence: Evidence = {
+    structured: [],
+    unstructured: {
+      mostRecentAssertionSuggestion: '',
+      mostCommonAssertionSuggestion: '',
+      supportingEvidence: []
+    }
+  };
 
   isDateFilterExpanded = false;
 
@@ -57,7 +65,8 @@ export class EvidenceDetailsComponent implements OnChanges {
   nlpAnswersDeepCopy: NlpAnswer[] = [];
 
   constructor(private evidenceViewerService: EvidenceViewerService,
-              private structuredEvidenceHelper: StructuredEvidenceHelperService) {
+              private structuredEvidenceHelper: StructuredEvidenceHelperService,
+              private unstructuredEvidenceHelper: UnstructuredEvidenceHelperService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -67,7 +76,6 @@ export class EvidenceDetailsComponent implements OnChanges {
           filter(value => Object.keys(value).length !== 0))
         .subscribe({
           next: (resultSet: ResultSet) => {
-            console.log(resultSet)
             const evidenceList = resultSet.evidence ?? [];
             const [cqlResources, nlpResources] = evidenceList.reduce(([cqlResources, nlpResources], resource) => {
               (resource.resourceType === "DocumentReference" ? nlpResources : cqlResources).push(resource);
@@ -80,11 +88,11 @@ export class EvidenceDetailsComponent implements OnChanges {
             this.evidence = {
               // Structured evidence: non-DocumentReference FHIR resources, grouped and sorted.
               structured: this.structuredEvidenceHelper.parseStructuredEvidence(cqlResources),
-              // Unstructured evidence: raw NLP answers, copied as-is (not grouped for now).
-              unstructured: resultSet.nlpAnswers ?? []
+              // Unstructured evidence: parsed from the raw DocumentReference resources
+              // and the answer Observations that reference them.
+              unstructured: this.unstructuredEvidenceHelper.parseUnstructuredEvidence(
+                nlpResources, resultSet.nlpAnswers)
             };
-            console.log(this.evidence);
-
             this.combinedDTO = new CombinedStructuredEvidenceDTO(cqlResources, this.activeFormSummary.patientSummary);
             //preserve a copy in case the results are filtered.
             this.nlpAnswersDeepCopy = this.deepCopy(this.nlpAnswers);

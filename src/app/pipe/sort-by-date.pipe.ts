@@ -15,7 +15,7 @@ export class SortByDatePipe implements PipeTransform {
       return data;
     }
     const keys = Array.isArray(key) ? key : [key];
-      return data.sort((a, b) => {
+      return [...data].sort((a, b) => {
         const aValue = new Date(this.getValueByKeys(a, keys)).getTime();
         const bValue = new Date (this.getValueByKeys(b, keys)).getTime();
         if (aValue < bValue) {

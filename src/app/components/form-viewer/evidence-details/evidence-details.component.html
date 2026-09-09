@@ -1,6 +1,6 @@
 <div class="margin-md">
-  <h3>Structured Evidence</h3>
   @if (evidence.structured?.length) {
+    <h3>Structured Evidence</h3>
     <mat-accordion multi>
       @for (structured of evidence.structured; let i = $index; track i) {
         <app-structured-evidence [evidence]="structured"></app-structured-evidence>
@@ -8,6 +8,17 @@
     </mat-accordion>
   } @else {
     No Structured Evidence Found
+  }
+</div>
+<div class="margin-top-lg margin-left-md">
+  @if (evidence.unstructured?.supportingEvidence?.length) {
+    <h3>Unstructured Evidence</h3>
+    <app-unstructured-evidence
+      [evidence]="evidence.unstructured"
+      [patientSummary]="activeFormSummary.patientSummary">
+    </app-unstructured-evidence>
+  } @else {
+    No Unstructured Evidence Found
   }
 </div>
 <mat-card class="margin-sm">
@@ -90,5 +101,4 @@
     }
   </mat-card-content>
 </mat-card>
-
 

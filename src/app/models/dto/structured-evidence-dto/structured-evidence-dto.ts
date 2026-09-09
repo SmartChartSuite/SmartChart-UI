@@ -1,8 +1,10 @@
 import {System} from "./system";
-import {EvidenceDTO} from "../evidence-dto";
+import {EvidenceHelperService} from "../../../services/evidence-viewer/evidence-helper.service";
 
-export class StructuredEvidenceDTO extends EvidenceDTO {
+export class StructuredEvidenceDTO {
   [key: string]: any;
+
+  private readonly evidenceHelper = new EvidenceHelperService();
 
   getCodeFromCodeableConcept(codeableConcept: any, preferredSystems? : string[]): any {
     if (!preferredSystems) return codeableConcept?.coding?.[0] || undefined;
@@ -19,7 +21,7 @@ export class StructuredEvidenceDTO extends EvidenceDTO {
   }
 
   getDateAgeAsStr(dateStr, patientDob){
-    return EvidenceDTO.getDateAgeAsStr(dateStr, patientDob);
+    return this.evidenceHelper.getDateAgeAsStr(dateStr, patientDob);
   }
 
   getSystemFromEnum(system: System): string  {

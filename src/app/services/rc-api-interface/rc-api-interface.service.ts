@@ -262,6 +262,7 @@ export class RcApiInterfaceService {
           }
 
           if (isNlpqlAnswer){
+            //console.log(answerObservation);
             let nlpAnswer = new NlpAnswer();
             // TODO: verify the "term" comes from the "term" section and not from "section-text"
             nlpAnswer.term = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'term')?.valueString;
@@ -280,7 +281,7 @@ export class RcApiInterfaceService {
             // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-prompt')?.valueString;
             // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-answer')?.valueString;
             // nlpAnswer.resultValue = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'resultValue')?.valueString;
-            // nlpAnswer.reasoning = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'reasoning')?.valueString;
+            //nlpAnswer.reasoning = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'reasoning')?.valueString;
             // nlpAnswer.evidenceText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'evidenceText')?.valueString;
             //end adding new properties
 
@@ -295,9 +296,6 @@ export class RcApiInterfaceService {
             else {
               console.warn("Document Reference Not Found!!!")
             }
-
-
-
             if (!("nlpAnswers" in results[linkId])) {
               results[linkId].nlpAnswers = [];
             }
