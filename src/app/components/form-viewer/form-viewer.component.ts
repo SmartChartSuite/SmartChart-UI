@@ -13,7 +13,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
 import {filter, forkJoin, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
-import {Results} from "../../models/results";
+import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 import {FormAnswers} from "../../models/form-answers";
@@ -266,7 +266,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     this.selectedEvidenceIndex = firstQuestionIndex;
     const firstQuestion = section.item[firstQuestionIndex];
     const resultSet = results[`link${firstQuestion.linkId}`];
-    this.evidenceViewerService.setEvidence(resultSet ?? {evidence: [], nlpAnswers: []});
+    this.evidenceViewerService.setEvidence(resultSet ?? new ResultSet());
   }
 
   goToPreviousSection(): void {

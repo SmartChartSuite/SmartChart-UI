@@ -11,7 +11,7 @@ import {PatientGroup} from "../../models/patient-group";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
-import {AnswerComponent, NlpAnswer, Results, ResultSet} from "../../models/results";
+import {Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {ShowLoading} from "../loading/show-loading";
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
@@ -230,129 +230,109 @@ export class RcApiInterfaceService {
     return this.http.get(this.batchJobsEndpoint + `/${id}?include_patient=True`)
   }
 
+  /**
+   * Fetches a batch job's results bundle and reshapes it into {@link Results}.
+   *
+   * The bundle is laid out as: the job status Observation, the Patient, then the
+   * answer Observations and the resources they reference as evidence. Answers
+   * are grouped per question under a `link{linkId}` key.
+   */
   getBatchJobResults(id: string): Observable<Results> {
-    return this.http.get<Bundle>(this.batchJobsEndpoint + `/${id}`).pipe(
-      map((batchResultsBundle: Bundle) => {
-        // TODO: Add validation if not bundle or structure is not as expected (e.g. location of statusObservation/patientResource)
-        // TODO: Simplify/condense code once confirmed working
-        const bundleEntries = batchResultsBundle.entry;
-        const statusObservation = bundleEntries.shift();
-        const patientResource = bundleEntries.shift();
-        const answerObservationList = bundleEntries.filter(bec => this.isRcApiObservation(bec.resource));
-        const evidenceList = bundleEntries.filter(bec => !this.isRcApiObservation(bec.resource));
-
-        const results: Results = new Results();
-        results.subject = patientResource.resource;
-
-        const statusObservationResource = statusObservation?.resource;
-        const statusCodeableConcept = statusObservationResource?.["valueCodeableConcept"];
-        results.status = statusCodeableConcept?.["coding"]?.[0]?.["code"] || "error";
-
-        const statusCodeableConceptText = statusCodeableConcept?.["text"];
-        const completeTotalJobsAsString = statusCodeableConceptText?.split(":")?.[1].trim();
-        results.completeJobs = Number(completeTotalJobsAsString?.split("/")?.[0]);
-        results.totalJobs = Number(completeTotalJobsAsString?.split("/")?.[1]);
-        answerObservationList.forEach(bec => {
-          const answerObservation = bec.resource;
-          const linkId: string = `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`
-          const isNlpqlAnswer = this.isNlpqlAnswer(answerObservation);
-          if (!(linkId in results)) {
-            results[linkId] = new ResultSet();
-            results[linkId].evidence = [];
-          }
-
-          if (isNlpqlAnswer){
-            //console.log(answerObservation);
-            let nlpAnswer = new NlpAnswer();
-            // TODO: verify the "term" comes from the "term" section and not from "section-text"
-            nlpAnswer.term = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'term')?.valueString;
-            nlpAnswer.sectionText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'section-text')?.valueString;
-            nlpAnswer.textFragment = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'text-fragment')?.valueString;
-            nlpAnswer.noteText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-evidence')?.valueString;
-            nlpAnswer.fragment = answerObservation["note"]?.[0]?.["text"];
-            nlpAnswer.evidenceReferenceList = this.createReferenceList(answerObservation?.["focus"]);
-            nlpAnswer.observationDisplay = answerObservation["note"]?.[0]?.["text"];
-            nlpAnswer.observationResource = answerObservation;
-            nlpAnswer.componentAnswerList = answerObservation?.['component']?.map(component=> {
-              return {label: component?.code?.coding?.[0]?.display, value: component.valueString} as AnswerComponent
-            });
-
-            // Begin adding new properties
-            // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-prompt')?.valueString;
-            // nlpAnswer.llmPrompt = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'llm-answer')?.valueString;
-            // nlpAnswer.resultValue = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'resultValue')?.valueString;
-            //nlpAnswer.reasoning = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'reasoning')?.valueString;
-            // nlpAnswer.evidenceText = answerObservation?.['component']?.find(component=> component?.code?.coding?.[0]?.code == 'evidenceText')?.valueString;
-            //end adding new properties
-
-            let documentReference = this.findDocumentReference(nlpAnswer.evidenceReferenceList[0], evidenceList);
-
-            if(documentReference){
-              nlpAnswer.date = documentReference["date"]; // From DocumentReference
-              nlpAnswer.documentReferenceResource = documentReference;
-              nlpAnswer.fullText = atob(documentReference["content"][0]["attachment"]["data"]);
-              nlpAnswer.type = documentReference?.["type"]?.["coding"]?.[0]?.["display"];
-            }
-            else {
-              console.warn("Document Reference Not Found!!!")
-            }
-            if (!("nlpAnswers" in results[linkId])) {
-              results[linkId].nlpAnswers = [];
-            }
-            results[linkId].nlpAnswers.push(nlpAnswer);
-          }
-          else {
-            results[linkId].cqlAnswer = answerObservation;
-          }
-
-          if (answerObservation?.["focus"]) {
-            const referenceList: string[] = this.createReferenceList(answerObservation?.["focus"]);
-
-            let filteredEvidenceList: FhirBaseResource[] = [];
-            // TODO: Switch to filter.
-            evidenceList?.forEach(bec => {
-              if (referenceList?.includes(bec.fullUrl)) {
-                filteredEvidenceList?.push(bec.resource)
-              }
-            });
-
-            results[linkId].evidence.push(...filteredEvidenceList);
-            // TODO: leverage Set sooner to avoid this extra clean up call
-            results[linkId].evidence = [... new Set(results[linkId].evidence)];
-          }
-        });
-        return results;
-      })
-    ).pipe(share())
+    return this.http.get<Bundle>(`${this.batchJobsEndpoint}/${id}`).pipe(
+      map(batchResultsBundle => this.parseBatchJobResults(batchResultsBundle)),
+      share()
+    );
   }
 
-  createReferenceList(focusElement: []): string[] {
-    const referenceList: string[] = [];
-    focusElement?.forEach((reference: any) => referenceList.push(reference["reference"]));
-    return referenceList;
-  }
+  /** Reshapes a batch job results bundle into the {@link Results} view model. */
+  private parseBatchJobResults(batchResultsBundle: Bundle): Results {
+    // TODO: Add validation if not bundle or structure is not as expected
+    // (e.g. location of statusObservation/patientResource)
+    const [statusEntry, patientEntry, ...remainingEntries] = batchResultsBundle?.entry ?? [];
 
-  findDocumentReference(reference: string, evidenceBecList: BundleEntryComponent[]): FhirBaseResource {
-    const bec = evidenceBecList.find(bec => bec.fullUrl === reference);
-    return bec?.resource ? bec.resource : null;
-  }
+    const answerEntries = remainingEntries.filter(entry => this.isRcApiObservation(entry.resource));
+    const evidenceEntries = remainingEntries.filter(entry => !this.isRcApiObservation(entry.resource));
+    // Answers reference their evidence by the entry's fullUrl.
+    const evidenceByUrl = new Map(evidenceEntries.map(entry => [entry.fullUrl, entry.resource]));
 
-  isRcApiObservation(resource: FhirBaseResource): boolean {
-    if (resource.resourceType !== "Observation"){
-      return false;
+    const results = new Results();
+    results.subject = patientEntry?.resource;
+    this.applyJobStatus(results, statusEntry?.resource);
+
+    for (const {resource: answerObservation} of answerEntries) {
+      const resultSet = this.getOrCreateResultSet(results, this.getLinkId(answerObservation));
+
+      if (this.isNlpqlAnswer(answerObservation)) {
+        resultSet.nlpAnswerObservations.push(answerObservation);
+      } else {
+        resultSet.cqlAnswer = answerObservation;
+      }
+
+      this.addEvidence(resultSet, answerObservation, evidenceByUrl);
     }
-    else {
-      return resource?.["code"]?.["coding"]?.[0]?.["system"]?.startsWith("urn:gtri:heat:form");
+
+    return results;
+  }
+
+  /**
+   * Reads the job status and progress from the status Observation. The progress
+   * is carried as text in the form `"<label>: <complete>/<total>"`.
+   */
+  private applyJobStatus(results: Results, statusObservation: FhirBaseResource | undefined): void {
+    const statusCodeableConcept = statusObservation?.["valueCodeableConcept"];
+    results.status = statusCodeableConcept?.["coding"]?.[0]?.["code"] || "error";
+
+    const [complete, total] = (statusCodeableConcept?.["text"]?.split(":")?.[1] ?? "")
+      .trim()
+      .split("/");
+    results.completeJobs = Number(complete);
+    results.totalJobs = Number(total);
+  }
+
+  /** The `link{linkId}` key an answer Observation belongs to. */
+  private getLinkId(answerObservation: FhirBaseResource): string {
+    return `link${answerObservation?.["code"]?.["coding"]?.[0]?.["code"]}`;
+  }
+
+  /** Returns the result set for a question, creating it on first use. */
+  private getOrCreateResultSet(results: Results, linkId: string): ResultSet {
+    results[linkId] ??= new ResultSet();
+    return results[linkId];
+  }
+
+  /**
+   * Adds the resources an answer Observation references via `focus` to the
+   * result set's evidence, skipping references already collected for it.
+   */
+  private addEvidence(
+    resultSet: ResultSet,
+    answerObservation: FhirBaseResource,
+    evidenceByUrl: Map<string, FhirBaseResource>
+  ): void {
+    for (const reference of this.createReferenceList(answerObservation?.["focus"])) {
+      const evidence = evidenceByUrl.get(reference);
+      if (evidence && !resultSet.evidence.includes(evidence)) {
+        resultSet.evidence.push(evidence);
+      }
     }
   }
 
-  isNlpqlAnswer(resource: FhirBaseResource): boolean {
-    if (resource?.["focus"]?.[0]?.["reference"].startsWith("DocumentReference")) {
-      return true;
-    }
-    else {
-      return false;
-    }
+  /** The `focus` references of an answer Observation. */
+  private createReferenceList(focusElement: { reference?: string }[] | undefined): string[] {
+    return (focusElement ?? [])
+      .map(focus => focus?.reference)
+      .filter((reference): reference is string => !!reference);
+  }
+
+  /** True when the resource is an answer Observation produced by RC API. */
+  private isRcApiObservation(resource: FhirBaseResource | undefined): boolean {
+    return resource?.resourceType === "Observation"
+      && !!resource?.["code"]?.["coding"]?.[0]?.["system"]?.startsWith("urn:gtri:heat:form");
+  }
+
+  /** NLPQL answers are the ones whose evidence is a DocumentReference. */
+  private isNlpqlAnswer(resource: FhirBaseResource | undefined): boolean {
+    return !!resource?.["focus"]?.[0]?.["reference"]?.startsWith("DocumentReference");
   }
 
   updateQuestionnaireResponse(questionnaireResponse: QuestionnaireResponse, questionnaireResponseId: string) {

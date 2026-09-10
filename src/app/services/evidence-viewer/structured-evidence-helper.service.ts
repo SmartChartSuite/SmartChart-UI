@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StructuredEvidence, ParsedCodeGroup, ParsedResource} from "../../models/parsed-results";
-import {StructuredEvidenceDTO} from "../../models/dto/structured-evidence-dto/structured-evidence-dto";
 import {System} from "../../models/dto/structured-evidence-dto/system";
 
 /**
@@ -12,12 +11,6 @@ import {System} from "../../models/dto/structured-evidence-dto/system";
   providedIn: 'root'
 })
 export class StructuredEvidenceHelperService {
-
-  /**
-   * Shared code/system resolver. Reuses the same logic (getCode /
-   * getCodeFromCodeableConcept / getSystemFromEnum) that the per-type DTOs use.
-   */
-  private readonly codeResolver = new StructuredEvidenceDTO();
 
   /**
    * Parses a flat list of structured FHIR resources into typed ParsedResource
@@ -104,7 +97,7 @@ export class StructuredEvidenceHelperService {
     const coding = this.getPrimaryCoding(resource);
     const base = {
       name: this.getName(resource, coding),
-      system: this.codeResolver.getSystemFromEnum(coding?.system),
+      system: this.getSystemFromEnum(coding?.system),
       code: coding?.code,
       dateForSorting: this.getDateForSorting(resource)
     };
@@ -135,7 +128,7 @@ export class StructuredEvidenceHelperService {
           type: resource?.['type']?.[0]?.['text'] ?? resource?.['type']?.[0]?.['coding']?.[0]?.['display'],
           reasonText: resource?.['reasonCode']?.[0]?.['text'],
           reasonCode: coding?.code,
-          reasonSystem: this.codeResolver.getSystemFromEnum(coding?.system)
+          reasonSystem: this.getSystemFromEnum(coding?.system)
         }
       };
     } else if (resourceType === 'Procedure') {
@@ -159,8 +152,8 @@ export class StructuredEvidenceHelperService {
   }
 
   /**
-   * The human-readable name/label for a resource. Mirrors the DTO conceptName
-   * logic: the codeable-concept text, falling back to the coding display.
+   * The human-readable name/label for a resource: the codeable-concept text,
+   * falling back to the coding display.
    */
   private getName(resource: FhirBaseResource, coding: any): string | undefined {
     const resourceType = resource?.resourceType;
@@ -176,8 +169,8 @@ export class StructuredEvidenceHelperService {
   }
 
   /**
-   * Selects the primary coding, resolved the same way the corresponding DTO
-   * resolves it in combinedDTO:
+   * Selects the primary coding for a resource, using the preferred system
+   * ordering for each resourceType:
    *  - Observation:       code, preferred [LOINC]
    *  - Condition:         code, preferred [ICD-10, SNOMED]
    *  - MedicationRequest: medicationCodeableConcept, preferred [RxNorm]
@@ -187,18 +180,46 @@ export class StructuredEvidenceHelperService {
   private getPrimaryCoding(resource: FhirBaseResource): any {
     const resourceType = resource?.resourceType;
     if (resourceType === 'Observation') {
-      return this.codeResolver.getCode(resource, 'code', [System.LOINC]);
+      return this.getCode(resource, 'code', [System.LOINC]);
     } else if (resourceType === 'Condition') {
-      return this.codeResolver.getCode(resource, 'code', [System.ICD_10, System.SNOMED]);
+      return this.getCode(resource, 'code', [System.ICD_10, System.SNOMED]);
     } else if (resourceType === 'MedicationRequest') {
-      return this.codeResolver.getCode(resource, 'medicationCodeableConcept', [System.RX_NORM]);
+      return this.getCode(resource, 'medicationCodeableConcept', [System.RX_NORM]);
     } else if (resourceType === 'Procedure') {
-      return this.codeResolver.getCode(resource, 'code', [System.CPT]);
+      return this.getCode(resource, 'code', [System.CPT]);
     } else if (resourceType === 'Encounter') {
-      return this.codeResolver.getCodeFromCodeableConcept(resource?.['reasonCode']?.[0], [System.ICD_10, System.SNOMED]);
+      return this.getCodeFromCodeableConcept(resource?.['reasonCode']?.[0], [System.ICD_10, System.SNOMED]);
     } else {
-      return this.codeResolver.getCode(resource, 'code');
+      return this.getCode(resource, 'code');
     }
+  }
+
+  /**
+   * Resolves a coding from a resource property, preferring the given systems in
+   * order and falling back to the first available coding.
+   */
+  private getCode(resource: any, property: string, preferredSystems?: string[]): any {
+    if (!preferredSystems?.length) return resource?.[property]?.coding?.[0] || undefined;
+    const coding = resource?.[property]?.coding?.find(coding => coding?.['system'] === preferredSystems[0]);
+    if (!coding) return this.getCode(resource, property, preferredSystems.slice(1));
+    return coding;
+  }
+
+  /** Resolves a coding directly from a CodeableConcept, preferring the given systems. */
+  private getCodeFromCodeableConcept(codeableConcept: any, preferredSystems?: string[]): any {
+    if (!preferredSystems?.length) return codeableConcept?.coding?.[0] || undefined;
+    return codeableConcept?.coding?.find(coding => coding?.['system'] === preferredSystems[0]);
+  }
+
+  /** Maps a known coding system URI to its human readable display name. */
+  private getSystemFromEnum(system: System | string): string {
+    if (system === System.LOINC) return 'LOINC';
+    if (system === System.ICD_10) return 'ICD-10';
+    if (system === System.SNOMED) return 'SNOMED CT';
+    if (system === System.RX_NORM) return 'RxNorm';
+    if (system === System.CPT) return 'CPT';
+    // Unknown systems are passed through so they can still be rendered.
+    return system ?? '';
   }
 
   /** The date used to sort a resource, by resourceType. */

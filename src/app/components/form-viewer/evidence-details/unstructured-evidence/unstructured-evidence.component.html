@@ -1,4 +1,4 @@
-<section class="border padding-md" aria-label="Evidence assertions">
+<div class="border padding-md">
   <div>
     <span class="label-text margin-right-md">Most Recent Assertion:</span>
     <span>{{ evidence().mostRecentAssertionSuggestion }}</span>
@@ -7,45 +7,54 @@
     <span class="label-text margin-right-md">Most Common Assertion:</span>
     <span>{{ evidence().mostCommonAssertionSuggestion }}</span>
   </div>
-</section>
-<section class="padding-md" aria-label="Supporting evidence">
+</div>
+<div class="padding-md">
   <div class="label-text margin-right-md">Evidence supporting:</div>
-  <mat-chip-set aria-label="Supporting evidence choices">
-    @for (el of evidence().supportingEvidence | sortByDate: 'date' : 'asc'; track el) {
+  <mat-chip-listbox
+    aria-label="Filter supporting evidence by assertion"
+    [value]="selectedFilterLabel()"
+    (change)="onSelectFilter($event.value)">
+    @for (filter of assertionFilters(); track filter.label) {
       <mat-chip-option
-        [selected]="selectedEvidence() === el"
-        (click)="onSelectEvidence(el)">{{ el.assertion }}
+        [value]="filter.label"
+        [selected]="selectedFilterLabel() === filter.label"
+        [disabled]="filter.count === 0">
+        {{ filter.label }} ({{ filter.count }})
       </mat-chip-option>
     }
-  </mat-chip-set>
-</section>
-@if (selectedEvidence(); as selected) {
-  <section class="border padding-md" aria-label="Selected evidence">
+  </mat-chip-listbox>
+</div>
+@for (evidence of filteredEvidence(); track evidence) {
+  <div class="border padding-md margin-top-md">
     <div class="flex items-center justify-between">
       <div class="flex-row-simple items-center">
         <span class="label-text margin-right-sm">Date:</span>
-        <span>{{ selected.date | date }} (Age at: {{ ageAt() }})</span>
+        <span>{{ evidence.date | date }} (Age at: {{ getAgeAt(evidence) }})</span>
       </div>
       <div class="flex-row-simple items-center">
         <span class="label-text margin-right-sm margin-left-md">Result Value:</span>
-        <span>{{ selected.assertion }}</span>
+        <span>{{ evidence.assertion || 'No assertion found' }}</span>
       </div>
       <button
         matButton="outlined"
         class="margin-left-md"
         type="button"
-        (click)="onViewEvidence(selected)">
+        (click)="onViewEvidence(evidence)">
         <mat-icon aria-hidden="true">article</mat-icon>
         View Source
       </button>
     </div>
     <div class="margin-top-md">
       <span class="label-text margin-right-sm">Evidence Text:</span>
-      <span>{{ selected.text }}</span>
+      <span>{{ evidence.text }}</span>
     </div>
     <div class="margin-top-md">
       <span class="label-text margin-right-sm">Evidence Reasoning:</span>
-      <span>{{ selected.reasoning }}</span>
+      <span>{{ evidence.reasoning }}</span>
     </div>
-  </section>
+  </div>
+} @empty {
+  <div class="padding-md">
+    No evidence found for the selected assertion.
+  </div>
 }

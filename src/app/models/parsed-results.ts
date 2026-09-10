@@ -1,4 +1,3 @@
-import {NlpAnswer} from "./results";
 import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
 /** Observation-specific rendered details. */
@@ -154,6 +153,20 @@ export interface UnstructuredEvidence {
   mostCommonAssertionSuggestion: string;
   /** The supporting evidence backing the suggestions. */
   supportingEvidence: SupportingEvidence[];
+}
+
+/**
+ * A selectable filter over {@link SupportingEvidence}, used to narrow the
+ * displayed evidence to a single assertion. Filters are identified by their
+ * unique `label`, which is what the chip listbox binds its selection to.
+ */
+export interface AssertionFilter {
+  /** The unique chip label, used as the selection key. */
+  label: string;
+  /** The assertion to match, or null when the filter matches everything. */
+  assertion: string | null;
+  /** How many supporting evidence items this filter matches. */
+  count: number;
 }
 
 /**

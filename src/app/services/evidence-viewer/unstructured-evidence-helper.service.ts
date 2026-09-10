@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {FhirBaseResource} from '../../models/fhir/fhir.base.resource';
-import {NlpAnswer} from '../../models/results';
 import {SupportingEvidence, UnstructuredEvidence} from '../../models/parsed-results';
 
 /**
@@ -9,9 +8,8 @@ import {SupportingEvidence, UnstructuredEvidence} from '../../models/parsed-resu
  *
  * The API exposes the data across two related resource types:
  *
- * 1. Each {@link NlpAnswer} contains the answer Observation in
- *    `observationResource`. The Observation contains the assertion, evidence
- *    text, reasoning, and a `focus` reference.
+ * 1. The answer Observation, which contains the assertion, evidence text,
+ *    reasoning, and a `focus` reference.
  * 2. The matching DocumentReference is supplied separately. It contributes the
  *    evidence date, document type, and original resource used by the source
  *    viewer.
@@ -33,22 +31,22 @@ export class UnstructuredEvidenceHelperService {
    * from all non-empty assertions; if multiple assertions have the same count,
    * the one appearing first in the date-sorted list wins.
    *
-   * Missing NLP answers or DocumentReferences are treated as empty input. An
+   * Missing Observations or DocumentReferences are treated as empty input. An
    * answer whose DocumentReference cannot be resolved is still represented,
    * with empty date/source fields and no attached resource.
    *
    * @param documentReferences DocumentReference resources returned with the
    * evidence result set.
-   * @param nlpAnswers NLP answers containing the raw answer Observations.
+   * @param answerObservations The NLPQL answer Observations for the question.
    * @returns Normalized, date-sorted unstructured evidence for the viewer.
    */
   parseUnstructuredEvidence(
     documentReferences: FhirBaseResource[] | undefined,
-    nlpAnswers: NlpAnswer[] | undefined
+    answerObservations: FhirBaseResource[] | undefined
   ): UnstructuredEvidence {
     const supportingEvidence = this.parseSupportingEvidence(
       documentReferences,
-      this.getAnswerObservations(nlpAnswers)
+      answerObservations ?? []
     );
 
     return {
@@ -56,13 +54,6 @@ export class UnstructuredEvidenceHelperService {
       mostCommonAssertionSuggestion: this.getMostCommonAssertion(supportingEvidence),
       supportingEvidence
     };
-  }
-
-  /** Extracts only present answer Observations from the NLP answer wrappers. */
-  private getAnswerObservations(nlpAnswers: NlpAnswer[] | undefined): FhirBaseResource[] {
-    return (nlpAnswers ?? [])
-      .map(nlpAnswer => nlpAnswer?.observationResource as FhirBaseResource | undefined)
-      .filter((observation): observation is FhirBaseResource => !!observation);
   }
 
   /**
