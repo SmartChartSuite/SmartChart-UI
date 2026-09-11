@@ -9,11 +9,11 @@ import {
   inject,
   DestroyRef
 } from '@angular/core';
-import {takeUntilDestroyed, toSignal} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
 import {filter, forkJoin, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
-import {Results} from "../../models/results";
+import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
 import {FormAnswers} from "../../models/form-answers";
@@ -26,7 +26,7 @@ import {PatientDetailsComponent} from "./patient-details/patient-details.compone
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatButton} from "@angular/material/button";
 import {MatNavList} from "@angular/material/list";
-import {JsonPipe, NgClass} from "@angular/common";
+import {NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
@@ -69,7 +69,6 @@ import {PatientGrid} from "../../models/patient-grid";
     MatIcon,
     EvidenceDetailsComponent,
     SuggestedAnswerFormatterPipe,
-    JsonPipe,
   ]
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {
@@ -100,12 +99,17 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private savedAnswersSnapshot = '';
 
   showDrawer = false;
+  /**
+   * Collapsed state of the left-hand section navigation. When collapsed the
+   * sub-nav shrinks to a narrow strip (only the expand toggle is shown),
+   * giving the questions and evidence sections more room.
+   */
+  menuCollapsed = signal(false);
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
 
   results = signal<Results | undefined>(undefined);
-  evidenceViewerExpanded = toSignal(this.evidenceViewerService.viewerExpanded$, {initialValue: false});
 
   private readonly topScroll = viewChild<ElementRef<HTMLElement>>('top');
 
@@ -131,10 +135,24 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
     results$.pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(value => this.results.set(value));
+    ).subscribe(value => {
+      this.results.set(value);
+      // On first load, auto-select the first question in the initially-selected
+      // section (mirrors clicking a section).
+      if (this.selectedEvidenceIndex === null) {
+        this.selectFirstQuestion(this.selectedMenuItemIndex);
+      }
+    });
 
-    // Load the form entirely from the route params. This makes /form-viewer
-    // deep-linkable and removes any dependency on in-memory / session state.
+    this.loadFormFromRoute();
+  }
+
+  /**
+   * Loads the form from the route so /form-viewer remains deep-linkable and
+   * does not depend on in-memory or session state.
+   */
+  private loadFormFromRoute(): void {
+    // Read all identifiers needed to load the patient, response, and form.
     this.route.paramMap.pipe(
       takeUntilDestroyed(this.destroyRef),
       map(params => ({
@@ -144,6 +162,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         questionnaireResponseId: params.get('questionnaireResponseId')
       })),
       filter(params => !!params.batchId && !!params.patientId && !!params.formName && !!params.questionnaireResponseId),
+      // Load the patient and saved answers together before loading the form.
       switchMap(params =>
         forkJoin({
           patient: this.rcApiInterfaceService.getPatient(params.patientId!),
@@ -153,7 +172,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         )
       ),
       tap(({params, patient, questionnaireResponse}) => {
-        // Rebuild the ActiveFormSummary from the fetched patient + route params.
+        // Store the route-backed form context for the viewer and API calls.
         this.activeFormSummary.set(new ActiveFormSummary(patient, {
           batchId: params.batchId!,
           jobPackage: params.formName!,
@@ -162,11 +181,13 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.pendingQuestionnaireResponse = questionnaireResponse;
         this.questionnaireResponseId = questionnaireResponse.id;
       }),
+      // Fetch the questionnaire definition after the route context is ready.
       mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
         key: 'name',
         value: params.formName!
       })),
       map(response => Array.isArray(response) ? (response[0] ?? null) : response),
+      // Mark the first section as selected before rendering the questionnaire.
       map((result: Questionnaire | null) => result ? {
         ...result,
         item: result.item?.map((item, index) => ({
@@ -179,7 +200,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.questionnaire.set(result ?? undefined);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.captureAnswersSnapshot();
-        // Apply the saved answers from the loaded QuestionnaireResponse.
+        // Apply persisted answers after the questionnaire structure is ready.
         if (this.pendingQuestionnaireResponse) {
           this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
         }
@@ -190,9 +211,6 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.utilsService.showErrorMessage();
       }
     });
-
-    // Expand the evidence viewer for a larger screen device. This may need a bit of testing
-    this.evidenceViewerService.setViewerExpanded(window.screen.width >= 1440);
   }
 
   private fetchResults() {
@@ -223,6 +241,32 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     this.selectedEvidenceIndex = null;
     this.showDrawer = false;
     this.scrollToTop();
+    this.selectFirstQuestion(index);
+  }
+
+  /**
+   * Selects the first question in the section and renders its evidence. If the
+   * first question has no evidence, the evidence viewer renders its empty state
+   * ("No ... Evidence Found").
+   */
+  private selectFirstQuestion(sectionIndex: number): void {
+    const section = this.questionnaire()?.item?.[sectionIndex];
+    const results = this.results();
+    if (!section?.item?.length || !results) {
+      return;
+    }
+
+    const firstQuestionIndex = section.item.findIndex(
+      item => item.type !== QuestionnaireItemType.display
+    );
+    if (firstQuestionIndex === -1) {
+      return;
+    }
+
+    this.selectedEvidenceIndex = firstQuestionIndex;
+    const firstQuestion = section.item[firstQuestionIndex];
+    const resultSet = results[`link${firstQuestion.linkId}`];
+    this.evidenceViewerService.setEvidence(resultSet ?? new ResultSet());
   }
 
   goToPreviousSection(): void {
@@ -236,8 +280,12 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   toggleEvidenceDrawer(index: number): void {
-    this.showDrawer = !(this.selectedEvidenceIndex === index && this.showDrawer);
     this.selectedEvidenceIndex = index;
+  }
+
+  /** Toggles the left-hand section navigation between expanded and collapsed. */
+  toggleMenu(): void {
+    this.menuCollapsed.update(collapsed => !collapsed);
   }
 
   onExport(): void {

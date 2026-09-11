@@ -1,107 +1,88 @@
-import {Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
+import {ResultSet} from "../../../models/results";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
-import {NlpAnswer, ResultSet} from "../../../models/results";
+import {Evidence} from "../../../models/parsed-results";
 import {filter} from "rxjs";
 import {ActiveFormSummary} from "../../../models/active-form-summary";
-import {
-  CombinedStructuredEvidenceDTO
-} from "../../../models/dto/structured-evidence-dto/combined-structured-evidence-dto";
-import { MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatCardContent } from '@angular/material/card';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIcon } from '@angular/material/icon';
-import { EvidenceFilterComponent } from './evidence-filter/evidence-filter.component';
-import { StructuredResultsDetailsComponent } from './structured-results-details/structured-results-details.component';
-import { UnstructuredResultsDetailsComponent } from './unstructured-results-details/unstructured-results-details.component';
-import { SortByDatePipe } from '../../../pipe/sort-by-date.pipe';
+import {StructuredEvidenceComponent} from "./structured-evidence/structured-evidence.component";
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatTab, MatTabGroup} from "@angular/material/tabs";
+import {StructuredEvidenceHelperService} from "../../../services/evidence-viewer/structured-evidence-helper.service";
+import {UnstructuredEvidenceHelperService} from "../../../services/evidence-viewer/unstructured-evidence-helper.service";
+import {UnstructuredEvidenceComponent} from "./unstructured-evidence/unstructured-evidence.component";
+
+/** Tab indexes in the order the tabs are declared in the template. */
+const STRUCTURED_TAB_INDEX = 0;
+const UNSTRUCTURED_TAB_INDEX = 1;
 
 @Component({
-    selector: 'app-evidence-details',
-    templateUrl: './evidence-details.component.html',
-    styleUrl: './evidence-details.component.scss',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [MatCard, MatCardHeader, MatCardTitleGroup, MatCardTitle, MatIconButton, MatTooltip, MatIcon, MatCardContent, EvidenceFilterComponent, StructuredResultsDetailsComponent, MatButton, UnstructuredResultsDetailsComponent, SortByDatePipe]
+  selector: 'app-evidence-details',
+  templateUrl: './evidence-details.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [StructuredEvidenceComponent, MatExpansionModule, UnstructuredEvidenceComponent, MatTabGroup, MatTab]
 })
-export class EvidenceDetailsComponent implements OnChanges{
+export class EvidenceDetailsComponent implements OnChanges {
 
   @Input() activeFormSummary!: ActiveFormSummary | undefined;
-  documentsSortDirection: 'asc' | 'desc' = 'desc';
 
-  cqlResources: FhirBaseResource[] = [];
-  nlpResources: FhirBaseResource[] = [];
-  nlpAnswers: NlpAnswer[];
-  protected readonly Object = Object;
+  evidence: Evidence = {
+    structured: [],
+    unstructured: {
+      mostRecentAssertionSuggestion: '',
+      mostCommonAssertionSuggestion: '',
+      supportingEvidence: []
+    }
+  };
 
-  combinedDTODeepCopy: CombinedStructuredEvidenceDTO;
-  combinedDTO: CombinedStructuredEvidenceDTO = {observations: [], procedures: [], conditions: [], medicationRequests: [], encounters : []};
+  /**
+   * The tab shown when evidence loads. Structured is preferred, so the
+   * unstructured tab only opens when it is the sole tab with evidence.
+   */
+  selectedTabIndex = STRUCTURED_TAB_INDEX;
 
-  isDateFilterExpanded = false;
-
-  //Deep copy all resources for filtering operations because the API does not handle filtering or sorting
-  nlpAnswersDeepCopy: NlpAnswer[] = [];
-  constructor(private evidenceViewerService: EvidenceViewerService) {
+  constructor(private evidenceViewerService: EvidenceViewerService,
+              private structuredEvidenceHelper: StructuredEvidenceHelperService,
+              private unstructuredEvidenceHelper: UnstructuredEvidenceHelperService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['activeFormSummary']?.currentValue){
+    if (changes['activeFormSummary']?.currentValue) {
       this.evidenceViewerService.resultSet$
         .pipe(
-          filter(value=> Object.keys(value).length !== 0))
+          filter(value => Object.keys(value).length !== 0))
         .subscribe({
           next: (resultSet: ResultSet) => {
-            const evidenceList = resultSet.evidence;
-            const [cqlResources, nlpResources] = evidenceList.reduce(([cqlResources, nlpResources], resource) => {
-              (resource.resourceType === "DocumentReference" ? nlpResources : cqlResources).push(resource);
-              return [cqlResources, nlpResources];
-            }, [[], []]);
-            this.cqlResources = cqlResources;
-            this.nlpResources = nlpResources;
-            this.nlpAnswers = resultSet.nlpAnswers;
+            const evidenceList = resultSet.evidence ?? [];
+            const [cqlResources, documentReferences] = evidenceList.reduce(
+              ([cqlResources, documentReferences], resource) => {
+                (resource.resourceType === "DocumentReference" ? documentReferences : cqlResources)
+                  .push(resource);
+                return [cqlResources, documentReferences];
+              }, [[], []] as [FhirBaseResource[], FhirBaseResource[]]);
 
-            this.combinedDTO = new CombinedStructuredEvidenceDTO(cqlResources, this.activeFormSummary.patientSummary);
-            //preserve a copy in case the results are filtered.
-            this.nlpAnswersDeepCopy = this.deepCopy(this.nlpAnswers);
-            this.combinedDTODeepCopy = this.deepCopy(this.combinedDTO);
+            this.evidence = {
+              // Structured evidence: non-DocumentReference FHIR resources, grouped and sorted.
+              structured: this.structuredEvidenceHelper.parseStructuredEvidence(cqlResources),
+              // Unstructured evidence: parsed from the raw DocumentReference resources
+              // and the answer Observations that reference them.
+              unstructured: this.unstructuredEvidenceHelper.parseUnstructuredEvidence(
+                documentReferences, resultSet.nlpAnswerObservations)
+            };
+            this.selectedTabIndex = this.getInitialTabIndex();
           }
         })
     }
   }
 
-  onFilterByDateRange(event: any) {
-    this.combinedDTO = this.deepCopy(this.combinedDTODeepCopy);
-    this.nlpAnswers = this.nlpAnswersDeepCopy;
-    if(event.startDate && event.endDate){
-      this.combinedDTO = this.deepCopy(this.combinedDTODeepCopy);
-      this.nlpAnswers = this.nlpAnswersDeepCopy;
-      this.combinedDTO = this.applyDateFilterToStructuredResources(
-        this.combinedDTODeepCopy, event.startDate, event.endDate);
-      this.nlpAnswers = this.applyDateFilterToUnstructuredResources(this.nlpAnswersDeepCopy, event.startDate, event.endDate);
-    }
-  }
+  /**
+   * Selects the structured tab unless unstructured evidence is the only
+   * evidence found, in which case the unstructured tab is selected.
+   */
+  private getInitialTabIndex(): number {
+    const hasStructured = !!this.evidence.structured?.length;
+    const hasUnstructured = !!this.evidence.unstructured?.supportingEvidence?.length;
 
-  private applyDateFilterToStructuredResources(structuredResources: CombinedStructuredEvidenceDTO, startDate, endDate): CombinedStructuredEvidenceDTO {
-    let result: CombinedStructuredEvidenceDTO = { observations: [], encounters: [], medicationRequests: [], procedures: [], conditions: [] };
-    Object.keys(structuredResources).forEach(key => {
-      result[key] = structuredResources[key].filter(item =>
-        new Date(item.sortFilterDate) >= new Date(startDate) && new Date(item.sortFilterDate) <= new Date(endDate))
-    });
-    return result;
+    return !hasStructured && hasUnstructured ? UNSTRUCTURED_TAB_INDEX : STRUCTURED_TAB_INDEX;
   }
-
-  private applyDateFilterToUnstructuredResources(unstructuredResources: NlpAnswer[], startDate, endDate): NlpAnswer[] {
-    if(!unstructuredResources){
-      return null;
-    }
-    return  unstructuredResources.filter(item =>
-      new Date(item.date) >= new Date(startDate) && new Date(item.date) <= new Date(endDate));
-  }
-
-  private deepCopy(object: any){
-    if(!object){
-      return null;
-    }
-    return JSON.parse(JSON.stringify(object));
-  }
-
 }

@@ -243,84 +243,115 @@
     flex-direction: row;
     flex: 1 1 auto; // Allow shrinking
     scroll-behavior: smooth;
-    overflow-y: hidden;
+    overflow: hidden; // Never scroll the row itself; children scroll instead.
     align-content: stretch;
     align-items: stretch;
     min-height: 0;
 
+    // Include padding/border in the flex-basis so the three sections total
+    // 100% of the width, and allow children to shrink below their content size.
     > * {
-      overflow-y: scroll;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    // Each of the three sections is a vertical flex column: a fixed header that
+    // never scrolls, plus a `.section-scroll-body` that scrolls independently.
+    // Keeping the header outside the scroll container avoids the "bounce" that
+    // sticky headers exhibit at the scroll extremes.
+    > .sub-nav,
+    > .viewer-container-body-content,
+    > .viewer-container-body-side-explorer {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; // The inner .section-scroll-body handles scrolling.
+      min-height: 0;
+    }
+
+    .section-scroll-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
       scroll-behavior: smooth;
     }
 
-    > .viewer-container-body-content {
-      flex: 1;
-      padding: 2em;
+    // Left section navigation. Non-scrollable list, fixed proportion of width.
+    > .sub-nav {
+      flex: 0 0 20%;
+      transition: flex-basis var(--transition-fast);
     }
 
-    > .viewer-container-body-side-explorer {
-      animation-name: open-explorer;
-      animation-duration: var(--transition-fast);
-      width: 30%;
-      border: 1px solid #c1d1ff;
-      border-radius: 0.25rem; // 4px
+    // Middle questions section.
+    > .viewer-container-body-content {
+      flex: 0 0 30%;
 
-      > .fhir-explorer-header {
-        justify-items: center;
-        text-align: center;
-        align-self: center;
-        display: flex;
-        flex-direction: row;
-        padding: $spacing-sm;
-        font-weight: bold;
-        font-size: larger;
-        background-color: var(--color-bg-explorer);
-        color: whitesmoke;
-
-        > * {
-          justify-items: center;
-          text-align: center;
-          align-self: center;
-        }
-
-        > .explorer-header-title {
-          margin-left: $spacing-md;
-          font-size: medium;
-          background-color: var(--color-bg-explorer);
-        }
+      // Horizontal padding lives on the scroll body (with border-box) so
+      // children stay within the column width.
+      > .section-scroll-body {
+        padding: 0 2em;
       }
     }
 
-    > .viewer-container-body-side-explorer-expanded {
-      animation-name: open-explorer;
-      animation-duration: var(--transition-fast);
-      width: 45%;
-      border: 1px solid #c1d1ff;
-      border-radius: 0.25rem;
+    // Section header shared across all three sections (Sections, Questions,
+    // Evidence) so they have a consistent banner appearance. It sits outside
+    // the scroll body, so it stays fixed without any sticky "bounce".
+    .fhir-explorer-header {
+      flex: 0 0 auto;
+      justify-items: center;
+      text-align: center;
+      align-self: stretch;
+      display: flex;
+      flex-direction: row;
+      padding: $spacing-sm;
+      font-weight: bold;
+      font-size: larger;
+      background-color: var(--color-bg-explorer);
+      color: whitesmoke;
 
-      > .fhir-explorer-header {
+      > * {
         justify-items: center;
         text-align: center;
         align-self: center;
-        display: flex;
-        flex-direction: row;
-        padding: $spacing-sm;
-        font-weight: bold;
-        font-size: larger;
+      }
+
+      > .explorer-header-title {
+        margin-left: $spacing-md;
+        font-size: medium;
         background-color: var(--color-bg-explorer);
-        color: whitesmoke;
+      }
+    }
 
-        > * {
-          justify-items: center;
-          text-align: center;
-          align-self: center;
-        }
+    // Right evidence section.
+    > .viewer-container-body-side-explorer {
+      flex: 0 0 50%;
+      border-left: 1px solid #dee2ea;
 
-        > .explorer-header-title {
-          margin-left: $spacing-md;
-          font-size: medium;
-          background-color: var(--color-bg-explorer);
+      .evidence-empty-state {
+        padding: $spacing-md;
+        color: var(--color-text-muted, #666);
+        text-align: center;
+      }
+    }
+
+    // Collapsed navigation: sub-nav shrinks to a narrow fixed-width strip and
+    // the other two sections grow to fill the remaining space (keeping roughly
+    // the 35:60 ratio between questions and evidence).
+    &.menu-collapsed {
+      > .sub-nav {
+        flex: 0 0 5em;
+
+        .sub-menu {
+          padding-inline: 0.25em;
         }
+      }
+
+      > .viewer-container-body-content {
+        flex: 35 1 0;
+      }
+
+      > .viewer-container-body-side-explorer {
+        flex: 60 1 0;
       }
     }
   }

@@ -61,20 +61,22 @@ $selected-nave-menu-item-color: #424242;
 
 .question-item {
   margin-bottom: 24px;
-  width: 70%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .full-size-question-item {
   @extend .question-item;
-  width: 98%;
+  width: 100%;
 }
 
 .question-item {
   margin-bottom: 24px;
-  width: 70%;
+  width: 100%;
+  box-sizing: border-box;
 
   &.full-size-question-item {
-    width: 98%;
+    width: 100%;
   }
 }
 
@@ -86,9 +88,9 @@ $selected-nave-menu-item-color: #424242;
 
 .question-input {
   margin-top: 8px;
-  margin-left: 4px;
   margin-bottom: -8px; //removes the space for input form hint
   width: 100%;
+  box-sizing: border-box;
 }
 
 .value-unit-input {
@@ -120,10 +122,17 @@ $selected-nave-menu-item-color: #424242;
 
 .sub-nav{
   background-color: $sub-nav-bg;
-  padding: 1.5em;
+
+  .sub-nav-header {
+    margin-bottom: 0.5em;
+  }
+
+  .sub-nav-toggle {
+    color: whitesmoke;
+  }
 
   .sub-menu{
-    padding-inline: 0;
+    padding-inline: 0.5em;
     text-decoration: none;
 
 

@@ -1,5 +1,9 @@
 import {FhirBaseResource} from "./fhir/fhir.base.resource";
 
+/**
+ * The results of a batch job: the job-level status fields plus one
+ * {@link ResultSet} per answered question, keyed as `link{linkId}`.
+ */
 export class Results {
   [key: string]: any;
   subject: FhirBaseResource;
@@ -8,34 +12,12 @@ export class Results {
   totalJobs: number;
 }
 
+/** The answers and supporting evidence found for a single question. */
 export class ResultSet {
+  /** The CQL answer Observation, when the question was answered by CQL. */
   cqlAnswer?: FhirBaseResource;
-  nlpAnswers?: NlpAnswer[];
-  evidence?: FhirBaseResource[];
-}
-
-export class AnswerComponent{
-  label: string;
-  value: string;
-}
-
-export class NlpAnswer {
-  term: string;
-  date: string;
-  fullText: string; // Base64
-  sectionText: string;
-  textFragment: string;
-  noteText: string;
-  fragment: string;
-  evidenceReferenceList: string[];
-  documentReferenceResource: any;
-  observationResource: any;
-  type: string;
-  observationDisplay: string;
-  componentAnswerList: AnswerComponent[];
-  llmPrompt: string;
-  llmAnswer: string;
-  evidenceText: string;
-  reasoning: string;
-  resultValue: string
+  /** The answer Observations produced by NLPQL for this question. */
+  nlpAnswerObservations: FhirBaseResource[] = [];
+  /** The de-duplicated resources referenced as evidence by the answers. */
+  evidence: FhirBaseResource[] = [];
 }

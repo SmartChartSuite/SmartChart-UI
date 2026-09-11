@@ -1,0 +1,63 @@
+.full-width {
+  width: 100%;
+}
+
+mat-panel-title {
+  width: 100%;
+}
+
+.evidence-panel {
+  --mat-expansion-header-collapsed-state-height: auto;
+  --mat-expansion-header-expanded-state-height: auto;
+}
+
+mat-expansion-panel-header {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Name section is the widest. */
+.section-name {
+  flex: 3;
+  min-width: 0;
+}
+
+/* Count section is the smallest. */
+.section-count {
+  flex: 0 0 auto;
+  min-width: 2rem;
+  text-align: center;
+  font-style: italic;
+}
+
+/* Most Recent date + value/reason, left-aligned so date is always leftmost. */
+.section-recent {
+  flex: 2;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.5rem;
+}
+
+.title-rows {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title-resource-type {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.nowrap {
+  white-space: nowrap;
+}

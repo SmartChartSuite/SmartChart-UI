@@ -1,0 +1,60 @@
+<div class="border padding-md">
+  <div>
+    <span class="label-text margin-right-md">Most Recent Assertion:</span>
+    <span>{{ evidence().mostRecentAssertionSuggestion }}</span>
+  </div>
+  <div class="margin-top-sm">
+    <span class="label-text margin-right-md">Most Common Assertion:</span>
+    <span>{{ evidence().mostCommonAssertionSuggestion }}</span>
+  </div>
+</div>
+<div class="padding-md">
+  <div class="label-text margin-right-md">Evidence supporting:</div>
+  <mat-chip-listbox
+    aria-label="Filter supporting evidence by assertion"
+    [value]="selectedFilterLabel()"
+    (change)="onSelectFilter($event.value)">
+    @for (filter of assertionFilters(); track filter.label) {
+      <mat-chip-option
+        [value]="filter.label"
+        [selected]="selectedFilterLabel() === filter.label"
+        [disabled]="filter.count === 0">
+        {{ filter.label }} ({{ filter.count }})
+      </mat-chip-option>
+    }
+  </mat-chip-listbox>
+</div>
+@for (evidence of filteredEvidence(); track evidence) {
+  <div class="border padding-md margin-top-md">
+    <div class="flex items-center justify-between">
+      <div class="flex-row-simple items-center">
+        <span class="label-text margin-right-sm">Date:</span>
+        <span>{{ evidence.date | date }} (Age at: {{ getAgeAt(evidence) }})</span>
+      </div>
+      <div class="flex-row-simple items-center">
+        <span class="label-text margin-right-sm margin-left-md">Result Value:</span>
+        <span>{{ evidence.assertion || 'No assertion found' }}</span>
+      </div>
+      <button
+        matButton="outlined"
+        class="margin-left-md"
+        type="button"
+        (click)="onViewEvidence(evidence)">
+        <mat-icon aria-hidden="true">article</mat-icon>
+        View Source
+      </button>
+    </div>
+    <div class="margin-top-md">
+      <span class="label-text margin-right-sm">Evidence Text:</span>
+      <span>{{ evidence.text }}</span>
+    </div>
+    <div class="margin-top-md">
+      <span class="label-text margin-right-sm">Evidence Reasoning:</span>
+      <span>{{ evidence.reasoning }}</span>
+    </div>
+  </div>
+} @empty {
+  <div class="padding-md">
+    No evidence found for the selected assertion.
+  </div>
+}

@@ -1,80 +1,30 @@
-<mat-card class="margin-sm">
-  <mat-card-header>
-    <mat-card-title-group>
-      <mat-card-title>
-        Filter Evidence by Date
-      </mat-card-title>
-    </mat-card-title-group>
-    <button mat-icon-button
-            [matTooltip]="isDateFilterExpanded ? 'Collapse' : 'Expand' + 'Date Filters'"
-            (click)="isDateFilterExpanded = !isDateFilterExpanded">
-      @if (isDateFilterExpanded) {
-        <mat-icon>expand_less</mat-icon>
+<mat-tab-group
+  color="primary"
+  mat-stretch-tabs="false"
+  [(selectedIndex)]="selectedTabIndex">
+  <mat-tab [label]="'Structured (' + (evidence.structured?.length ?? 0) + ')'">
+    <div class="margin-md">
+      @if (evidence.structured?.length) {
+        <mat-accordion multi>
+          @for (structured of evidence.structured; let i = $index; track i) {
+            <app-structured-evidence [evidence]="structured"></app-structured-evidence>
+          }
+        </mat-accordion>
       } @else {
-        <mat-icon>expand_more</mat-icon>
+        No Structured Evidence Found
       }
-    </button>
-  </mat-card-header>
-  <mat-card-content>
-    @if (this.isDateFilterExpanded) {
-      <app-evidence-filter
-        (onDateDateRangeSelected)="onFilterByDateRange($event)"
-        [packageRunDate]="activeFormSummary.started"
-      />
-    }
-  </mat-card-content>
-</mat-card>
-
-
-<mat-card class="margin-sm">
-  <mat-card-header>
-    <mat-card-title>Structured Resources</mat-card-title>
-  </mat-card-header>
-  <mat-card-content style="overflow: auto">
-    @for (dto of Object.values(combinedDTO); track dto) {
-      <app-structured-results-details
-        [structuredEvidenceDto]="dto | sortByDate: 'sortFilterDate' : 'desc'">
-      </app-structured-results-details>
-    }
-    @if(!cqlResources?.length){
-      No Structured Evidence Found
-    }
-  </mat-card-content>
-</mat-card>
-
-<mat-card class="margin-sm">
-  <mat-card-header>
-    <mat-card-title class="document-title">
-      <span>Documents</span>
-      @if (this.nlpAnswers?.length) {
-        <button
-          class="margin-left-md"
-          mat-stroked-button
-          [matTooltip]="documentsSortDirection == 'asc' ? 'Sort By Date Desc' : 'Sort By Date Desc'"
-          (click)="documentsSortDirection == 'asc' ? documentsSortDirection = 'desc' : documentsSortDirection = 'asc'"
-        >
-          <mat-icon>
-            @if (documentsSortDirection == 'asc') {
-              keyboard_arrow_up
-            } @else {
-              keyboard_arrow_down
-            }
-          </mat-icon>
-          Sort by Date {{ documentsSortDirection == 'asc' ? 'Desc' : 'Asc' }}
-        </button>
-      }
-    </mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    @for (nlpAnswer of this.nlpAnswers | sortByDate: 'date' : (documentsSortDirection == 'asc' ? 'asc' : 'desc'); track nlpAnswer) {
-      <div class="padding-bottom-md">
-        <app-unstructured-results-details
-          [nlpAnswer]="nlpAnswer"
+    </div>
+  </mat-tab>
+  <mat-tab [label]="'Unstructured (' + (evidence.unstructured?.supportingEvidence?.length ?? 0) + ')'">
+    <div class="margin-md">
+      @if (evidence.unstructured?.supportingEvidence?.length) {
+        <app-unstructured-evidence
+          [evidence]="evidence.unstructured"
           [patientSummary]="activeFormSummary.patientSummary">
-        </app-unstructured-results-details>
-      </div>
-    } @empty {
-      No documents found
-    }
-  </mat-card-content>
-</mat-card>
+        </app-unstructured-evidence>
+      } @else {
+        No Unstructured Evidence Found
+      }
+    </div>
+  </mat-tab>
+</mat-tab-group>
