@@ -20,6 +20,9 @@
   <div class="viewer-container-body" [ngClass]="menuCollapsed() ? 'menu-collapsed' : ''">
     <div class="sub-nav">
       <div class="sub-nav-header">
+        @if (!menuCollapsed()) {
+          <span class="section-nav-title">Form sections</span>
+        }
         <mat-icon
           class="pointer sub-nav-toggle"
           (click)="toggleMenu()"
@@ -32,17 +35,22 @@
         <ul class="sub-menu">
           @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
             @let evidenceCount = getQuestionsWithEvidenceCount(item, results());
+            @let questionCount = getQuestionCount(item);
+            @let answeredCount = getAnsweredQuestionCount(item);
             @if (!menuCollapsed()) {
               <li class="sub-menu-item"
                   [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
                   (click)="onSectionSelected(i)">
-                {{ i + 1 }}. {{ item.text }}
-                @if (evidenceCount > 0) {
-                  <span class="sparkles-icon" aria-hidden="true"
-                        matTooltipPosition="above"
-                        [matTooltip]="'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.'">
-                    </span>
-                }
+                <span class="section-label">{{ item.text }}</span>
+                <span class="section-count" [attr.aria-label]="answeredCount + ' of ' + questionCount + ' questions answered'">
+                  {{ answeredCount }}/{{ questionCount }}
+                </span>
+                <span class="sparkles-icon"
+                      [class.has-evidence]="evidenceCount > 0"
+                      aria-hidden="true"
+                      matTooltipPosition="above"
+                      [matTooltip]="evidenceCount > 0 ? 'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.' : ''">
+                </span>
               </li>
             } @else {
               <li class="sub-menu-item" [matTooltip]="item.text" [matTooltipPosition]="'right'"
@@ -54,6 +62,17 @@
           }
         </ul>
       </mat-nav-list>
+      @let totalQuestions = getTotalQuestionCount();
+      @let totalAnswered = getTotalAnsweredQuestionCount();
+      <div class="nav-progress" aria-label="Overall form completion">
+        <div class="nav-progress-label">Overall completion</div>
+        <div class="progress-line" role="progressbar"
+             [attr.aria-valuenow]="getOverallProgressPercent()"
+             aria-valuemin="0" aria-valuemax="100">
+          <span [style.width.%]="getOverallProgressPercent()"></span>
+        </div>
+        <div class="nav-progress-count">{{ totalAnswered }} of {{ totalQuestions }} questions</div>
+      </div>
     </div>
 
     <!-- Begin actual form rendering -->
@@ -198,6 +217,12 @@
       </div>
     </div>
     <div class="viewer-container-body-side-content viewer-container-body-side-explorer">
+      <div class="evidence-column-header">
+        <span class="evidence-column-title">Evidence workspace</span>
+        @if (selectedEvidenceQuestion()) {
+          <span class="evidence-question">Findings associated with <strong>{{ selectedEvidenceQuestion() }}</strong></span>
+        }
+      </div>
       <div class="section-scroll-body">
         @if (selectedEvidenceIndex !== null) {
           <app-evidence-details [activeFormSummary]="activeFormSummary()"></app-evidence-details>

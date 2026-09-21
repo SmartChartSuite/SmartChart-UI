@@ -3,14 +3,13 @@
     <mat-panel-title>
       <div class="header-row">
         <div class="title-rows section-name">
-          <span class="title-resource-type">{{ evidence()?.resourceType }}</span>
-          <span class="title-value">
+          <strong class="finding-name">
             <span [matTooltip]="evidence()?.name ?? ''"
                   [matTooltipDisabled]="!isLongerThan(evidence()?.name, 60)">
               {{ truncate(evidence()?.name, 60) }}
             </span>
-            ({{ evidence()?.system }} {{ evidence()?.code }})
-          </span>
+          </strong>
+          <span class="finding-source">{{ evidence()?.resourceType }} · {{ evidence()?.system }} {{ evidence()?.code }}</span>
         </div>
 
         <div class="title-rows section-count">
@@ -18,22 +17,18 @@
         </div>
 
         <div class="section-recent">
-          <div class="title-rows">
-            <span class="title-resource-type">Most Recent Date</span>
-            <span class="title-value">{{ evidence()?.latestDate | date }}</span>
-          </div>
-
-          @if (evidence()?.highlight) {
-            <div class="title-rows">
-              <span class="title-resource-type">
-                {{ evidence()?.resourceType == 'Procedure' ? 'Most Recent Reason' : 'Most Recent Value' }}
-              </span>
-              <span class="title-value"
+          @if (evidence()?.resourceType === 'Encounter') {
+            <div class="encounter-period">
+              <span>{{ temporalStart() }} -</span>
+              <span>{{ temporalEnd() }}</span>
+            </div>
+          } @else {
+            <strong class="finding-latest"
                     [matTooltip]="evidence()?.highlight ?? ''"
                     [matTooltipDisabled]="!isLongerThan(evidence()?.highlight, 20)">
-                {{ truncate(evidence()?.highlight, 20) }}
-              </span>
-            </div>
+              {{ truncate(evidence()?.highlight, 20) || (evidence()?.latestDate | date) }}
+            </strong>
+            <span class="finding-date">{{ evidence()?.latestDate | date }}</span>
           }
         </div>
       </div>
@@ -41,10 +36,16 @@
   </mat-expansion-panel-header>
 
   @if (evidence()?.resourceType == 'Observation') {
-    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+    <div class="table-scroll-container" tabindex="0" aria-label="Coded observation results. Scroll horizontally to view all columns">
+      <table mat-table [dataSource]="pagedResources()" class="full-width">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Date</th>
-        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.dateForSorting | date }}</td>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          {{ resource.dateForSorting | date }}
+          @if (ageAt(resource.dateForSorting) !== undefined) {
+            <span class="age-at">Age at: {{ ageAt(resource.dateForSorting) }}</span>
+          }
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="value">
@@ -54,32 +55,56 @@
 
       <tr mat-header-row *matHeaderRowDef="observationColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: observationColumns"></tr>
-    </table>
+      </table>
+    </div>
   } @else if (evidence()?.resourceType == 'Condition') {
-    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+    <div class="table-scroll-container" tabindex="0" aria-label="Coded condition results. Scroll horizontally to view all columns">
+      <table mat-table [dataSource]="pagedResources()" class="full-width">
       <ng-container matColumnDef="onset">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Onset</th>
-        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.details.onset | date }}</td>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          {{ resource.details.onset | date }}
+          @if (ageAt(resource.details.onset) !== undefined) {
+            <span class="age-at">Age at: {{ ageAt(resource.details.onset) }}</span>
+          }
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="abatement">
         <th mat-header-cell *matHeaderCellDef>Abatement</th>
-        <td mat-cell *matCellDef="let resource">{{ resource.details.abatement | date }}</td>
+        <td mat-cell *matCellDef="let resource">
+          {{ resource.details.abatement | date }}
+          @if (ageAt(resource.details.abatement) !== undefined) {
+            <span class="age-at">Age at: {{ ageAt(resource.details.abatement) }}</span>
+          }
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="conditionColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: conditionColumns"></tr>
-    </table>
+      </table>
+    </div>
   } @else if (evidence()?.resourceType == 'Encounter') {
-    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+    <div class="table-scroll-container" tabindex="0" aria-label="Coded encounter results. Scroll horizontally to view all columns">
+      <table mat-table [dataSource]="pagedResources()" class="full-width">
       <ng-container matColumnDef="start">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Start</th>
-        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.details.start | date }}</td>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          {{ resource.details.start | date }}
+          @if (ageAt(resource.details.start) !== undefined) {
+            <span class="age-at">Age at: {{ ageAt(resource.details.start) }}</span>
+          }
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="end">
         <th mat-header-cell *matHeaderCellDef class="nowrap">End</th>
-        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.details.end | date }}</td>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          {{ resource.details.end | date }}
+          @if (ageAt(resource.details.end) !== undefined) {
+            <span class="age-at">Age at: {{ ageAt(resource.details.end) }}</span>
+          }
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="type">
@@ -104,12 +129,19 @@
 
       <tr mat-header-row *matHeaderRowDef="encounterColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: encounterColumns"></tr>
-    </table>
+      </table>
+    </div>
   } @else if (evidence()?.resourceType == 'MedicationRequest') {
-    <table mat-table [dataSource]="evidence()?.resources ?? []" class="full-width">
+    <div class="table-scroll-container" tabindex="0" aria-label="Coded medication results. Scroll horizontally to view all columns">
+      <table mat-table [dataSource]="pagedResources()" class="full-width">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Date</th>
-        <td mat-cell *matCellDef="let resource" class="nowrap">{{ resource.dateForSorting | date }}</td>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          {{ resource.dateForSorting | date }}
+          @if (ageAt(resource.dateForSorting) !== undefined) {
+            <span class="age-at">Age at: {{ ageAt(resource.dateForSorting) }}</span>
+          }
+        </td>
       </ng-container>
 
       <ng-container matColumnDef="dosage">
@@ -119,9 +151,10 @@
 
       <tr mat-header-row *matHeaderRowDef="medicationColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: medicationColumns"></tr>
-    </table>
+      </table>
+    </div>
   } @else {
-    @for (resource of evidence()?.resources; let i = $index; track i) {
+    @for (resource of pagedResources(); let i = $index; track i) {
       <div class="margin-left-md padding-bottom-md">
         @if (resource.resourceType == 'Procedure') {
           <div>Status: {{ resource.details.status }}</div>
@@ -134,4 +167,30 @@
       </div>
     }
   }
+
+  <div class="finding-pagination">
+    <span class="pagination-summary">{{ pageSummary() }}</span>
+    <div class="pagination-actions">
+        <button type="button" class="pagination-button" (click)="previousPage()"
+                [disabled]="currentPage() === 0" aria-label="Previous page">&lt;</button>
+        @for (page of visiblePages(); let i = $index; track page) {
+          @if (i > 0 && hasPageGap(visiblePages()[i - 1], page)) {
+            <button type="button" class="pagination-button pagination-ellipsis"
+                    [matMenuTriggerFor]="morePagesMenu"
+                    aria-label="Show more pages">...</button>
+          }
+          <button type="button" class="pagination-page" [class.current]="currentPage() === page"
+                  (click)="goToPage(page)">{{ page + 1 }}</button>
+        }
+        <button type="button" class="pagination-button" (click)="nextPage()"
+                [disabled]="currentPage() >= totalPages() - 1" aria-label="Next page">&gt;</button>
+    </div>
+  </div>
+  <mat-menu #morePagesMenu="matMenu" class="pagination-menu">
+    @for (page of hiddenPages(); track page) {
+      <button mat-menu-item type="button" (click)="goToPage(page)">
+        Page {{ page + 1 }}
+      </button>
+    }
+  </mat-menu>
 </mat-expansion-panel>

@@ -278,13 +278,13 @@
 
     // Left section navigation. Non-scrollable list, fixed proportion of width.
     > .sub-nav {
-      flex: 0 0 20%;
+      flex: 0 0 220px;
       transition: flex-basis var(--transition-fast);
     }
 
     // Middle questions section.
     > .viewer-container-body-content {
-      flex: 0 0 30%;
+      flex: 35 1 0;
 
       // Horizontal padding lives on the scroll body (with border-box) so
       // children stay within the column width.
@@ -324,7 +324,7 @@
 
     // Right evidence section.
     > .viewer-container-body-side-explorer {
-      flex: 0 0 50%;
+      flex: 65 1 0;
       border-left: 1px solid #dee2ea;
 
       .evidence-empty-state {

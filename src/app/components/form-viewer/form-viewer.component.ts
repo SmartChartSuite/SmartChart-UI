@@ -111,6 +111,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
+  selectedEvidenceQuestion = signal<string | undefined>(undefined);
 
   results = signal<Results | undefined>(undefined);
 
@@ -274,6 +275,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
     this.selectedEvidenceIndex = firstQuestionIndex;
     const firstQuestion = section.item[firstQuestionIndex];
+    this.selectedEvidenceQuestion.set(firstQuestion.text);
     const resultSet = results[`link${firstQuestion.linkId}`];
     this.evidenceViewerService.setEvidence(resultSet ?? new ResultSet());
   }
@@ -290,6 +292,9 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
   toggleEvidenceDrawer(index: number): void {
     this.selectedEvidenceIndex = index;
+    this.selectedEvidenceQuestion.set(
+      this.questionnaire()?.item?.[this.selectedMenuItemIndex]?.item?.[index]?.text
+    );
   }
 
   /** Toggles the left-hand section navigation between expanded and collapsed. */
@@ -409,6 +414,40 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       return 0;
     }
     return item.item.filter(element => element?.type !== 'display').length;
+  }
+
+  protected getAnsweredQuestionCount(item: Item): number {
+    return (item.item ?? []).filter(question => {
+      if (question.type === QuestionnaireItemType.display) {
+        return false;
+      }
+
+      const answer = this.answerDictionary()?.[question.linkId];
+      if (answer === undefined || answer === null || answer === '') {
+        return false;
+      }
+
+      return !Array.isArray(answer) || answer.length > 0;
+    }).length;
+  }
+
+  protected getTotalQuestionCount(): number {
+    return (this.questionnaire()?.item ?? []).reduce(
+      (total, section) => total + this.getQuestionCount(section), 0
+    );
+  }
+
+  protected getTotalAnsweredQuestionCount(): number {
+    return (this.questionnaire()?.item ?? []).reduce(
+      (total, section) => total + this.getAnsweredQuestionCount(section), 0
+    );
+  }
+
+  protected getOverallProgressPercent(): number {
+    const totalQuestions = this.getTotalQuestionCount();
+    return totalQuestions > 0
+      ? (this.getTotalAnsweredQuestionCount() / totalQuestions) * 100
+      : 0;
   }
 
   protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {

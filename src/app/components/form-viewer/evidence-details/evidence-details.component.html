@@ -2,20 +2,38 @@
   color="primary"
   mat-stretch-tabs="false"
   [(selectedIndex)]="selectedTabIndex">
-  <mat-tab [label]="'Structured (' + (evidence.structured?.length ?? 0) + ')'">
-    <div class="margin-md">
+  <mat-tab [label]="'Coded Records (' + (evidence.structured?.length ?? 0) + ')'">
+    <div class="evidence-lane-heading">
+      <span class="evidence-lane-title">
+        Structured findings <span>· {{ structuredResultCount }} results</span>
+      </span>
+    </div>
+    <div class="resource-type-filters" aria-label="Filter coded records by resource type">
+      @for (filter of resourceTypeFilters; track filter.type ?? 'all') {
+        <button type="button"
+                class="resource-type-filter"
+                [class.active]="selectedResourceType === filter.type"
+                (click)="selectResourceType(filter.type)">
+          {{ filter.label }} <span>{{ filter.count }}</span>
+        </button>
+      }
+    </div>
+    <div class="evidence-tab-content">
       @if (evidence.structured?.length) {
         <mat-accordion multi>
-          @for (structured of evidence.structured; let i = $index; track i) {
-            <app-structured-evidence [evidence]="structured"></app-structured-evidence>
+          @for (structured of filteredStructuredEvidence; let i = $index; track i) {
+            <app-structured-evidence
+              [evidence]="structured"
+              [patientSummary]="activeFormSummary?.patientSummary">
+            </app-structured-evidence>
           }
         </mat-accordion>
       } @else {
-        No Structured Evidence Found
+        No Coded Records Found
       }
     </div>
   </mat-tab>
-  <mat-tab [label]="'Unstructured (' + (evidence.unstructured?.supportingEvidence?.length ?? 0) + ')'">
+  <mat-tab [label]="'Narrative Records (' + (evidence.unstructured?.supportingEvidence?.length ?? 0) + ')'">
     <div class="margin-md">
       @if (evidence.unstructured?.supportingEvidence?.length) {
         <app-unstructured-evidence
@@ -23,7 +41,7 @@
           [patientSummary]="activeFormSummary.patientSummary">
         </app-unstructured-evidence>
       } @else {
-        No Unstructured Evidence Found
+        No Narrative Records Found
       }
     </div>
   </mat-tab>

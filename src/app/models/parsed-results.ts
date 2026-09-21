@@ -10,6 +10,7 @@ export interface ObservationDetails {
 export interface ConditionDetails {
   onset?: string;
   abatement?: string;
+  clinicalStatus?: string;
 }
 
 /** MedicationRequest-specific rendered details. */
