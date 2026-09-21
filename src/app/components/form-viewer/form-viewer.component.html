@@ -1,8 +1,14 @@
+@if (initialLoadComplete()) {
 <div class="viewer-container-wrapper">
   @if (activeFormSummary()?.formName || activeFormSummary()?.patientSummary) {
     <div class="viewer-container-header">
       <div class="form-name">
-        {{ questionnaire()?.title }}
+        @if (questionnaireResponseStatus()) {
+          <mat-chip class="form-status-chip">
+            {{ getQuestionnaireResponseStatusLabel(questionnaireResponseStatus()) }}
+          </mat-chip>
+        }
+        <span>{{ questionnaire()?.title }}</span>
       </div>
       @if (activeFormSummary()?.patientSummary) {
         <div class="patient-details-component-wrapper">
@@ -10,34 +16,10 @@
         </div>
       }
     </div>
-    <div class="viewer-container-header">
-      <div class="job-details-wrapper">
-        <div class="job-details-label">
-          Form Job Status:
-        </div>
-        <div class="job-details-value">
-          {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
-        </div>
-        <div class="job-details-spinner">
-          @if (status === "complete") {
-            <mat-spinner mode="determinate" color="primary" value="100" [diameter]="16"/>
-          } @else {
-            <mat-spinner [diameter]="16" color="accent"/>
-          }
-        </div>
-
-      </div>
-    </div>
   }
   <div class="viewer-container-body" [ngClass]="menuCollapsed() ? 'menu-collapsed' : ''">
     <div class="sub-nav">
-      <div class="fhir-explorer-header sub-nav-header">
-        @if (!menuCollapsed()) {
-          <span class="explorer-header-title">
-            Sections
-          </span>
-          <span class="content-spacer"></span>
-        }
+      <div class="sub-nav-header">
         <mat-icon
           class="pointer sub-nav-toggle"
           (click)="toggleMenu()"
@@ -76,11 +58,6 @@
 
     <!-- Begin actual form rendering -->
     <div class="viewer-container-body-content">
-      <div class="fhir-explorer-header">
-        <span class="explorer-header-title">
-            Questions
-          </span>
-      </div>
       <div class="section-scroll-body" #top>
       @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
         @if (item.selected) {
@@ -221,11 +198,6 @@
       </div>
     </div>
     <div class="viewer-container-body-side-content viewer-container-body-side-explorer">
-      <div class="fhir-explorer-header">
-        <span class="explorer-header-title">
-            Evidence
-          </span>
-      </div>
       <div class="section-scroll-body">
         @if (selectedEvidenceIndex !== null) {
           <app-evidence-details [activeFormSummary]="activeFormSummary()"></app-evidence-details>
@@ -272,3 +244,9 @@
   }
 
 </div>
+} @else {
+  <div class="form-viewer-loading" role="status" aria-live="polite">
+    <mat-spinner aria-label="Loading form"></mat-spinner>
+    <span>Loading form...</span>
+  </div>
+}

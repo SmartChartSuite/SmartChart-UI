@@ -1,32 +1,56 @@
 $light-accent-color: #E0E0E0;
-$dark-background-color: #354d92;
-$sub-nav-bg: #F4F6FA;
+$dark-background-color: var(--color-primary);
+$sub-nav-bg: var(--color-bg-light);
 $sub-nav-text-color: #4d5c8c;
-$sub-nav-select: #dee2f4;
+$sub-nav-select: var(--color-primary-light);
+
+.form-viewer-loading {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+}
+
+// The identity header is a vertical stack: title first, then patient metadata.
+.viewer-container-wrapper > .viewer-container-header {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 22px 36px;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+}
+
 .form-name {
   display: flex;
-  flex: 0 0 30%;
-  flex-wrap: wrap;
-  background-color: #e6e8f0;
-  color: #555555;
-  align-content: center;
-  justify-content: center;
-  font-size: large;
-  font-weight: 400;
-  padding: 16px 0 16px 0;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-primary);
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+}
+
+.form-status-chip {
+  order: 2;
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: #ffffff;
+  background-color: var(--color-primary);
+  font-family: var(--font-family-fallback);
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .patient-details-component-wrapper {
-  flex: 1;
   display: flex;
-  background-color: #F4F6FA;
-  > * {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-  }
+  flex: 1 1 100%;
+  margin-top: 4px;
 }
 
 .question-label {

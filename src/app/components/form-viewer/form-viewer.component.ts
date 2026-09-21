@@ -39,6 +39,7 @@ import {MatIcon} from "@angular/material/icon";
 import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
 import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
+import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
 import {PatientGrid} from "../../models/patient-grid";
@@ -84,6 +85,8 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<Questionnaire | undefined>(undefined);
+  questionnaireResponseStatus = signal<QuestionnaireResponseStatus | undefined>(undefined);
+  initialLoadComplete = signal(false);
   questionnaireResponseId = '';
 
   /**
@@ -137,11 +140,15 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(value => {
       this.results.set(value);
+      this.initialLoadComplete.set(true);
       // On first load, auto-select the first question in the initially-selected
       // section (mirrors clicking a section).
       if (this.selectedEvidenceIndex === null) {
         this.selectFirstQuestion(this.selectedMenuItemIndex);
       }
+    }, () => {
+      this.initialLoadComplete.set(true);
+      this.utilsService.showErrorMessage();
     });
 
     this.loadFormFromRoute();
@@ -180,6 +187,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         } as PatientGrid));
         this.pendingQuestionnaireResponse = questionnaireResponse;
         this.questionnaireResponseId = questionnaireResponse.id;
+        this.questionnaireResponseStatus.set(questionnaireResponse.status);
       }),
       // Fetch the questionnaire definition after the route context is ready.
       mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
@@ -208,6 +216,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       },
       error: err => {
         console.error(err);
+        this.initialLoadComplete.set(true);
         this.utilsService.showErrorMessage();
       }
     });
@@ -315,6 +324,25 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
    */
   protected getOptionValue(option: AnswerOption): string | undefined {
     return option.valueCoding ? option.valueCoding.code : option.valueString;
+  }
+
+  protected getQuestionnaireResponseStatusLabel(
+    status: QuestionnaireResponseStatus | undefined
+  ): string {
+    switch (status) {
+      case QuestionnaireResponseStatus.inProgress:
+        return 'In Progress';
+      case QuestionnaireResponseStatus.completed:
+        return 'Completed';
+      case QuestionnaireResponseStatus.amended:
+        return 'Amended';
+      case QuestionnaireResponseStatus.enteredInError:
+        return 'Entered in Error';
+      case QuestionnaireResponseStatus.stopped:
+        return 'Stopped';
+      default:
+        return '';
+    }
   }
 
   /** The human-readable label for an option, for either format. */

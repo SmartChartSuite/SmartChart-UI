@@ -6,19 +6,19 @@
 @use 'styles/components' as *;
 @use 'styles/material-overrides' as *;
 
-// Define custom primary palette based on #213368
+// Define the primary palette around the prototype's purple accent.
 $custom-primary-palette: (
-  50: #e8eaf2,
-  100: #c5cade,
-  200: #9ea7c8,
-  300: #7784b2,
-  400: #5a69a1,
-  500: #3d4f91,
-  600: #374889,
-  700: #2f3f7e,
-  800: #273674,
-  900: #1a2662,
-  950: #213368,
+  50: #f0e9ff,
+  100: #dfd2ff,
+  200: #c4b0ff,
+  300: #a88aff,
+  400: #8c68ed,
+  500: #7650df,
+  600: #6442d6,
+  700: #5737c2,
+  800: #482da5,
+  900: #382487,
+  950: #2d1c6d,
   contrast: (
     50: rgba(black, 0.87),
     100: rgba(black, 0.87),
