@@ -1,4 +1,57 @@
+.mat-mdc-dialog-surface {
+    overflow: hidden;
+    border-radius: 24px;
+    background: #ffffff;
+}
+
+.document-modal-header {
+    padding: 0 16px 10px;
+    margin-top: -8px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.document-modal-title {
+    color: var(--color-text-primary);
+    font-family: var(--font-family-primary);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.document-modal-label {
+    margin-right: 5px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-fallback);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.document-modal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 8px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-fallback);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.document-modal-body {
+    margin: 8px 4px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #ffffff;
+}
+
+mat-dialog-actions {
+    padding-right: 16px;
+    border-top: 1px solid var(--color-border);
+}
+
 pre {
     white-space: pre-wrap;
-    font-family: Inter;
+    font-family: var(--font-family-mono);
 }

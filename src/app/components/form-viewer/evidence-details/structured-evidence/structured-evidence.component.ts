@@ -1,5 +1,5 @@
 import {Component, computed, input, Input, signal} from '@angular/core';
-import {DatePipe, formatDate} from "@angular/common";
+import {formatDate} from "@angular/common";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
@@ -10,7 +10,6 @@ import {PatientSummary} from "../../../../models/patient-summary";
 @Component({
   selector: 'app-structured-evidence',
   imports: [
-    DatePipe,
     MatExpansionModule,
     MatTableModule,
     MatTooltipModule,
@@ -27,9 +26,10 @@ export class StructuredEvidenceComponent {
   readonly pageSize = 5;
   readonly currentPage = signal(0);
   readonly observationColumns = ['date', 'value'];
-  readonly conditionColumns = ['onset', 'abatement'];
-  readonly encounterColumns = ['start', 'end', 'type', 'reasonText', 'reasonCode', 'reasonSystem'];
-  readonly medicationColumns = ['date', 'dosage'];
+  readonly conditionColumns = ['onset', 'abatement', 'clinicalStatus'];
+  readonly encounterColumns = ['start', 'end', 'type', 'reasonText'];
+  readonly medicationColumns = ['date', 'dosage', 'status'];
+  readonly procedureColumns = ['performed', 'status', 'category', 'reason'];
 
   readonly totalPages = computed(() => Math.ceil(this.evidence().resources.length / this.pageSize));
   readonly pagedResources = computed(() => {
@@ -89,6 +89,31 @@ export class StructuredEvidenceComponent {
     return (text?.length ?? 0) > maxLength;
   }
 
+  displayDate(value: string | undefined): string {
+    return value ? formatDate(value, 'MM/dd/yyyy', 'en-US') : 'Unknown';
+  }
+
+  displayStatus(value: string | undefined): string {
+    if (!value) return 'Unknown';
+    return value.replaceAll('-', ' ').replace(/\b\w/g, character => character.toUpperCase());
+  }
+
+  findingSource(): string {
+    const evidence = this.evidence();
+    if (evidence.resourceType === 'Encounter') {
+      return 'Encounter';
+    }
+
+    return `${evidence.resourceType} · ${evidence.system} ${evidence.code}`;
+  }
+
+  encounterType(): string {
+    const resource = this.evidence().resources[0];
+    return resource.resourceType === 'Encounter'
+      ? resource.details.type ?? 'Unknown encounter'
+      : '';
+  }
+
   ageAt(dateValue: string | undefined): string | undefined {
     const birthDate = this.patientSummary?.birthDate;
     if (!birthDate || !dateValue) return undefined;
@@ -119,6 +144,34 @@ export class StructuredEvidenceComponent {
       : '';
   }
 
+  encounterPeriod(): string {
+    const resource = this.evidence().resources[0];
+    if (resource?.resourceType !== 'Encounter') return '';
+
+    return `${this.temporalStart()} - ${this.temporalEnd()}`;
+  }
+
+  encounterReason(): string {
+    const resource = this.evidence().resources[0];
+    return resource?.resourceType === 'Encounter'
+      ? resource.details.reasonText ?? ''
+      : '';
+  }
+
+  valueLabel(): string {
+    switch (this.evidence().resourceType) {
+      case 'Observation':
+        return 'Value';
+      case 'MedicationRequest':
+        return 'Dosage';
+      case 'Condition':
+      case 'Procedure':
+        return 'Status';
+      default:
+        return 'Value';
+    }
+  }
+
   temporalEnd(): string {
     const resource = this.evidence().resources[0];
     if (resource?.resourceType !== 'Encounter') return '';
@@ -128,6 +181,6 @@ export class StructuredEvidenceComponent {
   }
 
   private formatDate(value: string | undefined, fallback = 'Unknown'): string {
-    return value ? formatDate(value, 'dd MMM yyyy', 'en-US') : fallback;
+    return value ? formatDate(value, 'MM/dd/yyyy', 'en-US') : fallback;
   }
 }

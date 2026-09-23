@@ -6,10 +6,10 @@
           <strong class="finding-name">
             <span [matTooltip]="evidence()?.name ?? ''"
                   [matTooltipDisabled]="!isLongerThan(evidence()?.name, 60)">
-              {{ truncate(evidence()?.name, 60) }}
+              {{ evidence()?.resourceType === 'Encounter' ? encounterType() : truncate(evidence()?.name, 60) }}
             </span>
           </strong>
-          <span class="finding-source">{{ evidence()?.resourceType }} · {{ evidence()?.system }} {{ evidence()?.code }}</span>
+          <span class="finding-source">{{ findingSource() }}</span>
         </div>
 
         <div class="title-rows section-count">
@@ -19,16 +19,26 @@
         <div class="section-recent">
           @if (evidence()?.resourceType === 'Encounter') {
             <div class="encounter-period">
-              <span>{{ temporalStart() }} -</span>
-              <span>{{ temporalEnd() }}</span>
+              <div class="finding-value">
+                <span class="finding-value-label">Reason:</span>
+                <strong class="finding-latest"
+                        [matTooltip]="encounterReason()"
+                        [matTooltipDisabled]="!isLongerThan(encounterReason(), 20)">
+              {{ truncate(encounterReason(), 20) || 'Unknown' }}
+                </strong>
+              </div>
+              <span class="finding-date">{{ encounterPeriod() }}</span>
             </div>
           } @else {
-            <strong class="finding-latest"
-                    [matTooltip]="evidence()?.highlight ?? ''"
-                    [matTooltipDisabled]="!isLongerThan(evidence()?.highlight, 20)">
-              {{ truncate(evidence()?.highlight, 20) || (evidence()?.latestDate | date) }}
-            </strong>
-            <span class="finding-date">{{ evidence()?.latestDate | date }}</span>
+            <div class="finding-value">
+              <span class="finding-value-label">{{ valueLabel() }}:</span>
+              <strong class="finding-latest"
+                      [matTooltip]="evidence()?.highlight ?? ''"
+                      [matTooltipDisabled]="!isLongerThan(evidence()?.highlight, 20)">
+              {{ truncate(evidence()?.highlight, 20) || displayDate(evidence()?.latestDate) }}
+              </strong>
+            </div>
+            <span class="finding-date">{{ displayDate(evidence()?.latestDate) }}</span>
           }
         </div>
       </div>
@@ -41,16 +51,21 @@
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Date</th>
         <td mat-cell *matCellDef="let resource" class="nowrap">
-          {{ resource.dateForSorting | date }}
+          {{ displayDate(resource.dateForSorting) }}
           @if (ageAt(resource.dateForSorting) !== undefined) {
             <span class="age-at">Age at: {{ ageAt(resource.dateForSorting) }}</span>
           }
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="value">
-        <th mat-header-cell *matHeaderCellDef>Value</th>
-        <td mat-cell *matCellDef="let resource">{{ resource.details.value }}</td>
+        <ng-container matColumnDef="value">
+          <th mat-header-cell *matHeaderCellDef>Value</th>
+          <td mat-cell *matCellDef="let resource">
+            <span class="cell-ellipsis" [matTooltip]="resource.details.value ?? ''"
+                  [matTooltipDisabled]="!isLongerThan(resource.details.value, 60)">
+              {{ truncate(resource.details.value, 60) }}
+            </span>
+          </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="observationColumns"></tr>
@@ -63,7 +78,7 @@
       <ng-container matColumnDef="onset">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Onset</th>
         <td mat-cell *matCellDef="let resource" class="nowrap">
-          {{ resource.details.onset | date }}
+          {{ displayDate(resource.details.onset) }}
           @if (ageAt(resource.details.onset) !== undefined) {
             <span class="age-at">Age at: {{ ageAt(resource.details.onset) }}</span>
           }
@@ -73,11 +88,16 @@
       <ng-container matColumnDef="abatement">
         <th mat-header-cell *matHeaderCellDef>Abatement</th>
         <td mat-cell *matCellDef="let resource">
-          {{ resource.details.abatement | date }}
+          {{ displayDate(resource.details.abatement) }}
           @if (ageAt(resource.details.abatement) !== undefined) {
             <span class="age-at">Age at: {{ ageAt(resource.details.abatement) }}</span>
           }
         </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clinicalStatus">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let resource">{{ displayStatus(resource.details.clinicalStatus) }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="conditionColumns"></tr>
@@ -90,7 +110,7 @@
       <ng-container matColumnDef="start">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Start</th>
         <td mat-cell *matCellDef="let resource" class="nowrap">
-          {{ resource.details.start | date }}
+          {{ displayDate(resource.details.start) }}
           @if (ageAt(resource.details.start) !== undefined) {
             <span class="age-at">Age at: {{ ageAt(resource.details.start) }}</span>
           }
@@ -100,7 +120,7 @@
       <ng-container matColumnDef="end">
         <th mat-header-cell *matHeaderCellDef class="nowrap">End</th>
         <td mat-cell *matCellDef="let resource" class="nowrap">
-          {{ resource.details.end | date }}
+          {{ displayDate(resource.details.end) }}
           @if (ageAt(resource.details.end) !== undefined) {
             <span class="age-at">Age at: {{ ageAt(resource.details.end) }}</span>
           }
@@ -137,20 +157,62 @@
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef class="nowrap">Date</th>
         <td mat-cell *matCellDef="let resource" class="nowrap">
-          {{ resource.dateForSorting | date }}
+          {{ displayDate(resource.dateForSorting) }}
           @if (ageAt(resource.dateForSorting) !== undefined) {
             <span class="age-at">Age at: {{ ageAt(resource.dateForSorting) }}</span>
           }
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="dosage">
-        <th mat-header-cell *matHeaderCellDef>Dosage</th>
-        <td mat-cell *matCellDef="let resource">{{ resource.details.dosageInstructions }}</td>
+        <ng-container matColumnDef="dosage">
+          <th mat-header-cell *matHeaderCellDef>Dosage</th>
+          <td mat-cell *matCellDef="let resource">
+            <span class="cell-ellipsis" [matTooltip]="resource.details.dosageInstructions ?? ''"
+                  [matTooltipDisabled]="!isLongerThan(resource.details.dosageInstructions, 60)">
+              {{ truncate(resource.details.dosageInstructions, 60) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+           <td mat-cell *matCellDef="let resource">{{ displayStatus(resource.details.status) }}</td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="medicationColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: medicationColumns"></tr>
+      </table>
+    </div>
+  } @else if (evidence()?.resourceType == 'Procedure') {
+    <div class="table-scroll-container" tabindex="0" aria-label="Coded procedure results. Scroll horizontally to view all columns">
+      <table mat-table [dataSource]="pagedResources()" class="full-width">
+        <ng-container matColumnDef="performed">
+          <th mat-header-cell *matHeaderCellDef class="nowrap">Performed</th>
+          <td mat-cell *matCellDef="let resource" class="nowrap">
+            {{ displayDate(resource.dateForSorting) }}
+            @if (ageAt(resource.dateForSorting) !== undefined) {
+              <span class="age-at">Age at: {{ ageAt(resource.dateForSorting) }}</span>
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let resource">{{ displayStatus(resource.details.status) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let resource">{{ resource.details.category }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="reason">
+          <th mat-header-cell *matHeaderCellDef>Reason</th>
+          <td mat-cell *matCellDef="let resource">{{ resource.details.reason }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="procedureColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: procedureColumns"></tr>
       </table>
     </div>
   } @else {
@@ -163,7 +225,7 @@
         }
 
         <!-- Date Used For Sorting -->
-        <div>Date: {{ resource.dateForSorting | date }}</div>
+        <div>Date: {{ displayDate(resource.dateForSorting) }}</div>
       </div>
     }
   }

@@ -18,6 +18,51 @@
   color: var(--color-text-secondary);
 }
 
+// Shared filter pill treatment used by coded and narrative evidence filters.
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font: 12px var(--font-family-fallback);
+}
+
+.filter-chip span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--color-bg-gray);
+  color: var(--color-text-primary);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.filter-chip:hover,
+.filter-chip.active,
+.filter-chip[aria-selected="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.filter-chip:hover span,
+.filter-chip.active span {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
 // Snackbar Offset
 .snackbar-offset {
   transform: translateY(90vh) !important;

@@ -90,3 +90,18 @@ $custom-typography: mat.m2-define-typography-config(
   max-width: 350px !important;
   min-width: 300px;
 }
+
+// The dialog panel is rendered in the CDK overlay outside the component host,
+// so its surface styling belongs in the global stylesheet scope.
+.document-viewer-dialog .mat-mdc-dialog-surface {
+  overflow: hidden;
+  border-radius: 24px;
+  background: #ffffff;
+}
+
+.document-viewer-dialog .mat-mdc-dialog-actions button[mat-dialog-close] {
+  --mdc-filled-button-container-color: var(--color-primary);
+  --mdc-filled-button-label-text-color: #ffffff;
+  background-color: var(--color-primary);
+  color: #ffffff;
+}

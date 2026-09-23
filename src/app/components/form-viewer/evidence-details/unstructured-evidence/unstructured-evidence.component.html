@@ -1,60 +1,67 @@
-<div class="border padding-md">
-  <div>
-    <span class="label-text margin-right-md">Most Recent Assertion:</span>
-    <span>{{ evidence().mostRecentAssertionSuggestion }}</span>
+@if (supportingEvidence().length > 0) {
+  <div class="narrative-filters" role="group" aria-label="Filter supporting evidence by finding">
+    <div class="narrative-filter-list">
+      @for (filter of assertionFilters(); track filter.label) {
+        <button type="button"
+                class="filter-chip"
+                [class.active]="selectedFilterLabel() === filter.label"
+                [disabled]="filter.count === 0"
+                [attr.aria-pressed]="selectedFilterLabel() === filter.label"
+                (click)="onSelectFilter(filter.label)">
+          {{ filter.label }} <span>{{ filter.count }}</span>
+        </button>
+      }
+    </div>
   </div>
-  <div class="margin-top-sm">
-    <span class="label-text margin-right-md">Most Common Assertion:</span>
-    <span>{{ evidence().mostCommonAssertionSuggestion }}</span>
-  </div>
-</div>
-<div class="padding-md">
-  <div class="label-text margin-right-md">Evidence supporting:</div>
-  <mat-chip-listbox
-    aria-label="Filter supporting evidence by assertion"
-    [value]="selectedFilterLabel()"
-    (change)="onSelectFilter($event.value)">
-    @for (filter of assertionFilters(); track filter.label) {
-      <mat-chip-option
-        [value]="filter.label"
-        [selected]="selectedFilterLabel() === filter.label"
-        [disabled]="filter.count === 0">
-        {{ filter.label }} ({{ filter.count }})
-      </mat-chip-option>
-    }
-  </mat-chip-listbox>
-</div>
+}
 @for (evidence of filteredEvidence(); track evidence) {
-  <div class="border padding-md margin-top-md">
-    <div class="flex items-center justify-between">
-      <div class="flex-row-simple items-center">
-        <span class="label-text margin-right-sm">Date:</span>
-        <span>{{ evidence.date | date }} (Age at: {{ getAgeAt(evidence) }})</span>
-      </div>
-      <div class="flex-row-simple items-center">
-        <span class="label-text margin-right-sm margin-left-md">Result Value:</span>
-        <span>{{ evidence.assertion || 'No assertion found' }}</span>
+  <article class="narrative-card">
+    <div class="narrative-card-header">
+      <div class="narrative-card-heading">
+        <h3>{{ evidence.source || 'Clinical document' }}</h3>
+        <p>
+          {{ evidence.documentCategory || 'Clinical Note' }}
+          · {{ evidence.date | date:'MM/dd/yyyy' }}
+          @if (evidence.practiceSetting) {
+            · {{ evidence.practiceSetting }}
+          }
+        </p>
       </div>
       <button
         matButton="outlined"
-        class="margin-left-md"
+        class="view-source-button"
         type="button"
         (click)="onViewEvidence(evidence)">
         <mat-icon aria-hidden="true">article</mat-icon>
         View Source
       </button>
     </div>
-    <div class="margin-top-md">
-      <span class="label-text margin-right-sm">Evidence Text:</span>
-      <span>{{ evidence.text }}</span>
-    </div>
-    <div class="margin-top-md">
-      <span class="label-text margin-right-sm">Evidence Reasoning:</span>
-      <span>{{ evidence.reasoning }}</span>
-    </div>
-  </div>
+    @if (evidence.assertion || evidence.reasoning) {
+      <p class="narrative-reasoning-toggle">
+        @if (evidence.assertion) {
+          <span class="narrative-inline-label">Finding:</span>
+          <strong>{{ evidence.assertion }}.</strong>
+        }
+      </p>
+    }
+    @if (evidence.text) {
+      <div class="narrative-section-label">Evidence</div>
+      <p class="narrative-quote">“{{ evidence.text }}”</p>
+    }
+    @if (evidence.reasoning) {
+      <button type="button" class="reasoning-toggle"
+              (click)="toggleReasoning(evidence)"
+              [attr.aria-expanded]="isReasoningExpanded(evidence)">
+        <span class="reasoning-chevron" [class.expanded]="isReasoningExpanded(evidence)" aria-hidden="true">⌄</span>
+        {{ reasoningToggleLabel(evidence) }}
+      </button>
+    }
+    @if (evidence.reasoning && isReasoningExpanded(evidence)) {
+      <p class="narrative-reasoning">{{ evidence.reasoning }}</p>
+    }
+  </article>
 } @empty {
-  <div class="padding-md">
+  <div class="narrative-empty">
     No evidence found for the selected assertion.
   </div>
 }

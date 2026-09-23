@@ -2,22 +2,24 @@
   color="primary"
   mat-stretch-tabs="false"
   [(selectedIndex)]="selectedTabIndex">
-  <mat-tab [label]="'Coded Records (' + (evidence.structured?.length ?? 0) + ')'">
+  <mat-tab [label]="'Coded Records (' + structuredResultCount + ')'">
     <div class="evidence-lane-heading">
       <span class="evidence-lane-title">
         Structured findings <span>· {{ structuredResultCount }} results</span>
       </span>
     </div>
-    <div class="resource-type-filters" aria-label="Filter coded records by resource type">
-      @for (filter of resourceTypeFilters; track filter.type ?? 'all') {
-        <button type="button"
-                class="resource-type-filter"
-                [class.active]="selectedResourceType === filter.type"
-                (click)="selectResourceType(filter.type)">
-          {{ filter.label }} <span>{{ filter.count }}</span>
-        </button>
-      }
-    </div>
+    @if (structuredResultCount > 0) {
+      <div class="resource-type-filters" aria-label="Filter coded records by resource type">
+        @for (filter of resourceTypeFilters; track filter.type ?? 'all') {
+          <button type="button"
+                  class="filter-chip"
+                  [class.active]="selectedResourceType === filter.type"
+                  (click)="selectResourceType(filter.type)">
+            {{ filter.label }} <span>{{ filter.count }}</span>
+          </button>
+        }
+      </div>
+    }
     <div class="evidence-tab-content">
       @if (evidence.structured?.length) {
         <mat-accordion multi>
@@ -34,7 +36,12 @@
     </div>
   </mat-tab>
   <mat-tab [label]="'Narrative Records (' + (evidence.unstructured?.supportingEvidence?.length ?? 0) + ')'">
-    <div class="margin-md">
+    <div class="evidence-lane-heading">
+      <span class="evidence-lane-title">
+        Unstructured Results <span>· {{ evidence.unstructured?.supportingEvidence?.length ?? 0 }} results</span>
+      </span>
+    </div>
+    <div class="evidence-tab-content">
       @if (evidence.unstructured?.supportingEvidence?.length) {
         <app-unstructured-evidence
           [evidence]="evidence.unstructured"

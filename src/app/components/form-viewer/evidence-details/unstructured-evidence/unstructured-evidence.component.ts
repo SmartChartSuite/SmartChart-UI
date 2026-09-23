@@ -7,14 +7,13 @@ import {MatDialog} from "@angular/material/dialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {openDocumentViewerModal} from "../../document-viewer-modal/document-viewer-modal.component";
 import {EvidenceHelperService} from "../../../../services/evidence-viewer/evidence-helper.service";
-import {MatChipListbox, MatChipOption} from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
 
 /** The label of the filter that shows every evidence item. */
-const ALL_EVIDENCE_LABEL = 'All Evidence';
+const ALL_EVIDENCE_LABEL = 'All Findings';
 
 /** The label of the filter that shows evidence with no assertion. */
-const NO_ASSERTION_LABEL = 'No Assertion Found';
+const NO_ASSERTION_LABEL = 'No Finding';
 
 /** Assertion value of the filter that matches every evidence item. */
 const MATCHES_ANY_ASSERTION = null;
@@ -27,8 +26,6 @@ const MISSING_ASSERTION = '';
   imports: [
     MatButton,
     DatePipe,
-    MatChipListbox,
-    MatChipOption,
     MatIcon
   ],
   templateUrl: './unstructured-evidence.component.html',
@@ -38,13 +35,14 @@ export class UnstructuredEvidenceComponent{
 
   readonly evidence = input.required<UnstructuredEvidence>();
   readonly patientSummary = input.required<PatientSummary>();
+  readonly expandedReasoning = new Set<SupportingEvidence>();
 
   private readonly evidenceHelper = inject(EvidenceHelperService);
   private readonly dialog = inject(MatDialog);
   private readonly sanitizer = inject(DomSanitizer);
 
   /** Supporting evidence in the order produced by the parser (most recent first). */
-  private readonly supportingEvidence = computed(() => this.evidence().supportingEvidence ?? []);
+  protected readonly supportingEvidence = computed(() => this.evidence().supportingEvidence ?? []);
 
   /**
    * The chip filters offered for the current evidence, in display order:
@@ -144,6 +142,7 @@ export class UnstructuredEvidenceComponent{
 
     openDocumentViewerModal(this.dialog, {
       title: 'Document Content',
+      evidence,
       content,
       htmlContent: safeHtmlFullText,
       size: {
@@ -151,6 +150,22 @@ export class UnstructuredEvidenceComponent{
         minHeight: '300px'
       }
     }).subscribe();
+  }
+
+  protected toggleReasoning(evidence: SupportingEvidence): void {
+    if (this.expandedReasoning.has(evidence)) {
+      this.expandedReasoning.delete(evidence);
+    } else {
+      this.expandedReasoning.add(evidence);
+    }
+  }
+
+  protected isReasoningExpanded(evidence: SupportingEvidence): boolean {
+    return this.expandedReasoning.has(evidence);
+  }
+
+  protected reasoningToggleLabel(evidence: SupportingEvidence): string {
+    return this.isReasoningExpanded(evidence) ? 'Hide Reasoning' : 'Explain Reasoning';
   }
 
   private getDocumentContent(evidence: SupportingEvidence): string {

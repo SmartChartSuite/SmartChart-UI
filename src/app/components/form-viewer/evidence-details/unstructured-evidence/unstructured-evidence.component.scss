@@ -1,0 +1,123 @@
+.narrative-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.narrative-filters {
+  padding: 0 16px 17px;
+}
+
+.narrative-card {
+  margin: 0 16px 11px;
+  padding: 15px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.narrative-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.narrative-card-heading h3 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-family: var(--font-family-primary);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.narrative-card-heading p {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.view-source-button {
+  flex: 0 0 auto;
+}
+
+.narrative-reasoning,
+.narrative-quote {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.narrative-section-label {
+  margin-top: 12px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.narrative-reasoning-toggle {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.narrative-inline-label {
+  margin-right: 5px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.reasoning-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  font: 12px var(--font-family-fallback);
+}
+
+.reasoning-toggle:hover {
+  text-decoration: underline;
+}
+
+.reasoning-chevron {
+  display: inline-block;
+  font-size: 15px;
+  line-height: 1;
+  transition: transform var(--transition-fast) ease;
+}
+
+.reasoning-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.narrative-reasoning {
+  color: var(--color-text-secondary);
+}
+
+.narrative-reasoning strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.narrative-quote {
+  padding: 10px 12px;
+  border-left: 2px solid var(--color-border);
+  color: var(--color-text-primary);
+}
+
+.narrative-empty {
+  padding: 16px;
+  color: var(--color-text-secondary);
+}

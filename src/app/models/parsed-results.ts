@@ -16,6 +16,7 @@ export interface ConditionDetails {
 /** MedicationRequest-specific rendered details. */
 export interface MedicationRequestDetails {
   dosageInstructions?: string;
+  status?: string;
 }
 
 /** Encounter-specific rendered details. */
@@ -139,6 +140,10 @@ export interface SupportingEvidence {
   date: string;
   /** The type of document the evidence was found in (e.g. "Progress Notes"). */
   source: string;
+  /** Broad document classification, such as "Clinical Note". */
+  documentCategory?: string;
+  /** Clinical service or practice setting associated with the document. */
+  practiceSetting?: string;
   /** The DocumentReference the evidence was found in, when it can be resolved. */
   resource?: FhirBaseResource;
 }

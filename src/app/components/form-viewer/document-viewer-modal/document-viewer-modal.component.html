@@ -1,14 +1,31 @@
-<div mat-dialog-title>{{ title }}</div>
-<mat-dialog-content class="mat-typography">
-  @if (htmlContent) {
-    <pre [innerHTML]="htmlContent"></pre>
-  } @else {
-    <div>{{ content }}</div>
+<div mat-dialog-title class="document-modal-header">
+  <div class="document-modal-title">
+    <span class="document-modal-label">Document</span>
+    {{ evidence?.source || title }}
+  </div>
+  @if (evidence) {
+    <div class="document-modal-meta">
+      <span><span class="document-modal-label">Category</span> {{ evidence.documentCategory || 'Clinical Note' }}</span>
+      @if (evidence.date) {
+        <span><span class="document-modal-label">Date</span> {{ evidence.date | date:'MM/dd/yyyy' }}</span>
+      }
+      @if (evidence.practiceSetting) {
+        <span><span class="document-modal-label">Service</span> {{ evidence.practiceSetting }}</span>
+      }
+    </div>
   }
+</div>
+<mat-dialog-content class="mat-typography">
+  <div class="document-modal-body">
+    @if (htmlContent) {
+      <pre [innerHTML]="htmlContent"></pre>
+    } @else {
+      <div>{{ content }}</div>
+    }
+  </div>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-raised-button mat-dialog-close cdkFocusInitial>
+  <button mat-raised-button color="primary" mat-dialog-close cdkFocusInitial>
     Close
   </button>
 </mat-dialog-actions>
-

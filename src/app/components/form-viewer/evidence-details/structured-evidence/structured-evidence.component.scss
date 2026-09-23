@@ -58,7 +58,7 @@ mat-panel-title {
   border: 1px solid var(--color-border);
   border-radius: 4px;
   background: #ffffff;
-  box-shadow: none;
+  box-shadow: none !important;
   overflow: hidden;
 }
 
@@ -146,7 +146,7 @@ mat-expansion-panel-header:hover {
 .section-count {
   flex: 0 0 auto;
   color: var(--color-text-secondary);
-  font-family: var(--font-family-fallback);
+  font-family: var(--font-family-mono);
   font-size: 11px;
   white-space: nowrap;
 }
@@ -166,6 +166,7 @@ mat-expansion-panel-header:hover {
 .section-count {
   grid-column: 3;
   grid-row: 1;
+  margin-left: 12px;
 }
 
 .title-rows {
@@ -190,7 +191,7 @@ mat-expansion-panel-header:hover {
   display: block;
   margin-top: 3px;
   color: var(--color-text-secondary);
-  font-family: var(--font-family-fallback);
+  font-family: var(--font-family-mono);
   font-size: 12px;
   font-weight: 400;
   white-space: nowrap;
@@ -203,6 +204,24 @@ mat-expansion-panel-header:hover {
   font-size: 13px;
   font-weight: 500;
   white-space: nowrap;
+}
+
+.finding-value-label {
+  display: inline;
+  margin-right: 5px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.finding-value {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
 }
 
 .encounter-period {
@@ -231,6 +250,15 @@ mat-expansion-panel-header:hover {
   white-space: nowrap;
 }
 
+.cell-ellipsis {
+  display: inline-block;
+  max-width: 22rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
 .finding-pagination {
   display: flex;
   align-items: center;
@@ -239,7 +267,7 @@ mat-expansion-panel-header:hover {
   padding: 10px 0 2px;
   border-top: 1px solid var(--color-bg-gray);
   color: var(--color-text-secondary);
-  font-family: var(--font-family-fallback);
+  font-family: var(--font-family-mono);
   font-size: 11px;
 }
 

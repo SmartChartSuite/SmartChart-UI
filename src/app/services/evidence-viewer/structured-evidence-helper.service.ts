@@ -75,8 +75,10 @@ export class StructuredEvidenceHelperService {
       return resource.details.value;
     } else if (resource.resourceType === 'Condition') {
       return resource.details.clinicalStatus;
+    } else if (resource.resourceType === 'Encounter') {
+      return resource.details.type;
     } else if (resource.resourceType === 'Procedure') {
-      return resource.details.reason;
+      return resource.details.status;
     } else {
       return undefined;
     }
@@ -119,7 +121,10 @@ export class StructuredEvidenceHelperService {
       return {
         ...base,
         resourceType: 'MedicationRequest',
-        details: {dosageInstructions: resource?.['dosageInstruction']?.[0]?.['text']}
+        details: {
+          dosageInstructions: resource?.['dosageInstruction']?.[0]?.['text'],
+          status: resource?.['status']
+        }
       };
     } else if (resourceType === 'Encounter') {
       return {
