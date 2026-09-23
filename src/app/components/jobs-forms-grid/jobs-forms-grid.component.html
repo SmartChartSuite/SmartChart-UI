@@ -3,7 +3,7 @@
     <div class="centered-screen">
       <div class="centered-content">
         <div class="flex-row-simple justify-between items-center margin-top-lg">
-          <div class="label-text">My Jobs/Forms</div>
+          <div class="label-text">My Forms</div>
           <div>
             <button matButton="filled" color="primary" (click)="onStartNewJob()">Start New Job</button>
           </div>
@@ -136,7 +136,7 @@
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let patient">
                   @if (patient.questionnaireResponseStatus === FormStatus.PREVIEW) {
-                    <button mat-stroked-button color="accent" class="action-button" (click)="onSelectRecord(patient)">
+                    <button mat-stroked-button class="action-button preview-action" (click)="onSelectRecord(patient)">
                       <mat-icon>visibility</mat-icon>
                       Preview
                     </button>
@@ -223,7 +223,7 @@
               <ng-container matColumnDef="buttons">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let patient">
-                    <button matIconButton color="warn" aria-label="Example icon button with a delete icon" matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
+                    <button matIconButton class="delete-action" aria-label="Delete job or form" matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
                       <mat-icon>delete</mat-icon>
                     </button>
                 </td>

@@ -238,7 +238,7 @@
     <div class="nav-controls">
       <div class="content-spacer"></div>
 
-      <button mat-flat-button type="submit" class="wide-button"
+      <button mat-flat-button color="primary" type="submit" class="wide-button"
               [disabled]="selectedMenuItemIndex === 0"
               (click)="goToPreviousSection()">
         <mat-icon>chevron_left</mat-icon>
@@ -246,7 +246,7 @@
         Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex - 1]?.text : '' }}
       </button>
 
-      <button mat-flat-button type="submit" class="margin-left-sm wide-button"
+      <button mat-flat-button color="primary" type="submit" class="margin-left-sm wide-button"
               [disabled]="(questionnaire()!.item.length - 1) === selectedMenuItemIndex"
               (click)="goToNextSection()">
         Next
@@ -256,7 +256,7 @@
 
       <div class="content-spacer"></div>
 
-      <button matButton="filled" type="button" (click)="onExport()">
+      <button matButton="outlined" color="primary" type="button" (click)="onExport()">
         <mat-icon>download</mat-icon>
         Export
       </button>

@@ -142,11 +142,12 @@ $selected-nave-menu-item-color: #424242;
 
 .nav-controls {
   margin-bottom: 42px;
-  padding: 16px;
+  padding: 10px 36px 16px;
   display: flex;
-  min-height: 60px; // Ensure minimum height
-  border-top: #dee2ea solid 1px;
-  background-color: var(--color-bg-light);
+  min-height: 56px;
+  border-top: 1px solid var(--color-border);
+  background-color: #ffffff;
+  color: var(--color-text-secondary);
 }
 
 .wide-button{

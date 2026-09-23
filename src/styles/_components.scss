@@ -27,7 +27,7 @@
   padding: 0 10px;
   border: 1px solid var(--color-border);
   border-radius: 999px;
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: pointer;
   font: 12px var(--font-family-fallback);
@@ -60,7 +60,7 @@
 .filter-chip:hover span,
 .filter-chip.active span {
   background: var(--color-primary);
-  color: #ffffff;
+    color: var(--color-surface);
 }
 
 // Snackbar Offset

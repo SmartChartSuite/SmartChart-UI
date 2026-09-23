@@ -1,15 +1,6 @@
 // Angular Material Component Overrides
 @use '@angular/material' as mat;
 
-// Define custom typography with 1rem (16px) base font size
-$custom-typography: mat.m2-define-typography-config(
-  $font-family: 'Inter, sans-serif',
-  $body-1: mat.m2-define-typography-level(1rem, 1.5rem, 400),
-  $body-2: mat.m2-define-typography-level(1rem, 1.5rem, 400),
-);
-
-@include mat.typography-hierarchy($custom-typography);
-
 // Form Field Overrides
 :root {
   @include mat.form-field-overrides((
@@ -39,6 +30,13 @@ $custom-typography: mat.m2-define-typography-config(
 
 // Table Header Background Color Override
 .mat-mdc-table {
+  background-color: var(--color-surface);
+
+  .mat-mdc-row,
+  .mat-mdc-cell {
+    background-color: var(--color-surface);
+  }
+
   .mat-mdc-header-row {
     background-color: var(--color-bg-gray);
 
@@ -52,6 +50,19 @@ $custom-typography: mat.m2-define-typography-config(
 .mat-mdc-option {
   --mat-option-label-text-size: 0.875rem;
   --mat-option-label-text-line-height: 1.25rem;
+}
+
+// Expansion panels are content surfaces throughout the application. Keep them
+// white globally; feature-specific headers can still add their own hover state.
+.mat-expansion-panel {
+  --mat-expansion-container-background-color: var(--color-surface);
+  background-color: var(--color-surface) !important;
+}
+
+.mat-expansion-panel-header,
+.mat-expansion-panel-content,
+.mat-expansion-panel-body {
+  background-color: var(--color-surface);
 }
 
 // Mat-Form-Field Icon Overrides
@@ -78,7 +89,7 @@ $custom-typography: mat.m2-define-typography-config(
 :root {
   @include mat.button-overrides((
     filled-container-color: var(--color-primary),
-    filled-label-text-color: #ffffff,
+    filled-label-text-color: var(--color-surface),
     outlined-outline-color: var(--color-primary),
     outlined-label-text-color: var(--color-primary),
     text-label-text-color: var(--color-primary),
@@ -95,13 +106,52 @@ $custom-typography: mat.m2-define-typography-config(
 // so its surface styling belongs in the global stylesheet scope.
 .document-viewer-dialog .mat-mdc-dialog-surface {
   overflow: hidden;
-  border-radius: 24px;
-  background: #ffffff;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
 }
 
 .document-viewer-dialog .mat-mdc-dialog-actions button[mat-dialog-close] {
   --mdc-filled-button-container-color: var(--color-primary);
-  --mdc-filled-button-label-text-color: #ffffff;
+  --mdc-filled-button-label-text-color: var(--color-surface);
   background-color: var(--color-primary);
-  color: #ffffff;
+  color: var(--color-surface);
+}
+
+// Global overlay surfaces. Dialogs, tooltips, menus, selects, datepickers, and
+// snackbars are attached to the CDK overlay container, outside component style
+// scopes, so their base surfaces must be defined globally.
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-dialog-surface,
+.cdk-overlay-pane .mat-mdc-menu-panel,
+.cdk-overlay-pane .mat-mdc-select-panel,
+.cdk-overlay-pane .mat-datepicker-content,
+.cdk-overlay-pane .mat-mdc-autocomplete-panel {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.cdk-overlay-pane .mat-mdc-tooltip {
+  --mdc-plain-tooltip-container-color: var(--color-dark);
+  --mdc-plain-tooltip-supporting-text-color: var(--color-surface);
+  --mat-tooltip-container-color: var(--color-dark);
+  --mat-tooltip-supporting-text-color: var(--color-surface);
+}
+
+.cdk-overlay-pane .mat-mdc-tooltip .mdc-tooltip__surface {
+  background-color: var(--color-dark);
+  color: var(--color-surface);
+}
+
+.cdk-overlay-pane .mat-mdc-menu-panel,
+.cdk-overlay-pane .mat-mdc-select-panel,
+.cdk-overlay-pane .mat-datepicker-content,
+.cdk-overlay-pane .mat-mdc-autocomplete-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-raised);
+}
+
+.cdk-overlay-pane .mat-mdc-menu-item:hover,
+.cdk-overlay-pane .mat-mdc-option:hover,
+.cdk-overlay-pane .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover {
+  background-color: var(--color-primary-light);
 }

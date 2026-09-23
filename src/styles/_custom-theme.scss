@@ -1,0 +1,27 @@
+// SmartChart's single source of truth for Angular Material theming.
+// Uses Angular Material's current M3 theme API and palette definitions.
+@use '@angular/material' as mat;
+
+$smartchart-typography: (
+  plain-family: 'Inter, "Helvetica Neue", sans-serif',
+  brand-family: 'Inter, "Helvetica Neue", sans-serif',
+  bold-weight: 700,
+  medium-weight: 500,
+  regular-weight: 400,
+);
+
+$smartchart-theme: (
+  color: (
+    theme-type: light,
+    primary: mat.$violet-palette,
+    tertiary: mat.$violet-palette,
+  ),
+  typography: $smartchart-typography,
+  density: (
+    scale: -1,
+  ),
+);
+
+html {
+  @include mat.theme($smartchart-theme);
+}

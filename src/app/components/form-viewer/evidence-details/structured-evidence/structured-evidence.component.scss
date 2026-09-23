@@ -57,15 +57,12 @@ mat-panel-title {
   --mat-expansion-header-expanded-state-height: auto;
   border: 1px solid var(--color-border);
   border-radius: 4px;
-  background: #ffffff;
-  box-shadow: none !important;
   overflow: hidden;
 }
 
 mat-expansion-panel-header {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  background: #ffffff;
 }
 
 mat-expansion-panel-header:hover {
@@ -79,7 +76,6 @@ mat-expansion-panel-header:hover {
 
 .evidence-panel table.mat-mdc-table {
   width: 100%;
-  background: #ffffff;
   font-family: var(--font-family-fallback);
   font-size: 12px;
 }
@@ -287,7 +283,7 @@ mat-expansion-panel-header:hover {
   padding: 0 4px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
-  background: #ffffff;
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   font: 12px var(--font-family-fallback);
 }

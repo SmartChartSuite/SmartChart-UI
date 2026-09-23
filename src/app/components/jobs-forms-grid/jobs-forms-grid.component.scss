@@ -1,4 +1,14 @@
 .form-summary-wrapper {
+  padding-bottom: 24px;
+
+  .centered-screen {
+    padding-top: 0;
+  }
+
+  .centered-content > .flex-row-simple {
+    margin-top: 8px;
+  }
+
   .inputs-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr) auto;
@@ -79,4 +89,13 @@
 .warning-icon-sm{
   scale: 0.8;
   cursor: pointer
+}
+.preview-action {
+  --mdc-outlined-button-outline-color: var(--mat-sys-tertiary);
+  --mdc-outlined-button-label-text-color: var(--mat-sys-tertiary);
+}
+
+.delete-action {
+  --mdc-icon-button-icon-color: var(--mat-sys-error);
+  color: var(--mat-sys-error);
 }
