@@ -32,9 +32,8 @@ import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {FhirDateTimeComponent} from "../fhir-date-time/fhir-date-time.component";
-import {MatChip} from "@angular/material/chips";
 import {MatTooltip} from "@angular/material/tooltip";
-import {SetEvidenceDirective} from "../../directives/set-evidence.directive";
+import {MatChip} from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
 import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
 import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
@@ -64,9 +63,8 @@ import {PatientGrid} from "../../models/patient-grid";
     MatLabel,
     MatHint,
     FhirDateTimeComponent,
-    MatChip,
     MatTooltip,
-    SetEvidenceDirective,
+    MatChip,
     MatIcon,
     EvidenceDetailsComponent,
     SuggestedAnswerFormatterPipe,
@@ -112,6 +110,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
   selectedEvidenceQuestion = signal<string | undefined>(undefined);
+  evidenceReviewActive = false;
 
   results = signal<Results | undefined>(undefined);
 
@@ -297,6 +296,54 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     );
   }
 
+  protected onQuestionHeaderSelected(index: number): void {
+    const question = this.questionnaire()?.item?.[this.selectedMenuItemIndex]?.item?.[index];
+    const resultSet = question ? this.results()?.['link' + question.linkId] : undefined;
+    if (!question || question.type === QuestionnaireItemType.display) {
+      return;
+    }
+
+    this.toggleEvidenceDrawer(index);
+    this.evidenceViewerService.setEvidence(resultSet ?? new ResultSet());
+  }
+
+  protected onEvidenceReviewKeydown(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement | null;
+    const isQuestionHeader = !!target?.closest('.question-header');
+    const isEditable = target?.matches('input, textarea, select, [contenteditable="true"]');
+    if (!this.evidenceReviewActive || isEditable || (!isQuestionHeader && event.target !== event.currentTarget)) {
+      return;
+    }
+
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.moveToAdjacentQuestion(event.key === 'ArrowRight' ? 1 : -1);
+    }
+  }
+
+  private moveToAdjacentQuestion(direction: 1 | -1): void {
+    const section = this.questionnaire()?.item?.[this.selectedMenuItemIndex];
+    if (!section?.item?.length) return;
+
+    const questionIndexes = section.item
+      .map((question, index) => question.type === QuestionnaireItemType.display ? -1 : index)
+      .filter(index => index >= 0);
+    const currentPosition = questionIndexes.indexOf(this.selectedEvidenceIndex ?? -1);
+    const nextPosition = currentPosition + direction;
+    const nextIndex = questionIndexes[nextPosition];
+    if (nextIndex === undefined) return;
+
+    this.onQuestionHeaderSelected(nextIndex);
+
+    queueMicrotask(() => {
+      const headers = this.topScroll()?.nativeElement.querySelectorAll<HTMLElement>('.question-header');
+      const nextHeader = headers?.[questionIndexes.indexOf(nextIndex)];
+      nextHeader?.focus();
+      nextHeader?.scrollIntoView({block: 'nearest'});
+    });
+  }
+
   /** Toggles the left-hand section navigation between expanded and collapsed. */
   toggleMenu(): void {
     this.menuCollapsed.update(collapsed => !collapsed);
@@ -308,11 +355,20 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         if (exportType === 'json') {
           const questionnaireResponse = this.outputMapper.mapQrToFhir(
             this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
-          const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
+          const questionnaire = this.questionnaire();
+          const exportBundle = {
+            resourceType: 'Bundle',
+            type: 'collection',
+            entry: [
+              ...(questionnaire ? [{resource: questionnaire}] : []),
+              {resource: questionnaireResponse}
+            ]
+          };
+          const blob = new Blob([JSON.stringify(exportBundle, null, 2)], {type: 'application/fhir+json'});
           const link = document.createElement('a');
 
           link.href = URL.createObjectURL(blob);
-          link.download = `FHIR_Question_Response.json`;
+          link.download = `SmartChart_Form_Export.json`;
           document.body.appendChild(link);
           link.click();
           document.body?.removeChild(link);
@@ -414,6 +470,13 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       return 0;
     }
     return item.item.filter(element => element?.type !== 'display').length;
+  }
+
+  protected getQuestionNumber(section: Item, questionIndex: number): number {
+    return (section.item ?? [])
+      .slice(0, questionIndex)
+      .filter(question => question.type !== QuestionnaireItemType.display)
+      .length + 1;
   }
 
   protected getAnsweredQuestionCount(item: Item): number {

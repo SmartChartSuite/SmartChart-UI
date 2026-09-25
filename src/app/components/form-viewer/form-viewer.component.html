@@ -77,18 +77,69 @@
 
     <!-- Begin actual form rendering -->
     <div class="viewer-container-body-content">
-      <div class="section-scroll-body" #top>
+      <div class="questions-column-header">
+        @if (questionnaire()?.item?.[selectedMenuItemIndex]; as selectedSection) {
+          <span class="questions-column-summary">
+            SECTION {{ (selectedMenuItemIndex + 1).toString().padStart(2, '0') }} · {{ getAnsweredQuestionCount(selectedSection) }} of {{ getQuestionCount(selectedSection) }} answered
+          </span>
+          <span class="questions-column-title">{{ selectedSection.text }}</span>
+        } @else {
+          <span class="questions-column-title">Questions</span>
+        }
+      </div>
+      <div class="section-scroll-body" #top tabindex="-1"
+           (keydown)="onEvidenceReviewKeydown($event)"
+           (focus)="evidenceReviewActive = true">
+        <div class="question-navigation-hint">
+          Hint: Use
+          <kbd aria-label="left arrow key">&#8592;</kbd>
+          and
+          <kbd aria-label="right arrow key">&#8594;</kbd>
+          to navigate questions.
+        </div>
       @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
         @if (item.selected) {
-          <div class="margin-top-md item-text">{{ item.text }}</div>
-
           @for (childItem of item.item; track childItem.linkId; let j = $index) {
-            <div class="question-item full-size-question-item">
-              <div class="question-label"
-                   [ngClass]="(j === selectedEvidenceIndex) ? 'selected-evidence': ''">
-                <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
-                <span class="margin-left-sm">{{ childItem.text }}</span>
-              </div>
+            @let isDisplayItem = childItem.type === QuestionnaireItemType.display;
+            <div class="question-item full-size-question-item"
+                 [ngClass]="(j === selectedEvidenceIndex) ? 'selected-evidence': ''">
+              @if (!isDisplayItem) {
+                <div class="question-header"
+                     [class.has-evidence]="results()?.['link' + childItem.linkId]?.['evidence']?.length"
+                     [attr.role]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? 'button' : null"
+                     [attr.tabindex]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? '0' : null"
+                     [attr.aria-label]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? 'Show evidence for ' + childItem.text : null"
+                     (click)="onQuestionHeaderSelected(j)"
+                     (keydown)="onEvidenceReviewKeydown($event)"
+                     (keydown.enter)="onQuestionHeaderSelected(j)"
+                     (keydown.space)="$event.preventDefault(); onQuestionHeaderSelected(j)"
+                     (focus)="evidenceReviewActive = true">
+                  <div class="question-kicker">
+                    Question {{ getQuestionNumber(item, j).toString().padStart(2, '0') }} of {{ getQuestionCount(item) }}
+                  @if (results()?.['link' + childItem.linkId]?.['evidence']?.length) {
+                    @if (j === selectedEvidenceIndex) {
+                      <div class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
+                        Viewing Evidence
+                      </div>
+                    } @else {
+                      <button matButton class="evidence-trigger" type="button"
+                              [attr.aria-label]="'Show evidence for ' + childItem.text"
+                              (click)="$event.stopPropagation(); onQuestionHeaderSelected(j)">
+                        <span>View Evidence</span>
+                        <span>({{ getEvidenceCount(childItem.linkId, results()) }})</span>
+                        <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+                      </button>
+                    }
+                  }
+                  </div>
+                  <h2 class="question-title">{{ childItem.text }}</h2>
+                </div>
+              } @else {
+                <div class="question-label">
+                  <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
+                  <span class="margin-left-sm">{{ childItem.text }}</span>
+                </div>
+              }
 
               <div class="margin-left-md margin-right-sm margin-top-xs">
                 @switch (childItem.type) {
@@ -199,21 +250,25 @@
                   </div>
                 }
 
-                @if (resultSet?.["evidence"] && resultSet["evidence"].length > 0) {
-                  <div>
-                    <button matButton="outlined" class="primary-outlined"
-                            appSetEvidence [resultSet]="resultSet"
-                            (click)="toggleEvidenceDrawer(j)">
-                      View Evidence
-                      ({{ getEvidenceCount(childItem.linkId, results()) }})
-                    </button>
-                  </div>
-                }
               </div>
             </div>
           }
         }
       }
+      <div class="section-footer-controls">
+        <button matButton="filled" color="primary" type="button"
+                [disabled]="selectedMenuItemIndex === 0"
+                (click)="goToPreviousSection()">
+          <mat-icon>chevron_left</mat-icon>
+          Previous section
+        </button>
+        <button matButton="filled" color="primary" type="button"
+                [disabled]="(questionnaire()?.item?.length ?? 1) - 1 === selectedMenuItemIndex"
+                (click)="goToNextSection()">
+          Next section
+          <mat-icon iconPositionEnd>chevron_right</mat-icon>
+        </button>
+      </div>
       </div>
     </div>
     <div class="viewer-container-body-side-content viewer-container-body-side-explorer">
@@ -237,22 +292,6 @@
   @if ((questionnaire()?.item?.length ?? 0) > 0) {
     <div class="nav-controls">
       <div class="content-spacer"></div>
-
-      <button mat-flat-button color="primary" type="submit" class="wide-button"
-              [disabled]="selectedMenuItemIndex === 0"
-              (click)="goToPreviousSection()">
-        <mat-icon>chevron_left</mat-icon>
-        Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex - 1]?.text : '' }}
-      </button>
-
-      <button mat-flat-button color="primary" type="submit" class="margin-left-sm wide-button"
-              [disabled]="(questionnaire()!.item.length - 1) === selectedMenuItemIndex"
-              (click)="goToNextSection()">
-        Next
-        Section{{ (selectedMenuItemIndex < questionnaire()!.item.length - 1) ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex + 1]?.text : '' }}
-        <mat-icon iconPositionEnd>chevron_right</mat-icon>
-      </button>
 
       <div class="content-spacer"></div>
 

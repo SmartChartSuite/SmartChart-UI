@@ -7,3 +7,10 @@
 .full-width {
   width: 100%;
 }
+
+.export-instruction {
+  margin: 0 0 16px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+  font-size: 14px;
+}

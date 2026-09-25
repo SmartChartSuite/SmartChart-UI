@@ -63,6 +63,31 @@
     color: var(--color-surface);
 }
 
+// Shared SmartChart wordmark treatment used by the application header and
+// standalone login brand.
+.logo-smart {
+  font-weight: 300;
+  opacity: 0.95;
+}
+
+.logo-chart {
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+// Reusable branded card border. The inner layer keeps the surface opaque while
+// the outer layer carries the purple-to-lavender gradient.
+.gradient-border-card,
+.gradient-border-card.mat-mdc-card {
+  --mdc-elevated-card-container-color: transparent;
+  --mat-card-elevated-container-color: transparent;
+  border: 3px solid transparent;
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(135deg, var(--color-primary), #c4b0ff) border-box !important;
+}
+
 // Snackbar Offset
 .snackbar-offset {
   transform: translateY(90vh) !important;
@@ -329,12 +354,12 @@
 
     // Middle questions section.
     > .viewer-container-body-content {
-      flex: 35 1 0;
+      flex: 45 1 0;
 
       // Horizontal padding lives on the scroll body (with border-box) so
       // children stay within the column width.
       > .section-scroll-body {
-        padding: 0 2em;
+        padding: 0 1em;
       }
     }
 
@@ -369,7 +394,7 @@
 
     // Right evidence section.
     > .viewer-container-body-side-explorer {
-      flex: 65 1 0;
+      flex: 55 1 0;
       border-left: 1px solid #dee2ea;
 
       .evidence-empty-state {

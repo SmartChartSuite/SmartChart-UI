@@ -1,11 +1,14 @@
-<h2 mat-dialog-title>Export Data</h2>
+<h2 mat-dialog-title>Export Form</h2>
 <form [formGroup]="exportForm" (ngSubmit)="onExport(exportForm.value)">
   <mat-dialog-content>
-    <mat-form-field appearance="outline" class="margin-top-md full-width">
-      <mat-label>Export data as:</mat-label>
+    <p class="export-instruction">Choose a format for the form responses.</p>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Format</mat-label>
       <mat-select formControlName="exportType">
         @for (exportType of exportTypes; track exportType) {
-          <mat-option [value]="exportType">{{ exportType }}</mat-option>
+          <mat-option [value]="exportType">
+            {{ exportType === 'json' ? 'FHIR JSON' : exportType }}
+          </mat-option>
         }
       </mat-select>
     </mat-form-field>
