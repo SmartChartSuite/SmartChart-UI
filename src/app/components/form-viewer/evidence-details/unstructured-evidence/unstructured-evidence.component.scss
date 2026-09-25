@@ -88,13 +88,16 @@
 }
 
 .reasoning-toggle:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .reasoning-chevron {
   display: inline-block;
-  font-size: 15px;
-  line-height: 1;
+  width: 12px;
+  height: 12px;
+  font-size: 14px;
+  line-height: 10px;
+  transform: translateY(1px);
   transition: transform var(--transition-fast) ease;
 }
 

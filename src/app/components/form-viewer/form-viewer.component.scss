@@ -227,10 +227,19 @@ $selected-nave-menu-item-color: #424242;
   margin-bottom: 42px;
   padding: 10px 36px 16px;
   display: flex;
+  align-items: center;
   min-height: 56px;
   border-top: 1px solid var(--color-border);
   background-color: var(--color-surface);
   color: var(--color-text-secondary);
+}
+
+.last-saved-label {
+  align-self: center;
+  margin-right: 12px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: 11px;
 }
 
 .wide-button{

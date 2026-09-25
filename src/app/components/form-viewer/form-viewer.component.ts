@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, forkJoin, interval, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -111,6 +111,8 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   selectedEvidenceIndex: number | null = null;
   selectedEvidenceQuestion = signal<string | undefined>(undefined);
   evidenceReviewActive = false;
+  lastSavedAt = signal<Date | undefined>(undefined);
+  lastSavedLabel = signal('');
 
   results = signal<Results | undefined>(undefined);
 
@@ -130,6 +132,10 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   });
 
   ngOnInit(): void {
+    interval(1_000).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => this.updateLastSavedLabel());
+
     // Results Handling
     const results$ = this.refreshTrigger$.pipe(
       switchMap(() => this.fetchResults()),
@@ -545,6 +551,8 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     ).subscribe({
       next: () => {
         this.captureAnswersSnapshot();
+        this.lastSavedAt.set(new Date());
+        this.updateLastSavedLabel();
         this.utilsService.showSuccessMessage("Form Saved Successfully");
       },
       error: (error) => {
@@ -552,6 +560,21 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.utilsService.showErrorMessage("Error Saving Form");
       }
     });
+  }
+
+  protected updateLastSavedLabel(): void {
+    const savedAt = this.lastSavedAt();
+    if (!savedAt) return;
+
+    const elapsedMinutes = Math.floor((Date.now() - savedAt.getTime()) / 60_000);
+    if (elapsedMinutes < 1) {
+      this.lastSavedLabel.set('Last saved just now');
+    } else if (elapsedMinutes < 60) {
+      this.lastSavedLabel.set(`Last saved ${elapsedMinutes} minute${elapsedMinutes === 1 ? '' : 's'} ago`);
+    } else {
+      const elapsedHours = Math.floor(elapsedMinutes / 60);
+      this.lastSavedLabel.set(`Last saved about ${elapsedHours} hour${elapsedHours === 1 ? '' : 's'} ago`);
+    }
   }
 
   /**

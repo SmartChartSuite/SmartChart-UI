@@ -295,6 +295,10 @@
 
       <div class="content-spacer"></div>
 
+      @if (lastSavedLabel()) {
+        <span class="last-saved-label">{{ lastSavedLabel() }}</span>
+      }
+
       <button matButton="outlined" color="primary" type="button" (click)="onExport()">
         <mat-icon>download</mat-icon>
         Export
