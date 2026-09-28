@@ -88,6 +88,9 @@
 
 :root {
   @include mat.button-overrides((
+    filled-container-shape: var(--radius-sm),
+    outlined-container-shape: var(--radius-sm),
+    text-container-shape: var(--radius-sm),
     filled-container-color: var(--color-primary),
     filled-label-text-color: var(--color-surface),
     outlined-outline-color: var(--color-primary),
