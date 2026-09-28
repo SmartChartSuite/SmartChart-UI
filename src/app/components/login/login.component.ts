@@ -1,4 +1,5 @@
 import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import {NgOptimizedImage} from '@angular/common';
 import {OAuthService} from "angular-oauth2-oidc";
 import {ActivatedRoute} from "@angular/router";
 import {MatCardModule} from "@angular/material/card";
@@ -16,6 +17,7 @@ import {MatDivider} from "@angular/material/list";
     MatCardModule,
     MatIconModule,
     MatButton,
+    NgOptimizedImage,
     MatMenuTrigger,
     MatMenu,
     MatDivider,

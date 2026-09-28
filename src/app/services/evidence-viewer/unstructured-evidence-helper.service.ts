@@ -79,6 +79,8 @@ export class UnstructuredEvidenceHelperService {
         reasoning: this.getComponentValue(observation, 'reasoning'),
         date: documentReference?.['date'] ?? '',
         source: documentReference?.['type']?.['text'] ?? '',
+        documentCategory: documentReference?.['category']?.[0]?.['text'],
+        practiceSetting: documentReference?.['context']?.['practiceSetting']?.['text'],
         resource: documentReference
       };
     });

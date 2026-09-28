@@ -1,4 +1,5 @@
 import {Component, Inject, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {DatePipe} from '@angular/common';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from "@angular/material/dialog";
 import {SafeHtml} from "@angular/platform-browser";
 import { MatButton } from '@angular/material/button';
@@ -14,7 +15,8 @@ import { MatButton } from '@angular/material/button';
       MatDialogContent,
       MatDialogActions,
       MatButton,
-      MatDialogClose
+      MatDialogClose,
+      DatePipe
     ]
 })
 export class DocumentViewerModalComponent implements OnInit{
@@ -22,6 +24,12 @@ export class DocumentViewerModalComponent implements OnInit{
   content: any; // The content of the modal (the modal should render html)
   title: string = null; // The title of the modal
   htmlContent: SafeHtml;
+  evidence: {
+    source?: string;
+    documentCategory?: string;
+    practiceSetting?: string;
+    date?: string;
+  };
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private dialogData: any
@@ -31,6 +39,7 @@ export class DocumentViewerModalComponent implements OnInit{
     this.content = this.dialogData.content;
     this.title = this.dialogData.title;
     this.htmlContent = this.dialogData.htmlContent
+    this.evidence = this.dialogData.evidence;
   }
 }
 
@@ -44,6 +53,7 @@ export function openDocumentViewerModal(dialog: MatDialog, dialogData: any) {
   }
   config.minWidth = dialogData.size?.minWidth;
   config.minHeight = dialogData.size?.minHeight;
+  config.panelClass = 'document-viewer-dialog';
 
   const dialogRef = dialog.open(DocumentViewerModalComponent, config);
 

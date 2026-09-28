@@ -56,6 +56,8 @@ export function openExportFileDialog(dialog: MatDialog, dialogData: any) {
   const config = new MatDialogConfig();
 
   config.autoFocus = true;
+  config.width = 'min(92vw, 480px)';
+  config.maxWidth = '92vw';
 
   config.data = {
     ...dialogData

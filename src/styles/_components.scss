@@ -18,6 +18,76 @@
   color: var(--color-text-secondary);
 }
 
+// Shared filter pill treatment used by coded and narrative evidence filters.
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font: 12px var(--font-family-fallback);
+}
+
+.filter-chip span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--color-bg-gray);
+  color: var(--color-text-primary);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.filter-chip:hover,
+.filter-chip.active,
+.filter-chip[aria-selected="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.filter-chip:hover span,
+.filter-chip.active span {
+  background: var(--color-primary);
+    color: var(--color-surface);
+}
+
+// Shared SmartChart wordmark treatment used by the application header and
+// standalone login brand.
+.logo-smart {
+  font-weight: 300;
+  opacity: 0.95;
+}
+
+.logo-chart {
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+// Reusable branded card border. The inner layer keeps the surface opaque while
+// the outer layer carries the purple-to-lavender gradient.
+.gradient-border-card,
+.gradient-border-card.mat-mdc-card {
+  --mdc-elevated-card-container-color: transparent;
+  --mat-card-elevated-container-color: transparent;
+  border: 3px solid transparent;
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(135deg, var(--color-primary), #c4b0ff) border-box !important;
+}
+
 // Snackbar Offset
 .snackbar-offset {
   transform: translateY(90vh) !important;
@@ -278,18 +348,18 @@
 
     // Left section navigation. Non-scrollable list, fixed proportion of width.
     > .sub-nav {
-      flex: 0 0 20%;
+      flex: 0 0 220px;
       transition: flex-basis var(--transition-fast);
     }
 
     // Middle questions section.
     > .viewer-container-body-content {
-      flex: 0 0 30%;
+      flex: 45 1 0;
 
       // Horizontal padding lives on the scroll body (with border-box) so
       // children stay within the column width.
       > .section-scroll-body {
-        padding: 0 2em;
+        padding: 0 1em;
       }
     }
 
@@ -324,7 +394,7 @@
 
     // Right evidence section.
     > .viewer-container-body-side-explorer {
-      flex: 0 0 50%;
+      flex: 55 1 0;
       border-left: 1px solid #dee2ea;
 
       .evidence-empty-state {

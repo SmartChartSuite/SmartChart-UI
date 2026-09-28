@@ -73,8 +73,12 @@ export class StructuredEvidenceHelperService {
     if (!resource) return undefined;
     if (resource.resourceType === 'Observation') {
       return resource.details.value;
+    } else if (resource.resourceType === 'Condition') {
+      return resource.details.clinicalStatus;
+    } else if (resource.resourceType === 'Encounter') {
+      return resource.details.type;
     } else if (resource.resourceType === 'Procedure') {
-      return resource.details.reason;
+      return resource.details.status;
     } else {
       return undefined;
     }
@@ -109,14 +113,18 @@ export class StructuredEvidenceHelperService {
         resourceType: 'Condition',
         details: {
           onset: resource?.['onsetDateTime'] ?? resource?.['onsetPeriod']?.['start'],
-          abatement: resource?.['abatementDateTime'] ?? resource?.['abatementPeriod']?.['end']
+          abatement: resource?.['abatementDateTime'] ?? resource?.['abatementPeriod']?.['end'],
+          clinicalStatus: this.getConceptText(resource?.['clinicalStatus'])
         }
       };
     } else if (resourceType === 'MedicationRequest') {
       return {
         ...base,
         resourceType: 'MedicationRequest',
-        details: {dosageInstructions: resource?.['dosageInstruction']?.[0]?.['text']}
+        details: {
+          dosageInstructions: resource?.['dosageInstruction']?.[0]?.['text'],
+          status: resource?.['status']
+        }
       };
     } else if (resourceType === 'Encounter') {
       return {
@@ -220,6 +228,10 @@ export class StructuredEvidenceHelperService {
     if (system === System.CPT) return 'CPT';
     // Unknown systems are passed through so they can still be rendered.
     return system ?? '';
+  }
+
+  private getConceptText(concept: any): string | undefined {
+    return concept?.text ?? concept?.coding?.[0]?.display ?? concept?.coding?.[0]?.code;
   }
 
   /** The date used to sort a resource, by resourceType. */

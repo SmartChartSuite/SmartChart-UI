@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, forkJoin, interval, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -32,13 +32,13 @@ import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {FhirDateTimeComponent} from "../fhir-date-time/fhir-date-time.component";
-import {MatChip} from "@angular/material/chips";
 import {MatTooltip} from "@angular/material/tooltip";
-import {SetEvidenceDirective} from "../../directives/set-evidence.directive";
+import {MatChip} from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
 import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
 import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
+import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
 import {PatientGrid} from "../../models/patient-grid";
@@ -63,9 +63,8 @@ import {PatientGrid} from "../../models/patient-grid";
     MatLabel,
     MatHint,
     FhirDateTimeComponent,
-    MatChip,
     MatTooltip,
-    SetEvidenceDirective,
+    MatChip,
     MatIcon,
     EvidenceDetailsComponent,
     SuggestedAnswerFormatterPipe,
@@ -84,6 +83,8 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
   answerDictionary = signal<FormAnswers | undefined>(undefined);
   questionnaire = signal<Questionnaire | undefined>(undefined);
+  questionnaireResponseStatus = signal<QuestionnaireResponseStatus | undefined>(undefined);
+  initialLoadComplete = signal(false);
   questionnaireResponseId = '';
 
   /**
@@ -108,6 +109,10 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   activeFormSummary = signal<ActiveFormSummary | undefined>(undefined);
   selectedMenuItemIndex = 0;
   selectedEvidenceIndex: number | null = null;
+  selectedEvidenceQuestion = signal<string | undefined>(undefined);
+  evidenceReviewActive = false;
+  lastSavedAt = signal<Date | undefined>(undefined);
+  lastSavedLabel = signal('');
 
   results = signal<Results | undefined>(undefined);
 
@@ -127,6 +132,10 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   });
 
   ngOnInit(): void {
+    interval(1_000).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(() => this.updateLastSavedLabel());
+
     // Results Handling
     const results$ = this.refreshTrigger$.pipe(
       switchMap(() => this.fetchResults()),
@@ -137,11 +146,15 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(value => {
       this.results.set(value);
+      this.initialLoadComplete.set(true);
       // On first load, auto-select the first question in the initially-selected
       // section (mirrors clicking a section).
       if (this.selectedEvidenceIndex === null) {
         this.selectFirstQuestion(this.selectedMenuItemIndex);
       }
+    }, () => {
+      this.initialLoadComplete.set(true);
+      this.utilsService.showErrorMessage();
     });
 
     this.loadFormFromRoute();
@@ -180,6 +193,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         } as PatientGrid));
         this.pendingQuestionnaireResponse = questionnaireResponse;
         this.questionnaireResponseId = questionnaireResponse.id;
+        this.questionnaireResponseStatus.set(questionnaireResponse.status);
       }),
       // Fetch the questionnaire definition after the route context is ready.
       mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
@@ -208,6 +222,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       },
       error: err => {
         console.error(err);
+        this.initialLoadComplete.set(true);
         this.utilsService.showErrorMessage();
       }
     });
@@ -265,6 +280,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
     this.selectedEvidenceIndex = firstQuestionIndex;
     const firstQuestion = section.item[firstQuestionIndex];
+    this.selectedEvidenceQuestion.set(firstQuestion.text);
     const resultSet = results[`link${firstQuestion.linkId}`];
     this.evidenceViewerService.setEvidence(resultSet ?? new ResultSet());
   }
@@ -281,6 +297,57 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
 
   toggleEvidenceDrawer(index: number): void {
     this.selectedEvidenceIndex = index;
+    this.selectedEvidenceQuestion.set(
+      this.questionnaire()?.item?.[this.selectedMenuItemIndex]?.item?.[index]?.text
+    );
+  }
+
+  protected onQuestionHeaderSelected(index: number): void {
+    const question = this.questionnaire()?.item?.[this.selectedMenuItemIndex]?.item?.[index];
+    const resultSet = question ? this.results()?.['link' + question.linkId] : undefined;
+    if (!question || question.type === QuestionnaireItemType.display) {
+      return;
+    }
+
+    this.toggleEvidenceDrawer(index);
+    this.evidenceViewerService.setEvidence(resultSet ?? new ResultSet());
+  }
+
+  protected onEvidenceReviewKeydown(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement | null;
+    const isQuestionHeader = !!target?.closest('.question-header');
+    const isEditable = target?.matches('input, textarea, select, [contenteditable="true"]');
+    if (!this.evidenceReviewActive || isEditable || (!isQuestionHeader && event.target !== event.currentTarget)) {
+      return;
+    }
+
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.moveToAdjacentQuestion(event.key === 'ArrowRight' ? 1 : -1);
+    }
+  }
+
+  private moveToAdjacentQuestion(direction: 1 | -1): void {
+    const section = this.questionnaire()?.item?.[this.selectedMenuItemIndex];
+    if (!section?.item?.length) return;
+
+    const questionIndexes = section.item
+      .map((question, index) => question.type === QuestionnaireItemType.display ? -1 : index)
+      .filter(index => index >= 0);
+    const currentPosition = questionIndexes.indexOf(this.selectedEvidenceIndex ?? -1);
+    const nextPosition = currentPosition + direction;
+    const nextIndex = questionIndexes[nextPosition];
+    if (nextIndex === undefined) return;
+
+    this.onQuestionHeaderSelected(nextIndex);
+
+    queueMicrotask(() => {
+      const headers = this.topScroll()?.nativeElement.querySelectorAll<HTMLElement>('.question-header');
+      const nextHeader = headers?.[questionIndexes.indexOf(nextIndex)];
+      nextHeader?.focus();
+      nextHeader?.scrollIntoView({block: 'nearest'});
+    });
   }
 
   /** Toggles the left-hand section navigation between expanded and collapsed. */
@@ -294,11 +361,20 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         if (exportType === 'json') {
           const questionnaireResponse = this.outputMapper.mapQrToFhir(
             this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
-          const blob = new Blob([JSON.stringify(questionnaireResponse)], {type: 'application/json'});
+          const questionnaire = this.questionnaire();
+          const exportBundle = {
+            resourceType: 'Bundle',
+            type: 'collection',
+            entry: [
+              ...(questionnaire ? [{resource: questionnaire}] : []),
+              {resource: questionnaireResponse}
+            ]
+          };
+          const blob = new Blob([JSON.stringify(exportBundle, null, 2)], {type: 'application/fhir+json'});
           const link = document.createElement('a');
 
           link.href = URL.createObjectURL(blob);
-          link.download = `FHIR_Question_Response.json`;
+          link.download = `SmartChart_Form_Export.json`;
           document.body.appendChild(link);
           link.click();
           document.body?.removeChild(link);
@@ -315,6 +391,25 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
    */
   protected getOptionValue(option: AnswerOption): string | undefined {
     return option.valueCoding ? option.valueCoding.code : option.valueString;
+  }
+
+  protected getQuestionnaireResponseStatusLabel(
+    status: QuestionnaireResponseStatus | undefined
+  ): string {
+    switch (status) {
+      case QuestionnaireResponseStatus.inProgress:
+        return 'In Progress';
+      case QuestionnaireResponseStatus.completed:
+        return 'Completed';
+      case QuestionnaireResponseStatus.amended:
+        return 'Amended';
+      case QuestionnaireResponseStatus.enteredInError:
+        return 'Entered in Error';
+      case QuestionnaireResponseStatus.stopped:
+        return 'Stopped';
+      default:
+        return '';
+    }
   }
 
   /** The human-readable label for an option, for either format. */
@@ -383,6 +478,47 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     return item.item.filter(element => element?.type !== 'display').length;
   }
 
+  protected getQuestionNumber(section: Item, questionIndex: number): number {
+    return (section.item ?? [])
+      .slice(0, questionIndex)
+      .filter(question => question.type !== QuestionnaireItemType.display)
+      .length + 1;
+  }
+
+  protected getAnsweredQuestionCount(item: Item): number {
+    return (item.item ?? []).filter(question => {
+      if (question.type === QuestionnaireItemType.display) {
+        return false;
+      }
+
+      const answer = this.answerDictionary()?.[question.linkId];
+      if (answer === undefined || answer === null || answer === '') {
+        return false;
+      }
+
+      return !Array.isArray(answer) || answer.length > 0;
+    }).length;
+  }
+
+  protected getTotalQuestionCount(): number {
+    return (this.questionnaire()?.item ?? []).reduce(
+      (total, section) => total + this.getQuestionCount(section), 0
+    );
+  }
+
+  protected getTotalAnsweredQuestionCount(): number {
+    return (this.questionnaire()?.item ?? []).reduce(
+      (total, section) => total + this.getAnsweredQuestionCount(section), 0
+    );
+  }
+
+  protected getOverallProgressPercent(): number {
+    const totalQuestions = this.getTotalQuestionCount();
+    return totalQuestions > 0
+      ? (this.getTotalAnsweredQuestionCount() / totalQuestions) * 100
+      : 0;
+  }
+
   protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
     if (!results || !linkId) {
       return 'ERROR';
@@ -415,6 +551,8 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
     ).subscribe({
       next: () => {
         this.captureAnswersSnapshot();
+        this.lastSavedAt.set(new Date());
+        this.updateLastSavedLabel();
         this.utilsService.showSuccessMessage("Form Saved Successfully");
       },
       error: (error) => {
@@ -422,6 +560,21 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.utilsService.showErrorMessage("Error Saving Form");
       }
     });
+  }
+
+  protected updateLastSavedLabel(): void {
+    const savedAt = this.lastSavedAt();
+    if (!savedAt) return;
+
+    const elapsedMinutes = Math.floor((Date.now() - savedAt.getTime()) / 60_000);
+    if (elapsedMinutes < 1) {
+      this.lastSavedLabel.set('Last saved just now');
+    } else if (elapsedMinutes < 60) {
+      this.lastSavedLabel.set(`Last saved ${elapsedMinutes} minute${elapsedMinutes === 1 ? '' : 's'} ago`);
+    } else {
+      const elapsedHours = Math.floor(elapsedMinutes / 60);
+      this.lastSavedLabel.set(`Last saved about ${elapsedHours} hour${elapsedHours === 1 ? '' : 's'} ago`);
+    }
   }
 
   /**

@@ -19,6 +19,7 @@ const UNSTRUCTURED_TAB_INDEX = 1;
 @Component({
   selector: 'app-evidence-details',
   templateUrl: './evidence-details.component.html',
+  styleUrl: './evidence-details.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
   imports: [StructuredEvidenceComponent, MatExpansionModule, UnstructuredEvidenceComponent, MatTabGroup, MatTab]
 })
@@ -40,6 +41,44 @@ export class EvidenceDetailsComponent implements OnChanges {
    * unstructured tab only opens when it is the sole tab with evidence.
    */
   selectedTabIndex = STRUCTURED_TAB_INDEX;
+  selectedResourceType: string | null = null;
+
+  get structuredResultCount(): number {
+    return this.evidence.structured.reduce(
+      (total, group) => total + group.resources.length,
+      0
+    );
+  }
+
+  get resourceTypeFilters(): { type: string | null; label: string; count: number }[] {
+    const counts = new Map<string, number>();
+    for (const group of this.evidence.structured) {
+      counts.set(group.resourceType, (counts.get(group.resourceType) ?? 0) + group.resources.length);
+    }
+
+    return [
+      {type: null, label: 'All resources', count: this.structuredResultCount},
+      ...Array.from(counts.entries()).map(([type, count]) => ({
+        type,
+        label: this.resourceTypeLabel(type),
+        count
+      }))
+    ];
+  }
+
+  get filteredStructuredEvidence() {
+    return this.selectedResourceType
+      ? this.evidence.structured.filter(group => group.resourceType === this.selectedResourceType)
+      : this.evidence.structured;
+  }
+
+  selectResourceType(type: string | null): void {
+    this.selectedResourceType = type;
+  }
+
+  private resourceTypeLabel(type: string): string {
+    return type === 'MedicationRequest' ? 'Medications' : `${type}s`;
+  }
 
   constructor(private evidenceViewerService: EvidenceViewerService,
               private structuredEvidenceHelper: StructuredEvidenceHelperService,
@@ -69,6 +108,7 @@ export class EvidenceDetailsComponent implements OnChanges {
               unstructured: this.unstructuredEvidenceHelper.parseUnstructuredEvidence(
                 documentReferences, resultSet.nlpAnswerObservations)
             };
+            this.selectedResourceType = null;
             this.selectedTabIndex = this.getInitialTabIndex();
           }
         })

@@ -1,31 +1,23 @@
 .patient-details-container {
   display: flex;
-  background-color: #ffffff;
-  color: #333;
-  gap: 4.5em;
-  padding: 1em 1.5em;
-  margin: 1em 1.5em;
-  border-radius: 0.75em;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+  font-size: 14px;
+  line-height: 1.5;
+}
 
-  // &.identifier{
-  //   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  // }
+.patient-detail {
+  white-space: nowrap;
+}
 
-  .patient-details {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-   
-    gap: 6px;
-    font-size: medium;
-    > .patient-details-label {
-     color: gray;
-      font-weight: 400;
-      font-size: smaller;
-    }
-    > .patient-details-value {
-        font-weight: 500;
-        display: inline-flex;
-    }
-  }
+.patient-detail strong {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.patient-detail-separator {
+  color: var(--color-text-secondary);
 }

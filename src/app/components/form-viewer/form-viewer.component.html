@@ -1,8 +1,14 @@
+@if (initialLoadComplete()) {
 <div class="viewer-container-wrapper">
   @if (activeFormSummary()?.formName || activeFormSummary()?.patientSummary) {
     <div class="viewer-container-header">
       <div class="form-name">
-        {{ questionnaire()?.title }}
+        @if (questionnaireResponseStatus()) {
+          <mat-chip class="form-status-chip">
+            {{ getQuestionnaireResponseStatusLabel(questionnaireResponseStatus()) }}
+          </mat-chip>
+        }
+        <span>{{ questionnaire()?.title }}</span>
       </div>
       @if (activeFormSummary()?.patientSummary) {
         <div class="patient-details-component-wrapper">
@@ -10,33 +16,12 @@
         </div>
       }
     </div>
-    <div class="viewer-container-header">
-      <div class="job-details-wrapper">
-        <div class="job-details-label">
-          Form Job Status:
-        </div>
-        <div class="job-details-value">
-          {{ status }} - {{ completeCount }}/{{ totalCount }} ({{ percentComplete.toFixed(0) }}%)
-        </div>
-        <div class="job-details-spinner">
-          @if (status === "complete") {
-            <mat-spinner mode="determinate" color="primary" value="100" [diameter]="16"/>
-          } @else {
-            <mat-spinner [diameter]="16" color="accent"/>
-          }
-        </div>
-
-      </div>
-    </div>
   }
   <div class="viewer-container-body" [ngClass]="menuCollapsed() ? 'menu-collapsed' : ''">
     <div class="sub-nav">
-      <div class="fhir-explorer-header sub-nav-header">
+      <div class="sub-nav-header">
         @if (!menuCollapsed()) {
-          <span class="explorer-header-title">
-            Sections
-          </span>
-          <span class="content-spacer"></span>
+          <span class="section-nav-title">Form sections</span>
         }
         <mat-icon
           class="pointer sub-nav-toggle"
@@ -50,17 +35,22 @@
         <ul class="sub-menu">
           @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
             @let evidenceCount = getQuestionsWithEvidenceCount(item, results());
+            @let questionCount = getQuestionCount(item);
+            @let answeredCount = getAnsweredQuestionCount(item);
             @if (!menuCollapsed()) {
               <li class="sub-menu-item"
                   [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
                   (click)="onSectionSelected(i)">
-                {{ i + 1 }}. {{ item.text }}
-                @if (evidenceCount > 0) {
-                  <span class="sparkles-icon" aria-hidden="true"
-                        matTooltipPosition="above"
-                        [matTooltip]="'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.'">
-                    </span>
-                }
+                <span class="section-label">{{ item.text }}</span>
+                <span class="section-count" [attr.aria-label]="answeredCount + ' of ' + questionCount + ' questions answered'">
+                  {{ answeredCount }}/{{ questionCount }}
+                </span>
+                <span class="sparkles-icon"
+                      [class.has-evidence]="evidenceCount > 0"
+                      aria-hidden="true"
+                      matTooltipPosition="above"
+                      [matTooltip]="evidenceCount > 0 ? 'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.' : ''">
+                </span>
               </li>
             } @else {
               <li class="sub-menu-item" [matTooltip]="item.text" [matTooltipPosition]="'right'"
@@ -72,27 +62,84 @@
           }
         </ul>
       </mat-nav-list>
+      @let totalQuestions = getTotalQuestionCount();
+      @let totalAnswered = getTotalAnsweredQuestionCount();
+      <div class="nav-progress" aria-label="Overall form completion">
+        <div class="nav-progress-label">Overall completion</div>
+        <div class="progress-line" role="progressbar"
+             [attr.aria-valuenow]="getOverallProgressPercent()"
+             aria-valuemin="0" aria-valuemax="100">
+          <span [style.width.%]="getOverallProgressPercent()"></span>
+        </div>
+        <div class="nav-progress-count">{{ totalAnswered }} of {{ totalQuestions }} questions</div>
+      </div>
     </div>
 
     <!-- Begin actual form rendering -->
     <div class="viewer-container-body-content">
-      <div class="fhir-explorer-header">
-        <span class="explorer-header-title">
-            Questions
+      <div class="questions-column-header">
+        @if (questionnaire()?.item?.[selectedMenuItemIndex]; as selectedSection) {
+          <span class="questions-column-summary">
+            SECTION {{ (selectedMenuItemIndex + 1).toString().padStart(2, '0') }} · {{ getAnsweredQuestionCount(selectedSection) }} of {{ getQuestionCount(selectedSection) }} answered
           </span>
+          <span class="questions-column-title">{{ selectedSection.text }}</span>
+        } @else {
+          <span class="questions-column-title">Questions</span>
+        }
       </div>
-      <div class="section-scroll-body" #top>
+      <div class="section-scroll-body" #top tabindex="-1"
+           (keydown)="onEvidenceReviewKeydown($event)"
+           (focus)="evidenceReviewActive = true">
+        <div class="question-navigation-hint">
+          Hint: Use
+          <kbd aria-label="left arrow key">&#8592;</kbd>
+          and
+          <kbd aria-label="right arrow key">&#8594;</kbd>
+          to navigate questions.
+        </div>
       @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
         @if (item.selected) {
-          <div class="margin-top-md item-text">{{ item.text }}</div>
-
           @for (childItem of item.item; track childItem.linkId; let j = $index) {
-            <div class="question-item full-size-question-item">
-              <div class="question-label"
-                   [ngClass]="(j === selectedEvidenceIndex) ? 'selected-evidence': ''">
-                <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
-                <span class="margin-left-sm">{{ childItem.text }}</span>
-              </div>
+            @let isDisplayItem = childItem.type === QuestionnaireItemType.display;
+            <div class="question-item full-size-question-item"
+                 [ngClass]="(j === selectedEvidenceIndex) ? 'selected-evidence': ''">
+              @if (!isDisplayItem) {
+                <div class="question-header"
+                     [class.has-evidence]="results()?.['link' + childItem.linkId]?.['evidence']?.length"
+                     [attr.role]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? 'button' : null"
+                     [attr.tabindex]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? '0' : null"
+                     [attr.aria-label]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? 'Show evidence for ' + childItem.text : null"
+                     (click)="onQuestionHeaderSelected(j)"
+                     (keydown)="onEvidenceReviewKeydown($event)"
+                     (keydown.enter)="onQuestionHeaderSelected(j)"
+                     (keydown.space)="$event.preventDefault(); onQuestionHeaderSelected(j)"
+                     (focus)="evidenceReviewActive = true">
+                  <div class="question-kicker">
+                    Question {{ getQuestionNumber(item, j).toString().padStart(2, '0') }} of {{ getQuestionCount(item) }}
+                  @if (results()?.['link' + childItem.linkId]?.['evidence']?.length) {
+                    @if (j === selectedEvidenceIndex) {
+                      <div class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
+                        Viewing Evidence
+                      </div>
+                    } @else {
+                      <button matButton class="evidence-trigger" type="button"
+                              [attr.aria-label]="'Show evidence for ' + childItem.text"
+                              (click)="$event.stopPropagation(); onQuestionHeaderSelected(j)">
+                        <span>View Evidence</span>
+                        <span>({{ getEvidenceCount(childItem.linkId, results()) }})</span>
+                        <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+                      </button>
+                    }
+                  }
+                  </div>
+                  <h2 class="question-title">{{ childItem.text }}</h2>
+                </div>
+              } @else {
+                <div class="question-label">
+                  <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
+                  <span class="margin-left-sm">{{ childItem.text }}</span>
+                </div>
+              }
 
               <div class="margin-left-md margin-right-sm margin-top-xs">
                 @switch (childItem.type) {
@@ -203,28 +250,33 @@
                   </div>
                 }
 
-                @if (resultSet?.["evidence"] && resultSet["evidence"].length > 0) {
-                  <div>
-                    <button matButton="outlined" class="primary-outlined"
-                            appSetEvidence [resultSet]="resultSet"
-                            (click)="toggleEvidenceDrawer(j)">
-                      View Evidence
-                      ({{ getEvidenceCount(childItem.linkId, results()) }})
-                    </button>
-                  </div>
-                }
               </div>
             </div>
           }
         }
       }
+      <div class="section-footer-controls">
+        <button matButton="filled" color="primary" type="button"
+                [disabled]="selectedMenuItemIndex === 0"
+                (click)="goToPreviousSection()">
+          <mat-icon>chevron_left</mat-icon>
+          Previous section
+        </button>
+        <button matButton="filled" color="primary" type="button"
+                [disabled]="(questionnaire()?.item?.length ?? 1) - 1 === selectedMenuItemIndex"
+                (click)="goToNextSection()">
+          Next section
+          <mat-icon iconPositionEnd>chevron_right</mat-icon>
+        </button>
+      </div>
       </div>
     </div>
     <div class="viewer-container-body-side-content viewer-container-body-side-explorer">
-      <div class="fhir-explorer-header">
-        <span class="explorer-header-title">
-            Evidence
-          </span>
+      <div class="evidence-column-header">
+        <span class="evidence-column-title">Evidence workspace</span>
+        @if (selectedEvidenceQuestion()) {
+          <span class="evidence-question">Findings associated with <strong>{{ selectedEvidenceQuestion() }}</strong></span>
+        }
       </div>
       <div class="section-scroll-body">
         @if (selectedEvidenceIndex !== null) {
@@ -241,25 +293,13 @@
     <div class="nav-controls">
       <div class="content-spacer"></div>
 
-      <button mat-flat-button type="submit" class="wide-button"
-              [disabled]="selectedMenuItemIndex === 0"
-              (click)="goToPreviousSection()">
-        <mat-icon>chevron_left</mat-icon>
-        Previous
-        Section{{ selectedMenuItemIndex > 0 ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex - 1]?.text : '' }}
-      </button>
-
-      <button mat-flat-button type="submit" class="margin-left-sm wide-button"
-              [disabled]="(questionnaire()!.item.length - 1) === selectedMenuItemIndex"
-              (click)="goToNextSection()">
-        Next
-        Section{{ (selectedMenuItemIndex < questionnaire()!.item.length - 1) ? ': ' + questionnaire()?.item?.[selectedMenuItemIndex + 1]?.text : '' }}
-        <mat-icon iconPositionEnd>chevron_right</mat-icon>
-      </button>
-
       <div class="content-spacer"></div>
 
-      <button matButton="filled" type="button" (click)="onExport()">
+      @if (lastSavedLabel()) {
+        <span class="last-saved-label">{{ lastSavedLabel() }}</span>
+      }
+
+      <button matButton="outlined" color="primary" type="button" (click)="onExport()">
         <mat-icon>download</mat-icon>
         Export
       </button>
@@ -272,3 +312,9 @@
   }
 
 </div>
+} @else {
+  <div class="form-viewer-loading" role="status" aria-live="polite">
+    <mat-spinner aria-label="Loading form"></mat-spinner>
+    <span>Loading form...</span>
+  </div>
+}

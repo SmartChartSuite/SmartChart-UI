@@ -70,6 +70,24 @@ $blue-accent-color: #005cbb;
   }
 }
 
+.component-wrapper > .component-content {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.component-wrapper .centered-screen {
+  flex: 1;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.component-wrapper .centered-content.landing-page-columns {
+  display: flex;
+  align-items: stretch;
+  min-height: 0;
+}
+
 .landing-page-columns {
   display: flex;
   flex-direction: row;
@@ -77,6 +95,7 @@ $blue-accent-color: #005cbb;
   > .landing-page-left-column {
     flex: 1;
     margin-right: $spacing-md;
+    min-width: 0;
   }
   > .landing-page-right-column {
     flex: 1;
@@ -88,9 +107,17 @@ $blue-accent-color: #005cbb;
   }
 }
 
-// Material Overrides
-.mat-expansion-panel:not([class*=mat-elevation-z]) {
-  box-shadow: none;
+.landing-page-right-column {
+  max-width: 420px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+.landing-page-right-column sc-standalone-login {
+  width: 100%;
 }
 
 .narrow-description{
@@ -101,18 +128,6 @@ $blue-accent-color: #005cbb;
     font-weight: 400;
     justify-content: end;
 }
-//mat-expansion-panel {
-//  > * {
-//    padding: 0;
-//    > * {
-//      padding: 0;
-//    }
-//  }
-//}
-//.mat-expansion-panel-content .mat-expansion-panel-body {
-//  padding: 0;
-//}
-
 .mat-expansion-panel-header-title {
 font-weight: 600;
 color: #4e4e4e;

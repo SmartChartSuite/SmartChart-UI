@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {PatientSummary} from "../../../models/patient-summary";
 import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
 import {RcApiConfig} from "../../../models/rc-api/rc-api-config";
@@ -13,6 +13,8 @@ import { TitleCasePipe, DatePipe } from '@angular/common';
 })
 export class PatientDetailsComponent implements OnChanges {
   @Input() patientSummary: PatientSummary;
+
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   identifierLabel: string = "Medical Record Number";
   identifierSystem: string | undefined = undefined;
@@ -31,6 +33,9 @@ export class PatientDetailsComponent implements OnChanges {
             }
             const primaryIdentifier = this.patientSummary?.identifier?.find(identifier => identifier.system === this.identifierSystem);
             this.identifierValue = primaryIdentifier?.value ?? "Unknown";
+            // The configured identifier arrives after the initial template check.
+            // Refresh the view after all related bindings have been updated.
+            this.changeDetectorRef.detectChanges();
           }
         }
       }
