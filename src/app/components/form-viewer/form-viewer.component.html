@@ -265,12 +265,12 @@
                 [disabled]="selectedMenuItemIndex === 0"
                 (click)="goToPreviousSection()">
           <mat-icon>chevron_left</mat-icon>
-          Previous section
+          Previous Section
         </button>
         <button matButton="filled" color="primary" type="button"
                 [disabled]="(questionnaire()?.item?.length ?? 1) - 1 === selectedMenuItemIndex"
                 (click)="goToNextSection()">
-          Next section
+          Next Section
           <mat-icon iconPositionEnd>chevron_right</mat-icon>
         </button>
       </div>
