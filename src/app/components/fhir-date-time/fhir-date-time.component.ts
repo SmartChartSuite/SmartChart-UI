@@ -1,11 +1,9 @@
 import {
   Component,
-  EventEmitter,
-  Input,
-  OnChanges,
+  effect,
+  input,
   OnInit,
-  Output,
-  SimpleChanges,
+  output,
   ChangeDetectionStrategy,
   OnDestroy
 } from '@angular/core';
@@ -41,11 +39,12 @@ const dateTimeRegex =  /([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1
     MatTimepickerModule
   ]
 })
-export class FhirDateTimeComponent implements OnChanges, OnInit, OnDestroy {
+export class FhirDateTimeComponent implements OnInit, OnDestroy {
 
-  @Input() inputValue: string;
-  @Input() questionType: QuestionnaireItemType;
-  @Output() onDateTimeUpdated = new EventEmitter<any>();
+  inputValue = input<string>('');
+  questionType = input.required<QuestionnaireItemType>();
+  onDateTimeUpdated = output<{value: string; questionType: QuestionnaireItemType}>();
+  onPickerOpened = output<void>();
 
   // protected readonly TIMEZONES = TIMEZONES;
   private destroy$ = new Subject<void>();
@@ -53,29 +52,25 @@ export class FhirDateTimeComponent implements OnChanges, OnInit, OnDestroy {
   private readonly timeRegex = timeRegex;
   private readonly dateRegex = dateRegex;
   private readonly dateTimeRegex = dateTimeRegex;
-  private isInternalUpdate = false; // Flag to track internal updates
-
 
   form = new FormGroup({
     date: new FormControl(null),
     time: new FormControl(null)
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['questionType']?.currentValue) {
-      this.updateValidators(changes['questionType'].currentValue);
-    }
+  constructor() {
+    effect(() => {
+      this.updateValidators(this.questionType());
+    });
 
-    // Skip processing if this is an internal update (from our own emission)
-    if (this.isInternalUpdate) {
-      this.isInternalUpdate = false;
-      return;
-    }
+    effect(() => {
+      const inputValue = this.inputValue();
+      const questionType = this.questionType();
 
-    // Only process valid inputValue changes
-    if (changes['inputValue'] && this.inputValue?.trim()) {
-      this.processInputValue();
-    }
+      if (inputValue.trim()) {
+        this.processInputValue(inputValue, questionType);
+      }
+    });
   }
 
   private updateValidators(questionType: QuestionnaireItemType): void {
@@ -100,31 +95,33 @@ export class FhirDateTimeComponent implements OnChanges, OnInit, OnDestroy {
     timeControl.updateValueAndValidity();
   }
 
-  private processInputValue(): void {
-    this.inputValue = this.inputValue.replaceAll(' ', '');
+  private processInputValue(inputValue: string, questionType: QuestionnaireItemType): void {
+    const normalizedInputValue = inputValue.replaceAll(' ', '');
 
-    if (!this.checkValidInput(this.inputValue, this.questionType)) {
-      console.warn(`Invalid ${this.questionType} detected with value ${this.inputValue}`);
+    if (!this.checkValidInput(normalizedInputValue, questionType)) {
+      console.warn(`Invalid ${questionType} detected with value ${normalizedInputValue}`);
       return;
     }
 
     // Skip if value hasn't changed
-    const currentFormValue = this.formValueToStr(this.form.value, this.questionType);
-    if (currentFormValue === this.inputValue) {
+    const currentFormValue = this.formValueToStr(this.form.value, questionType);
+    if (currentFormValue === normalizedInputValue) {
       return;
     }
 
     // Update form based on question type
-    if (this.questionType === QuestionnaireItemType.date) {
-      const date = this.getDateFromISOString(this.inputValue, 'date');
+    if (questionType === QuestionnaireItemType.date) {
+      const date = this.getDateFromISOString(normalizedInputValue, 'date');
       this.form.patchValue({ date }, { emitEvent: false });
-    } else if (this.questionType === QuestionnaireItemType.dateTime) {
-      const date = this.getDateFromISOString(this.inputValue, 'date');
-      const time = this.getDateFromISOString(this.inputValue, 'time');
+    } else if (questionType === QuestionnaireItemType.dateTime) {
+      const date = this.getDateFromISOString(normalizedInputValue, 'date');
+      const time = this.getDateFromISOString(normalizedInputValue, 'time');
       this.form.patchValue({ date, time }, { emitEvent: false });
-    } else if (this.questionType === QuestionnaireItemType.time) {
+    } else if (questionType === QuestionnaireItemType.time) {
       // Widget accepts HH:MM format only
-      const time = this.inputValue.length > 5 ? this.inputValue.substring(0, 5) : this.inputValue;
+      const time = normalizedInputValue.length > 5
+        ? normalizedInputValue.substring(0, 5)
+        : normalizedInputValue;
       this.form.patchValue({ time }, { emitEvent: false });
     }
   }
@@ -152,11 +149,10 @@ export class FhirDateTimeComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      const strValue = this.formValueToStr(value, this.questionType);
+      const strValue = this.formValueToStr(value, this.questionType());
       // Only emit if we have a valid value to prevent clearing the form
       if (strValue) {
-        this.isInternalUpdate = true; // Mark as internal update before emitting
-        this.onDateTimeUpdated.emit({value: strValue, questionType: this.questionType})
+        this.onDateTimeUpdated.emit({value: strValue, questionType: this.questionType()})
       }
     })
   }

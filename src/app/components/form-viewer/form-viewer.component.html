@@ -141,7 +141,7 @@
                 </div>
               }
 
-              <div class="margin-left-md margin-right-sm margin-top-xs">
+              <div class="margin-left-md margin-right-sm margin-top-xs" (click)="onQuestionHeaderSelected(j)">
                 @switch (childItem.type) {
                   @case (QuestionnaireItemType.choice) {
                     <mat-radio-group
@@ -199,6 +199,7 @@
                   }
                   @case (QuestionnaireItemType.date) {
                     <app-fhir-date-time
+                      (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
                       [questionType]="QuestionnaireItemType.date"
                       [inputValue]="answerDictionary()![childItem.linkId]"
@@ -206,6 +207,7 @@
                   }
                   @case (QuestionnaireItemType.time) {
                     <app-fhir-date-time
+                      (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
                       [questionType]="QuestionnaireItemType.time"
                       [inputValue]="answerDictionary()![childItem.linkId]"
@@ -213,6 +215,7 @@
                   }
                   @case (QuestionnaireItemType.dateTime) {
                     <app-fhir-date-time
+                      (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
                       [questionType]="QuestionnaireItemType.dateTime"
                       [inputValue]="answerDictionary()![childItem.linkId]"
@@ -237,18 +240,20 @@
                 <!--                      show "No evidence found"                                            -->
                 <!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
 
-                @let resultSet = results()?.["link" + childItem.linkId];
-                @if (resultSet?.["cqlAnswer"]?.["valueString"]) {
-                  <div class="margin-bottom-sm">
-                    Suggested Answer:
-                    @for (suggested of (resultSet?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track suggested) {
-                      <span class="margin-left-sm" (click)="answerDictionary()![childItem.linkId] = suggested">
-                          <mat-chip class="suggested-answer"
-                                    matTooltip="Click to fill the answer">{{ suggested }}</mat-chip>
-                        </span>
-                    }
-                  </div>
-                }
+
+                <!--                Suggested answer is removed in the current implementation-->
+<!--                @let resultSet = results()?.["link" + childItem.linkId];-->
+<!--                @if (resultSet?.["cqlAnswer"]?.["valueString"]) {-->
+<!--                  <div class="margin-bottom-sm">-->
+<!--                    Suggested Answer:-->
+<!--                    @for (suggested of (resultSet?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track suggested) {-->
+<!--                      <span class="margin-left-sm" (click)="answerDictionary()![childItem.linkId] = suggested">-->
+<!--                          <mat-chip class="suggested-answer"-->
+<!--                                    matTooltip="Click to fill the answer">{{ suggested }}</mat-chip>-->
+<!--                        </span>-->
+<!--                    }-->
+<!--                  </div>-->
+<!--                }-->
 
               </div>
             </div>

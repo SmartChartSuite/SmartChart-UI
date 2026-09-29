@@ -286,13 +286,11 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   goToPreviousSection(): void {
-    this.selectQuestionnaireSection(this.selectedMenuItemIndex - 1);
-    this.scrollToTop();
+    this.onSectionSelected(this.selectedMenuItemIndex - 1);
   }
 
   goToNextSection(): void {
-    this.selectQuestionnaireSection(this.selectedMenuItemIndex + 1);
-    this.scrollToTop();
+    this.onSectionSelected(this.selectedMenuItemIndex + 1);
   }
 
   toggleEvidenceDrawer(index: number): void {
