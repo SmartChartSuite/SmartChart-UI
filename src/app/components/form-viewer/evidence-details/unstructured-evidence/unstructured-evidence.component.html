@@ -53,7 +53,10 @@
       <button type="button" class="reasoning-toggle"
               (click)="toggleReasoning(evidence)"
               [attr.aria-expanded]="isReasoningExpanded(evidence)">
-        <span class="reasoning-chevron" [class.expanded]="isReasoningExpanded(evidence)" aria-hidden="true">⌄</span>
+        <mat-icon
+          class="reasoning-chevron"
+          [class.expanded]="isReasoningExpanded(evidence)"
+          aria-hidden="true">expand_more</mat-icon>
         {{ reasoningToggleLabel(evidence) }}
       </button>
     }
