@@ -80,7 +80,7 @@
       <div class="questions-column-header">
         @if (questionnaire()?.item?.[selectedMenuItemIndex]; as selectedSection) {
           <span class="questions-column-summary">
-            SECTION {{ (selectedMenuItemIndex + 1).toString().padStart(2, '0') }} · {{ getAnsweredQuestionCount(selectedSection) }} of {{ getQuestionCount(selectedSection) }} answered
+            SECTION {{ (selectedMenuItemIndex + 1) }} · {{ getAnsweredQuestionCount(selectedSection) }} of {{ getQuestionCount(selectedSection) }} answered
           </span>
           <span class="questions-column-title">{{ selectedSection.text }}</span>
         } @else {
@@ -115,7 +115,7 @@
                      (keydown.space)="$event.preventDefault(); onQuestionHeaderSelected(j)"
                      (focus)="evidenceReviewActive = true">
                   <div class="question-kicker">
-                    Question {{ getQuestionNumber(item, j).toString().padStart(2, '0') }} of {{ getQuestionCount(item) }}
+                    Question {{ getQuestionNumber(item, j) }} of {{ getQuestionCount(item) }}
                   @if (results()?.['link' + childItem.linkId]?.['evidence']?.length) {
                     @if (j === selectedEvidenceIndex) {
                       <div class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
