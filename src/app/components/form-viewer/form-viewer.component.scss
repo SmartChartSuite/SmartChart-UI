@@ -96,6 +96,18 @@ $selected-nave-menu-item-color: #424242;
   padding: 20px 16px;
   border: 3px solid transparent;
   border-radius: var(--radius-md);
+  position: relative;
+  background: var(--color-surface);
+}
+
+.question-item:not(.selected-evidence)::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-text-secondary), transparent);
+  content: '';
 }
 
 .evidence-viewing-chip {
