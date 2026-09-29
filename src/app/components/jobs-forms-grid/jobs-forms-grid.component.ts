@@ -228,7 +228,7 @@ export class JobsFormsGridComponent {
       title: "Delete Job/Form",
       content: "WARNING: You are about to delete the form and associated jobs. This action cannot be undone. Do you wish to continue?",
       primaryActionBtnTitle: "Yes, continue",
-      secondaryActionBtnTitle: "Leave Without Saving",
+      secondaryActionBtnTitle: "No, cancel delete",
       width: "40em",
       isPrimaryButtonLeft: false,
       isSecondaryActionDanger: true
