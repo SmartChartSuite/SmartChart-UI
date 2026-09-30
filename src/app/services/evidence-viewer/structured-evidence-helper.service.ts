@@ -77,6 +77,8 @@ export class StructuredEvidenceHelperService {
       return resource.details.clinicalStatus;
     } else if (resource.resourceType === 'Encounter') {
       return resource.details.type;
+    } else if (resource.resourceType === 'MedicationRequest') {
+      return resource.details.dosageInstructions;
     } else if (resource.resourceType === 'Procedure') {
       return resource.details.status;
     } else {
