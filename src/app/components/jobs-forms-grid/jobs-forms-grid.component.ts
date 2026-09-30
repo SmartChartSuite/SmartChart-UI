@@ -226,9 +226,9 @@ export class JobsFormsGridComponent {
   protected onDeleteJob(patient: PatientGrid) {
     return openConfirmationDialog(this.dialog, {
       title: "Delete Job/Form",
-      content: "WARNING: You are about to delete the form and associated jobs. This action cannot be undone. Do you wish to continue?",
-      primaryActionBtnTitle: "Yes, continue",
-      secondaryActionBtnTitle: "No, cancel delete",
+      content: `You are about to permanently delete the <i>${patient.jobPackage}</i> form for <i>${patient.patientName}</i>, along with all associated jobs. This action cannot be undone. Do you want to continue?`,
+      primaryActionBtnTitle: "Yes, delete this form",
+      secondaryActionBtnTitle: "No, return to form list",
       width: "40em",
       isPrimaryButtonLeft: false,
       isSecondaryActionDanger: true
