@@ -56,10 +56,6 @@
     width: 100%;
     overflow-x: auto;
 
-    .mat-mdc-table {
-      --mat-table-row-item-outline-color: var(--color-bg-gray);
-    }
-
     table {
       width: 100%;
 
@@ -83,12 +79,6 @@
         }
       }
     }
-  }
-
-  mat-paginator {
-    --mat-paginator-container-background-color: transparent;
-    background-color: transparent;
-    border-top: 1px solid rgba(0, 0, 0, 0.12);
   }
 }
 
