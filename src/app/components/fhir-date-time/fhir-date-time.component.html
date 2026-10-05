@@ -1,22 +1,54 @@
 <form [formGroup]="form" class="date-time-inputs">
-  @if (questionType() == QuestionnaireItemType.dateTime || questionType() == QuestionnaireItemType.date) {
-    <mat-form-field
-      appearance="outline"
-      class="margin-right-lg">
+  @if (questionType() == QuestionnaireItemType.dateTime) {
+    <div class="date-time-combined-field" role="group" aria-labelledby="date-time-label">
+      <label id="date-time-label" class="date-time-combined-label">Date &amp; Time</label>
+
+      <div class="date-time-combined-inputs">
+        <input
+          matInput
+          class="date-time-date-input"
+          id="date-time-date-input"
+          aria-label="Date"
+          placeholder="MM/DD/YYYY"
+          [matDatepicker]="datePicker"
+          formControlName="date">
+        <span class="date-time-separator" aria-hidden="true"></span>
+        <input
+          class="date-time-time-input"
+          id="date-time-time-input"
+          aria-label="Time"
+          placeholder="HH:mm"
+          [matTimepicker]="timePicker"
+          [matTimepickerOpenOnClick]="false"
+          formControlName="time">
+
+        <div class="date-time-combined-actions">
+          <mat-datepicker-toggle [for]="datePicker"></mat-datepicker-toggle>
+          <mat-timepicker-toggle [for]="timePicker"></mat-timepicker-toggle>
+        </div>
+      </div>
+
+      <mat-datepicker #datePicker (opened)="onPickerOpened.emit()"></mat-datepicker>
+      <mat-timepicker #timePicker (opened)="onPickerOpened.emit()"></mat-timepicker>
+      <span class="date-time-combined-hint">MM/DD/YYYY&nbsp;&nbsp;&nbsp;HH:mm</span>
+    </div>
+  } @else if (questionType() == QuestionnaireItemType.date) {
+    <mat-form-field appearance="outline" class="margin-right-lg date-time-simple-field">
       <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="datePicker" formControlName='date'>
-      <mat-hint>Date Format: YYYY-MM-DD</mat-hint>
+      <input matInput [matDatepicker]="datePicker" formControlName='date'
+             >
+      <mat-hint>Date Format: MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
       <mat-datepicker #datePicker (opened)="onPickerOpened.emit()"></mat-datepicker>
     </mat-form-field>
   }
-  @if (questionType() == QuestionnaireItemType.dateTime || questionType() == QuestionnaireItemType.time) {
-    <mat-form-field appearance="outline" class="margin-right-lg">
+  @if (questionType() == QuestionnaireItemType.time) {
+    <mat-form-field appearance="outline" class="margin-right-lg date-time-simple-field">
       <mat-label>Time</mat-label>
-      <input matInput [matTimepicker]="timePicker"  formControlName='time'>
+      <input matInput [matTimepicker]="timePicker" [matTimepickerOpenOnClick]="false" formControlName='time'>
       <mat-timepicker-toggle matIconSuffix [for]="timePicker"/>
       <mat-timepicker #timePicker (opened)="onPickerOpened.emit()"/>
-      <mat-hint>Time Format: HH-MM</mat-hint>
+      <mat-hint>Time Format: HH:mm</mat-hint>
     </mat-form-field>
   }
 </form>

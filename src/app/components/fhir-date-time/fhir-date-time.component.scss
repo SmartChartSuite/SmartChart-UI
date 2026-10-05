@@ -1,7 +1,86 @@
 .date-time-inputs {
   display: flex;
+  flex-wrap: wrap;
+  gap: 0 16px;
   padding-top: 8px;
 }
+
+.date-time-inputs mat-form-field {
+  flex: 0 1 18rem;
+}
+
+.date-time-simple-field {
+  flex-basis: 13rem !important;
+  max-width: 13rem;
+}
+
+.date-time-combined-field {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 20rem !important;
+  gap: 4px;
+  max-width: 20rem;
+  position: relative;
+}
+
+.date-time-combined-label {
+  color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin-bottom: 2px;
+}
+
+.date-time-combined-inputs {
+  align-items: center;
+  border: 1px solid var(--mat-sys-outline, rgba(0, 0, 0, 0.38));
+  border-radius: 4px;
+  display: flex;
+  gap: 12px;
+  min-height: 40px;
+  padding: 4px 68px 4px 12px;
+  position: relative;
+  width: 100%;
+
+  input {
+    appearance: none;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    min-width: 0;
+    outline: none;
+    padding: 4px 0;
+  }
+
+  .date-time-date-input {
+    flex: 1.6 1 0;
+  }
+
+  .date-time-time-input {
+    flex: 1 1 0;
+  }
+}
+
+.date-time-separator {
+  border-left: 1px solid currentColor;
+  height: 24px;
+  opacity: 0.35;
+}
+
+.date-time-combined-actions {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.date-time-combined-hint {
+  color: var(--mat-sys-on-surface-variant, rgba(0, 0, 0, 0.6));
+  font-size: 0.75rem;
+  line-height: 1rem;
+  margin-top: 2px;
+}
+
 .timezone {
   flex-grow: 1;
 }
