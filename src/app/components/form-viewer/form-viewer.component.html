@@ -80,7 +80,7 @@
       <div class="questions-column-header">
         @if (questionnaire()?.item?.[selectedMenuItemIndex]; as selectedSection) {
           <span class="questions-column-summary">
-            SECTION {{ (selectedMenuItemIndex + 1).toString().padStart(2, '0') }} · {{ getAnsweredQuestionCount(selectedSection) }} of {{ getQuestionCount(selectedSection) }} answered
+            SECTION {{ (selectedMenuItemIndex + 1) }} · {{ getAnsweredQuestionCount(selectedSection) }} of {{ getQuestionCount(selectedSection) }} answered
           </span>
           <span class="questions-column-title">{{ selectedSection.text }}</span>
         } @else {
@@ -115,7 +115,7 @@
                      (keydown.space)="$event.preventDefault(); onQuestionHeaderSelected(j)"
                      (focus)="evidenceReviewActive = true">
                   <div class="question-kicker">
-                    Question {{ getQuestionNumber(item, j).toString().padStart(2, '0') }} of {{ getQuestionCount(item) }}
+                    Question {{ getQuestionNumber(item, j) }} of {{ getQuestionCount(item) }}
                   @if (results()?.['link' + childItem.linkId]?.['evidence']?.length) {
                     @if (j === selectedEvidenceIndex) {
                       <div class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
@@ -132,7 +132,7 @@
                     }
                   }
                   </div>
-                  <h2 class="question-title">{{ childItem.text }}</h2>
+                  <div class="question-title">{{ childItem.text }}</div>
                 </div>
               } @else {
                 <div class="question-label">
@@ -141,7 +141,7 @@
                 </div>
               }
 
-              <div class="margin-left-md margin-right-sm margin-top-xs">
+              <div class="margin-left-md margin-right-sm margin-top-xs" (click)="onQuestionHeaderSelected(j)">
                 @switch (childItem.type) {
                   @case (QuestionnaireItemType.choice) {
                     <mat-radio-group
@@ -199,6 +199,7 @@
                   }
                   @case (QuestionnaireItemType.date) {
                     <app-fhir-date-time
+                      (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
                       [questionType]="QuestionnaireItemType.date"
                       [inputValue]="answerDictionary()![childItem.linkId]"
@@ -206,6 +207,7 @@
                   }
                   @case (QuestionnaireItemType.time) {
                     <app-fhir-date-time
+                      (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
                       [questionType]="QuestionnaireItemType.time"
                       [inputValue]="answerDictionary()![childItem.linkId]"
@@ -213,6 +215,7 @@
                   }
                   @case (QuestionnaireItemType.dateTime) {
                     <app-fhir-date-time
+                      (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
                       [questionType]="QuestionnaireItemType.dateTime"
                       [inputValue]="answerDictionary()![childItem.linkId]"
@@ -237,18 +240,20 @@
                 <!--                      show "No evidence found"                                            -->
                 <!--                  <pre>{{ results?.["link" + childItem?.["linkId"]] | json }}</pre>-->
 
-                @let resultSet = results()?.["link" + childItem.linkId];
-                @if (resultSet?.["cqlAnswer"]?.["valueString"]) {
-                  <div class="margin-bottom-sm">
-                    Suggested Answer:
-                    @for (suggested of (resultSet?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track suggested) {
-                      <span class="margin-left-sm" (click)="answerDictionary()![childItem.linkId] = suggested">
-                          <mat-chip class="suggested-answer"
-                                    matTooltip="Click to fill the answer">{{ suggested }}</mat-chip>
-                        </span>
-                    }
-                  </div>
-                }
+
+                <!--                Suggested answer is removed in the current implementation-->
+<!--                @let resultSet = results()?.["link" + childItem.linkId];-->
+<!--                @if (resultSet?.["cqlAnswer"]?.["valueString"]) {-->
+<!--                  <div class="margin-bottom-sm">-->
+<!--                    Suggested Answer:-->
+<!--                    @for (suggested of (resultSet?.["cqlAnswer"]?.["valueString"] | suggestedAnswer); track suggested) {-->
+<!--                      <span class="margin-left-sm" (click)="answerDictionary()![childItem.linkId] = suggested">-->
+<!--                          <mat-chip class="suggested-answer"-->
+<!--                                    matTooltip="Click to fill the answer">{{ suggested }}</mat-chip>-->
+<!--                        </span>-->
+<!--                    }-->
+<!--                  </div>-->
+<!--                }-->
 
               </div>
             </div>
@@ -260,12 +265,12 @@
                 [disabled]="selectedMenuItemIndex === 0"
                 (click)="goToPreviousSection()">
           <mat-icon>chevron_left</mat-icon>
-          Previous section
+          Previous Section
         </button>
         <button matButton="filled" color="primary" type="button"
                 [disabled]="(questionnaire()?.item?.length ?? 1) - 1 === selectedMenuItemIndex"
                 (click)="goToNextSection()">
-          Next section
+          Next Section
           <mat-icon iconPositionEnd>chevron_right</mat-icon>
         </button>
       </div>

@@ -68,4 +68,3 @@ export function openConfirmationDialog(dialog: MatDialog, dialogData?: DialogDat
 
   return dialogRef.afterClosed();
 }
-

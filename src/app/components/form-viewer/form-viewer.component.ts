@@ -36,7 +36,6 @@ import {MatTooltip} from "@angular/material/tooltip";
 import {MatChip} from "@angular/material/chips";
 import {MatIcon} from "@angular/material/icon";
 import {EvidenceDetailsComponent} from "./evidence-details/evidence-details.component";
-import {SuggestedAnswerFormatterPipe} from "../../pipe/suggested-answer-formatter.pipe";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
 import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
@@ -66,8 +65,7 @@ import {PatientGrid} from "../../models/patient-grid";
     MatTooltip,
     MatChip,
     MatIcon,
-    EvidenceDetailsComponent,
-    SuggestedAnswerFormatterPipe,
+    EvidenceDetailsComponent
   ]
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {
@@ -286,13 +284,11 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   goToPreviousSection(): void {
-    this.selectQuestionnaireSection(this.selectedMenuItemIndex - 1);
-    this.scrollToTop();
+    this.onSectionSelected(this.selectedMenuItemIndex - 1);
   }
 
   goToNextSection(): void {
-    this.selectQuestionnaireSection(this.selectedMenuItemIndex + 1);
-    this.scrollToTop();
+    this.onSectionSelected(this.selectedMenuItemIndex + 1);
   }
 
   toggleEvidenceDrawer(index: number): void {

@@ -31,6 +31,7 @@
   color: var(--color-text-secondary);
   cursor: pointer;
   font: 12px var(--font-family-fallback);
+  font-weight: 500;
 }
 
 .filter-chip span {
@@ -45,7 +46,6 @@
   background: var(--color-bg-gray);
   color: var(--color-text-primary);
   font-size: 10px;
-  font-weight: 600;
 }
 
 .filter-chip:hover,
@@ -54,7 +54,6 @@
   border-color: var(--color-primary);
   background: var(--color-primary-light);
   color: var(--color-primary);
-  font-weight: 600;
 }
 
 .filter-chip:hover span,
