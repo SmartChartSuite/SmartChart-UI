@@ -30,6 +30,7 @@
 
 // Table Header Background Color Override
 .mat-mdc-table {
+  --mat-table-row-item-outline-color: var(--color-bg-gray);
   background-color: var(--color-surface);
 
   .mat-mdc-row,
@@ -157,4 +158,10 @@
 .cdk-overlay-pane .mat-mdc-option:hover,
 .cdk-overlay-pane .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover {
   background-color: var(--color-primary-light);
+}
+
+mat-paginator {
+  --mat-paginator-container-background-color: transparent;
+  background-color: transparent;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }

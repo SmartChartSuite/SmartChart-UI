@@ -92,12 +92,11 @@
 }
 
 .reasoning-chevron {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  font-size: 14px;
-  line-height: 10px;
-  transform: translateY(1px);
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+  transform-origin: center;
   transition: transform var(--transition-fast) ease;
 }
 

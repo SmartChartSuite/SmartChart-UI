@@ -146,8 +146,8 @@ export class UnstructuredEvidenceComponent{
       content,
       htmlContent: safeHtmlFullText,
       size: {
-        minWidth: '500px',
-        minHeight: '300px'
+        minWidth: '50em',
+        minHeight: '50em'
       }
     }).subscribe();
   }
