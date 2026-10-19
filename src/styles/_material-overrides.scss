@@ -1,0 +1,167 @@
+// Angular Material Component Overrides
+@use '@angular/material' as mat;
+
+// Form Field Overrides
+:root {
+  @include mat.form-field-overrides((
+    container-height: 40px,
+    container-vertical-padding: 8px,
+    filled-with-label-container-padding-top: 8px,
+    filled-with-label-container-padding-bottom: 8px,
+    trailing-icon-color: var(--zinc-400),
+  ));
+
+  // Select Overrides
+  @include mat.select-overrides((
+    trigger-text-line-height: 1.25rem,
+  ));
+
+  // Table Overrides - Compact Display
+  @include mat.table-overrides((
+    header-container-height: 2.5rem,
+    row-item-container-height: 2.25rem,
+    footer-container-height: 2.5rem,
+    header-headline-size: 0.8125rem,
+    row-item-label-text-size: 0.8125rem,
+    header-headline-line-height: 1.125rem,
+    row-item-label-text-line-height: 1.125rem,
+  ));
+}
+
+// Table Header Background Color Override
+.mat-mdc-table {
+  --mat-table-row-item-outline-color: var(--color-bg-gray);
+  background-color: var(--color-surface);
+
+  .mat-mdc-row,
+  .mat-mdc-cell {
+    background-color: var(--color-surface);
+  }
+
+  .mat-mdc-header-row {
+    background-color: var(--color-bg-gray);
+
+    .mat-mdc-header-cell {
+      font-weight: 600;
+    }
+  }
+}
+
+// Mat-Option Overrides
+.mat-mdc-option {
+  --mat-option-label-text-size: 0.875rem;
+  --mat-option-label-text-line-height: 1.25rem;
+}
+
+// Expansion panels are content surfaces throughout the application. Keep them
+// white globally; feature-specific headers can still add their own hover state.
+.mat-expansion-panel {
+  --mat-expansion-container-background-color: var(--color-surface);
+  background-color: var(--color-surface) !important;
+}
+
+.mat-expansion-panel-header,
+.mat-expansion-panel-content,
+.mat-expansion-panel-body {
+  background-color: var(--color-surface);
+}
+
+// Mat-Form-Field Icon Overrides
+.mat-mdc-form-field {
+  .mat-mdc-form-field-icon-suffix {
+    .mat-mdc-icon-button.mat-mdc-button-base {
+      --mdc-icon-button-state-layer-size: 2rem;
+      --mat-icon-button-state-layer-size: 2rem;
+      width: var(--mat-icon-button-state-layer-size);
+      height: var(--mat-icon-button-state-layer-size);
+      padding: 0.375rem; // 6px
+    }
+  }
+}
+
+// Primary Outlined Button Override
+.primary-outlined {
+  @include mat.button-overrides((
+    outlined-outline-color: var(--color-primary),
+    outlined-label-text-color: var(--color-primary),
+  ));
+}
+
+:root {
+  @include mat.button-overrides((
+    filled-container-shape: var(--radius-sm),
+    outlined-container-shape: var(--radius-sm),
+    text-container-shape: var(--radius-sm),
+    filled-container-color: var(--color-primary),
+    filled-label-text-color: var(--color-surface),
+    outlined-outline-color: var(--color-primary),
+    outlined-label-text-color: var(--color-primary),
+    text-label-text-color: var(--color-primary),
+  ));
+}
+
+// User Menu Width Override
+.wide-user-menu.mat-mdc-menu-panel {
+  max-width: 350px !important;
+  min-width: 300px;
+}
+
+// The dialog panel is rendered in the CDK overlay outside the component host,
+// so its surface styling belongs in the global stylesheet scope.
+.document-viewer-dialog .mat-mdc-dialog-surface {
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.document-viewer-dialog .mat-mdc-dialog-actions button[mat-dialog-close] {
+  --mdc-filled-button-container-color: var(--color-primary);
+  --mdc-filled-button-label-text-color: var(--color-surface);
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+// Global overlay surfaces. Dialogs, tooltips, menus, selects, datepickers, and
+// snackbars are attached to the CDK overlay container, outside component style
+// scopes, so their base surfaces must be defined globally.
+.cdk-overlay-pane .mat-mdc-dialog-container .mat-mdc-dialog-surface,
+.cdk-overlay-pane .mat-mdc-menu-panel,
+.cdk-overlay-pane .mat-mdc-select-panel,
+.cdk-overlay-pane .mat-datepicker-content,
+.cdk-overlay-pane .mat-mdc-autocomplete-panel {
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+}
+
+.cdk-overlay-pane .mat-mdc-tooltip {
+  --mdc-plain-tooltip-container-color: var(--color-dark);
+  --mdc-plain-tooltip-supporting-text-color: var(--color-surface);
+  --mat-tooltip-container-color: var(--color-dark);
+  --mat-tooltip-supporting-text-color: var(--color-surface);
+}
+
+.cdk-overlay-pane .mat-mdc-tooltip .mdc-tooltip__surface {
+  background-color: var(--color-dark);
+  color: var(--color-surface);
+}
+
+.cdk-overlay-pane .mat-mdc-menu-panel,
+.cdk-overlay-pane .mat-mdc-select-panel,
+.cdk-overlay-pane .mat-datepicker-content,
+.cdk-overlay-pane .mat-mdc-autocomplete-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-raised);
+}
+
+.cdk-overlay-pane .mat-mdc-menu-item:hover,
+.cdk-overlay-pane .mat-mdc-option:hover,
+.cdk-overlay-pane .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover {
+  background-color: var(--color-primary-light);
+}
+
+mat-paginator {
+  --mat-paginator-container-background-color: transparent;
+  background-color: transparent;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}

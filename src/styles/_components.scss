@@ -1,0 +1,427 @@
+// Component-specific styles
+// These are reusable component patterns used across the application
+@use 'variables' as *;
+
+// Description Box
+.description-box {
+  font-variant-caps: small-caps;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  margin: $spacing-sm;
+  background-color: var(--color-bg-description);
+}
+
+// Label Text
+.label-text {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+// Shared filter pill treatment used by coded and narrative evidence filters.
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font: 12px var(--font-family-fallback);
+  font-weight: 500;
+}
+
+.filter-chip span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--color-bg-gray);
+  color: var(--color-text-primary);
+  font-size: 10px;
+}
+
+.filter-chip:hover,
+.filter-chip.active,
+.filter-chip[aria-selected="true"] {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.filter-chip:hover span,
+.filter-chip.active span {
+  background: var(--color-primary);
+    color: var(--color-surface);
+}
+
+// Shared SmartChart wordmark treatment used by the application header and
+// standalone login brand.
+.logo-smart {
+  font-weight: 300;
+  opacity: 0.95;
+}
+
+.logo-chart {
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+// Reusable branded card border. The inner layer keeps the surface opaque while
+// the outer layer carries the purple-to-lavender gradient.
+.gradient-border-card,
+.gradient-border-card.mat-mdc-card {
+  --mdc-elevated-card-container-color: transparent;
+  --mat-card-elevated-container-color: transparent;
+  border: 3px solid transparent;
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(var(--color-surface), var(--color-surface)) padding-box,
+    linear-gradient(135deg, var(--color-primary), #c4b0ff) border-box !important;
+}
+
+// Snackbar Offset
+.snackbar-offset {
+  transform: translateY(90vh) !important;
+}
+
+// Alert Component
+.alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin: 1rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+  line-height: 1.3em;
+
+  &.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+  }
+
+  &.alert-secondary {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+  }
+
+  &.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+
+  &.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+
+  &.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+
+  &.alert-info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+  }
+
+  &.alert-light {
+    color: #818182;
+    background-color: #fefefe;
+    border-color: #fdfdfe;
+  }
+
+  &.alert-dark {
+    color: #1b1e21;
+    background-color: #d6d8d9;
+    border-color: #c6c8ca;
+  }
+
+  .alert-heading {
+    color: inherit;
+  }
+
+  .alert-link {
+    font-weight: 700;
+    color: inherit;
+  }
+}
+
+// Centered Screen Container
+// Responsive container that centers content with appropriate padding
+// Mobile-first approach with progressive enhancement
+.centered-screen {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0.25rem;
+  min-height: 100vh;
+
+  .centered-content {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  // Mobile (376px and up)
+  @media screen and (min-width: 376px) {
+    padding: 0.5rem;
+  }
+
+  // Small mobile (426px and up)
+  @media screen and (min-width: 426px) {
+    padding: 0.5rem;
+
+    .centered-content {
+      padding: 0.5rem;
+    }
+  }
+
+  // Tablet portrait (640px and up)
+  @media screen and (min-width: 640px) {
+    padding: 0.75rem;
+    min-height: 100vh;
+  }
+
+  // Tablet (768px and up)
+  @media screen and (min-width: 768px) {
+    padding: 1rem;
+
+    .centered-content {
+      max-width: 720px;
+    }
+  }
+
+  // Tablet landscape (900px and up)
+  @media screen and (min-width: 900px) {
+    padding: 1rem;
+
+    .centered-content {
+      max-width: 860px;
+    }
+  }
+
+  // iPad (992px and up)
+  @media screen and (min-width: 992px) {
+    padding: 2.5rem;
+
+    .centered-content {
+      max-width: 960px;
+    }
+  }
+
+  // Desktop (1064px and up)
+  @media screen and (min-width: 1064px) {
+    padding: 2rem;
+
+    .centered-content {
+      max-width: 1200px;
+    }
+  }
+
+  // Large desktop (1092px and up)
+  @media screen and (min-width: 1092px) {
+    padding: 2rem;
+
+    .centered-content {
+      max-width: 1400px;
+    }
+  }
+}
+
+.loading-ellipsis::after {
+  display: inline-block;
+  animation: ellipsis 1.2s infinite steps(4, end);
+  content: "...";
+  width: 1.5em;
+  text-align: left;
+}
+
+@keyframes ellipsis {
+  0% { content: ""; }
+  25% { content: "."; }
+  50% { content: ".."; }
+  75% { content: "..."; }
+  100% { content: ""; }
+}
+
+.loading-row {
+  text-align: center;
+  padding: 1rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+// Record Viewer Container
+// Note: Consider moving this to the specific component's SCSS file
+.viewer-container-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-content: stretch;
+  align-items: stretch;
+  overflow-y: auto;
+
+  > .viewer-container-header {
+    display: flex;
+    flex-direction: row;
+
+    > .job-details-wrapper {
+      display: flex;
+      flex-direction: row;
+      flex: 1;
+      width: 100%;
+      border-top: #dee2ea solid 1px;
+      border-bottom: #dee2ea solid 1px;
+      background-color: var(--color-bg-light);
+      align-items: center;
+      justify-content: end;
+
+      > .job-details-label {
+        font-weight: bold;
+      }
+
+      > .job-details-value {
+        display: flex;
+        flex-direction: row;
+        margin-right: $spacing-sm;
+        margin-left: $spacing-sm;
+      }
+
+      > .job-details-spinner {
+        margin-right: $spacing-sm;
+      }
+    }
+  }
+
+  > .viewer-container-body {
+    display: flex;
+    flex-direction: row;
+    flex: 1 1 auto; // Allow shrinking
+    scroll-behavior: smooth;
+    overflow: hidden; // Never scroll the row itself; children scroll instead.
+    align-content: stretch;
+    align-items: stretch;
+    min-height: 0;
+
+    // Include padding/border in the flex-basis so the three sections total
+    // 100% of the width, and allow children to shrink below their content size.
+    > * {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    // Each of the three sections is a vertical flex column: a fixed header that
+    // never scrolls, plus a `.section-scroll-body` that scrolls independently.
+    // Keeping the header outside the scroll container avoids the "bounce" that
+    // sticky headers exhibit at the scroll extremes.
+    > .sub-nav,
+    > .viewer-container-body-content,
+    > .viewer-container-body-side-explorer {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; // The inner .section-scroll-body handles scrolling.
+      min-height: 0;
+    }
+
+    .section-scroll-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    // Left section navigation. Non-scrollable list, fixed proportion of width.
+    > .sub-nav {
+      flex: 0 0 220px;
+      transition: flex-basis var(--transition-fast);
+    }
+
+    // Middle questions section.
+    > .viewer-container-body-content {
+      flex: 45 1 0;
+
+      // Horizontal padding lives on the scroll body (with border-box) so
+      // children stay within the column width.
+      > .section-scroll-body {
+        padding: 0 1em;
+      }
+    }
+
+    // Section header shared across all three sections (Sections, Questions,
+    // Evidence) so they have a consistent banner appearance. It sits outside
+    // the scroll body, so it stays fixed without any sticky "bounce".
+    .fhir-explorer-header {
+      flex: 0 0 auto;
+      justify-items: center;
+      text-align: center;
+      align-self: stretch;
+      display: flex;
+      flex-direction: row;
+      padding: $spacing-sm;
+      font-weight: bold;
+      font-size: larger;
+      background-color: var(--color-bg-explorer);
+      color: whitesmoke;
+
+      > * {
+        justify-items: center;
+        text-align: center;
+        align-self: center;
+      }
+
+      > .explorer-header-title {
+        margin-left: $spacing-md;
+        font-size: medium;
+        background-color: var(--color-bg-explorer);
+      }
+    }
+
+    // Right evidence section.
+    > .viewer-container-body-side-explorer {
+      flex: 55 1 0;
+      border-left: 1px solid #dee2ea;
+
+      .evidence-empty-state {
+        padding: $spacing-md;
+        color: var(--color-text-muted, #666);
+        text-align: center;
+      }
+    }
+
+    // Collapsed navigation: sub-nav shrinks to a narrow fixed-width strip and
+    // the other two sections grow to fill the remaining space (keeping roughly
+    // the 35:60 ratio between questions and evidence).
+    &.menu-collapsed {
+      > .sub-nav {
+        flex: 0 0 5em;
+
+        .sub-menu {
+          padding-inline: 0.25em;
+        }
+      }
+
+      > .viewer-container-body-content {
+        flex: 35 1 0;
+      }
+
+      > .viewer-container-body-side-explorer {
+        flex: 60 1 0;
+      }
+    }
+  }
+}

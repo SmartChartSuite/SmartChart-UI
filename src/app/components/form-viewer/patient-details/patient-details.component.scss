@@ -1,0 +1,23 @@
+.patient-details-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0 8px;
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-fallback);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.patient-detail {
+  white-space: nowrap;
+}
+
+.patient-detail strong {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.patient-detail-separator {
+  color: var(--color-text-secondary);
+}

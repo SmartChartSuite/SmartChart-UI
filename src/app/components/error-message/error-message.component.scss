@@ -1,0 +1,19 @@
+:host {
+  display: contents;
+}
+
+.error-message{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FBE3E2;
+  padding: 8px;
+  margin: 4px;
+  border: 1px solid #E6615C;
+  border-radius: 4px;
+  >.error-text {
+    margin-right: 16px;
+    font-size: 1em;
+    font-weight: 600;
+  }
+}

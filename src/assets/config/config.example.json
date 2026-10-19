@@ -1,0 +1,19 @@
+{
+  "version": "",
+  "title": "SmartChart",
+  "rcApiUrl": "https://example.com/rc-api/",
+  "auth": {
+    "callbackUrl": "https://localhost:4200/",
+    "domain": "example.com",
+    "clientId": "123456789abcdefghij",
+    "scope": "openid email profile admin",
+    "showDebugInformation": true,
+    "responseType": "code",
+    "logoutUrl": "https://example.com/v2/logout",
+    "customQueryParams": {
+      "audience": "https://example.com/rc-api/"
+    },
+    "issuer": "https://example.com/",
+    "requireHttps": true
+  }
+}

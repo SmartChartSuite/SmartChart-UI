@@ -1,0 +1,17 @@
+<div class="centered-controls">
+  <div class="no-hint-section">
+    <mat-form-field appearance="outline" class="form-selector">
+      <mat-label>Group</mat-label>
+      <mat-select (selectionChange)="onGroupSelected($event)" [value]="selectedGroup()">
+        @for (group of patientGroups(); track group) {
+          <mat-option [value]="group">{{ group.groupName }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+</div>
+<app-patient-summary-table
+  [isLoading]="isLoading()"
+  [patientSummaryData]="patientSummaryData()"
+/>
+

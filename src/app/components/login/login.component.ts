@@ -1,0 +1,54 @@
+import {Component, inject, input, ChangeDetectionStrategy} from '@angular/core';
+import {NgOptimizedImage} from '@angular/common';
+import {OAuthService} from "angular-oauth2-oidc";
+import {ActivatedRoute} from "@angular/router";
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButton} from "@angular/material/button";
+import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {MatDivider} from "@angular/material/list";
+
+@Component({
+  selector: 'sc-standalone-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.Eager,
+  imports: [
+    MatCardModule,
+    MatIconModule,
+    MatButton,
+    NgOptimizedImage,
+    MatMenuTrigger,
+    MatMenu,
+    MatDivider,
+    MatMenuItem,
+  ]
+})
+export class LoginComponent {
+
+  isLocatedInMainMenu = input<boolean>(false);
+  public oauthService: OAuthService = inject(OAuthService);
+  private readonly route = inject(ActivatedRoute);
+
+  /**
+   * Starts the OAuth login flow, passing the originally requested page (from the
+   * `returnUrl` query param) as OAuth state so the callback can return the user
+   * there after signing in.
+   */
+  protected signIn(): void {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '';
+    this.oauthService.initLoginFlow(returnUrl);
+  }
+
+  // Method for profile picture with fallback - called by Angular change detection
+  protected profilePictureUrl(): string {
+    const claims = this.oauthService.getIdentityClaims();
+    return claims?.['picture'] || '/assets/img/portrait_placeholder.png';
+  }
+
+  // Handle image loading errors by falling back to placeholder
+  protected onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = '/assets/img/portrait_placeholder.png';
+  }
+}

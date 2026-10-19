@@ -1,0 +1,53 @@
+<div class="border">
+  <table mat-table [dataSource]="dataSource">
+
+    <ng-container matColumnDef="selection">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let patient" class="custom-padding">
+        @if ((selectedPatient$ | async) === patient) {
+          <span class="centered"><mat-icon class="check-mark">check</mat-icon></span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.name?.given + ' ' + patient.name?.family }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="gender">
+      <th mat-header-cell *matHeaderCellDef> Gender</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.gender | titlecase }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="birthDate">
+      <th mat-header-cell *matHeaderCellDef> Date of Birth</th>
+      <td mat-cell *matCellDef="let patient"> {{ patient.birthDate | date: 'MM/dd/yyyy' }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+    <tr class="patient-row" mat-row *matRowDef="let row; columns: displayedColumns;"
+        [class.selected-patient-row]="(selectedPatient$ | async) === row"
+        (click)="setSelectedPatient(row)">
+    </tr>
+    <!-- Loading state - shows when data is empty and loading -->
+    @if (searchExecuted()) {
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          @if (isLoading()) {
+            <div class="loading-row">
+              Loading data. Please wait<span class="loading-ellipsis"></span>
+            </div>
+          } @else {
+            <div class="loading-row">
+              No Records Found
+            </div>
+          }
+        </td>
+      </tr>
+    }
+  </table>
+
+  <mat-paginator [pageSizeOptions]="[10, 20]"></mat-paginator>
+</div>

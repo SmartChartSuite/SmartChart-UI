@@ -1,0 +1,15 @@
+<div class="patient-details-container" aria-label="Patient information">
+  <span class="patient-detail">
+    Patient <strong>{{ patientSummary.name.given }} {{ patientSummary.name.family }}</strong>
+  </span>
+  <span class="patient-detail-separator" aria-hidden="true">·</span>
+  <span class="patient-detail">Gender: <strong>{{ patientSummary.gender | titlecase }}</strong></span>
+  <span class="patient-detail-separator" aria-hidden="true">·</span>
+  <span class="patient-detail">
+    DOB: <strong>{{ patientSummary.birthDate | date : 'dd MMM yyyy' }}</strong>
+  </span>
+  @if (identifierSystem) {
+    <span class="patient-detail-separator" aria-hidden="true">·</span>
+    <span class="patient-detail">{{ identifierLabel }}: <strong>{{ identifierValue }}</strong></span>
+  }
+</div>

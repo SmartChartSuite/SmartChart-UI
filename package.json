@@ -1,0 +1,37 @@
+{
+  "name": "smartchart-ui",
+  "version": "1.1.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development"
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^22.0.8",
+    "@angular/cdk": "^22.0.6",
+    "@angular/common": "^22.0.8",
+    "@angular/compiler": "^22.0.8",
+    "@angular/core": "^22.0.8",
+    "@angular/forms": "^22.0.8",
+    "@angular/material": "^22.0.6",
+    "@angular/platform-browser": "^22.0.8",
+    "@angular/platform-browser-dynamic": "^22.0.8",
+    "@angular/router": "^22.0.8",
+    "@primeuix/themes": "^3.0.0",
+    "angular-oauth2-oidc": "^22.0.2",
+    "angular-oauth2-oidc-jwks": "^22.0.2",
+    "rxjs": "~7.8.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.3.0",
+    "zone.js": "~0.15.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.0.8",
+    "@angular/cli": "^22.0.8",
+    "@angular/compiler-cli": "^22.0.8",
+    "ng-packagr": "^22.0.2",
+    "typescript": "~6.0.0"
+  }
+}

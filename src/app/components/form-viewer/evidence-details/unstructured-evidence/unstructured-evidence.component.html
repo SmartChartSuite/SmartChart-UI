@@ -1,0 +1,71 @@
+@if (supportingEvidence().length > 0) {
+  <div class="narrative-filters" role="group" aria-label="Filter supporting evidence by finding">
+    <div class="narrative-filter-list">
+      @for (filter of assertionFilters(); track filter.label) {
+        <button type="button"
+                class="filter-chip"
+                [class.active]="selectedFilterLabel() === filter.label"
+                [disabled]="filter.count === 0"
+                [attr.aria-pressed]="selectedFilterLabel() === filter.label"
+                (click)="onSelectFilter(filter.label)">
+          {{ filter.label }} <span>{{ filter.count }}</span>
+        </button>
+      }
+    </div>
+  </div>
+}
+@for (evidence of filteredEvidence(); track evidence) {
+  <article class="narrative-card">
+    <div class="narrative-card-header">
+      <div class="narrative-card-heading">
+        <h3>{{ evidence.source || 'Clinical document' }}</h3>
+        <p>
+          {{ evidence.documentCategory || 'Clinical Note' }}
+          · {{ evidence.date | date:'MM/dd/yyyy' }}
+          @if (evidence.practiceSetting) {
+            · {{ evidence.practiceSetting }}
+          }
+        </p>
+      </div>
+      <button
+        matButton="outlined"
+        color="primary"
+        class="view-source-button"
+        type="button"
+        (click)="onViewEvidence(evidence)">
+        <mat-icon aria-hidden="true">article</mat-icon>
+        View Source
+      </button>
+    </div>
+    @if (evidence.assertion || evidence.reasoning) {
+      <p class="narrative-reasoning-toggle">
+        @if (evidence.assertion) {
+          <span class="narrative-inline-label">Finding:</span>
+          <strong>{{ evidence.assertion }}.</strong>
+        }
+      </p>
+    }
+    @if (evidence.text) {
+      <div class="narrative-section-label">Evidence</div>
+      <p class="narrative-quote">“{{ evidence.text }}”</p>
+    }
+    @if (evidence.reasoning) {
+      <button type="button" class="reasoning-toggle"
+              (click)="toggleReasoning(evidence)"
+              [attr.aria-expanded]="isReasoningExpanded(evidence)">
+        <mat-icon
+          class="reasoning-chevron"
+          [class.expanded]="isReasoningExpanded(evidence)"
+          aria-hidden="true">expand_more</mat-icon>
+        {{ reasoningToggleLabel(evidence) }}
+      </button>
+    }
+    @if (evidence.reasoning && isReasoningExpanded(evidence)) {
+      <p class="narrative-reasoning">{{ evidence.reasoning }}</p>
+    }
+  </article>
+} @empty {
+  <div class="narrative-empty">
+    No evidence found for the selected assertion.
+  </div>
+}

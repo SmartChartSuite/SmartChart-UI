@@ -1,0 +1,103 @@
+@if (isLocatedInMainMenu()) {
+  <div class="user-profile-header">
+    @if (oauthService.hasValidAccessToken()) {
+      <ng-container class="profile-wrapper"></ng-container>
+    }
+
+    @if (oauthService.getIdentityClaims()) {
+      <div>
+        <img
+          [src]="profilePictureUrl()"
+          (error)="onImageError($event)"
+          [attr.alt]="'Profile picture for ' + oauthService.getIdentityClaims()?.['name'] + '. Click to open user menu.'"
+          referrerpolicy="no-referrer"
+          class="profile-image"
+          [matMenuTriggerFor]="userMenu"
+          [attr.tabindex]="'0'"
+          [attr.role]="'button'"
+          [attr.aria-haspopup]="'menu'"
+          [attr.aria-label]="'Open user menu for ' + oauthService.getIdentityClaims()?.['name']">
+        <mat-menu
+          #userMenu="matMenu"
+          class="wide-user-menu"
+          [attr.aria-label]="'User menu'">
+          <div
+            mat-menu-item>
+            <div
+              class="user-card"
+              role="group"
+              [attr.aria-label]="'User information'">
+              <img
+                [src]="profilePictureUrl()"
+                (error)="onImageError($event)"
+                [attr.alt]="''"
+                referrerpolicy="no-referrer"
+                class="profile-image"
+                aria-hidden="true">
+              <div class="details">
+                <div class="name">{{oauthService.getIdentityClaims()?.['name'] }}</div>
+                <div class="email">{{oauthService.getIdentityClaims()?.['email']}}</div>
+              </div>
+            </div>
+          </div>
+          <mat-divider role="separator" aria-hidden="true"></mat-divider>
+          <button
+            mat-menu-item
+            type="button"
+            (click)="oauthService.logOut()"
+            [attr.aria-label]="'Sign out of your account'">
+            <mat-icon aria-hidden="true">logout</mat-icon>
+            <span>Sign Out</span>
+          </button>
+        </mat-menu>
+      </div>
+    }
+  </div>
+}
+@else {
+  <div class="centered-card">
+    <mat-card class="login-card gradient-border-card">
+      @if (oauthService.hasValidAccessToken()) {
+        <mat-card-content class="login-placeholder">
+          <img
+            [src]="profilePictureUrl()"
+            (error)="onImageError($event)"
+            [attr.alt]="'Profile picture for ' + oauthService.getIdentityClaims()?.['name']"
+            referrerpolicy="no-referrer"
+            class="login-profile-image">
+          <p class="login-user-status">
+            <span>Currently signed in as</span>
+            <strong>{{ oauthService.getIdentityClaims()?.['name'] }}</strong>
+            <small>{{ oauthService.getIdentityClaims()?.['email'] }}</small>
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button matButton="outlined" color="primary" type="button" (click)="oauthService.logOut()">
+            <mat-icon>logout</mat-icon>
+            Sign out
+          </button>
+        </mat-card-actions>
+      } @else {
+        <mat-card-header>
+          <div class="login-brand" aria-label="SmartChart">
+            <span class="login-brand-icon" aria-hidden="true">
+              <img ngSrc="/assets/img/smartchart-mark.svg" width="40" height="40" alt="">
+            </span>
+            <span class="login-brand-name">
+              <span class="logo-smart">Smart</span><span class="logo-chart">Chart</span>
+            </span>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          Sign-in required to continue.
+        </mat-card-content>
+        <mat-card-actions>
+          <button matButton="filled" color="primary" (click)="signIn()">
+            <mat-icon>login</mat-icon>
+            Sign in to SmartChart
+          </button>
+        </mat-card-actions>
+      }
+    </mat-card>
+  </div>
+}

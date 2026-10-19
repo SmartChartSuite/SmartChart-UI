@@ -1,0 +1,44 @@
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {PatientSummary} from "../../../models/patient-summary";
+import {RcApiInterfaceService} from "../../../services/rc-api-interface/rc-api-interface.service";
+import {RcApiConfig} from "../../../models/rc-api/rc-api-config";
+import { TitleCasePipe, DatePipe } from '@angular/common';
+
+@Component({
+    selector: 'app-patient-details',
+    templateUrl: './patient-details.component.html',
+    styleUrl: './patient-details.component.scss',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [TitleCasePipe, DatePipe]
+})
+export class PatientDetailsComponent implements OnChanges {
+  @Input() patientSummary: PatientSummary;
+
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
+
+  identifierLabel: string = "Medical Record Number";
+  identifierSystem: string | undefined = undefined;
+  identifierValue: string = "Unknown";
+
+  constructor(public rcApiInterface: RcApiInterfaceService) {}
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.rcApiInterface.getConfig().subscribe({
+      next: (value: RcApiConfig) => {
+        if (value?.primaryIdentifier) {
+          if (value?.primaryIdentifier?.system) {
+            this.identifierSystem = value?.primaryIdentifier?.system;
+            if(value?.primaryIdentifier?.label) {
+              this.identifierLabel = value?.primaryIdentifier?.label;
+            }
+            const primaryIdentifier = this.patientSummary?.identifier?.find(identifier => identifier.system === this.identifierSystem);
+            this.identifierValue = primaryIdentifier?.value ?? "Unknown";
+            // The configured identifier arrives after the initial template check.
+            // Refresh the view after all related bindings have been updated.
+            this.changeDetectorRef.detectChanges();
+          }
+        }
+      }
+    })
+  }
+}
