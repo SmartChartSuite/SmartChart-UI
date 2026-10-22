@@ -2,13 +2,23 @@
 <mat-dialog-content>
   <mat-form-field appearance="outline" class="form-selector">
     <mat-label>Select Form</mat-label>
-    <mat-select [ngModel]="selectedForm()"
-                (ngModelChange)="selectedForm.set($event)"
-                aria-labelledby="select-form-label">
-      @for (form of formList(); track form) {
-        <mat-option [value]="form">{{ form.title }}</mat-option>
+    <input
+      matInput
+      [value]="selectedForm()?.title ?? formSearch()"
+      [matAutocomplete]="formAutocomplete"
+      (input)="onFormInput($event)"
+      autocomplete="off"
+      aria-label="Select Form"
+    />
+    <mat-autocomplete
+      #formAutocomplete="matAutocomplete"
+      [displayWith]="displayFormName"
+      (optionSelected)="onFormSelected($event.option.value)"
+    >
+      @for (form of filteredFormNames(); track form.name) {
+         <mat-option [value]="form.name">{{ form.title }}</mat-option>
       }
-    </mat-select>
+    </mat-autocomplete>
   </mat-form-field>
   <mat-tab-group color="primary" mat-stretch-tabs="false">
     <mat-tab label="Search For Patient">

@@ -74,11 +74,21 @@
                       <!--Form Name-->
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>Form Name</mat-label>
-                        <mat-select [formField]="form.jobPackage">
-                          @for (fn of formNames(); track fn.name) {
-                            <mat-option [value]="fn.name">{{ fn.title }}</mat-option>
+                        <input
+                          matInput
+                          [formField]="form.jobPackage"
+                          [matAutocomplete]="formNameAutocomplete"
+                          (input)="onFormNameInput($event)"
+                          autocomplete="off"
+                        />
+                        <mat-autocomplete
+                          #formNameAutocomplete="matAutocomplete"
+                          [displayWith]="displayFormName"
+                        >
+                          @for (formName of filteredFormNames(); track formName.name) {
+                            <mat-option [value]="formName.name">{{ formName.title }}</mat-option>
                           }
-                        </mat-select>
+                        </mat-autocomplete>
                       </mat-form-field>
 
                       <!--Job Status-->

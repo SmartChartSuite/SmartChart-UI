@@ -27,14 +27,14 @@ export class RcApiInterfaceService {
   configEndpoint: string = `${this.base}config`;
   patientEndpoint: string = `${this.base}patient`; // FHIR Conformant.
   groupEndpoint: string = `${this.base}group`;
-  questionnaireEndpoint: string = `${this.base}jobpackage`;
+  formNamesEndpoint: string = `${this.base}jobpackage/title`;
   startJobsEndpoint: string = `${this.base}batchjob?include_patient=True`;
   getJobPackageEndpoint: string = `${this.base}jobpackage`;
   batchJobsEndpoint: string = `${this.base}batchjob`
   getResultsEndpoint: string = `${this.base}results`
 
-  getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
-    map(response => response.sort((a, b) => a.title.localeCompare(b.title))),
+  getFormNames$ = this.getFormNames().pipe(
+    map(response => [...response].sort((a, b) => a.title.localeCompare(b.title))),
     shareReplay(1)
   );
 
@@ -153,16 +153,10 @@ export class RcApiInterfaceService {
   }
 
   /**
-   * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
+   * Get the available JobPackage form names from the dedicated title endpoint.
    */
-  getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
-    return this.http.get<FhirBaseResource[]>(`${this.questionnaireEndpoint}`).pipe(
-      map(resultsList => {
-        let formSummaryList: FormSummary[];
-        formSummaryList = resultsList.map(questionnaireResource=> new FormSummary(questionnaireResource));
-        return formSummaryList;
-      })
-    );
+  getFormNames(): Observable<FormSummary[]> {
+    return this.http.get<FormSummary[]>(this.formNamesEndpoint);
   }
 
   /**
