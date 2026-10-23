@@ -10,6 +10,7 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -23,7 +24,7 @@ import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
 import { UtilsService } from '../../services/utils/utils.service';
-import {FormSummary} from "../../models/form-summary";
+import {FormSummary} from '../../models/form-summary';
 import {openStartNewJobModal} from "../start-new-job-modal/start-new-job-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog.component";
@@ -44,6 +45,8 @@ import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog
     MatInput,
     MatSelect,
     MatOption,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
     MatDatepickerModule,
     MatNativeDateModule,
     MatTooltip,
@@ -81,13 +84,39 @@ export class JobsFormsGridComponent {
 
   // Value used for a data-driven multiselect
   protected readonly formNames = toSignal(
-    this.rcApiInterface.getQuestionTypes$.pipe(
-      catchError((err) => {
+    this.rcApiInterface.getFormNames$.pipe(
+      catchError(() => {
         return of([] as FormSummary[]);
       })
     ),
     { initialValue: [] as FormSummary[] }
   );
+
+  protected readonly formNameSearch = signal('');
+  protected readonly filteredFormNames = computed(() => {
+    const search = this.formNameSearch().trim().toLowerCase();
+
+    if (!search) {
+      return this.formNames();
+    }
+
+    return this.formNames().filter(formName =>
+      formName.name.toLowerCase().includes(search) ||
+      formName.title.toLowerCase().includes(search)
+    );
+  });
+
+  protected onFormNameInput(event: Event): void {
+    this.formNameSearch.set((event.target as HTMLInputElement).value);
+  }
+
+  protected displayFormName = (formName: string | null): string => {
+    if (!formName) {
+      return '';
+    }
+
+    return this.formNames().find(item => item.name === formName)?.title ?? formName;
+  };
 
   // Pagination & Search Signals
   protected readonly currentPage = signal(0);
@@ -218,7 +247,6 @@ export class JobsFormsGridComponent {
       },
       error: (err) => {
         console.error('Error deleting job:', err);
-        this.utilsService.showErrorMessage('Error deleting Job/Form');
       }
     });
   }

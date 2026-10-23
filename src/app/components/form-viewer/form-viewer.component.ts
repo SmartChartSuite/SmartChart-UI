@@ -150,9 +150,9 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       if (this.selectedEvidenceIndex === null) {
         this.selectFirstQuestion(this.selectedMenuItemIndex);
       }
-    }, () => {
+    }, (error) => {
       this.initialLoadComplete.set(true);
-      this.utilsService.showErrorMessage();
+      console.error(error);
     });
 
     this.loadFormFromRoute();
@@ -221,7 +221,6 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       error: err => {
         console.error(err);
         this.initialLoadComplete.set(true);
-        this.utilsService.showErrorMessage();
       }
     });
   }
@@ -553,10 +552,10 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       },
       error: (error) => {
         console.error(error);
-        this.utilsService.showErrorMessage("Error Saving Form");
       }
     });
   }
+
 
   protected updateLastSavedLabel(): void {
     const savedAt = this.lastSavedAt();

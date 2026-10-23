@@ -14,10 +14,6 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
   const httpErrorService = inject(HttpErrorService);
   const sessionService = inject(SessionService);
 
-  // Hide error component on new request
-  httpErrorService.hideErrorComponent();
-
-  // Check if this request should bypass the interceptor
   if (req.context.get(BYPASS_INTERCEPTOR)) {
     return next(req);
   }
@@ -34,24 +30,8 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
         return throwError(() => error);
       }
 
-      let errorMessage = 'Server error occurred';
+      httpErrorService.showError(error);
 
-      // Check if error response contains a FHIR OperationOutcome
-      if (error.error?.resourceType === 'OperationOutcome' && error.error?.issue) {
-        // Extract diagnostics from all issues
-        const diagnostics = error.error.issue
-          .map((issue: any) => issue.diagnostics || issue.code)
-          .filter((msg: string) => msg)
-          .join('; ');
-
-        errorMessage = diagnostics || errorMessage;
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
-
-      httpErrorService.showErrorComponent();
-      httpErrorService.setErrorMessage(errorMessage);
-      httpErrorService.setErrorDetected(true);
       return throwError(() => error);
     })
   );

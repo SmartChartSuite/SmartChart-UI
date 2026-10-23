@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
 import {map, Observable, share, shareReplay} from "rxjs";
-import {HttpClient, HttpContext, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
@@ -13,7 +13,6 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
-import {ShowLoading} from "../loading/show-loading";
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
@@ -27,14 +26,14 @@ export class RcApiInterfaceService {
   configEndpoint: string = `${this.base}config`;
   patientEndpoint: string = `${this.base}patient`; // FHIR Conformant.
   groupEndpoint: string = `${this.base}group`;
-  questionnaireEndpoint: string = `${this.base}jobpackage`;
+  formNamesEndpoint: string = `${this.base}jobpackage/title`;
   startJobsEndpoint: string = `${this.base}batchjob?include_patient=True`;
   getJobPackageEndpoint: string = `${this.base}jobpackage`;
   batchJobsEndpoint: string = `${this.base}batchjob`
   getResultsEndpoint: string = `${this.base}results`
 
-  getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
-    map(response => response.sort((a, b) => a.title.localeCompare(b.title))),
+  getFormNames$ = this.getFormNames().pipe(
+    map(response => [...response].sort((a, b) => a.title.localeCompare(b.title))),
     shareReplay(1)
   );
 
@@ -153,16 +152,10 @@ export class RcApiInterfaceService {
   }
 
   /**
-   * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
+   * Get the available JobPackage form names from the dedicated title endpoint.
    */
-  getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
-    return this.http.get<FhirBaseResource[]>(`${this.questionnaireEndpoint}`).pipe(
-      map(resultsList => {
-        let formSummaryList: FormSummary[];
-        formSummaryList = resultsList.map(questionnaireResource=> new FormSummary(questionnaireResource));
-        return formSummaryList;
-      })
-    );
+  getFormNames(): Observable<FormSummary[]> {
+    return this.http.get<FormSummary[]>(this.formNamesEndpoint);
   }
 
   /**
@@ -193,7 +186,7 @@ export class RcApiInterfaceService {
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
+    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody);
   }
 
   // /**
