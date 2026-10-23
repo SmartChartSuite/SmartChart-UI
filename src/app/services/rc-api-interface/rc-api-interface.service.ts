@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
 import {map, Observable, share, shareReplay} from "rxjs";
-import {HttpClient, HttpContext, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
@@ -13,7 +13,6 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
-import {ShowLoading} from "../loading/show-loading";
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
@@ -187,7 +186,7 @@ export class RcApiInterfaceService {
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
+    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody);
   }
 
   // /**

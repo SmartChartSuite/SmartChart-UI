@@ -16,6 +16,7 @@ import {UtilsService} from "../../services/utils/utils.service";
 import {MatTooltip} from "@angular/material/tooltip";
 import {HttpErrorService} from '../../services/http-error/http-error.service';
 import {ErrorMessageComponent} from '../error-message/error-message.component';
+import {finalize} from 'rxjs';
 
 @Component({
   selector: 'app-start-new-job-modal',
@@ -58,6 +59,7 @@ export class StartNewJobModalComponent implements OnInit {
   });
 
   protected readonly isLoading = signal(false);
+  protected readonly isStarting = signal(false);
   private rcApiInterfaceService = inject(RcApiInterfaceService);
   private formManagerService = inject(FormManagerService);
   private utils = inject(UtilsService);
@@ -123,7 +125,10 @@ export class StartNewJobModalComponent implements OnInit {
     }
 
     // TODO: Handle this appropriately, subscription should not happen in this manner. Example of approach can be found in raven upload.
-    this.rcApiInterfaceService.startJobs(patient.fhirId, form.name).subscribe({
+    this.isStarting.set(true);
+    this.rcApiInterfaceService.startJobs(patient.fhirId, form.name).pipe(
+      finalize(() => this.isStarting.set(false))
+    ).subscribe({
         next: ()=> {
           this.utils.showSuccessMessage("Job started");
           this.formManagerService.setFormStarted();
