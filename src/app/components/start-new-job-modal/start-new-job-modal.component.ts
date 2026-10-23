@@ -1,4 +1,4 @@
-import {Component, computed, Inject, inject, OnInit, signal} from '@angular/core';
+import {Component, computed, DestroyRef, Inject, inject, OnInit, signal} from '@angular/core';
 import {toSignal} from '@angular/core/rxjs-interop';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogModule, MatDialogRef} from "@angular/material/dialog";
 import {MatButton} from "@angular/material/button";
@@ -14,6 +14,8 @@ import {PatientSearchComponent} from "../patient-search/patient-search.component
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
 import {UtilsService} from "../../services/utils/utils.service";
 import {MatTooltip} from "@angular/material/tooltip";
+import {HttpErrorService} from '../../services/http-error/http-error.service';
+import {ErrorMessageComponent} from '../error-message/error-message.component';
 
 @Component({
   selector: 'app-start-new-job-modal',
@@ -30,7 +32,8 @@ import {MatTooltip} from "@angular/material/tooltip";
     MatTabGroup,
     PatientGroupsComponent,
     PatientSearchComponent,
-    MatTooltip
+    MatTooltip,
+    ErrorMessageComponent
   ],
   templateUrl: './start-new-job-modal.component.html',
   styleUrl: './start-new-job-modal.component.scss',
@@ -58,12 +61,17 @@ export class StartNewJobModalComponent implements OnInit {
   private rcApiInterfaceService = inject(RcApiInterfaceService);
   private formManagerService = inject(FormManagerService);
   private utils = inject(UtilsService);
+  protected readonly httpErrorService = inject(HttpErrorService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly selectedPatient = toSignal(this.formManagerService.selectedPatient$, {
     initialValue: null
   });
 
-  constructor(@Inject(MAT_DIALOG_DATA) private dialogData: any) {}
+  constructor(@Inject(MAT_DIALOG_DATA) private dialogData: any) {
+    const deactivateModalErrorScope = this.httpErrorService.activateModalErrorScope();
+    this.destroyRef.onDestroy(deactivateModalErrorScope);
+  }
 
   getFormList(){
     this.isLoading.set(true);
@@ -123,8 +131,6 @@ export class StartNewJobModalComponent implements OnInit {
         },
         error: err => {
           console.error(err);
-          this.utils.showErrorMessage("Server error starting a new job.");
-          this.dialogRef.close({refreshRequired: true});
         }
       }
     );
@@ -134,6 +140,10 @@ export class StartNewJobModalComponent implements OnInit {
   onClose() {
     this.dialogRef.close({refreshRequired: false});
     this.formManagerService.setSelectedPatient(null);
+  }
+
+  protected clearError(): void {
+    this.httpErrorService.clearModalError();
   }
 
   ngOnInit(): void {

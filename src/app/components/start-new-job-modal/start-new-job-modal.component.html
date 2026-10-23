@@ -1,5 +1,10 @@
 <div mat-dialog-title>Start New Job</div>
 <mat-dialog-content>
+  <app-error-message
+    [error]="httpErrorService.modalErrorMessage()"
+    [dismissible]="true"
+    (dismissed)="clearError()"
+  />
   <mat-form-field appearance="outline" class="form-selector">
     <mat-label>Select Form</mat-label>
     <input

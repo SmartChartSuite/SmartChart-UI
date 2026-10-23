@@ -4,6 +4,7 @@ import {LoadingComponent} from './components/loading/loading.component';
 import {RouterOutlet} from '@angular/router';
 import {HeaderComponent} from "./components/header/header.component";
 import {ErrorMessageComponent} from "./components/error-message/error-message.component";
+import {HttpErrorService} from './services/http-error/http-error.service';
 
 @Component({
   selector: 'app-root',
@@ -14,4 +15,9 @@ import {ErrorMessageComponent} from "./components/error-message/error-message.co
 })
 export class AppComponent {
   protected readonly loadingService = inject(LoadingService);
+  protected readonly httpErrorService = inject(HttpErrorService);
+
+  protected clearGlobalError(): void {
+    this.httpErrorService.clearGlobalError();
+  }
 }

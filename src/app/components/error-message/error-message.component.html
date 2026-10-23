@@ -1,8 +1,13 @@
-@if(errorDetected()){
-  <div class="error-message">
-    <div class="error-text">
-      {{ errorMessage() }}
+@if (error(); as errorMessage) {
+  <div class="error-message" role="alert" aria-live="assertive">
+    <div class="error-content">
+      <div class="error-title">{{ errorMessage.title }}</div>
+      <div class="error-text">{{ errorMessage.message }}</div>
     </div>
+    @if (dismissible()) {
+      <button type="button" class="dismiss-button" (click)="dismissed.emit()" aria-label="Dismiss error">
+        Dismiss
+      </button>
+    }
   </div>
 }
-

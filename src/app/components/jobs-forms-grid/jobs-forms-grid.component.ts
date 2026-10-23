@@ -247,7 +247,6 @@ export class JobsFormsGridComponent {
       },
       error: (err) => {
         console.error('Error deleting job:', err);
-        this.utilsService.showErrorMessage('Error deleting Job/Form');
       }
     });
   }
