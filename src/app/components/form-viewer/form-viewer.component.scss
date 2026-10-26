@@ -221,6 +221,11 @@ $selected-nave-menu-item-color: #424242;
   box-sizing: border-box;
 }
 
+.choice-select {
+  min-width: 200px;
+  max-width: 35%;
+}
+
 .value-unit-input {
   @extend .question-input;
   width: 30%;
