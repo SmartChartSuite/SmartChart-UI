@@ -144,24 +144,39 @@
               <div class="margin-left-md margin-right-sm margin-top-xs" (click)="onQuestionHeaderSelected(j)">
                 @switch (childItem.type) {
                   @case (QuestionnaireItemType.choice) {
-                    <mat-radio-group
-                      [ngModel]="getSelectedChoiceValue(childItem)"
-                      (ngModelChange)="onChoiceSelected(childItem, $event)">
-                      @for (option of childItem.answerOption; track getOptionValue(option)) {
-                        @if (childItem.answerOption!.length <= 3) {
-                          <mat-radio-button class="margin-right-md"
-                                            [value]="getOptionValue(option)">{{ getOptionLabel(option) }}
-                          </mat-radio-button>
-                        } @else {
-                          <!-- There are too many options to render in the same line -->
-                          <div>
-                            <mat-radio-button [value]="getOptionValue(option)">
+                    @if ((childItem.answerOption?.length ?? 0) > 6) {
+                      <mat-form-field appearance="outline" class="question-input choice-select">
+                        <mat-label>Select an answer</mat-label>
+                        <mat-select
+                          [ngModel]="getSelectedChoiceValue(childItem)"
+                          (ngModelChange)="onChoiceSelected(childItem, $event)">
+                          @for (option of childItem.answerOption; track getOptionValue(option)) {
+                            <mat-option [value]="getOptionValue(option)">
                               {{ getOptionLabel(option) }}
+                            </mat-option>
+                          }
+                        </mat-select>
+                      </mat-form-field>
+                    } @else {
+                      <mat-radio-group
+                        [ngModel]="getSelectedChoiceValue(childItem)"
+                        (ngModelChange)="onChoiceSelected(childItem, $event)">
+                        @for (option of childItem.answerOption; track getOptionValue(option)) {
+                          @if (childItem.answerOption!.length <= 3) {
+                            <mat-radio-button class="margin-right-md"
+                                              [value]="getOptionValue(option)">{{ getOptionLabel(option) }}
                             </mat-radio-button>
-                          </div>
+                          } @else {
+                            <!-- There are too many options to render in the same line -->
+                            <div>
+                              <mat-radio-button [value]="getOptionValue(option)">
+                                {{ getOptionLabel(option) }}
+                              </mat-radio-button>
+                            </div>
+                          }
                         }
-                      }
-                    </mat-radio-group>
+                      </mat-radio-group>
+                    }
                   }
                   @case (QuestionnaireItemType.string) {
                     <mat-form-field appearance="outline" class="question-input">

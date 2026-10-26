@@ -29,6 +29,7 @@ import {MatNavList} from "@angular/material/list";
 import {NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
+import {MatOption, MatSelect} from "@angular/material/select";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {FhirDateTimeComponent} from "../fhir-date-time/fhir-date-time.component";
@@ -57,6 +58,8 @@ import {PatientGrid} from "../../models/patient-grid";
     MatRadioGroup,
     FormsModule,
     MatRadioButton,
+    MatSelect,
+    MatOption,
     MatFormField,
     MatInput,
     MatLabel,
@@ -150,9 +153,9 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       if (this.selectedEvidenceIndex === null) {
         this.selectFirstQuestion(this.selectedMenuItemIndex);
       }
-    }, () => {
+    }, (error) => {
       this.initialLoadComplete.set(true);
-      this.utilsService.showErrorMessage();
+      console.error(error);
     });
 
     this.loadFormFromRoute();
@@ -221,7 +224,6 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       error: err => {
         console.error(err);
         this.initialLoadComplete.set(true);
-        this.utilsService.showErrorMessage();
       }
     });
   }
@@ -553,10 +555,10 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       },
       error: (error) => {
         console.error(error);
-        this.utilsService.showErrorMessage("Error Saving Form");
       }
     });
   }
+
 
   protected updateLastSavedLabel(): void {
     const savedAt = this.lastSavedAt();
