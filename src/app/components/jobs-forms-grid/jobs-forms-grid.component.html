@@ -115,11 +115,11 @@
                   </div>
 
                   <div class="button-column">
-                    <button matButton="filled" color="primary" type="submit" [disabled]="patientResource.isLoading()">
+                     <button matButton="filled" color="primary" type="submit" [disabled]="formJobsList.isLoading()">
                       <mat-icon>search</mat-icon>
                       Search
                     </button>
-                    <button matButton="outlined" type="button" (click)="onClearFilters()" [disabled]="patientResource.isLoading()">
+                     <button matButton="outlined" type="button" (click)="onClearFilters()" [disabled]="formJobsList.isLoading()">
                       <mat-icon>clear</mat-icon>
                       Clear Filters
                     </button>
@@ -245,7 +245,7 @@
               <!-- Loading state - shows when data is empty and loading -->
               <tr class="mat-row" *matNoDataRow>
                 <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-                  @if (patientResource.isLoading()) {
+                   @if (formJobsList.isLoading()) {
                     <div class="loading-row">
                       Loading data. Please wait<span class="loading-ellipsis"></span>
                     </div>

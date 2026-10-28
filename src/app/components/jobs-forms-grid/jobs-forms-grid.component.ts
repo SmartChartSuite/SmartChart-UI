@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import { catchError, of } from 'rxjs';
+import {catchError, of, tap} from 'rxjs';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
@@ -132,7 +132,7 @@ export class JobsFormsGridComponent {
   });
 
   // Reactive Data Resource (Replaces loadPatients() & subscribe)
-  protected readonly patientResource = rxResource<
+  protected readonly formJobsList = rxResource<
     PatientData,
     { page: number; size: number; filters: Record<string, any> }
   >({
@@ -143,6 +143,7 @@ export class JobsFormsGridComponent {
     }),
     stream: ({ params }) =>
       this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters).pipe(
+        tap(value=> console.log(value)),
         catchError((err) => {
           console.error('Error loading patients:', err);
           return of({ patients: [], total: 0 });
@@ -151,8 +152,8 @@ export class JobsFormsGridComponent {
   });
 
   // Computed Derived State
-  protected readonly patients = computed(() => this.patientResource.value()?.patients ?? []);
-  protected readonly totalRecords = computed(() => this.patientResource.value()?.total ?? 0);
+  protected readonly patients = computed(() => this.formJobsList.value()?.patients ?? []);
+  protected readonly totalRecords = computed(() => this.formJobsList.value()?.total ?? 0);
 
   protected onSearch(): void {
     this.currentPage.set(0);
@@ -229,7 +230,11 @@ export class JobsFormsGridComponent {
   }
 
   protected onStartNewJob() {
-    openStartNewJobModal(this.dialog).subscribe();
+    openStartNewJobModal(this.dialog).subscribe(result => {
+      if (result?.refreshRequired) {
+        this.formJobsList.reload();
+      }
+    });
 
   }
 
@@ -239,7 +244,7 @@ export class JobsFormsGridComponent {
     ).subscribe({
       next: () => {
         this.utilsService.showSuccessMessage('Job/Form deleted successfully');
-        // Reload the grid so the deleted row is removed.
+        this.formJobsList.reload();
       },
       error: (err) => {
         console.error('Error deleting job:', err);
