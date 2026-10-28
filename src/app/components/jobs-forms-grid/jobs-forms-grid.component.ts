@@ -23,11 +23,13 @@ import { FormStatus as JobStatus, JOB_STATUS_OPTIONS, PatientGrid } from '../../
 import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
+import { ErrorMessage } from '../../models/error-message';
 import { UtilsService } from '../../services/utils/utils.service';
 import {FormSummary} from '../../models/form-summary';
 import {openStartNewJobModal} from "../start-new-job-modal/start-new-job-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog.component";
+import {ErrorMessageComponent} from '../error-message/error-message.component';
 
 @Component({
   selector: 'app-forms-jobs-grid',
@@ -55,7 +57,8 @@ import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog
     MatPaginatorModule,
     MatSuffix,
     TitleCasePipe,
-    MatIconButton
+    MatIconButton,
+    ErrorMessageComponent
   ],
   templateUrl: './jobs-forms-grid.component.html',
   styleUrl: './jobs-forms-grid.component.scss',
@@ -142,18 +145,24 @@ export class JobsFormsGridComponent {
       filters: this.activeSearchFilters()
     }),
     stream: ({ params }) =>
-      this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters).pipe(
-        tap(value=> console.log(value)),
-        catchError((err) => {
-          console.error('Error loading patients:', err);
-          return of({ patients: [], total: 0 });
-        })
-      )
+      this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters)
   });
 
   // Computed Derived State
-  protected readonly patients = computed(() => this.formJobsList.value()?.patients ?? []);
-  protected readonly totalRecords = computed(() => this.formJobsList.value()?.total ?? 0);
+  protected readonly patients = computed(() =>
+    this.formJobsList.hasValue() ? this.formJobsList.value().patients : []
+  );
+  protected readonly totalRecords = computed(() =>
+    this.formJobsList.hasValue() ? this.formJobsList.value().total : 0
+  );
+  protected readonly formJobsError = computed<ErrorMessage | null>(() =>
+    this.formJobsList.error()
+      ? {
+        title: 'Form list unavailable',
+        message: 'The form list could not be loaded. Check your connection and try again.'
+      }
+      : null
+  );
 
   protected onSearch(): void {
     this.currentPage.set(0);

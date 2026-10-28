@@ -245,13 +245,15 @@
               <!-- Loading state - shows when data is empty and loading -->
               <tr class="mat-row" *matNoDataRow>
                 <td class="mat-cell" [attr.colspan]="displayedColumns.length">
-                   @if (formJobsList.isLoading()) {
-                    <div class="loading-row">
-                      Loading data. Please wait<span class="loading-ellipsis"></span>
-                    </div>
-                  } @else {
-                    <div class="loading-row">
-                      No Records Found
+                   @if (formJobsList.error()) {
+                     <app-error-message [error]="formJobsError()"></app-error-message>
+                   } @else if (formJobsList.isLoading()) {
+                     <div class="loading-row">
+                       Loading data. Please wait<span class="loading-ellipsis"></span>
+                     </div>
+                   } @else {
+                     <div class="loading-row">
+                       No Records Found
                     </div>
                   }
                 </td>
