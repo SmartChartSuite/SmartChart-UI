@@ -1,4 +1,4 @@
-<div mat-dialog-title>Start New Job</div>
+<h2 mat-dialog-title id="start-job-title">Start New Job</h2>
 <mat-dialog-content>
   <app-error-message
     [error]="httpErrorService.modalErrorMessage()"
@@ -9,11 +9,11 @@
     <mat-label>Select Form</mat-label>
     <input
       matInput
+      required
+      autocomplete="off"
       [value]="selectedForm()?.title ?? formSearch()"
       [matAutocomplete]="formAutocomplete"
       (input)="onFormInput($event)"
-      autocomplete="off"
-      aria-label="Select Form"
     />
     <mat-autocomplete
       #formAutocomplete="matAutocomplete"
@@ -21,7 +21,7 @@
       (optionSelected)="onFormSelected($event.option.value)"
     >
       @for (form of filteredFormNames(); track form.name) {
-         <mat-option [value]="form.name">{{ form.title }}</mat-option>
+        <mat-option [value]="form.name">{{ form.title }}</mat-option>
       }
     </mat-autocomplete>
   </mat-form-field>
