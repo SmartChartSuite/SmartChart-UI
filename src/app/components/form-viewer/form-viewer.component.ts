@@ -530,15 +530,13 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       return 0;
     }
 
-    let questionsWithEvidenceCount = 0;
-    for (const childItem of item.item) {
-      const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
-      if (typeof evidenceCount === 'number' && evidenceCount > 0) {
-        questionsWithEvidenceCount++;
-      }
-    }
-
-    return questionsWithEvidenceCount;
+    return item.item
+      .filter(childItem => childItem.type !== QuestionnaireItemType.display)
+      .map(childItem => this.getEvidenceCount(childItem.linkId, results))
+      .filter((evidenceCount): evidenceCount is number =>
+        typeof evidenceCount === 'number' && evidenceCount > 0
+      )
+      .length;
   }
 
   protected onSave(): void {
