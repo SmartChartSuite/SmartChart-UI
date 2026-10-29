@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, interval, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -197,7 +197,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.questionnaireResponseStatus.set(questionnaireResponse.status);
       }),
       // Fetch the questionnaire definition after the route context is ready.
-      mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
+      switchMap(({params}) => this.rcApiInterfaceService.getJobPackage({
         key: 'name',
         value: params.formName!
       })),
