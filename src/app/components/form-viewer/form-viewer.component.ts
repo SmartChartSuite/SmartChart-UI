@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, finalize, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -114,6 +114,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   evidenceReviewActive = false;
   lastSavedAt = signal<Date | undefined>(undefined);
   lastSavedLabel = signal('');
+  isSaving = signal(false);
 
   results = signal<Results | undefined>(undefined);
 
@@ -542,8 +543,11 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   protected onSave(): void {
     const questionnaireResponse = this.outputMapper.mapQrToFhir(
       this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
+    this.isSaving.set(true);
+
     this.rcApiInterfaceService.updateQuestionnaireResponse(questionnaireResponse, this.questionnaireResponseId).pipe(
-      takeUntilDestroyed(this.destroyRef)
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isSaving.set(false))
     ).subscribe({
       next: () => {
         this.captureAnswersSnapshot();
