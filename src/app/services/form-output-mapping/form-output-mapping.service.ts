@@ -14,6 +14,7 @@ export class FormOutputMappingService {
   constructor() { }
 
 
+  /** Maps the form's answer dictionary into a FHIR QuestionnaireResponse. */
   mapQrToFhir(formAnswers: FormAnswers, questionnaire: FhirBaseResource, activeFormSummary?: ActiveFormSummary): QuestionnaireResponse {
     let qr = new QuestionnaireResponse();
 
@@ -130,10 +131,14 @@ export class FormOutputMappingService {
     return qr;
   }
 
+  /** Treats false and zero as answers while excluding missing or blank values. */
   private hasAnswer(value: unknown): boolean {
-    return value !== undefined && value !== null && value !== '';
+    return typeof value === 'string'
+      ? value.trim().length > 0
+      : value !== undefined && value !== null;
   }
 
+  /** Converts supported boolean representations without treating "false" as true. */
   private toBooleanAnswer(value: unknown): boolean | undefined {
     if (typeof value === 'boolean') {
       return value;
@@ -150,12 +155,19 @@ export class FormOutputMappingService {
     return undefined;
   }
 
+  /** Serializes quantity values, including the valid numeric value zero. */
   private formatValueQuantity(quantity: QuantityAnswer): {value?: number, unit?: string} {
     let quantityFormatted: {value?: number, unit?: string} = {};
-    if (quantity.value) {
-      quantityFormatted.value = Number(quantity.value);
+    const rawValue = quantity?.value;
+
+    if (this.hasAnswer(rawValue)) {
+      const numericValue = Number(rawValue);
+      if (Number.isFinite(numericValue)) {
+        quantityFormatted.value = numericValue;
+      }
     }
-    if (quantity.unit) {
+
+    if (quantity?.unit) {
       quantityFormatted.unit = quantity.unit;
     }
     return quantityFormatted;
