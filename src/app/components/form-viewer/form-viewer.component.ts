@@ -236,7 +236,17 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.status = value.status;
         this.completeCount = value.completeJobs;
         this.totalCount = value.totalJobs;
-        this.percentComplete = value.completeJobs / value.totalJobs * 100;
+
+        const completeJobs = Number(value.completeJobs);
+        const totalJobs = Number(value.totalJobs);
+
+        // Avoid NaN/Infinity for missing or zero totals, and keep backend
+        // inconsistencies from producing a progress value outside 0..100.
+        this.percentComplete = Number.isFinite(completeJobs) &&
+          Number.isFinite(totalJobs) &&
+          totalJobs > 0
+          ? Math.min(100, Math.max(0, (completeJobs / totalJobs) * 100))
+          : 0;
       })
     );
   }
