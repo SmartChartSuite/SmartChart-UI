@@ -1,7 +1,8 @@
 <div class="component-wrapper form-summary-wrapper">
   <div class="component-content">
-    <div class="centered-screen">
-      <div class="centered-content">
+    <section class="forms-workspace" aria-label="Forms workspace">
+      <div class="centered-screen">
+        <div class="centered-content">
         <div class="flex-row-simple justify-between items-center margin-top-lg">
           <div class="label-text">My Forms</div>
           <div>
@@ -131,7 +132,7 @@
         </div>
         <div class="margin-top-lg border">
           <div class="table-container">
-            <table mat-table [dataSource]="patients()" class="mat-elevation-z0">
+            <table mat-table [dataSource]="patients()" multiTemplateDataRows class="mat-elevation-z0">
 
               <!-- Form Status Column -->
               <ng-container matColumnDef="formStatus">
@@ -151,12 +152,7 @@
                       Preview
                     </button>
                   }
-                  @if (patient.questionnaireResponseStatus === FormStatus.IN_PROGRESS) {
-                    <button mat-stroked-button color="primary" class="action-button" (click)="onSelectRecord(patient)">
-                      <mat-icon>arrow_forward</mat-icon>
-                      Continue Form
-                    </button>
-                  } @else if (patient.questionnaireResponseStatus === FormStatus.COMPLETE) {
+                  @if (patient.questionnaireResponseStatus === FormStatus.COMPLETE) {
                     <button mat-stroked-button color="primary" class="action-button" (click)="onSelectRecord(patient)">
                       <mat-icon>description</mat-icon>
                       View form
@@ -229,18 +225,39 @@
                 </td>
               </ng-container>
 
-              <!-- Actions column. For now used for delete job -->
-              <ng-container matColumnDef="buttons">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let patient">
-                    <button matIconButton class="delete-action" aria-label="Delete job or form" matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+              <ng-container matColumnDef="progress">
+                <td mat-cell *matCellDef="let patient" [attr.colspan]="displayedColumns.length">
+                  @if (isActiveJob(patient)) {
+                    <div class="job-progress" [attr.aria-label]="jobStatusLabel(patient) + ' abstraction progress'">
+                      <span class="job-progress-label">
+                        {{ jobStatusLabel(patient) === 'Pending' ? 'Queued abstraction logic' : 'Running abstraction logic' }}
+                      </span>
+                      <div class="job-progress-track" role="progressbar"
+                           [attr.aria-valuenow]="jobProgressPercent(patient)"
+                           aria-valuemin="0" aria-valuemax="100">
+                        <span [style.width.%]="jobProgressPercent(patient)"></span>
+                      </div>
+                      <span class="job-progress-percent">{{ jobProgressPercent(patient) }}% complete</span>
+                    </div>
+                  } @else if (patient.batchJobStatus === JobStatus.COMPLETE) {
+                    <div class="job-complete-line">
+                      <span>Job completed{{ patient.jobCompletedDateTime ? ' ' + (patient.jobCompletedDateTime | date : 'MM/dd/yyyy, h:mm a') : '' }} successfully.</span>
+                    </div>
+                  } @else {
+                    <div class="job-terminal-state">{{ jobStatusLabel(patient) }} abstraction job.</div>
+                  }
                 </td>
               </ng-container>
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns; when: isMainRow"
+                  class="form-list-row"
+                  [class.selected-form-row]="selectedBatchId() === row.batchId"
+                  [attr.aria-selected]="selectedBatchId() === row.batchId"
+                  (click)="selectForm(row)"></tr>
+              <tr mat-row *matRowDef="let row; columns: progressColumns; when: isProgressRow"
+                  class="progress-row"
+                  [class.selected-progress]="selectedBatchId() === row.batchId"></tr>
 
               <!-- Loading state - shows when data is empty and loading -->
               <tr class="mat-row" *matNoDataRow>
@@ -268,7 +285,78 @@
             </mat-paginator>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+      <aside class="details-pane" aria-label="Selected form details">
+        @if (selectedForm(); as form) {
+          <p class="details-kicker">Form details</p>
+          <h2 class="details-title">{{ form['jobPackageTitle'] || form.jobPackage }}</h2>
+          <p class="details-name">{{ form.jobPackage }}</p>
+          @if (displayedFormDetails(); as details) {
+            <button type="button" class="details-toggle"
+                    [attr.aria-expanded]="formDetailsExpanded()"
+                    (click)="toggleFormDetails()">
+              {{ formDetailsExpanded() ? 'Hide details' : 'Show details' }}
+              <mat-icon [class.expanded]="formDetailsExpanded()" aria-hidden="true">expand_more</mat-icon>
+            </button>
+            @if (formDetailsExpanded()) {
+              <div class="details-meta-group">
+                <p class="details-meta"><span>Form Status:</span>{{ details.questionnaireStatus || 'Unknown' }}</p>
+                <p class="details-meta"><span>Form Version:</span>{{ details.questionnaireVersion || 'Unknown' }}</p>
+                <p class="details-meta"><span>Description:</span>{{ details.questionnaireDescription || 'Unknown' }}</p>
+              </div>
+            }
+            <div class="patient-summary" aria-label="Patient information">
+              <span class="details-kicker">Patient</span>
+              <span class="patient-summary-name">{{ details.patientName || form.patientName }}</span>
+              <span class="patient-summary-meta">
+                DOB: {{ (details.patientBirthDate || form.patientDob) | date : 'dd MMM yyyy' }}
+                · Gender: {{ (details.patientGender || form.patientGender) | titlecase }}
+                @if (details.patientIdentifierLabel) {
+                  · {{ details.patientIdentifierLabel }}: {{ details.patientIdentifierValue || 'Unknown' }}
+                }
+              </span>
+            </div>
+            <div class="completion" aria-label="Form completion">
+              <div class="completion-head">
+                <span>Form completion</span>
+                <strong>{{ details.responseCompletionPercent | number : '1.0-0' }}%</strong>
+              </div>
+              <div class="completion-track" role="progressbar"
+                   [attr.aria-valuenow]="details.responseCompletionPercent"
+                   aria-valuemin="0" aria-valuemax="100">
+                <span [style.width.%]="details.responseCompletionPercent"></span>
+              </div>
+              <p class="completion-count">{{ details.responseAnsweredCount }} of {{ details.responseQuestionCount }} questions answered</p>
+            </div>
+            <div class="details-actions">
+              <button matButton="filled" color="primary" type="button" (click)="onSelectRecord(form)">Open form</button>
+              <button matIconButton type="button" aria-label="More actions" matTooltip="More actions"
+                      [matMenuTriggerFor]="formActionsMenu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+              <mat-menu #formActionsMenu="matMenu" xPosition="before">
+                <button mat-menu-item type="button" class="delete-action" (click)="onDeleteJob(form)">
+                  <mat-icon>delete</mat-icon>
+                  <span>Delete form</span>
+                </button>
+              </mat-menu>
+            </div>
+            <div class="details-meta-group">
+              <p class="details-meta"><span>Response Status:</span>{{ (form.questionnaireResponseStatus | formStatusDisplay) || 'Unknown' }}</p>
+              <p class="details-meta"><span>Responses Last Modified:</span>{{ ((details.responseLastUpdated || form.responseLastUpdated) | date : 'dd MMM yyyy') || 'Unknown' }}</p>
+              <p class="details-meta"><span>Last Modified By:</span>{{ details.responseLastModifiedBy || 'Unknown' }}</p>
+            </div>
+          } @else if (selectedFormDetails.isLoading()) {
+            <p class="details-placeholder">Loading form details...</p>
+          } @else {
+            <p class="details-placeholder">Form details are unavailable for this record.</p>
+          }
+        } @else {
+          <p class="details-kicker">Form details</p>
+          <p class="details-placeholder">Select a form to view details.</p>
+        }
+      </aside>
+    </section>
   </div>
 </div>

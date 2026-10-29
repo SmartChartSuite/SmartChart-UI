@@ -33,13 +33,36 @@ export class JobsFormsHelperService {
     }, {} as Record<string, any>);
   }
 
+  /** Maps the known batch-job Parameters fields into the strict list-row model. */
+  toPatientGrid(parameters: any[] = []): PatientGrid {
+    const values = this.flattenFhirParameters(parameters);
+    return {
+      batchId: values['batchId'],
+      patientId: values['patientId'],
+      jobPackage: values['jobPackage'],
+      jobPackageTitle: values['jobPackageTitle'],
+      questionnaireId: values['questionnaireId'],
+      startedBy: values['startedBy'],
+      batchJobStatus: values['batchJobStatus'],
+      batchJobProgress: values['batchJobProgress'],
+      jobStartDateTime: values['jobStartDateTime'],
+      jobCompletedDateTime: values['jobCompletedDateTime'],
+      questionnaireResponseStatus: values['questionnaireResponseStatus'],
+      responseLastUpdated: values['responseLastUpdated'],
+      questionnaireResponseId: values['questionnaireResponseId'],
+      patientName: values['patientName'],
+      patientDob: values['patientDob'],
+      patientGender: values['patientGender']
+    };
+  }
+
   /**
    * Converts a FHIR Bundle response to PatientData structure
    */
   toPatientData(bundle: Bundle): PatientData {
     const patients: PatientGrid[] = (bundle.entry || []).map(entry => {
       const paramArray = entry.resource['parameter'] || [];
-      return this.flattenFhirParameters(paramArray) as PatientGrid;
+      return this.toPatientGrid(paramArray);
     });
 
     return {

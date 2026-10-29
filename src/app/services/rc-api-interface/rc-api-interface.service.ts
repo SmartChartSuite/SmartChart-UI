@@ -216,6 +216,10 @@ export class RcApiInterfaceService {
     // );
   }
 
+  getQuestionnaire(questionnaireId: string): Observable<FhirBaseResource> {
+    return this.http.get<FhirBaseResource>(`${this.getJobPackageEndpoint}/${questionnaireId}`);
+  }
+
   /**
    * Start Jobs Async
    * jobPackage = "name" in the FHIR Questionnaire
