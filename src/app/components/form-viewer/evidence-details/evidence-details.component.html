@@ -9,11 +9,12 @@
       </span>
     </div>
     @if (structuredResultCount > 0) {
-      <div class="resource-type-filters" aria-label="Filter coded records by resource type">
+      <div class="resource-type-filters" role="group" aria-label="Filter coded records by resource type">
         @for (filter of resourceTypeFilters; track filter.type ?? 'all') {
           <button type="button"
                   class="filter-chip"
                   [class.active]="selectedResourceType === filter.type"
+                  [attr.aria-pressed]="selectedResourceType === filter.type"
                   (click)="selectResourceType(filter.type)">
             {{ filter.label }} <span>{{ filter.count }}</span>
           </button>

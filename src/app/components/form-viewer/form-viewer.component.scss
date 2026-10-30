@@ -411,7 +411,19 @@ $selected-nave-menu-item-color: #424242;
   }
 
   .sub-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
     color: var(--color-primary);
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
   }
 
   .sub-menu{
@@ -420,10 +432,18 @@ $selected-nave-menu-item-color: #424242;
     padding-top: 4px;
     text-decoration: none;
     overflow-wrap: break-word;
+    list-style: none;
 
+    .sub-menu-list-item {
+      list-style: none;
+    }
 
     .sub-menu-item{
       cursor: pointer;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      text-align: left;
       color: $sub-nav-text-color;
       font-family: var(--font-family-fallback);
       font-size: 14px;
@@ -439,6 +459,11 @@ $selected-nave-menu-item-color: #424242;
       &:hover{
         background-color: $sub-nav-select;
 
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
       }
     }
 

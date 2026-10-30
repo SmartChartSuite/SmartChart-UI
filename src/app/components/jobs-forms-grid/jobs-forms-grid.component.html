@@ -227,8 +227,10 @@
                 <td mat-cell *matCellDef="let patient">
                   <div class="icon-with-text">
                     @if (staleJobFound(patient)) {
-                      <span class="pointer" matTooltip="Warning: This job is over 30 days old">
-                        <mat-icon>running_with_errors</mat-icon>
+                      <span class="pointer" tabindex="0" role="img"
+                            aria-label="Warning: This job is over 30 days old"
+                            matTooltip="Warning: This job is over 30 days old">
+                        <mat-icon aria-hidden="true">running_with_errors</mat-icon>
                       </span>
                     }
                   </div>
@@ -239,9 +241,10 @@
               <ng-container matColumnDef="buttons">
                 <th mat-header-cell *matHeaderCellDef aria-label="Delete actions"></th>
                 <td mat-cell *matCellDef="let patient">
-                  <button matIconButton class="delete-action" aria-label="Delete job or form"
+                  <button matIconButton class="delete-action"
+                          [attr.aria-label]="'Delete job or form for ' + patient.patientName + (patient.jobPackage ? ', ' + patient.jobPackage : '')"
                           matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
-                    <mat-icon>delete</mat-icon>
+                    <mat-icon aria-hidden="true">delete</mat-icon>
                   </button>
                 </td>
               </ng-container>

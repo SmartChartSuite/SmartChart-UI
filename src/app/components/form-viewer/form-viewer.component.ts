@@ -25,8 +25,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {PatientDetailsComponent} from "./patient-details/patient-details.component";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatButton} from "@angular/material/button";
-import {MatNavList} from "@angular/material/list";
-import {NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatOption, MatSelect} from "@angular/material/select";
@@ -52,8 +50,6 @@ import {PatientGrid} from "../../models/patient-grid";
     PatientDetailsComponent,
     MatProgressSpinner,
     MatButton,
-    MatNavList,
-    NgClass,
     QuestionnaireIndexDirective,
     MatRadioGroup,
     FormsModule,
