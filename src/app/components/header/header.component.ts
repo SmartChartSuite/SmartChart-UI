@@ -4,7 +4,7 @@ import {MatButton} from "@angular/material/button";
 import {ConfigService} from "../../services/config/config.service";
 import {OAuthService} from "angular-oauth2-oidc";
 import {NavigationEnd, Router} from "@angular/router";
-import {NgClass, NgOptimizedImage} from "@angular/common";
+import {NgOptimizedImage} from "@angular/common";
 import {LoginComponent} from "../login/login.component";
 import {toSignal} from "@angular/core/rxjs-interop";
 import {filter, map} from "rxjs/operators";
@@ -14,7 +14,6 @@ import {filter, map} from "rxjs/operators";
   imports: [
     MatIcon,
     MatButton,
-    NgClass,
     NgOptimizedImage,
     LoginComponent
   ],

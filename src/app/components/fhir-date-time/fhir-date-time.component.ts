@@ -72,6 +72,9 @@ const US_24_HOUR_DATE_FORMATS = {
   }
 };
 
+/** Incrementing counter used to generate unique element ids per component instance. */
+let nextFhirDateTimeId = 0;
+
 @Component({
   selector: 'app-fhir-date-time',
   templateUrl: './fhir-date-time.component.html',
@@ -100,8 +103,13 @@ export class FhirDateTimeComponent implements OnInit, OnDestroy {
 
   inputValue = input<string>('');
   questionType = input.required<QuestionnaireItemType>();
+  /** Accessible name of the question this control answers (e.g. the questionnaire item text). */
+  questionLabel = input<string>('');
   onDateTimeUpdated = output<{value: string; questionType: QuestionnaireItemType}>();
   onPickerOpened = output<void>();
+
+  /** Unique id prefix so multiple instances never produce duplicate DOM ids. */
+  protected readonly idPrefix = `fhir-date-time-${nextFhirDateTimeId++}`;
 
   // protected readonly TIMEZONES = TIMEZONES;
   private destroy$ = new Subject<void>();
