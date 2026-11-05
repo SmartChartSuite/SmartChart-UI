@@ -165,7 +165,7 @@ export class UnstructuredEvidenceComponent{
   }
 
   protected reasoningToggleLabel(evidence: SupportingEvidence): string {
-    return this.isReasoningExpanded(evidence) ? 'Hide Reasoning' : 'Explain Reasoning';
+    return this.isReasoningExpanded(evidence) ? 'Hide Reasoning' : 'Show Reasoning';
   }
 
   private getDocumentContent(evidence: SupportingEvidence): string {

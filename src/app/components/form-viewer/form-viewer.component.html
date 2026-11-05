@@ -17,56 +17,71 @@
       }
     </div>
   }
-  <div class="viewer-container-body" [ngClass]="menuCollapsed() ? 'menu-collapsed' : ''">
+  <div class="viewer-container-body" [class.menu-collapsed]="menuCollapsed()">
     <div class="sub-nav">
       <div class="sub-nav-header">
         @if (!menuCollapsed()) {
           <span class="section-nav-title">Form sections</span>
         }
-        <mat-icon
+        <button
+          type="button"
           class="pointer sub-nav-toggle"
-          (click)="toggleMenu()"
-          [matTooltip]="menuCollapsed() ? 'Expand sections' : 'Collapse sections'">
-          {{ menuCollapsed() ? 'chevron_right' : 'chevron_left' }}
-        </mat-icon>
+          aria-controls="form-section-nav"
+          [attr.aria-expanded]="!menuCollapsed()"
+          [attr.aria-label]="menuCollapsed() ? 'Expand form sections' : 'Collapse form sections'"
+          [matTooltip]="menuCollapsed() ? 'Expand sections' : 'Collapse sections'"
+          (click)="toggleMenu()">
+          <mat-icon aria-hidden="true">{{ menuCollapsed() ? 'chevron_right' : 'chevron_left' }}</mat-icon>
+        </button>
       </div>
 
-      <mat-nav-list class="section-scroll-body">
+      <nav class="section-scroll-body" id="form-section-nav" aria-label="Form sections">
         <ul class="sub-menu">
           @for (item of questionnaire()?.item; track item.linkId; let i = $index) {
             @let evidenceCount = getQuestionsWithEvidenceCount(item, results());
             @let questionCount = getQuestionCount(item);
             @let answeredCount = getAnsweredQuestionCount(item);
-            @if (!menuCollapsed()) {
-              <li class="sub-menu-item"
-                  [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
-                  (click)="onSectionSelected(i)">
-                <span class="section-label">{{ item.text }}</span>
-                <span class="section-count" [attr.aria-label]="answeredCount + ' of ' + questionCount + ' questions answered'">
-                  {{ answeredCount }}/{{ questionCount }}
-                </span>
-                <span class="sparkles-icon"
-                      [class.has-evidence]="evidenceCount > 0"
-                      aria-hidden="true"
-                      matTooltipPosition="above"
-                      [matTooltip]="evidenceCount > 0 ? 'Found evidence for ' + evidenceCount + ' out of ' + getQuestionCount(item) + ' questions.' : ''">
-                </span>
-              </li>
-            } @else {
-              <li class="sub-menu-item" [matTooltip]="item.text" [matTooltipPosition]="'right'"
-                  [ngClass]="selectedMenuItemIndex === i ? 'selected-menu-item' : ''"
-                  (click)="onSectionSelected(i)">
-                <span class="pointer">{{ i + 1 }}.</span>
-                <span class="sparkles-icon" aria-hidden="true"></span>
-            }
+            @let sectionLabel = 'Section ' + (i + 1) + ': ' + item.text + ', ' + answeredCount + ' of ' + questionCount + ' questions answered' + (evidenceCount > 0 ? ', evidence found for ' + evidenceCount + ' questions' : '');
+            <li class="sub-menu-list-item">
+              @if (!menuCollapsed()) {
+                <button type="button" class="sub-menu-item"
+                        [class.selected-menu-item]="selectedMenuItemIndex === i"
+                        [attr.aria-current]="selectedMenuItemIndex === i ? 'step' : null"
+                        [attr.aria-label]="sectionLabel"
+                        (click)="onSectionSelected(i)">
+                  <span class="section-label">{{ item.text }}</span>
+                  <span class="section-count" aria-hidden="true">
+                    {{ answeredCount }}/{{ questionCount }}
+                  </span>
+                  <span class="sparkles-icon"
+                        [class.has-evidence]="evidenceCount > 0"
+                        aria-hidden="true"
+                        matTooltipPosition="above"
+                        [matTooltip]="evidenceCount > 0 ? 'Found evidence for ' + evidenceCount + ' out of ' + questionCount + ' questions.' : ''">
+                  </span>
+                </button>
+              } @else {
+                <button type="button" class="sub-menu-item"
+                        [matTooltip]="item.text ?? ''" [matTooltipPosition]="'right'"
+                        [class.selected-menu-item]="selectedMenuItemIndex === i"
+                        [attr.aria-current]="selectedMenuItemIndex === i ? 'step' : null"
+                        [attr.aria-label]="sectionLabel"
+                        (click)="onSectionSelected(i)">
+                  <span aria-hidden="true">{{ i + 1 }}.</span>
+                  <span class="sparkles-icon" aria-hidden="true"></span>
+                </button>
+              }
+            </li>
           }
         </ul>
-      </mat-nav-list>
+      </nav>
       @let totalQuestions = getTotalQuestionCount();
       @let totalAnswered = getTotalAnsweredQuestionCount();
-      <div class="nav-progress" aria-label="Overall form completion">
-        <div class="nav-progress-label">Overall completion</div>
+      <div class="nav-progress">
+        <div class="nav-progress-label" id="overall-completion-label">Overall completion</div>
         <div class="progress-line" role="progressbar"
+             aria-labelledby="overall-completion-label"
+             [attr.aria-valuetext]="totalAnswered + ' of ' + totalQuestions + ' questions answered'"
              [attr.aria-valuenow]="getOverallProgressPercent()"
              aria-valuemin="0" aria-valuemax="100">
           <span [style.width.%]="getOverallProgressPercent()"></span>
@@ -102,38 +117,37 @@
           @for (childItem of item.item; track childItem.linkId; let j = $index) {
             @let isDisplayItem = childItem.type === QuestionnaireItemType.display;
             <div class="question-item full-size-question-item"
-                 [ngClass]="(j === selectedEvidenceIndex) ? 'selected-evidence': ''">
+                 [class.selected-evidence]="j === selectedEvidenceIndex">
               @if (!isDisplayItem) {
-                <div class="question-header"
-                     [class.has-evidence]="results()?.['link' + childItem.linkId]?.['evidence']?.length"
-                     [attr.role]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? 'button' : null"
-                     [attr.tabindex]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? '0' : null"
-                     [attr.aria-label]="results()?.['link' + childItem.linkId]?.['evidence']?.length ? 'Show evidence for ' + childItem.text : null"
-                     (click)="onQuestionHeaderSelected(j)"
-                     (keydown)="onEvidenceReviewKeydown($event)"
-                     (keydown.enter)="onQuestionHeaderSelected(j)"
-                     (keydown.space)="$event.preventDefault(); onQuestionHeaderSelected(j)"
-                     (focus)="evidenceReviewActive = true">
-                  <div class="question-kicker">
-                    Question {{ getQuestionNumber(item, j) }} of {{ getQuestionCount(item) }}
+                <button
+                  type="button"
+                  class="question-header"
+                  [class.has-evidence]="results()?.['link' + childItem.linkId]?.['evidence']?.length"
+                  [attr.aria-label]="'Select question: ' + (childItem.text || 'Question ' + getQuestionNumber(item, j))"
+                  (click)="onQuestionHeaderSelected(j)"
+                  (focus)="evidenceReviewActive = true">
+                  <span class="question-header-text">
+                    <span class="question-kicker">
+                      Question {{ getQuestionNumber(item, j) }} of {{ getQuestionCount(item) }}
+                    </span>
+                    <span class="question-title">{{ childItem.text }}</span>
+                  </span>
                   @if (results()?.['link' + childItem.linkId]?.['evidence']?.length) {
-                    @if (j === selectedEvidenceIndex) {
-                      <div class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
-                        Viewing Evidence
-                      </div>
-                    } @else {
-                      <button matButton class="evidence-trigger" type="button"
-                              [attr.aria-label]="'Show evidence for ' + childItem.text"
-                              (click)="$event.stopPropagation(); onQuestionHeaderSelected(j)">
-                        <span>View Evidence</span>
-                        <span>({{ getEvidenceCount(childItem.linkId, results()) }})</span>
-                        <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
-                      </button>
-                    }
+                    <span class="question-evidence-action">
+                      @if (j === selectedEvidenceIndex) {
+                        <span class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
+                          Viewing Evidence
+                        </span>
+                      } @else {
+                        <span class="evidence-trigger">
+                          <span>View Evidence</span>
+                          <span>({{ getEvidenceCount(childItem.linkId, results()) }})</span>
+                          <mat-icon iconPositionEnd aria-hidden="true">arrow_forward</mat-icon>
+                        </span>
+                      }
+                    </span>
                   }
-                  </div>
-                  <div class="question-title">{{ childItem.text }}</div>
-                </div>
+                </button>
               } @else {
                 <div class="question-label">
                   <span appGetIndex [i]="j" [childItems]="childItem" [itemElements]="item.item"></span>
@@ -141,13 +155,14 @@
                 </div>
               }
 
-              <div class="margin-left-md margin-right-sm margin-top-xs" (click)="onQuestionHeaderSelected(j)">
+              <div class="margin-left-md margin-right-sm margin-top-xs" (click)="onQuestionHeaderSelected(j)" (focusin)="onQuestionHeaderSelected(j)">
                 @switch (childItem.type) {
                   @case (QuestionnaireItemType.choice) {
                     @if ((childItem.answerOption?.length ?? 0) > 6) {
                       <mat-form-field appearance="outline" class="question-input choice-select">
                         <mat-label>Select an answer</mat-label>
                         <mat-select
+                          [attr.aria-label]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
                           [ngModel]="getSelectedChoiceValue(childItem)"
                           (ngModelChange)="onChoiceSelected(childItem, $event)">
                           @for (option of childItem.answerOption; track getOptionValue(option)) {
@@ -159,6 +174,7 @@
                       </mat-form-field>
                     } @else {
                       <mat-radio-group
+                        [attr.aria-label]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
                         [ngModel]="getSelectedChoiceValue(childItem)"
                         (ngModelChange)="onChoiceSelected(childItem, $event)">
                         @for (option of childItem.answerOption; track getOptionValue(option)) {
@@ -180,7 +196,11 @@
                   }
                   @case (QuestionnaireItemType.string) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="text" matInput [(ngModel)]="answerDictionary()![childItem.linkId]">
+                       <input
+                         type="text"
+                         matInput
+                         [attr.aria-label]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
+                         [(ngModel)]="answerDictionary()![childItem.linkId]">
                     </mat-form-field>
                   }
                   @case (QuestionnaireItemType.quantity) {
@@ -189,13 +209,17 @@
                         appearance="outline"
                         class="value-unit-input margin-right-md">
                         <mat-label>Value</mat-label>
-                        <input type="number" matInput [(ngModel)]="answerDictionary()![childItem.linkId].value">
+                        <input type="number" matInput
+                               [attr.aria-label]="(childItem.text || 'Question ' + getQuestionNumber(item, j)) + ' value'"
+                               [(ngModel)]="answerDictionary()![childItem.linkId].value">
                       </mat-form-field>
                       <mat-form-field
                         appearance="outline"
                         class="value-unit-input margin-left-md">
                         <mat-label>Unit</mat-label>
-                        <input type="text" matInput [(ngModel)]="answerDictionary()![childItem.linkId].unit">
+                        <input type="text" matInput
+                               [attr.aria-label]="(childItem.text || 'Question ' + getQuestionNumber(item, j)) + ' unit'"
+                               [(ngModel)]="answerDictionary()![childItem.linkId].unit">
                       </mat-form-field>
                     </div>
                   }
@@ -203,19 +227,28 @@
                     <mat-form-field
                       appearance="outline" class="question-input"
                       (keyup)="setValue(QuestionnaireItemType.integer, i, j)">
-                      <input type="number" matInput [(ngModel)]="answerDictionary()![childItem.linkId]">
+                       <input
+                         type="number"
+                         matInput
+                         [attr.aria-label]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
+                         [(ngModel)]="answerDictionary()![childItem.linkId]">
                       <mat-hint>Only whole numbers are allowed</mat-hint>
                     </mat-form-field>
                   }
                   @case (QuestionnaireItemType.decimal) {
                     <mat-form-field appearance="outline" class="question-input">
-                      <input type="number" matInput [(ngModel)]="answerDictionary()![childItem.linkId]">
+                       <input
+                         type="number"
+                         matInput
+                         [attr.aria-label]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
+                         [(ngModel)]="answerDictionary()![childItem.linkId]">
                     </mat-form-field>
                   }
                   @case (QuestionnaireItemType.date) {
                     <app-fhir-date-time
                       (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
+                      [questionLabel]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
                       [questionType]="QuestionnaireItemType.date"
                       [inputValue]="answerDictionary()![childItem.linkId]"
                     ></app-fhir-date-time>
@@ -224,6 +257,7 @@
                     <app-fhir-date-time
                       (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
+                      [questionLabel]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
                       [questionType]="QuestionnaireItemType.time"
                       [inputValue]="answerDictionary()![childItem.linkId]"
                     ></app-fhir-date-time>
@@ -232,13 +266,17 @@
                     <app-fhir-date-time
                       (onPickerOpened)="onQuestionHeaderSelected(j)"
                       (onDateTimeUpdated)="answerDictionary()![childItem.linkId] = $event.value"
+                      [questionLabel]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
                       [questionType]="QuestionnaireItemType.dateTime"
                       [inputValue]="answerDictionary()![childItem.linkId]"
                     ></app-fhir-date-time>
                   }
-                  @case (QuestionnaireItemType.text) {
-                    <textarea rows="8" class="question-input sans-serif"
-                              [(ngModel)]="answerDictionary()![childItem.linkId]"></textarea>
+                   @case (QuestionnaireItemType.text) {
+                     <textarea
+                               rows="8"
+                               class="question-input sans-serif"
+                               [attr.aria-label]="childItem.text || 'Question ' + getQuestionNumber(item, j)"
+                               [(ngModel)]="answerDictionary()![childItem.linkId]"></textarea>
                   }
                 }
 

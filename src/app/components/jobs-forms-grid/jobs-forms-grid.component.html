@@ -50,8 +50,10 @@
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>DOB Range</mat-label>
                         <mat-date-range-input [rangePicker]="dobRangePicker">
-                          <input matStartDate [formField]="form.dobRange.start" placeholder="Start date">
-                          <input matEndDate [formField]="form.dobRange.end" placeholder="End date">
+                          <input matStartDate [formField]="form.dobRange.start" placeholder="Start date"
+                                 aria-label="DOB range start date">
+                          <input matEndDate [formField]="form.dobRange.end" placeholder="End date"
+                                 aria-label="DOB range end date">
                         </mat-date-range-input>
                         <mat-datepicker-toggle matIconSuffix [for]="dobRangePicker"></mat-datepicker-toggle>
                         <mat-date-range-picker #dobRangePicker></mat-date-range-picker>
@@ -105,8 +107,10 @@
                       <mat-form-field class="margin-right-md full-width" appearance="outline">
                         <mat-label>Job Ran Date Range</mat-label>
                         <mat-date-range-input [rangePicker]="jobRanDateRangePicker">
-                          <input matStartDate [formField]="form.jobRanDateRange.start" placeholder="Start date">
-                          <input matEndDate [formField]="form.jobRanDateRange.end" placeholder="End date">
+                          <input matStartDate [formField]="form.jobRanDateRange.start" placeholder="Start date"
+                                 aria-label="Job ran date range start date">
+                          <input matEndDate [formField]="form.jobRanDateRange.end" placeholder="End date"
+                                 aria-label="Job ran date range end date">
                         </mat-date-range-input>
                         <mat-datepicker-toggle matIconSuffix [for]="jobRanDateRangePicker"></mat-datepicker-toggle>
                         <mat-date-range-picker #jobRanDateRangePicker></mat-date-range-picker>
@@ -119,7 +123,8 @@
                       <mat-icon>search</mat-icon>
                       Search
                     </button>
-                    <button matButton="outlined" type="button" (click)="onClearFilters()" [disabled]="patientResource.isLoading()">
+                    <button matButton="outlined" type="button" (click)="onClearFilters()"
+                            [disabled]="patientResource.isLoading()">
                       <mat-icon>clear</mat-icon>
                       Clear Filters
                     </button>
@@ -143,7 +148,7 @@
 
               <!-- Actions Column -->
               <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef></th>
+                <th mat-header-cell *matHeaderCellDef aria-label="Form actions"></th>
                 <td mat-cell *matCellDef="let patient">
                   @if (patient.questionnaireResponseStatus === FormStatus.PREVIEW) {
                     <button mat-stroked-button class="action-button preview-action" (click)="onSelectRecord(patient)">
@@ -210,19 +215,22 @@
                 <th mat-header-cell *matHeaderCellDef>Date / Time Ran</th>
                 <td mat-cell *matCellDef="let patient">
                   <div class="icon-with-text">
-                    <span>{{ patient.jobStartDateTime | date :'MM/dd/yyyy'  }}<br>{{ patient.jobStartDateTime | date :'HH:mm:ss'  }}</span>
+                    <span>{{ patient.jobStartDateTime | date :'MM/dd/yyyy' }}
+                      <br>{{ patient.jobStartDateTime | date :'HH:mm:ss' }}</span>
                   </div>
                 </td>
               </ng-container>
 
               <!-- Warning column (for now only used for stale jobs) -->
               <ng-container matColumnDef="warning">
-                <th mat-header-cell *matHeaderCellDef></th>
+                <th mat-header-cell *matHeaderCellDef aria-label="Warnings"></th>
                 <td mat-cell *matCellDef="let patient">
                   <div class="icon-with-text">
                     @if (staleJobFound(patient)) {
-                      <span class="pointer" matTooltip="Warning: This job is over 30 days old">
-                        <mat-icon>running_with_errors</mat-icon>
+                      <span class="pointer" tabindex="0" role="img"
+                            aria-label="Warning: This job is over 30 days old"
+                            matTooltip="Warning: This job is over 30 days old">
+                        <mat-icon aria-hidden="true">running_with_errors</mat-icon>
                       </span>
                     }
                   </div>
@@ -231,11 +239,13 @@
 
               <!-- Actions column. For now used for delete job -->
               <ng-container matColumnDef="buttons">
-                <th mat-header-cell *matHeaderCellDef></th>
+                <th mat-header-cell *matHeaderCellDef aria-label="Delete actions"></th>
                 <td mat-cell *matCellDef="let patient">
-                    <button matIconButton class="delete-action" aria-label="Delete job or form" matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                  <button matIconButton class="delete-action"
+                          [attr.aria-label]="'Delete job or form for ' + patient.patientName + (patient.jobPackage ? ', ' + patient.jobPackage : '')"
+                          matTooltip="Delete Job/Form" (click)="onDeleteJob(patient)">
+                    <mat-icon aria-hidden="true">delete</mat-icon>
+                  </button>
                 </td>
               </ng-container>
 
