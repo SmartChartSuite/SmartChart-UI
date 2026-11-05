@@ -10,22 +10,28 @@
           </div>
         </div>
         <div class="border padding-md margin-top-md">
-           @if (filtersVisible()) {
-             <button matButton (click)="filtersVisible.set(!filtersVisible())">
-               <mat-icon aria-hidden="true">filter_list</mat-icon>
-               <mat-icon iconPositionEnd matTooltip="Hide Filters">expand_less</mat-icon>
-               Search Filters
-             </button>
-           } @else {
-             <button matButton (click)="filtersVisible.set(!filtersVisible())">
-               <mat-icon aria-hidden="true">filter_list</mat-icon>
-               <mat-icon iconPositionEnd matTooltip="Hide Filters">expand_more</mat-icon>
-               Search Filters
-             </button>
-           }
-          <div>
             @if (filtersVisible()) {
-              <form [formRoot]="form" class="margin-top-md">
+              <button matButton
+                      [attr.aria-expanded]="filtersVisible()"
+                      aria-controls="search-filters"
+                      (click)="filtersVisible.set(!filtersVisible())">
+                <mat-icon aria-hidden="true">filter_list</mat-icon>
+                <mat-icon iconPositionEnd matTooltip="Hide search filters">expand_less</mat-icon>
+                Search Filters
+              </button>
+            } @else {
+              <button matButton
+                      [attr.aria-expanded]="filtersVisible()"
+                      aria-controls="search-filters"
+                      (click)="filtersVisible.set(!filtersVisible())">
+                <mat-icon aria-hidden="true">filter_list</mat-icon>
+                <mat-icon iconPositionEnd matTooltip="Show search filters">expand_more</mat-icon>
+                Search Filters
+              </button>
+            }
+           <div>
+             @if (filtersVisible()) {
+               <form id="search-filters" [formRoot]="form" class="margin-top-md">
 
                 <div class="inputs-container">
                   <div class="fields-section">
@@ -141,6 +147,7 @@
                </span>
              </ng-template>
              <table mat-table [dataSource]="patients()" multiTemplateDataRows class="mat-elevation-z0">
+               <caption class="sr-only">Forms and abstraction job status</caption>
 
               <!-- Form Name Column -->
               <ng-container matColumnDef="formName">
@@ -187,8 +194,9 @@
                       <span class="job-progress-label">
                         {{ jobStatusLabel(patient) === 'Pending' ? 'Queued abstraction logic' : 'Running abstraction logic' }}
                       </span>
-                      <div class="job-progress-track" role="progressbar"
-                           [attr.aria-valuenow]="jobProgressPercent(patient)"
+                       <div class="job-progress-track" role="progressbar"
+                            [attr.aria-label]="jobStatusLabel(patient) + ' abstraction progress'"
+                            [attr.aria-valuenow]="jobProgressPercent(patient)"
                            aria-valuemin="0" aria-valuemax="100">
                         <span [style.width.%]="jobProgressPercent(patient)"></span>
                       </div>

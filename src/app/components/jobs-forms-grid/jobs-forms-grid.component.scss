@@ -271,6 +271,11 @@
         }
       }
 
+      .form-list-row:focus-visible > td.mat-mdc-cell {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+      }
+
       .form-list-row:hover + .progress-row,
       .progress-row:hover,
       .form-list-row:has(+ .progress-row:hover) {
