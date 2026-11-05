@@ -26,7 +26,6 @@ import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
 import { ErrorMessage } from '../../models/error-message';
 import { Questionnaire } from '../../models/fhir/resources/fhir.questionnaire';
-import { QuestionnaireResponse } from '../../models/fhir/resources/fhir.questionnaireresponse';
 import { FormDetails } from '../../models/form-details';
 import { FormDetailsHelperService } from '../../services/helper/form-details-helper.service';
 import { UtilsService } from '../../services/utils/utils.service';
