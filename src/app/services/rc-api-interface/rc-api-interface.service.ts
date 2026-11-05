@@ -33,6 +33,13 @@ export class RcApiInterfaceService {
   batchJobsEndpoint: string = `${this.base}batchjob`
   getResultsEndpoint: string = `${this.base}results`
 
+  private readonly config$ = this.http.get<RcApiConfig>(this.configEndpoint).pipe(
+    shareReplay({bufferSize: 1, refCount: true})
+  );
+  private readonly questionnaireCache = new Map<string, Observable<FhirBaseResource>>();
+  private readonly jobPackageCache = new Map<string, Observable<any>>();
+  private readonly patientCache = new Map<string, Observable<FhirBaseResource>>();
+
   getFormNames$ = this.getFormNames().pipe(
     map(response => [...response].sort((a, b) => a.title.localeCompare(b.title))),
     shareReplay(1)
@@ -49,7 +56,7 @@ export class RcApiInterfaceService {
    */
 
   getConfig(): Observable<RcApiConfig> {
-    return this.http.get<RcApiConfig>(this.configEndpoint);
+    return this.config$;
   }
 
   /**
@@ -57,7 +64,13 @@ export class RcApiInterfaceService {
    * @param id - The patient's FHIR ID.
    */
   getPatient(id: string): Observable<FhirBaseResource> {
-    return this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
+    const cached = this.patientCache.get(id);
+    if (cached) return cached;
+    const request$ = this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`).pipe(
+      shareReplay({bufferSize: 1, refCount: true})
+    );
+    this.patientCache.set(id, request$);
+    return request$;
   }
 
   /**
@@ -207,6 +220,16 @@ export class RcApiInterfaceService {
   getJobPackage(parameters: { key: string; value: string }): Observable<any> {
     const params = { [parameters.key]: parameters.value };
 
+    if (parameters.key === 'name') {
+      const cached = this.jobPackageCache.get(parameters.value);
+      if (cached) return cached;
+      const request$ = this.http.get<FhirBaseResource>(this.getJobPackageEndpoint, {params}).pipe(
+        shareReplay({bufferSize: 1, refCount: true})
+      );
+      this.jobPackageCache.set(parameters.value, request$);
+      return request$;
+    }
+
     return this.http.get<FhirBaseResource>(this.getJobPackageEndpoint,
       { params }
     );
@@ -214,6 +237,16 @@ export class RcApiInterfaceService {
     // return this.http.get<FhirBaseResource>('assets/temp/ui-for-testing.json',
     //   { params }
     // );
+  }
+
+  getQuestionnaire(questionnaireId: string): Observable<FhirBaseResource> {
+    const cached = this.questionnaireCache.get(questionnaireId);
+    if (cached) return cached;
+    const request$ = this.http.get<FhirBaseResource>(`${this.getJobPackageEndpoint}/${questionnaireId}`).pipe(
+      shareReplay({bufferSize: 1, refCount: true})
+    );
+    this.questionnaireCache.set(questionnaireId, request$);
+    return request$;
   }
 
   /**
