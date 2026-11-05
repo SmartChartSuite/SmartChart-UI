@@ -55,7 +55,6 @@ export class FormDetailsHelperService {
         : undefined
     };
 
-    console.log('[FormDetails]', details);
     return details;
   }
 }

@@ -1,8 +1,10 @@
 .form-summary-wrapper {
+  height: 100%;
   min-height: 0;
   padding-bottom: 24px;
 
   > .component-content {
+    height: 100%;
     min-height: 0;
     padding: 0;
   }
@@ -20,6 +22,7 @@
     grid-template-columns: minmax(0, 3fr) minmax(300px, 1fr);
     height: 100%;
     min-height: 0;
+    overflow: hidden;
   }
 
   .forms-workspace > .centered-screen {
@@ -261,12 +264,30 @@
 
       .form-list-row:hover,
       .form-list-row.selected-form-row {
-        background-color: var(--color-primary-light);
+        background-color: #eee9ff;
+
+        > td.mat-mdc-cell {
+          background-color: #eee9ff;
+        }
+      }
+
+      .form-list-row:hover + .progress-row,
+      .progress-row:hover,
+      .form-list-row:has(+ .progress-row:hover) {
+        background: color-mix(in oklab, #eee9ff 55%, var(--color-surface));
+
+        > td.mat-mdc-cell {
+          background: color-mix(in oklab, #eee9ff 55%, var(--color-surface));
+        }
+      }
+
+      .form-list-row:has(+ .progress-row:hover) > td.mat-mdc-cell {
+        background-color: #eee9ff;
       }
 
       .progress-row {
         background: transparent;
-        cursor: default;
+        cursor: pointer;
 
         td {
           padding: 3px 12px 8px;
@@ -275,7 +296,11 @@
       }
 
       .progress-row.selected-progress {
-        background: color-mix(in oklab, var(--color-primary-light) 58%, var(--color-surface));
+        background: color-mix(in oklab, #eee9ff 58%, var(--color-surface));
+
+        > td.mat-mdc-cell {
+          background: color-mix(in oklab, #eee9ff 58%, var(--color-surface));
+        }
       }
 
       .job-progress {
@@ -319,13 +344,99 @@
         font-size: 11px;
       }
 
-      th {
+      .job-complete-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .job-warning {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #856404;
+        font-size: 11px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .job-warning mat-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+      }
+
+      .job-error-state {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--mat-sys-error);
+      }
+
+      .job-error-state mat-icon {
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+      }
+
+      .form-name,
+      .form-id,
+      .table-date {
+        display: block;
+      }
+
+      .form-name {
+        color: var(--color-text-primary);
+        font-size: 13px;
         font-weight: 600;
-        color: #333;
+      }
+
+      .form-id,
+      .table-date {
+        margin-top: 3px;
+        color: var(--color-text-secondary);
+        font-family: var(--font-family-mono);
+        font-size: 11px;
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-family: var(--font-family-mono);
+        font-size: 10px;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .status-active {
+        background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+        color: var(--color-primary);
+      }
+
+      .status-draft {
+        background: color-mix(in oklab, #c47a00 18%, transparent);
+        color: var(--color-text-primary);
+      }
+
+      .status-archived {
+        background: var(--color-border-soft);
+        color: var(--color-text-secondary);
+      }
+
+      th {
+        color: var(--color-text-secondary);
+        font-family: var(--font-family-mono);
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
       }
 
       td, th {
-        padding: 12px 16px;
+        padding: 11px 12px;
       }
 
       .action-button {

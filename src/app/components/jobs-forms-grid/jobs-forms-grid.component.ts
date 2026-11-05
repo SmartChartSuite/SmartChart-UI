@@ -86,8 +86,7 @@ export class JobsFormsGridComponent {
   protected readonly FORM_STATUS_OPTIONS = [...FORM_STATUS_OPTIONS];
   protected readonly JOB_STATUS_OPTIONS = [...JOB_STATUS_OPTIONS];
   protected readonly displayedColumns: string[] = [
-    'formStatus', 'actions', 'patient', 'patientDob',
-    'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan',  'warning'
+    'formName', 'patient', 'responseStatus', 'lastUpdated'
   ];
   protected readonly progressColumns = ['progress'];
 
@@ -270,7 +269,8 @@ export class JobsFormsGridComponent {
   }
 
   protected staleJobFound(patient: PatientGrid): boolean {
-    if (patient.batchJobStatus === JobStatus.COMPLETE || !patient.jobStartDateTime) {
+    if ((patient.batchJobStatus !== JobStatus.COMPLETE && patient.batchJobStatus !== JobStatus.PARTIAL)
+      || !patient.jobStartDateTime) {
       return false;
     }
 
@@ -292,6 +292,16 @@ export class JobsFormsGridComponent {
   protected isActiveJob(patient: PatientGrid): boolean {
     return patient.batchJobStatus === JobStatus.PENDING
       || patient.batchJobStatus === JobStatus.RUNNING;
+  }
+
+  protected canOpenForm(patient: PatientGrid): boolean {
+    return !this.isActiveJob(patient) && patient.batchJobStatus !== JobStatus.ERROR;
+  }
+
+  protected openFormTooltip(patient: PatientGrid): string {
+    return patient.batchJobStatus === JobStatus.ERROR
+      ? 'The form cannot be opened because abstraction ended with an error.'
+      : 'Please wait for abstraction to finish before opening the form.';
   }
 
   protected jobStatusLabel(patient: PatientGrid): string {
