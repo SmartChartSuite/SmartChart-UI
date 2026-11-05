@@ -33,6 +33,14 @@
               "src/assets"
             ],
             "styles": [
+              "@fontsource-variable/inter/opsz.css",
+              "@fontsource-variable/inter/opsz-italic.css",
+              "@fontsource/roboto/400.css",
+              "@fontsource/roboto/500.css",
+              "@fontsource/roboto/700.css",
+              "@fontsource/roboto-mono/400.css",
+              "@fontsource/roboto-mono/500.css",
+              "@fontsource/roboto-mono/600.css",
               "src/styles.scss"
             ],
             "allowedCommonJsDependencies": ["moment"],

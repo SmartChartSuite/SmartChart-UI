@@ -25,8 +25,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {PatientDetailsComponent} from "./patient-details/patient-details.component";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatButton} from "@angular/material/button";
-import {MatNavList} from "@angular/material/list";
-import {NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
 import {MatOption, MatSelect} from "@angular/material/select";
@@ -42,6 +40,7 @@ import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionn
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
 import {PatientGrid} from "../../models/patient-grid";
+import {QuestionnaireProgressService} from "../../services/helper/questionnaire-progress.service";
 
 @Component({
   selector: 'app-form-viewer',
@@ -52,8 +51,6 @@ import {PatientGrid} from "../../models/patient-grid";
     PatientDetailsComponent,
     MatProgressSpinner,
     MatButton,
-    MatNavList,
-    NgClass,
     QuestionnaireIndexDirective,
     MatRadioGroup,
     FormsModule,
@@ -79,6 +76,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private readonly outputMapper = inject(FormOutputMappingService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly questionnaireProgress = inject(QuestionnaireProgressService);
 
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
 
@@ -481,10 +479,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   protected getQuestionCount(item: Item): number {
-    if (!item || !item.item?.length) {
-      return 0;
-    }
-    return item.item.filter(element => element?.type !== 'display').length;
+    return this.questionnaireProgress.countQuestions(item);
   }
 
   protected getQuestionNumber(section: Item, questionIndex: number): number {
@@ -495,38 +490,24 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   protected getAnsweredQuestionCount(item: Item): number {
-    return (item.item ?? []).filter(question => {
-      if (question.type === QuestionnaireItemType.display) {
-        return false;
-      }
-
-      const answer = this.answerDictionary()?.[question.linkId];
-      if (answer === undefined || answer === null || answer === '') {
-        return false;
-      }
-
-      return !Array.isArray(answer) || answer.length > 0;
-    }).length;
+    return this.questionnaireProgress.countAnswered(item, this.isAnswered);
   }
 
   protected getTotalQuestionCount(): number {
-    return (this.questionnaire()?.item ?? []).reduce(
-      (total, section) => total + this.getQuestionCount(section), 0
-    );
+    return this.questionnaireProgress.getProgress(this.questionnaire(), this.isAnswered).total;
   }
 
   protected getTotalAnsweredQuestionCount(): number {
-    return (this.questionnaire()?.item ?? []).reduce(
-      (total, section) => total + this.getAnsweredQuestionCount(section), 0
-    );
+    return this.questionnaireProgress.getProgress(this.questionnaire(), this.isAnswered).answered;
   }
 
   protected getOverallProgressPercent(): number {
-    const totalQuestions = this.getTotalQuestionCount();
-    return totalQuestions > 0
-      ? (this.getTotalAnsweredQuestionCount() / totalQuestions) * 100
-      : 0;
+    return this.questionnaireProgress.getProgress(this.questionnaire(), this.isAnswered).percent;
   }
+
+  /** Answer lookup against the in-memory (possibly unsaved) answers. */
+  private readonly isAnswered = (linkId: string): boolean =>
+    this.questionnaireProgress.hasAnswerValue(this.answerDictionary()?.[linkId]);
 
   protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
     if (!results || !linkId) {

@@ -1,0 +1,3877 @@
+{
+    "resourceType": "Bundle",
+    "type": "collection",
+    "total": 89,
+    "entry": [
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "status-observation",
+                "status": "complete",
+                "code": {
+                    "coding": [
+                        {
+                            "code": "result-status"
+                        }
+                    ]
+                },
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "code": "complete"
+                        }
+                    ],
+                    "text": "Batch job status: 100% (1/1)"
+                }
+            },
+            "fullUrl": "Observation/status-observation"
+        },
+        {
+            "resource": {
+                "resourceType": "Patient",
+                "id": "627902",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-06T16:05:10.922+00:00",
+                    "source": "#VA8UUwHAgZxjiVb1"
+                },
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-race",
+                        "extension": [
+                            {
+                                "url": "ombCategory",
+                                "valueCoding": {
+                                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                                    "code": "2106-3",
+                                    "display": "White"
+                                }
+                            },
+                            {
+                                "url": "text",
+                                "valueString": "White"
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity",
+                        "extension": [
+                            {
+                                "url": "ombCategory",
+                                "valueCoding": {
+                                    "system": "urn:oid:2.16.840.1.113883.6.238",
+                                    "code": "2186-5",
+                                    "display": "Not Hispanic or Latino"
+                                }
+                            },
+                            {
+                                "url": "text",
+                                "valueString": "Not Hispanic or Latino"
+                            }
+                        ]
+                    },
+                    {
+                        "url": "http://open.epic.com/FHIR/StructureDefinition/extension/legal-sex",
+                        "valueCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:1.2.840.114350.1.13.244.2.7.10.698084.130.768080.39128",
+                                    "code": "male",
+                                    "display": "male"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/patient-genderIdentity",
+                        "valueCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "http://hl7.org/fhir/gender-identity",
+                                    "code": "male",
+                                    "display": "male"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "url": "http://open.epic.com/FHIR/StructureDefinition/extension/sex-for-clinical-use",
+                        "valueCodeableConcept": {
+                            "coding": [
+                                {
+                                    "system": "urn:oid:1.2.840.114350.1.13.244.2.7.10.698084.130.768080.35144",
+                                    "code": "male",
+                                    "display": "male"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+                        "valueDateTime": "2024-01-10T14:53:00+00:00"
+                    }
+                ],
+                "identifier": [
+                    {
+                        "use": "usual",
+                        "type": {
+                            "text": "GA8"
+                        },
+                        "system": "urn:oid:1.2.840.114350.1.13.876.1.4.8.725198.0",
+                        "value": "87654321"
+                    }
+                ],
+                "active": true,
+                "name": [
+                    {
+                        "use": "official",
+                        "text": "Chase Campbell",
+                        "family": "Campbell",
+                        "given": [
+                            "Chase"
+                        ]
+                    }
+                ],
+                "telecom": [
+                    {
+                        "system": "phone",
+                        "value": "404-678-9876",
+                        "use": "home"
+                    }
+                ],
+                "gender": "male",
+                "birthDate": "2024-01-10",
+                "address": [
+                    {
+                        "use": "home",
+                        "line": [
+                            "875 WEST PEACHTREE ROAD NORTHEAST"
+                        ],
+                        "city": "ATLANTA",
+                        "district": "FULTON",
+                        "state": "GA",
+                        "postalCode": "30308",
+                        "country": "USA"
+                    }
+                ],
+                "maritalStatus": {
+                    "text": "Single"
+                },
+                "multipleBirthInteger": 1,
+                "communication": [
+                    {
+                        "language": {
+                            "coding": [
+                                {
+                                    "system": "urn:ietf:bcp:47",
+                                    "code": "en",
+                                    "display": "English"
+                                }
+                            ]
+                        },
+                        "preferred": true
+                    }
+                ]
+            },
+            "fullUrl": "Patient/627902"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c3540e2d-d4b8-5fe8-96fa-213a7dda6da5",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c3540e2d-d4b8-5fe8-96fa-213a7dda6da5"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/5455e1c4-061f-4d18-9aaa-d35cea20593f"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c3540e2d-d4b8-5fe8-96fa-213a7dda6da5"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "5455e1c4-061f-4d18-9aaa-d35cea20593f",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:01:00.298+00:00",
+                    "source": "#Bt7iOkUeubYTr1uN",
+                    "profile": [
+                        "http://hl7.org/fhir/StructureDefinition/vitalsigns"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "8306-3",
+                            "display": "Body Height --lying"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+                },
+                "valueQuantity": {
+                    "value": 50.0,
+                    "unit": "cm",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "cm"
+                }
+            },
+            "fullUrl": "Observation/5455e1c4-061f-4d18-9aaa-d35cea20593f"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "7f77067c-aeae-5a3e-a113-85adfef63197",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/7f77067c-aeae-5a3e-a113-85adfef63197"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/a60a12c5-c67b-40ad-bb68-b32cac969881"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/7f77067c-aeae-5a3e-a113-85adfef63197"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "a60a12c5-c67b-40ad-bb68-b32cac969881",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:01:54.562+00:00",
+                    "source": "#To91PbimHW4F7JE9",
+                    "profile": [
+                        "http://hl7.org/fhir/StructureDefinition/vitalsigns"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "29463-7",
+                            "display": "Body Weight"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+                },
+                "valueQuantity": {
+                    "value": 3.2,
+                    "unit": "kg",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg"
+                }
+            },
+            "fullUrl": "Observation/a60a12c5-c67b-40ad-bb68-b32cac969881"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "ffdddfed-cc94-5932-98db-674708a63975",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/ffdddfed-cc94-5932-98db-674708a63975"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/9e578fa5-9fd5-40da-a5c6-74b018425931"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/ffdddfed-cc94-5932-98db-674708a63975"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "9e578fa5-9fd5-40da-a5c6-74b018425931",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:02:26.029+00:00",
+                    "source": "#VUQOZC7vgDrpMkxU",
+                    "profile": [
+                        "http://hl7.org/fhir/StructureDefinition/vitalsigns"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "8287-5",
+                            "display": "Head Occipital-frontal circumference by Tape measure"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+                },
+                "valueQuantity": {
+                    "value": 34.0,
+                    "unit": "cm",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "cm"
+                }
+            },
+            "fullUrl": "Observation/9e578fa5-9fd5-40da-a5c6-74b018425931"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "4955bf5d-3d67-5157-b0ff-5dff81dab20a",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/4955bf5d-3d67-5157-b0ff-5dff81dab20a"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/211f5d87-52e1-4e6b-aaf1-dd1fa8d1d625"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/4955bf5d-3d67-5157-b0ff-5dff81dab20a"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "211f5d87-52e1-4e6b-aaf1-dd1fa8d1d625",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "726-0",
+                            "display": "Hemoglobin [Mass/volume] in Urine"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/0c1c7eef-9921-41a5-af14-228868ffd6ba"
+                },
+                "effectiveDateTime": "2024-03-10T00:00:00+00:00",
+                "valueQuantity": {
+                    "value": 80000.0,
+                    "unit": "mcL",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "mcL"
+                }
+            },
+            "fullUrl": "Observation/211f5d87-52e1-4e6b-aaf1-dd1fa8d1d625"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b578779d-74c2-583f-9c87-c7526b29e625",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b578779d-74c2-583f-9c87-c7526b29e625"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/6696a6dc-586f-45df-90d8-9baec3fda8ad"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b578779d-74c2-583f-9c87-c7526b29e625"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "6696a6dc-586f-45df-90d8-9baec3fda8ad",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "778-1",
+                            "display": "Platelets [#/volume] in Blood by Manual count"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/0c1c7eef-9921-41a5-af14-228868ffd6ba"
+                },
+                "effectiveDateTime": "2024-03-10T00:00:00+00:00",
+                "valueQuantity": {
+                    "value": 10.0,
+                    "unit": "g/dL",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "g/dL"
+                }
+            },
+            "fullUrl": "Observation/6696a6dc-586f-45df-90d8-9baec3fda8ad"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "5db35ada-086c-5071-8f2f-0cf70c9a114b",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/5db35ada-086c-5071-8f2f-0cf70c9a114b"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/2f0b0687-864f-445b-946a-a3ffc0ff4ac3"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/5db35ada-086c-5071-8f2f-0cf70c9a114b"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "2f0b0687-864f-445b-946a-a3ffc0ff4ac3",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:03:10.199+00:00",
+                    "source": "#fSPQbyNktwaivpRI",
+                    "profile": [
+                        "http://hl7.org/fhir/StructureDefinition/vitalsigns"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "8306-3",
+                            "display": "Body Height --lying"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                },
+                "valueQuantity": {
+                    "value": 55.0,
+                    "unit": "cm",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "cm"
+                }
+            },
+            "fullUrl": "Observation/2f0b0687-864f-445b-946a-a3ffc0ff4ac3"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "21f261ed-21fd-5aef-80b1-0e734c285b54",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/21f261ed-21fd-5aef-80b1-0e734c285b54"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/db27c3fb-07fa-4d91-944c-e9f0f9bad0d4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/21f261ed-21fd-5aef-80b1-0e734c285b54"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "db27c3fb-07fa-4d91-944c-e9f0f9bad0d4",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:03:34.124+00:00",
+                    "source": "#9y80prvyhcOTQDdR",
+                    "profile": [
+                        "http://hl7.org/fhir/StructureDefinition/vitalsigns"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "29463-7",
+                            "display": "Body Weight"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                },
+                "valueQuantity": {
+                    "value": 4.5,
+                    "unit": "kg",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "kg"
+                }
+            },
+            "fullUrl": "Observation/db27c3fb-07fa-4d91-944c-e9f0f9bad0d4"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "78730c31-1ac3-5005-8066-0309100b5ddf",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/78730c31-1ac3-5005-8066-0309100b5ddf"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/45e453f6-a660-46fb-8dc1-551c202efed7"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/78730c31-1ac3-5005-8066-0309100b5ddf"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "45e453f6-a660-46fb-8dc1-551c202efed7",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:04:04.258+00:00",
+                    "source": "#CLxgYPN683JRcfo8",
+                    "profile": [
+                        "http://hl7.org/fhir/StructureDefinition/vitalsigns"
+                    ]
+                },
+                "status": "final",
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://loinc.org",
+                            "code": "8287-5",
+                            "display": "Head Occipital-frontal circumference by Tape measure"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                },
+                "valueQuantity": {
+                    "value": 36.0,
+                    "unit": "cm",
+                    "system": "http://unitsofmeasure.org",
+                    "code": "cm"
+                }
+            },
+            "fullUrl": "Observation/45e453f6-a660-46fb-8dc1-551c202efed7"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "0fa1899e-acf4-59a5-a37f-a0d5b2280a18",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/0fa1899e-acf4-59a5-a37f-a0d5b2280a18"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/a06d1f28-0fa8-4e4a-9c92-4f841b12c1f0"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/0fa1899e-acf4-59a5-a37f-a0d5b2280a18"
+        },
+        {
+            "resource": {
+                "resourceType": "Condition",
+                "id": "a06d1f28-0fa8-4e4a-9c92-4f841b12c1f0",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                            "code": "confirme",
+                            "display": "Confirmed"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "P59.9",
+                            "display": "Neonatal jaundice, unspecified"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                },
+                "onsetDateTime": "2024-01-12T00:00:00+00:00"
+            },
+            "fullUrl": "Condition/a06d1f28-0fa8-4e4a-9c92-4f841b12c1f0"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "9981cb41-5113-5acd-935a-d0c3585978fe",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/9981cb41-5113-5acd-935a-d0c3585978fe"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/d5fd1805-44b1-44dc-9f82-002a7da3fcaf"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/9981cb41-5113-5acd-935a-d0c3585978fe"
+        },
+        {
+            "resource": {
+                "resourceType": "Condition",
+                "id": "d5fd1805-44b1-44dc-9f82-002a7da3fcaf",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                            "code": "confirme",
+                            "display": "Confirmed"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "K75.9",
+                            "display": "Other specified inflammatory liver diseases"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "onsetDateTime": "2024-03-01T00:00:00+00:00"
+            },
+            "fullUrl": "Condition/d5fd1805-44b1-44dc-9f82-002a7da3fcaf"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "6e30ffe1-d763-578f-aa0b-a04fdc2cc3d0",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/6e30ffe1-d763-578f-aa0b-a04fdc2cc3d0"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/06e5548f-63cb-4da5-875d-c5774c763c73"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/6e30ffe1-d763-578f-aa0b-a04fdc2cc3d0"
+        },
+        {
+            "resource": {
+                "resourceType": "Condition",
+                "id": "06e5548f-63cb-4da5-875d-c5774c763c73",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                            "code": "confirme",
+                            "display": "Confirmed"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "A50.59",
+                            "display": "Other late congenital syphilis, symptomatic"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+                },
+                "onsetDateTime": "2024-03-01T00:00:00+00:00"
+            },
+            "fullUrl": "Condition/06e5548f-63cb-4da5-875d-c5774c763c73"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "a44fb531-ddae-58f5-9f7a-f9326b0608c2",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/a44fb531-ddae-58f5-9f7a-f9326b0608c2"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/e1b93be0-80b4-414f-96e1-032e07abd6e4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/a44fb531-ddae-58f5-9f7a-f9326b0608c2"
+        },
+        {
+            "resource": {
+                "resourceType": "Condition",
+                "id": "e1b93be0-80b4-414f-96e1-032e07abd6e4",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                            "code": "confirme",
+                            "display": "Confirmed"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "G00",
+                            "display": "Bacterial meningitis, not elsewhere classified"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "onsetDateTime": "2024-03-01T00:00:00+00:00"
+            },
+            "fullUrl": "Condition/e1b93be0-80b4-414f-96e1-032e07abd6e4"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "21b55739-4b0b-51c1-b01a-eb62bff5dd6d",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/21b55739-4b0b-51c1-b01a-eb62bff5dd6d"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/44f26b20-e0f2-4f6e-805d-62a7585081c1"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/21b55739-4b0b-51c1-b01a-eb62bff5dd6d"
+        },
+        {
+            "resource": {
+                "resourceType": "Condition",
+                "id": "44f26b20-e0f2-4f6e-805d-62a7585081c1",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition"
+                    ]
+                },
+                "clinicalStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+                            "code": "active",
+                            "display": "Active"
+                        }
+                    ]
+                },
+                "verificationStatus": {
+                    "coding": [
+                        {
+                            "system": "http://terminology.hl7.org/CodeSystem/condition-ver-status",
+                            "code": "confirme",
+                            "display": "Confirmed"
+                        }
+                    ]
+                },
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/condition-category",
+                                "code": "encounter-diagnosis",
+                                "display": "Encounter Diagnosis"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                            "code": "G80",
+                            "display": "cerebral palsy"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/2b105121-6190-45ab-b844-c37723d3aa70"
+                },
+                "onsetDateTime": "2024-10-01T00:00:00+00:00"
+            },
+            "fullUrl": "Condition/44f26b20-e0f2-4f6e-805d-62a7585081c1"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c3bc80b3-e227-59ff-bd53-b7ca509cecf8",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c3bc80b3-e227-59ff-bd53-b7ca509cecf8"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/a7b72b53-ae97-4a53-96e3-188898e95186"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c3bc80b3-e227-59ff-bd53-b7ca509cecf8"
+        },
+        {
+            "resource": {
+                "resourceType": "MedicationRequest",
+                "id": "a7b72b53-ae97-4a53-96e3-188898e95186",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:19:43.025+00:00",
+                    "source": "#HnlpxMHaltFVFNM4",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest"
+                    ]
+                },
+                "status": "completed",
+                "intent": "order",
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "18631",
+                            "display": "azithromycin"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+                },
+                "authoredOn": "2024-03-01T00:00:00+00:00",
+                "dosageInstruction": [
+                    {
+                        "text": "Administer 2.5 mL by mouth once daily for 5 days."
+                    }
+                ]
+            },
+            "fullUrl": "MedicationRequest/a7b72b53-ae97-4a53-96e3-188898e95186"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "e476aa71-1448-587a-989e-a2ec7de3ce46",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/e476aa71-1448-587a-989e-a2ec7de3ce46"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/437b7d4c-1bb9-4adc-af06-331d2346464b"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/e476aa71-1448-587a-989e-a2ec7de3ce46"
+        },
+        {
+            "resource": {
+                "resourceType": "MedicationRequest",
+                "id": "437b7d4c-1bb9-4adc-af06-331d2346464b",
+                "meta": {
+                    "versionId": "2",
+                    "lastUpdated": "2025-05-13T19:17:20.398+00:00",
+                    "source": "#1JuwDqF3CpCOtrT6",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest"
+                    ]
+                },
+                "status": "completed",
+                "intent": "order",
+                "medicationCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+                            "code": "4678",
+                            "display": "ganciclovir"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "encounter": {
+                    "reference": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+                },
+                "authoredOn": "2024-03-01T00:00:00+00:00",
+                "dosageInstruction": [
+                    {
+                        "text": "Administer 250 mg by intravenous infusion every 12 hours for 7 days."
+                    }
+                ]
+            },
+            "fullUrl": "MedicationRequest/437b7d4c-1bb9-4adc-af06-331d2346464b"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "cb92f795-6782-5228-b98f-3ea9cb9f0879",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/cb92f795-6782-5228-b98f-3ea9cb9f0879"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/cb92f795-6782-5228-b98f-3ea9cb9f0879"
+        },
+        {
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "https://ehr.myhospital.org/encounter/local/",
+                        "value": "123"
+                    }
+                ],
+                "status": "finished",
+                "class": {
+                    "system": "AMB"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "O80",
+                                "display": "Encounter for full-term uncomplicated delivery"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "period": {
+                    "start": "2024-01-10T00:00:00+00:00",
+                    "end": "2024-01-11T00:00:00+00:00"
+                }
+            },
+            "fullUrl": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "a2caf08f-9dbd-5f22-b2a1-57279fffd909",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/a2caf08f-9dbd-5f22-b2a1-57279fffd909"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/a2caf08f-9dbd-5f22-b2a1-57279fffd909"
+        },
+        {
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "c9683c13-8ea3-4102-90a0-303595172a5e",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "https://ehr.myhospital.org/encounter/local/",
+                        "value": "234"
+                    }
+                ],
+                "status": "finished",
+                "class": {
+                    "system": "IMP"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z00.11",
+                                "display": "Newborn health examination"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "period": {
+                    "start": "2024-02-11T00:00:00+00:00",
+                    "end": "2024-02-11T00:00:00+00:00"
+                }
+            },
+            "fullUrl": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c414d994-8d88-56e0-ace7-928900fd966a",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c414d994-8d88-56e0-ace7-928900fd966a"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c414d994-8d88-56e0-ace7-928900fd966a"
+        },
+        {
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "dfba2fef-0152-4c23-97cf-c7eebe8a14bd",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "https://ehr.myhospital.org/encounter/local/",
+                        "value": "345"
+                    }
+                ],
+                "status": "finished",
+                "class": {
+                    "system": "IMP"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z00.11",
+                                "display": "Newborn health examination"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "period": {
+                    "start": "2024-03-01T00:00:00+00:00",
+                    "end": "2024-03-01T00:00:00+00:00"
+                }
+            },
+            "fullUrl": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c0ca26cd-a407-5d21-85f5-09535b3100e4",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c0ca26cd-a407-5d21-85f5-09535b3100e4"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/2b105121-6190-45ab-b844-c37723d3aa70"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c0ca26cd-a407-5d21-85f5-09535b3100e4"
+        },
+        {
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "2b105121-6190-45ab-b844-c37723d3aa70",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "https://ehr.myhospital.org/encounter/local/",
+                        "value": "456"
+                    }
+                ],
+                "status": "finished",
+                "class": {
+                    "system": "EMER"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z00.11",
+                                "display": "Newborn health examination"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "period": {
+                    "start": "2024-10-01T00:00:00+00:00",
+                    "end": "2024-10-01T00:00:00+00:00"
+                }
+            },
+            "fullUrl": "Encounter/2b105121-6190-45ab-b844-c37723d3aa70"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "86a0ea9c-954d-5a54-9a99-dee2355c3685",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/86a0ea9c-954d-5a54-9a99-dee2355c3685"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-boolean",
+                            "display": "Boolean field: Do you agree?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/0c1c7eef-9921-41a5-af14-228868ffd6ba"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/86a0ea9c-954d-5a54-9a99-dee2355c3685"
+        },
+        {
+            "resource": {
+                "resourceType": "Encounter",
+                "id": "0c1c7eef-9921-41a5-af14-228868ffd6ba",
+                "meta": {
+                    "versionId": "1",
+                    "lastUpdated": "2025-05-12T20:32:46.903+00:00",
+                    "source": "#1oavnQAhg9J3JcG8",
+                    "profile": [
+                        "http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter"
+                    ]
+                },
+                "identifier": [
+                    {
+                        "system": "https://ehr.myhospital.org/encounter/local/",
+                        "value": "345"
+                    }
+                ],
+                "status": "finished",
+                "class": {
+                    "system": "IMP"
+                },
+                "type": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                                "code": "Z00.11",
+                                "display": "Newborn health examination"
+                            }
+                        ]
+                    }
+                ],
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "period": {
+                    "start": "2024-03-10T00:00:00+00:00",
+                    "end": "2024-03-10T00:00:00+00:00"
+                }
+            },
+            "fullUrl": "Encounter/0c1c7eef-9921-41a5-af14-228868ffd6ba"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "38c93f00-9142-5044-8051-0d7af5d7233b",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/38c93f00-9142-5044-8051-0d7af5d7233b"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-string",
+                            "display": "String field: Enter your name"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/a06d1f28-0fa8-4e4a-9c92-4f841b12c1f0"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/38c93f00-9142-5044-8051-0d7af5d7233b"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b4c492c6-880e-541d-bb56-d9d46df5d284",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b4c492c6-880e-541d-bb56-d9d46df5d284"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-string",
+                            "display": "String field: Enter your name"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/d5fd1805-44b1-44dc-9f82-002a7da3fcaf"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b4c492c6-880e-541d-bb56-d9d46df5d284"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "a85d4c6a-3109-5388-998d-627a45c3f8ba",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/a85d4c6a-3109-5388-998d-627a45c3f8ba"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-string",
+                            "display": "String field: Enter your name"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/06e5548f-63cb-4da5-875d-c5774c763c73"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/a85d4c6a-3109-5388-998d-627a45c3f8ba"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "2ee6d587-ad57-5b6c-b6ae-270c79c1bdcc",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/2ee6d587-ad57-5b6c-b6ae-270c79c1bdcc"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-string",
+                            "display": "String field: Enter your name"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/e1b93be0-80b4-414f-96e1-032e07abd6e4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/2ee6d587-ad57-5b6c-b6ae-270c79c1bdcc"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "4fa29e75-d153-51b0-9c62-34aacb5db20d",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/4fa29e75-d153-51b0-9c62-34aacb5db20d"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-string",
+                            "display": "String field: Enter your name"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/44f26b20-e0f2-4f6e-805d-62a7585081c1"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/4fa29e75-d153-51b0-9c62-34aacb5db20d"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "33bc8382-b625-50c7-88d9-d8c6e5d5c4e9",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/33bc8382-b625-50c7-88d9-d8c6e5d5c4e9"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-text",
+                            "display": "Text field: Enter detailed comments"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/a7b72b53-ae97-4a53-96e3-188898e95186"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/33bc8382-b625-50c7-88d9-d8c6e5d5c4e9"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "fdc7cde4-9678-59a3-9f97-922ece41a73a",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/fdc7cde4-9678-59a3-9f97-922ece41a73a"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-text",
+                            "display": "Text field: Enter detailed comments"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/437b7d4c-1bb9-4adc-af06-331d2346464b"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/fdc7cde4-9678-59a3-9f97-922ece41a73a"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b1d8f081-34b4-5de4-89f3-8aac38c61933",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b1d8f081-34b4-5de4-89f3-8aac38c61933"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-integer",
+                            "display": "Integer field: How many items?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b1d8f081-34b4-5de4-89f3-8aac38c61933"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "2d03471c-c6a9-5f98-8041-d93b13b47c24",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/2d03471c-c6a9-5f98-8041-d93b13b47c24"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-integer",
+                            "display": "Integer field: How many items?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/2d03471c-c6a9-5f98-8041-d93b13b47c24"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "f7a301d3-efd5-503c-b377-67c7b5346fb5",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/f7a301d3-efd5-503c-b377-67c7b5346fb5"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-integer",
+                            "display": "Integer field: How many items?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/f7a301d3-efd5-503c-b377-67c7b5346fb5"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "7b2c85d7-0deb-592d-8345-235fc1a5c3e3",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/7b2c85d7-0deb-592d-8345-235fc1a5c3e3"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-integer",
+                            "display": "Integer field: How many items?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/2b105121-6190-45ab-b844-c37723d3aa70"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/7b2c85d7-0deb-592d-8345-235fc1a5c3e3"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "85a6a53c-050b-563d-902a-6e583133b4ed",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/85a6a53c-050b-563d-902a-6e583133b4ed"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-integer",
+                            "display": "Integer field: How many items?"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/0c1c7eef-9921-41a5-af14-228868ffd6ba"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/85a6a53c-050b-563d-902a-6e583133b4ed"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "097bbcdb-c4e2-5766-a32c-529b5145be5e",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/097bbcdb-c4e2-5766-a32c-529b5145be5e"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/5455e1c4-061f-4d18-9aaa-d35cea20593f"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/097bbcdb-c4e2-5766-a32c-529b5145be5e"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "4c75a047-234e-5446-916d-8d4e897becb2",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/4c75a047-234e-5446-916d-8d4e897becb2"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/a60a12c5-c67b-40ad-bb68-b32cac969881"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/4c75a047-234e-5446-916d-8d4e897becb2"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "5b4dbe30-b54f-563e-9773-fc6d2c73102f",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/5b4dbe30-b54f-563e-9773-fc6d2c73102f"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/9e578fa5-9fd5-40da-a5c6-74b018425931"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/5b4dbe30-b54f-563e-9773-fc6d2c73102f"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "d9bc7755-7048-57a4-abbf-38c5b26a40b6",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/d9bc7755-7048-57a4-abbf-38c5b26a40b6"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/211f5d87-52e1-4e6b-aaf1-dd1fa8d1d625"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/d9bc7755-7048-57a4-abbf-38c5b26a40b6"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "babf02a5-37e8-5b7c-9054-2b78586623e1",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/babf02a5-37e8-5b7c-9054-2b78586623e1"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/6696a6dc-586f-45df-90d8-9baec3fda8ad"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/babf02a5-37e8-5b7c-9054-2b78586623e1"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "a64932de-06f1-58f9-888d-ce675fee8c8c",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/a64932de-06f1-58f9-888d-ce675fee8c8c"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/2f0b0687-864f-445b-946a-a3ffc0ff4ac3"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/a64932de-06f1-58f9-888d-ce675fee8c8c"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "8e022efa-559f-56b0-8dc4-384286f41359",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/8e022efa-559f-56b0-8dc4-384286f41359"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/db27c3fb-07fa-4d91-944c-e9f0f9bad0d4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/8e022efa-559f-56b0-8dc4-384286f41359"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "9334f482-a4a8-5f59-abd5-fc8611c52a91",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/9334f482-a4a8-5f59-abd5-fc8611c52a91"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-datetime",
+                            "display": "DateTime field: Select date and time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/45e453f6-a660-46fb-8dc1-551c202efed7"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/9334f482-a4a8-5f59-abd5-fc8611c52a91"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "9e2e551a-a5cb-5023-878d-147ce2a7d56e",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/9e2e551a-a5cb-5023-878d-147ce2a7d56e"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-time",
+                            "display": "Time field: Select a time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/a06d1f28-0fa8-4e4a-9c92-4f841b12c1f0"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/9e2e551a-a5cb-5023-878d-147ce2a7d56e"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "d5b31b8e-4f8b-5838-8570-602c93a08e29",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/d5b31b8e-4f8b-5838-8570-602c93a08e29"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-time",
+                            "display": "Time field: Select a time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/d5fd1805-44b1-44dc-9f82-002a7da3fcaf"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/d5b31b8e-4f8b-5838-8570-602c93a08e29"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c3b569b2-6e57-5024-b9c4-0c4b0f58013f",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c3b569b2-6e57-5024-b9c4-0c4b0f58013f"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-time",
+                            "display": "Time field: Select a time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/06e5548f-63cb-4da5-875d-c5774c763c73"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c3b569b2-6e57-5024-b9c4-0c4b0f58013f"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c7d05a5e-ece3-55cd-b26e-ec1812126445",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c7d05a5e-ece3-55cd-b26e-ec1812126445"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-time",
+                            "display": "Time field: Select a time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/e1b93be0-80b4-414f-96e1-032e07abd6e4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c7d05a5e-ece3-55cd-b26e-ec1812126445"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "8427e11f-abd4-5a69-a3f2-e1a33e4d00c8",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/8427e11f-abd4-5a69-a3f2-e1a33e4d00c8"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-time",
+                            "display": "Time field: Select a time"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/44f26b20-e0f2-4f6e-805d-62a7585081c1"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/8427e11f-abd4-5a69-a3f2-e1a33e4d00c8"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b76c899d-cbeb-54fe-93d7-e3a4dc1da1d5",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b76c899d-cbeb-54fe-93d7-e3a4dc1da1d5"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-url",
+                            "display": "URL field: Enter a web address"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/a7b72b53-ae97-4a53-96e3-188898e95186"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b76c899d-cbeb-54fe-93d7-e3a4dc1da1d5"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "ce78204e-a46b-5667-a23a-883621deef9a",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/ce78204e-a46b-5667-a23a-883621deef9a"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-url",
+                            "display": "URL field: Enter a web address"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/437b7d4c-1bb9-4adc-af06-331d2346464b"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/ce78204e-a46b-5667-a23a-883621deef9a"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "c1a46913-5607-5f9a-94eb-4438be7efd03",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/c1a46913-5607-5f9a-94eb-4438be7efd03"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-choice",
+                            "display": "Choice field: Select one option (valueString)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/8e4a3f7e-c5aa-492f-a1ca-f4068d9e7300"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/c1a46913-5607-5f9a-94eb-4438be7efd03"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "9142619f-e122-57c4-802e-1ed6682e0806",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/9142619f-e122-57c4-802e-1ed6682e0806"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-choice",
+                            "display": "Choice field: Select one option (valueString)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/c9683c13-8ea3-4102-90a0-303595172a5e"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/9142619f-e122-57c4-802e-1ed6682e0806"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "8eda39ff-a922-5481-a7ff-3d0c0a90a97a",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/8eda39ff-a922-5481-a7ff-3d0c0a90a97a"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-choice",
+                            "display": "Choice field: Select one option (valueString)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/dfba2fef-0152-4c23-97cf-c7eebe8a14bd"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/8eda39ff-a922-5481-a7ff-3d0c0a90a97a"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "72e35186-7319-554a-b2fc-ed8c670372a1",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/72e35186-7319-554a-b2fc-ed8c670372a1"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-choice",
+                            "display": "Choice field: Select one option (valueString)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/2b105121-6190-45ab-b844-c37723d3aa70"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/72e35186-7319-554a-b2fc-ed8c670372a1"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b99be2ae-df74-5ca6-b8b2-e74a571c1152",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b99be2ae-df74-5ca6-b8b2-e74a571c1152"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-choice",
+                            "display": "Choice field: Select one option (valueString)"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Encounter/0c1c7eef-9921-41a5-af14-228868ffd6ba"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b99be2ae-df74-5ca6-b8b2-e74a571c1152"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "1390b0d0-2966-5877-b795-9c6d882f256e",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/1390b0d0-2966-5877-b795-9c6d882f256e"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/5455e1c4-061f-4d18-9aaa-d35cea20593f"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/1390b0d0-2966-5877-b795-9c6d882f256e"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "33f4d00a-6b5f-5edf-b7b3-fd86929e995b",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/33f4d00a-6b5f-5edf-b7b3-fd86929e995b"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/a60a12c5-c67b-40ad-bb68-b32cac969881"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/33f4d00a-6b5f-5edf-b7b3-fd86929e995b"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "d00edcc1-477c-56c4-aad9-3bdd707b8d75",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/d00edcc1-477c-56c4-aad9-3bdd707b8d75"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/9e578fa5-9fd5-40da-a5c6-74b018425931"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/d00edcc1-477c-56c4-aad9-3bdd707b8d75"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "23fea89a-f164-5af2-bc24-b193a1dee69b",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/23fea89a-f164-5af2-bc24-b193a1dee69b"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/211f5d87-52e1-4e6b-aaf1-dd1fa8d1d625"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/23fea89a-f164-5af2-bc24-b193a1dee69b"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "88867fa1-f743-555b-96f4-ab303f10d117",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/88867fa1-f743-555b-96f4-ab303f10d117"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/6696a6dc-586f-45df-90d8-9baec3fda8ad"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/88867fa1-f743-555b-96f4-ab303f10d117"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "d050ba39-f651-58fe-8d9c-e582e5c68a74",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/d050ba39-f651-58fe-8d9c-e582e5c68a74"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/2f0b0687-864f-445b-946a-a3ffc0ff4ac3"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/d050ba39-f651-58fe-8d9c-e582e5c68a74"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "719a1994-520a-5690-88f9-f1ac60d6a9ed",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/719a1994-520a-5690-88f9-f1ac60d6a9ed"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/db27c3fb-07fa-4d91-944c-e9f0f9bad0d4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/719a1994-520a-5690-88f9-f1ac60d6a9ed"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "15681324-9603-57b4-8a72-e26ab737805c",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/15681324-9603-57b4-8a72-e26ab737805c"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-question",
+                            "display": "Question type: Generic question field"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Observation/45e453f6-a660-46fb-8dc1-551c202efed7"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/15681324-9603-57b4-8a72-e26ab737805c"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "40bfbc21-2e42-52ad-8a65-415caf81bde1",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/40bfbc21-2e42-52ad-8a65-415caf81bde1"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-attachment",
+                            "display": "Attachment field: Upload a file"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/a06d1f28-0fa8-4e4a-9c92-4f841b12c1f0"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/40bfbc21-2e42-52ad-8a65-415caf81bde1"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "fc5bbfa6-fb40-545a-a014-0bfa6903814f",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/fc5bbfa6-fb40-545a-a014-0bfa6903814f"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-attachment",
+                            "display": "Attachment field: Upload a file"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/d5fd1805-44b1-44dc-9f82-002a7da3fcaf"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/fc5bbfa6-fb40-545a-a014-0bfa6903814f"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "373f1d55-9e28-5aed-9445-8d32e0ba67e0",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/373f1d55-9e28-5aed-9445-8d32e0ba67e0"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-attachment",
+                            "display": "Attachment field: Upload a file"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/06e5548f-63cb-4da5-875d-c5774c763c73"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/373f1d55-9e28-5aed-9445-8d32e0ba67e0"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "cbde962d-734a-5f6d-bc68-077ceaa90ef4",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/cbde962d-734a-5f6d-bc68-077ceaa90ef4"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-attachment",
+                            "display": "Attachment field: Upload a file"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/e1b93be0-80b4-414f-96e1-032e07abd6e4"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/cbde962d-734a-5f6d-bc68-077ceaa90ef4"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b17a1e5d-f6ac-55ed-b41c-5fbb52ff3c8f",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b17a1e5d-f6ac-55ed-b41c-5fbb52ff3c8f"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-attachment",
+                            "display": "Attachment field: Upload a file"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "Condition/44f26b20-e0f2-4f6e-805d-62a7585081c1"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b17a1e5d-f6ac-55ed-b41c-5fbb52ff3c8f"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "9b711f31-aa17-515a-b2fb-ec927823ff2d",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/9b711f31-aa17-515a-b2fb-ec927823ff2d"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-reference",
+                            "display": "Reference field: Link to another resource"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/a7b72b53-ae97-4a53-96e3-188898e95186"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/9b711f31-aa17-515a-b2fb-ec927823ff2d"
+        },
+        {
+            "resource": {
+                "resourceType": "Observation",
+                "id": "b391b657-7c00-5c5a-ac32-ef86ff808e11",
+                "identifier": [
+                    {
+                        "system": "https://smartchartsuite.dev.heat.icl.gtri.org/rc-api/",
+                        "value": "Observation/b391b657-7c00-5c5a-ac32-ef86ff808e11"
+                    }
+                ],
+                "status": "final",
+                "category": [
+                    {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+                                "code": "survey",
+                                "display": "Survey"
+                            }
+                        ]
+                    }
+                ],
+                "code": {
+                    "coding": [
+                        {
+                            "system": "urn:gtri:heat:form:TestAllItemTypesWithLogic",
+                            "code": "test-reference",
+                            "display": "Reference field: Link to another resource"
+                        }
+                    ]
+                },
+                "subject": {
+                    "reference": "Patient/627902"
+                },
+                "focus": [
+                    {
+                        "reference": "MedicationRequest/437b7d4c-1bb9-4adc-af06-331d2346464b"
+                    }
+                ]
+            },
+            "fullUrl": "Observation/b391b657-7c00-5c5a-ac32-ef86ff808e11"
+        }
+    ],
+    "id": "fffdbb4a-f335-543f-be69-32675bead47b"
+}
