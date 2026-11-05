@@ -16,6 +16,7 @@ import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resour
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
+import {OAuthService} from "angular-oauth2-oidc";
 
 
 @Injectable({
@@ -39,7 +40,8 @@ export class RcApiInterfaceService {
 
   constructor(private configService: ConfigService,
               private http: HttpClient,
-              private jobsFormsHelper: JobsFormsHelperService) {
+              private jobsFormsHelper: JobsFormsHelperService,
+              private oauthService: OAuthService) {
   }
 
   /**
@@ -90,36 +92,70 @@ export class RcApiInterfaceService {
 
 
   getFormJobsPatientData(page: number = 0, size: number = 10, filters?: any): Observable<PatientData> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    if (filters) {
-      const mappings = {
-        patientName: 'patientName',
-        dobStartDate: 'dobStartDate',
-        dobEndDate: 'dobEndDate',
-        jobRunStartDate: 'jobRunStartDate',
-        jobRunEndDate: 'jobRunEndDate',
-        jobPackage: 'jobPackage',
-      };
-
-      Object.entries(mappings).forEach(([filterKey, paramKey]) => {
-        if (filters[filterKey]) {
-          params = params.set(paramKey, filters[filterKey]);
-        }
-      });
-
-      ['patientGender', 'questionnaireResponseStatus', 'batchJobStatus'].forEach((key) => {
-        if (filters[key]?.length) {
-          params = params.set(key, filters[key].join(','));
-        }
-      });
-    }
+    const params = this.buildFormJobsParams(page, size, filters);
 
     return this.http.get<Bundle>(`${this.batchJobsEndpoint}`, { params }).pipe(
       map(response => this.jobsFormsHelper.toPatientData(response))
     );
+  }
+
+  getFormJobsPatientDataStream(page = 0, size = 10, filters?: Record<string, any>): Observable<PatientData> {
+    const params = this.buildFormJobsParams(page, size, filters);
+    const url = `${this.base}batchjob/stream/?${params.toString()}`;
+
+    return new Observable<PatientData>(subscriber => {
+      const controller = new AbortController();
+      let active = true;
+      let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+      fetch(url, {
+        headers: {Accept: 'text/event-stream', Authorization: `Bearer ${this.oauthService.getAccessToken()}`},
+        signal: controller.signal
+      }).then(async response => {
+        if (!response.ok || !response.body) throw new Error(`Form list stream failed: ${response.status}`);
+        reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (active && !controller.signal.aborted) {
+          const {value, done} = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, {stream: true});
+          const events = buffer.split(/\r?\n\r?\n/);
+          buffer = events.pop() ?? '';
+          for (const event of events) {
+            const name = event.match(/^event:\s*(.+)$/m)?.[1]?.trim();
+            const data = event.match(/^data:\s*(.+)$/m)?.[1]?.trim();
+            if (active && name === 'form-list' && data) {
+              subscriber.next(this.jobsFormsHelper.toPatientData(JSON.parse(data) as Bundle));
+            }
+          }
+        }
+        if (active && !controller.signal.aborted) subscriber.complete();
+      }).catch(error => {
+        if (active && !controller.signal.aborted && error?.name !== 'AbortError') {
+          subscriber.error(error);
+        }
+      });
+      return () => {
+        active = false;
+        void reader?.cancel();
+        controller.abort();
+      };
+    });
+  }
+
+  private buildFormJobsParams(page: number, size: number, filters?: Record<string, any>): HttpParams {
+    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+    const mappings = {
+      patientName: 'patientName', dobStartDate: 'dobStartDate', dobEndDate: 'dobEndDate',
+      jobRunStartDate: 'jobRunStartDate', jobRunEndDate: 'jobRunEndDate', jobPackage: 'jobPackage'
+    };
+    Object.entries(mappings).forEach(([key, param]) => {
+      if (filters?.[key]) params = params.set(param, filters[key]);
+    });
+    ['patientGender', 'questionnaireResponseStatus', 'batchJobStatus'].forEach(key => {
+      if (filters?.[key]?.length) params = params.set(key, filters[key].join(','));
+    });
+    return params;
   }
 
   private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {

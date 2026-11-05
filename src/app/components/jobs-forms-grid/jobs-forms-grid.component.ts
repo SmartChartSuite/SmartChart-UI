@@ -142,7 +142,7 @@ export class JobsFormsGridComponent {
       filters: this.activeSearchFilters()
     }),
     stream: ({ params }) =>
-      this.rcApiInterface.getFormJobsPatientData(params.page, params.size, params.filters).pipe(
+      this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters).pipe(
         catchError((err) => {
           console.error('Error loading patients:', err);
           return of({ patients: [], total: 0 });
@@ -229,10 +229,7 @@ export class JobsFormsGridComponent {
   }
 
   protected onStartNewJob() {
-    openStartNewJobModal(this.dialog).subscribe(value => {if(value?.refreshRequired) {
-      //TODO need to know what to trigger here
-      this.onClearFilters();
-    }});
+    openStartNewJobModal(this.dialog).subscribe();
 
   }
 
@@ -243,7 +240,6 @@ export class JobsFormsGridComponent {
       next: () => {
         this.utilsService.showSuccessMessage('Job/Form deleted successfully');
         // Reload the grid so the deleted row is removed.
-        this.patientResource.reload();
       },
       error: (err) => {
         console.error('Error deleting job:', err);
