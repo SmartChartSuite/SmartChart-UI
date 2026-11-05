@@ -1,5 +1,5 @@
 import { Component, computed, DestroyRef, inject, linkedSignal, signal, ViewChild } from '@angular/core';
-import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,6 +40,7 @@ import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog
   imports: [
     DatePipe,
     DecimalPipe,
+    NgTemplateOutlet,
     FormsModule,
     ReactiveFormsModule,
     FormRoot,
@@ -262,6 +263,12 @@ export class JobsFormsGridComponent {
   protected selectForm(row: PatientGrid): void {
     this.selectedBatchId.set(row.batchId);
     this.formDetailsExpanded.set(false);
+  }
+
+  protected selectFormFromKeyboard(event: KeyboardEvent, row: PatientGrid): void {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    this.selectForm(row);
   }
 
   protected toggleFormDetails(): void {

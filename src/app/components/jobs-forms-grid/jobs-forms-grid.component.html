@@ -131,10 +131,16 @@
               </form>
             }
           </div>
-        </div>
-        <div class="margin-top-lg border">
-          <div class="table-container">
-            <table mat-table [dataSource]="patients()" multiTemplateDataRows class="mat-elevation-z0">
+         </div>
+         <div class="margin-top-lg border">
+           <div class="table-container">
+             <ng-template #staleWarning>
+               <span class="job-warning" matTooltip="Completed over 30 days ago. Records may be stale.">
+                 <mat-icon aria-hidden="true">warning</mat-icon>
+                 Completed over 30 days ago. Records may be stale.
+               </span>
+             </ng-template>
+             <table mat-table [dataSource]="patients()" multiTemplateDataRows class="mat-elevation-z0">
 
               <!-- Form Name Column -->
               <ng-container matColumnDef="formName">
@@ -190,12 +196,9 @@
                     </div>
                    } @else if (patient.batchJobStatus === JobStatus.COMPLETE) {
                      <div class="job-complete-line">
-                       <span>Job completed{{ patient.jobCompletedDateTime ? ' ' + (patient.jobCompletedDateTime | date : 'MM/dd/yyyy, h:mm a') : '' }} successfully.</span>
-                       @if (staleJobFound(patient)) {
-                         <span class="job-warning" matTooltip="Completed over 30 days ago. Records may be stale.">
-                           <mat-icon aria-hidden="true">warning</mat-icon>
-                           Completed over 30 days ago. Records may be stale.
-                         </span>
+                        <span>Job completed{{ patient.jobCompletedDateTime ? ' ' + (patient.jobCompletedDateTime | date : 'MM/dd/yyyy, h:mm a') : '' }} successfully.</span>
+                        @if (staleJobFound(patient)) {
+                          <ng-container [ngTemplateOutlet]="staleWarning"></ng-container>
                        }
                      </div>
                     } @else {
@@ -206,12 +209,9 @@
                        </div>
                      } @else if (patient.batchJobStatus === JobStatus.PARTIAL) {
                        <div class="job-complete-line">
-                         <span>Abstraction completed with partial results.</span>
-                         @if (staleJobFound(patient)) {
-                           <span class="job-warning" matTooltip="Completed over 30 days ago. Records may be stale.">
-                             <mat-icon aria-hidden="true">warning</mat-icon>
-                             Completed over 30 days ago. Records may be stale.
-                           </span>
+                          <span>Abstraction completed with partial results.</span>
+                          @if (staleJobFound(patient)) {
+                            <ng-container [ngTemplateOutlet]="staleWarning"></ng-container>
                          }
                        </div>
                      } @else {
@@ -224,13 +224,17 @@
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns; when: isMainRow"
                   class="form-list-row"
-                  [class.selected-form-row]="selectedBatchId() === row.batchId"
-                  [attr.aria-selected]="selectedBatchId() === row.batchId"
-                  (click)="selectForm(row)"></tr>
+                   [class.selected-form-row]="selectedBatchId() === row.batchId"
+                   [attr.aria-selected]="selectedBatchId() === row.batchId"
+                   tabindex="0"
+                   (keydown)="selectFormFromKeyboard($event, row)"
+                   (click)="selectForm(row)"></tr>
               <tr mat-row *matRowDef="let row; columns: progressColumns; when: isProgressRow"
                    class="progress-row"
                    [class.selected-progress]="selectedBatchId() === row.batchId"
                    [attr.aria-selected]="selectedBatchId() === row.batchId"
+                   [attr.aria-label]="jobStatusLabel(row) + ' abstraction status'"
+                   tabindex="-1"
                    (click)="selectForm(row)"></tr>
 
               <!-- Loading state - shows when data is empty and loading -->
