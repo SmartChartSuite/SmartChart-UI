@@ -14,6 +14,7 @@ export class FormOutputMappingService {
   constructor() { }
 
 
+  /** Maps the form's answer dictionary into a FHIR QuestionnaireResponse. */
   mapQrToFhir(formAnswers: FormAnswers, questionnaire: FhirBaseResource, activeFormSummary?: ActiveFormSummary): QuestionnaireResponse {
     let qr = new QuestionnaireResponse();
 
@@ -36,60 +37,64 @@ export class FormOutputMappingService {
         let qrChildItem = new QuestionnaireResponseItem();
         qrChildItem.linkId = childItem["linkId"];
         qrChildItem.text = childItem["text"];
+        const answerValue = formAnswers[qrChildItem.linkId];
 
-        if (formAnswers[qrChildItem.linkId]) {
+        if (this.hasAnswer(answerValue)) {
           let answer = {}
           switch (childItem["type"]) {
             // "group" not applicable
             // "display" not applicable
             // "question" not applicable
             case QuestionnaireItemType.boolean: {
-              // TODO: Implement QR Boolean Answer Type
+              const booleanValue = this.toBooleanAnswer(answerValue);
+              if (booleanValue !== undefined) {
+                answer["valueBoolean"] = booleanValue;
+              }
               break;
             }
             case QuestionnaireItemType.decimal: {
-              answer["valueDecimal"] = Number(formAnswers[qrChildItem.linkId])
+              answer["valueDecimal"] = Number(answerValue)
               break;
             }
             case QuestionnaireItemType.integer: {
-              answer["valueInteger"] = Number(formAnswers[qrChildItem.linkId])
+              answer["valueInteger"] = Number(answerValue)
               break;
             }
             case QuestionnaireItemType.date: {
-              answer["valueDate"] = formAnswers[qrChildItem.linkId];
+              answer["valueDate"] = answerValue;
               break;
             }
             case QuestionnaireItemType.dateTime: {
-              answer["valueDateTime"] = formAnswers[qrChildItem.linkId];
+              answer["valueDateTime"] = answerValue;
               break;
             }
             case QuestionnaireItemType.time: {
-              answer["valueTime"] = formAnswers[qrChildItem.linkId];
+              answer["valueTime"] = answerValue;
               break;
             }
             case QuestionnaireItemType.string: {
-              answer["valueString"] = formAnswers[qrChildItem.linkId];
+              answer["valueString"] = answerValue;
               break;
             }
             case QuestionnaireItemType.text: {
-              answer["valueString"] = formAnswers[qrChildItem.linkId];
+              answer["valueString"] = answerValue;
               break;
             }
             case QuestionnaireItemType.url: {
-              answer["valueUri"] = formAnswers[qrChildItem.linkId];
+              answer["valueUri"] = answerValue;
               break;
             }
             case QuestionnaireItemType.choice: {
               // Choice answers may be a FHIR Coding (code + display) or a plain
               // string, depending on whether the answerOption used valueCoding
               // or valueString. Emit the matching QuestionnaireResponse value.
-              const choice = formAnswers[qrChildItem.linkId];
+              const choice = answerValue;
               if (choice && typeof choice === 'object') {
                 answer["valueCoding"] = {
                   code: choice.code,
                   display: choice.display
                 };
-              } else if (choice) {
+              } else if (this.hasAnswer(choice)) {
                 answer["valueString"] = choice;
               }
               break;
@@ -107,7 +112,7 @@ export class FormOutputMappingService {
               break;
             }
             case QuestionnaireItemType.quantity: {
-              let quantity: { value?: number, unit?: string } = this.formatValueQuantity(formAnswers[qrChildItem.linkId]);
+              let quantity: { value?: number, unit?: string } = this.formatValueQuantity(answerValue);
               if (Object.keys(quantity).length > 0){
                 answer["valueQuantity"] = quantity;
               }
@@ -126,12 +131,43 @@ export class FormOutputMappingService {
     return qr;
   }
 
+  /** Treats false and zero as answers while excluding missing or blank values. */
+  private hasAnswer(value: unknown): boolean {
+    return typeof value === 'string'
+      ? value.trim().length > 0
+      : value !== undefined && value !== null;
+  }
+
+  /** Converts supported boolean representations without treating "false" as true. */
+  private toBooleanAnswer(value: unknown): boolean | undefined {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    if (value === 'true') {
+      return true;
+    }
+
+    if (value === 'false') {
+      return false;
+    }
+
+    return undefined;
+  }
+
+  /** Serializes quantity values, including the valid numeric value zero. */
   private formatValueQuantity(quantity: QuantityAnswer): {value?: number, unit?: string} {
     let quantityFormatted: {value?: number, unit?: string} = {};
-    if (quantity.value) {
-      quantityFormatted.value = Number(quantity.value);
+    const rawValue = quantity?.value;
+
+    if (this.hasAnswer(rawValue)) {
+      const numericValue = Number(rawValue);
+      if (Number.isFinite(numericValue)) {
+        quantityFormatted.value = numericValue;
+      }
     }
-    if (quantity.unit) {
+
+    if (quantity?.unit) {
       quantityFormatted.unit = quantity.unit;
     }
     return quantityFormatted;

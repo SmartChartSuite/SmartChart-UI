@@ -1,0 +1,396 @@
+[
+    {
+        "resourceType": "Questionnaire",
+        "id": "634204",
+        "name": "TestAllItemTypesWithLogic",
+        "version": "1.0.0",
+        "meta": {
+            "versionId": "3",
+            "lastUpdated": "2026-08-27T13:05:15.054+00:00",
+            "profile": [
+                "http://gtri.gatech.edu/fakeFormIg/smartchart-form"
+            ]
+        },
+        "extension": [
+            {
+                "url": "http://gtri.gatech.edu/fakeFormIg/structured-form-job-list",
+                "extension": [
+                    {
+                        "url": "form-job",
+                        "valueString": "TestDataRetrieval"
+                    }
+                ]
+            }
+        ],
+        "url": "http://gtri.gatech.edu/fakeFormIg/Questionnaire/TestAllItemTypesWithLogic",
+        "title": "Test All Item Types With CQL Logic",
+        "status": "draft",
+        "experimental": true,
+        "subjectType": [
+            "Patient"
+        ],
+        "publisher": "GTRI",
+        "description": "Comprehensive test questionnaire containing all supported item types with CQL logic attached for thorough testing.",
+        "useContext": [
+            {
+                "code": {
+                    "system": "http://terminology.hl7.org/CodeSystem/usage-context-type",
+                    "code": "workflow",
+                    "display": "Workflow Setting"
+                },
+                "valueCodeableConcept": {
+                    "coding": [
+                        {
+                            "system": "http://gtri.gatech.edu/fakeFormIg/CodeSystem/custom",
+                            "code": "smartchartui",
+                            "display": "SmartChart UI"
+                        }
+                    ]
+                }
+            }
+        ],
+        "item": [
+            {
+                "linkId": "basic-inputs",
+                "text": "Basic Input Types",
+                "type": "group",
+                "item": [
+                    {
+                        "linkId": "basic-header",
+                        "text": "Basic Data Entry Fields",
+                        "type": "display"
+                    },
+                    {
+                        "linkId": "basic-instructions",
+                        "text": "This section contains simple data entry field types for testing UI components with CQL logic.",
+                        "type": "display"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_resources"
+                            }
+                        ],
+                        "linkId": "test-boolean",
+                        "text": "Boolean field: Do you agree?",
+                        "type": "boolean"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_conditions"
+                            }
+                        ],
+                        "linkId": "test-string",
+                        "text": "String field: Enter your name",
+                        "type": "string"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_medication_requests"
+                            }
+                        ],
+                        "linkId": "test-text",
+                        "text": "Text field: Enter detailed comments",
+                        "type": "text"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_encounters"
+                            }
+                        ],
+                        "linkId": "test-integer",
+                        "text": "Integer field: How many items?",
+                        "type": "integer"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_procedures"
+                            }
+                        ],
+                        "linkId": "test-decimal",
+                        "text": "Decimal field: Enter measurement (cm)",
+                        "type": "decimal"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_coverage"
+                            }
+                        ],
+                        "linkId": "test-date",
+                        "text": "Date field: Select a date",
+                        "type": "date"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_observations"
+                            }
+                        ],
+                        "linkId": "test-datetime",
+                        "text": "DateTime field: Select date and time",
+                        "type": "dateTime"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_conditions"
+                            }
+                        ],
+                        "linkId": "test-time",
+                        "text": "Time field: Select a time",
+                        "type": "time"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_medication_requests"
+                            }
+                        ],
+                        "linkId": "test-url",
+                        "text": "URL field: Enter a web address",
+                        "type": "url"
+                    }
+                ]
+            },
+            {
+                "linkId": "choice-inputs",
+                "text": "Choice & Selection Types",
+                "type": "group",
+                "item": [
+                    {
+                        "linkId": "choice-header",
+                        "text": "Selection and Choice Fields",
+                        "type": "display"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_encounters"
+                            }
+                        ],
+                        "linkId": "test-choice",
+                        "text": "Choice field: Select one option (valueString)",
+                        "type": "choice",
+                        "answerOption": [
+                            {
+                                "valueString": "Option A"
+                            },
+                            {
+                                "valueString": "Option B"
+                            },
+                            {
+                                "valueString": "Option C"
+                            },
+                            {
+                                "valueString": "Not Reported"
+                            }
+                        ]
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_procedures"
+                            }
+                        ],
+                        "linkId": "test-choice-coding",
+                        "text": "Choice field: Select one option (valueCoding)",
+                        "type": "choice",
+                        "answerOption": [
+                            {
+                                "valueCoding": {
+                                    "system": "http://example.org/test-codes",
+                                    "code": "opt-a",
+                                    "display": "Option A"
+                                }
+                            },
+                            {
+                                "valueCoding": {
+                                    "system": "http://example.org/test-codes",
+                                    "code": "opt-b",
+                                    "display": "Option B"
+                                }
+                            },
+                            {
+                                "valueCoding": {
+                                    "system": "http://example.org/test-codes",
+                                    "code": "opt-c",
+                                    "display": "Option C"
+                                }
+                            },
+                            {
+                                "valueCoding": {
+                                    "system": "http://example.org/test-codes",
+                                    "code": "not-reported",
+                                    "display": "Not Reported"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_coverage"
+                            }
+                        ],
+                        "linkId": "test-open-choice",
+                        "text": "Open Choice field: Select or enter your own",
+                        "type": "open-choice",
+                        "answerOption": [
+                            {
+                                "valueString": "Predefined Option 1"
+                            },
+                            {
+                                "valueString": "Predefined Option 2"
+                            },
+                            {
+                                "valueString": "Predefined Option 3"
+                            }
+                        ]
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_coverage"
+                            }
+                        ],
+                        "linkId": "test-quantity",
+                        "text": "Quantity field: Enter amount with unit",
+                        "type": "quantity"
+                    }
+                ]
+            },
+            {
+                "linkId": "advanced-inputs",
+                "text": "Advanced & Special Types",
+                "type": "group",
+                "item": [
+                    {
+                        "linkId": "advanced-header",
+                        "text": "Advanced Field Types",
+                        "type": "display"
+                    },
+                    {
+                        "linkId": "advanced-instructions",
+                        "text": "These are specialized field types including attachments, references, and generic questions.",
+                        "type": "display"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_observations"
+                            }
+                        ],
+                        "linkId": "test-question",
+                        "text": "Question type: Generic question field",
+                        "type": "question"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_conditions"
+                            }
+                        ],
+                        "linkId": "test-attachment",
+                        "text": "Attachment field: Upload a file",
+                        "type": "attachment"
+                    },
+                    {
+                        "extension": [
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/cardinality",
+                                "valueString": "single"
+                            },
+                            {
+                                "url": "http://gtri.gatech.edu/fakeFormIg/structuredTask",
+                                "valueString": "TestDataRetrieval.all_medication_requests"
+                            }
+                        ],
+                        "linkId": "test-reference",
+                        "text": "Reference field: Link to another resource",
+                        "type": "reference"
+                    }
+                ]
+            }
+        ]
+    }
+]
