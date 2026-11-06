@@ -24,8 +24,8 @@ import { FormStatus as JobStatus, JOB_STATUS_OPTIONS, PatientGrid } from '../../
 import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
+import { ErrorMessage } from '../../models/error-message';
 import { Questionnaire } from '../../models/fhir/resources/fhir.questionnaire';
-import { QuestionnaireResponse } from '../../models/fhir/resources/fhir.questionnaireresponse';
 import { FormDetails } from '../../models/form-details';
 import { FormDetailsHelperService } from '../../services/helper/form-details-helper.service';
 import { UtilsService } from '../../services/utils/utils.service';
@@ -33,6 +33,7 @@ import {FormSummary} from '../../models/form-summary';
 import {openStartNewJobModal} from "../start-new-job-modal/start-new-job-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog.component";
+import {ErrorMessageComponent} from '../error-message/error-message.component';
 
 @Component({
   selector: 'app-forms-jobs-grid',
@@ -65,7 +66,8 @@ import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog
     MatPaginatorModule,
     MatSuffix,
     TitleCasePipe,
-    MatIconButton
+    MatIconButton,
+    ErrorMessageComponent
   ],
   templateUrl: './jobs-forms-grid.component.html',
   styleUrl: './jobs-forms-grid.component.scss',
@@ -144,7 +146,7 @@ export class JobsFormsGridComponent {
   });
 
   // Reactive Data Resource (Replaces loadPatients() & subscribe)
-  protected readonly patientResource = rxResource<
+  protected readonly formJobsList = rxResource<
     PatientData,
     { page: number; size: number; filters: Record<string, any> }
   >({
@@ -154,17 +156,24 @@ export class JobsFormsGridComponent {
       filters: this.activeSearchFilters()
     }),
     stream: ({ params }) =>
-      this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters).pipe(
-        catchError((err) => {
-          console.error('Error loading patients:', err);
-          return of({ patients: [], total: 0 });
-        })
-      )
+      this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters)
   });
 
   // Computed Derived State
-  protected readonly patients = computed(() => this.patientResource.value()?.patients ?? []);
-  protected readonly totalRecords = computed(() => this.patientResource.value()?.total ?? 0);
+  protected readonly patients = computed(() =>
+    this.formJobsList.hasValue() ? this.formJobsList.value().patients : []
+  );
+  protected readonly totalRecords = computed(() =>
+    this.formJobsList.hasValue() ? this.formJobsList.value().total : 0
+  );
+  protected readonly formJobsError = computed<ErrorMessage | null>(() =>
+    this.formJobsList.error()
+      ? {
+        title: 'Form list unavailable',
+        message: 'The form list could not be loaded. Check your connection and try again.'
+      }
+      : null
+  );
   protected readonly selectedBatchId = signal<string | undefined>(undefined);
   protected readonly selectedForm = computed(() =>
     this.patients().find(patient => patient.batchId === this.selectedBatchId())
@@ -353,7 +362,11 @@ export class JobsFormsGridComponent {
   }
 
   protected onStartNewJob() {
-    openStartNewJobModal(this.dialog).subscribe();
+    openStartNewJobModal(this.dialog).subscribe(result => {
+      if (result?.refreshRequired) {
+        this.formJobsList.reload();
+      }
+    });
 
   }
 
@@ -363,7 +376,7 @@ export class JobsFormsGridComponent {
     ).subscribe({
       next: () => {
         this.utilsService.showSuccessMessage('Job/Form deleted successfully');
-        // Reload the grid so the deleted row is removed.
+        this.formJobsList.reload();
       },
       error: (err) => {
         console.error('Error deleting job:', err);

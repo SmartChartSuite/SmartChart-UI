@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, interval, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, finalize, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -112,6 +112,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   evidenceReviewActive = false;
   lastSavedAt = signal<Date | undefined>(undefined);
   lastSavedLabel = signal('');
+  isSaving = signal(false);
 
   results = signal<Results | undefined>(undefined);
 
@@ -195,7 +196,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.questionnaireResponseStatus.set(questionnaireResponse.status);
       }),
       // Fetch the questionnaire definition after the route context is ready.
-      mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
+      switchMap(({params}) => this.rcApiInterfaceService.getJobPackage({
         key: 'name',
         value: params.formName!
       })),
@@ -233,7 +234,17 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.status = value.status;
         this.completeCount = value.completeJobs;
         this.totalCount = value.totalJobs;
-        this.percentComplete = value.completeJobs / value.totalJobs * 100;
+
+        const completeJobs = Number(value.completeJobs);
+        const totalJobs = Number(value.totalJobs);
+
+        // Avoid NaN/Infinity for missing or zero totals, and keep backend
+        // inconsistencies from producing a progress value outside 0..100.
+        this.percentComplete = Number.isFinite(completeJobs) &&
+          Number.isFinite(totalJobs) &&
+          totalJobs > 0
+          ? Math.min(100, Math.max(0, (completeJobs / totalJobs) * 100))
+          : 0;
       })
     );
   }
@@ -511,22 +522,23 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       return 0;
     }
 
-    let questionsWithEvidenceCount = 0;
-    for (const childItem of item.item) {
-      const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
-      if (typeof evidenceCount === 'number' && evidenceCount > 0) {
-        questionsWithEvidenceCount++;
-      }
-    }
-
-    return questionsWithEvidenceCount;
+    return item.item
+      .filter(childItem => childItem.type !== QuestionnaireItemType.display)
+      .map(childItem => this.getEvidenceCount(childItem.linkId, results))
+      .filter((evidenceCount): evidenceCount is number =>
+        typeof evidenceCount === 'number' && evidenceCount > 0
+      )
+      .length;
   }
 
   protected onSave(): void {
     const questionnaireResponse = this.outputMapper.mapQrToFhir(
       this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
+    this.isSaving.set(true);
+
     this.rcApiInterfaceService.updateQuestionnaireResponse(questionnaireResponse, this.questionnaireResponseId).pipe(
-      takeUntilDestroyed(this.destroyRef)
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isSaving.set(false))
     ).subscribe({
       next: () => {
         this.captureAnswersSnapshot();
