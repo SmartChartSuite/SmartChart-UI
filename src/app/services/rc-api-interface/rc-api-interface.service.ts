@@ -297,6 +297,15 @@ export class RcApiInterfaceService {
   }
 
   /**
+   * Loads the batch context used to open a form viewer. The Parameters
+   * response contains the patient, job-package, and QuestionnaireResponse
+   * references needed to initialize the form.
+   */
+  getBatchJobStatusById(id: string): Observable<Parameters> {
+    return this.http.get<Parameters>(`${this.batchJobsEndpoint}/${id}/status?include_patient=true`);
+  }
+
+  /**
    * Fetches a batch job's results bundle and reshapes it into {@link Results}.
    *
    * The bundle is laid out as: the job status Observation, the Patient, then the

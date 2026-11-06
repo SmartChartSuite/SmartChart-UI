@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, forkJoin, interval, map, Observable, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -39,9 +39,14 @@ import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionna
 import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
-import {Bundle} from "../../models/fhir/fhir.bundle.resource";
-import {PatientGrid} from "../../models/patient-grid";
+import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {QuestionnaireProgressService} from "../../services/helper/questionnaire-progress.service";
+
+type FormLoadContext = {
+  activeFormSummary: ActiveFormSummary;
+  questionnaireResponse: QuestionnaireResponse;
+  questionnaire: Questionnaire | Questionnaire[] | null | undefined;
+};
 
 @Component({
   selector: 'app-form-viewer',
@@ -70,9 +75,6 @@ import {QuestionnaireProgressService} from "../../services/helper/questionnaire-
   ]
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {
-  // RC API answer Observations identify their job package with this coding-system prefix.
-  private static readonly FORM_SYSTEM_PREFIX = 'urn:gtri:heat:form:';
-
   private readonly rcApiInterfaceService = inject(RcApiInterfaceService);
   private readonly route = inject(ActivatedRoute);
   private readonly utilsService = inject(UtilsService);
@@ -164,124 +166,116 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   /**
-   * Loads route data and initializes the form viewer.
+   * Loads the batch context and initializes the form viewer.
    *
    * Form loading sequence:
-   * 1. Read the batch and QuestionnaireResponse identifiers from the URL.
-   * 2. Load the batch bundle and derive the patient and form name from it.
+   * 1. Read the batch ID from the URL.
+   * 2. Load patient, form, and response metadata from the batch-status response.
    * 3. Load the saved response and questionnaire definition in parallel.
    * 4. Initialize the questionnaire before applying saved answers or results.
    */
   private loadFormFromRoute(): void {
-    this.route.paramMap.pipe(
+    this.readBatchIdFromRoute().pipe(
       takeUntilDestroyed(this.destroyRef),
-      // Read the identifiers used by the batch and saved-response requests.
-      map(params => ({
-        batchId: params.get('batchId'),
-        questionnaireResponseId: params.get('questionnaireResponseId')
-      })),
-      filter(params => !!params.batchId && !!params.questionnaireResponseId),
-      // Load the batch bundle to obtain the patient and form metadata needed
-      // to construct the active form context.
-      switchMap(params => this.rcApiInterfaceService.getBatchJobById(params.batchId!).pipe(
-        map((batchJob: Bundle) => {
-          const patient = this.getPatientFromBatchJob(batchJob);
-          const formName = this.getFormNameFromBatchJob(batchJob);
-
-          if (!patient) {
-            throw new Error('Batch job response is missing its Patient resource.');
-          }
-          if (!formName) {
-            throw new Error('Batch job response is missing a form name in its observations.');
-          }
-
-          return new ActiveFormSummary(patient, {
-            batchId: params.batchId!,
-            jobPackage: formName,
-            questionnaireResponseId: params.questionnaireResponseId!
-          } as PatientGrid);
-        })
-      )),
-      // The response ID is route-backed; the form name is batch-backed. Load
-      // both resources after the batch response has established the context.
-      switchMap(activeFormSummary =>
-        forkJoin({
-          questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(
-            activeFormSummary.questionnaireResponseId
-          ),
-          questionnaire: this.rcApiInterfaceService.getJobPackage({
-            key: 'name',
-            value: activeFormSummary.formName
-          })
-        }).pipe(
-          map(({questionnaireResponse, questionnaire}) => ({
-            activeFormSummary,
-            questionnaireResponse,
-            questionnaire
-          }))
-        )
-      ),
-      tap(({activeFormSummary, questionnaireResponse}) => {
-        // Save the context before results loading starts. fetchResults() uses
-        // the batch ID from activeFormSummary.
-        this.activeFormSummary.set(activeFormSummary);
-        this.pendingQuestionnaireResponse = questionnaireResponse;
-        this.questionnaireResponseId = questionnaireResponse.id ?? activeFormSummary.questionnaireResponseId;
-        this.questionnaireResponseStatus.set(questionnaireResponse.status);
-      }),
-      map(({questionnaire}) => Array.isArray(questionnaire) ? (questionnaire[0] ?? null) : questionnaire),
-      // Add UI-only selection state without mutating the API questionnaire.
-      map((result: Questionnaire | null) => result ? {
-        ...result,
-        item: result.item?.map((item, index) => ({
-          ...item,
-          selected: index === 0
-        }))
-      } : null)
+      switchMap(batchId => this.loadBatchContext(batchId)),
+      switchMap(activeFormSummary => this.loadFormResources(activeFormSummary)),
+      tap(context => this.storeFormContext(context)),
+      map(context => this.prepareQuestionnaire(context.questionnaire))
     ).subscribe({
-      next: result => {
-        // The questionnaire structure must exist before saved answers can be
-        // mapped into the answer dictionary.
-        this.questionnaire.set(result ?? undefined);
-        this.answerDictionary.set(new FormAnswers(this.questionnaire()));
-        this.captureAnswersSnapshot();
-        // Apply persisted answers only after the form structure is ready.
-        if (this.pendingQuestionnaireResponse) {
-          this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
-        }
-        // Results use the active batch context and are loaded after form state
-        // has been initialized so evidence can be selected safely.
-        this.refreshTrigger$.next(1);
-      },
-      error: err => {
-        console.error(err);
-        this.initialLoadComplete.set(true);
-      }
+      next: questionnaire => this.initializeForm(questionnaire),
+      error: error => this.handleFormLoadError(error)
     });
   }
 
-  /** Finds the Patient resource embedded in a batch-job result bundle. */
-  private getPatientFromBatchJob(batchJob: Bundle) {
-    return batchJob.entry?.find(
-      entry => entry.resource?.resourceType === 'Patient'
-    )?.resource;
+  /** Reads the batch ID used to load the form context. */
+  private readBatchIdFromRoute(): Observable<string> {
+    return this.route.paramMap.pipe(
+      map(params => params.get('batchId')),
+      filter((batchId): batchId is string => !!batchId)
+    );
   }
 
   /**
-   * Extracts the job-package name from an answer Observation's coding system.
-   * For example, `urn:gtri:heat:form:SETNETSyphilisPregnantWoman` becomes
-   * `SETNETSyphilisPregnantWoman`.
+   * Loads the Parameters resource containing the patient, job package, and
+   * QuestionnaireResponse identifiers for the selected batch.
    */
-  private getFormNameFromBatchJob(batchJob: Bundle): string | undefined {
-    const formCoding = batchJob.entry
-      ?.map(entry => entry.resource)
-      .filter(resource => resource?.resourceType === 'Observation')
-      .flatMap(resource => resource?.['code']?.['coding'] ?? [])
-      .find((coding: { system?: string }) =>
-        coding.system?.startsWith(FormViewerComponent.FORM_SYSTEM_PREFIX)
-      );
+  private loadBatchContext(batchId: string): Observable<ActiveFormSummary> {
+    return this.rcApiInterfaceService.getBatchJobStatusById(batchId).pipe(
+      map(parameters => this.createActiveFormSummary(parameters))
+    );
+  }
 
-    return formCoding?.system?.slice(FormViewerComponent.FORM_SYSTEM_PREFIX.length);
+  /** Converts the batch Parameters resource into the viewer's form context. */
+  private createActiveFormSummary(parameters: Parameters): ActiveFormSummary {
+    return new ActiveFormSummary(parameters);
+  }
+
+  /** Loads the saved answers and questionnaire definition for the form. */
+  private loadFormResources(activeFormSummary: ActiveFormSummary): Observable<FormLoadContext> {
+    return forkJoin({
+      questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(
+        activeFormSummary.questionnaireResponseId
+      ),
+      questionnaire: this.rcApiInterfaceService.getJobPackage({
+        key: 'name',
+        value: activeFormSummary.formName
+      }).pipe(
+        map(response => response as Questionnaire | Questionnaire[] | null | undefined)
+      )
+    }).pipe(
+      map(({questionnaireResponse, questionnaire}) => ({
+        activeFormSummary,
+        questionnaireResponse,
+        questionnaire
+      }))
+    );
+  }
+
+  /**
+   * Stores the loaded context before questionnaire initialization. Later
+   * operations use it to load results, apply saved answers, and save edits.
+   */
+  private storeFormContext(context: FormLoadContext): void {
+    this.activeFormSummary.set(context.activeFormSummary);
+    this.pendingQuestionnaireResponse = context.questionnaireResponse;
+    this.questionnaireResponseId = context.questionnaireResponse.id
+      ?? context.activeFormSummary.questionnaireResponseId;
+    this.questionnaireResponseStatus.set(context.questionnaireResponse.status);
+  }
+
+  /** Adds UI selection state to the questionnaire without changing API data. */
+  private prepareQuestionnaire(
+    questionnaire: Questionnaire | Questionnaire[] | null | undefined
+  ): Questionnaire | undefined {
+    const result = Array.isArray(questionnaire) ? questionnaire[0] : questionnaire;
+    if (!result) return undefined;
+
+    return {
+      ...result,
+      item: result.item?.map((item, index) => ({
+        ...item,
+        selected: index === 0
+      }))
+    };
+  }
+
+  /** Initializes answers and starts loading evidence after the form is ready. */
+  private initializeForm(questionnaire: Questionnaire | undefined): void {
+    this.questionnaire.set(questionnaire);
+    this.answerDictionary.set(new FormAnswers(questionnaire));
+    this.captureAnswersSnapshot();
+
+    if (this.pendingQuestionnaireResponse) {
+      this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
+    }
+
+    this.refreshTrigger$.next(1);
+  }
+
+  /** Completes the loading state and logs a route-dependent loading error. */
+  private handleFormLoadError(error: unknown): void {
+    console.error(error);
+    this.initialLoadComplete.set(true);
   }
 
   private fetchResults() {

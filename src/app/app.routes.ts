@@ -26,8 +26,7 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-    // Batch ID loads patient/form metadata; response ID loads saved answers.
-    path: 'form-viewer/:batchId/:questionnaireResponseId',
+    path: 'form-viewer/:batchId',
     component: FormViewerComponent,
     canActivate: [AuthGuard],
     canDeactivate: [unsavedChangesGuard]
