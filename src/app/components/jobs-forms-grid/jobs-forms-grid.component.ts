@@ -249,13 +249,10 @@ export class JobsFormsGridComponent {
 
   protected async onSelectRecord(row: PatientGrid): Promise<void> {
     this.selectForm(row);
-    // Pass everything the form-viewer needs to load itself directly via the
-    // route params.
+    // Pass the batch-job and saved-response identifiers to the form viewer.
     await this.router.navigate([
       '/form-viewer',
       row.batchId,
-      row.patientId,
-      row.jobPackage,
       row.questionnaireResponseId
     ]);
   }

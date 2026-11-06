@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, interval, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -39,6 +39,7 @@ import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionna
 import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
+import {Bundle} from "../../models/fhir/fhir.bundle.resource";
 import {PatientGrid} from "../../models/patient-grid";
 import {QuestionnaireProgressService} from "../../services/helper/questionnaire-progress.service";
 
@@ -69,6 +70,9 @@ import {QuestionnaireProgressService} from "../../services/helper/questionnaire-
   ]
 })
 export class FormViewerComponent implements OnInit, HasUnsavedChanges {
+  // RC API answer Observations identify their job package with this coding-system prefix.
+  private static readonly FORM_SYSTEM_PREFIX = 'urn:gtri:heat:form:';
+
   private readonly rcApiInterfaceService = inject(RcApiInterfaceService);
   private readonly route = inject(ActivatedRoute);
   private readonly utilsService = inject(UtilsService);
@@ -160,47 +164,73 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   /**
-   * Loads the form from the route so /form-viewer remains deep-linkable and
-   * does not depend on in-memory or session state.
+   * Loads route data and initializes the form viewer.
+   *
+   * Form loading sequence:
+   * 1. Read the batch and QuestionnaireResponse identifiers from the URL.
+   * 2. Load the batch bundle and derive the patient and form name from it.
+   * 3. Load the saved response and questionnaire definition in parallel.
+   * 4. Initialize the questionnaire before applying saved answers or results.
    */
   private loadFormFromRoute(): void {
-    // Read all identifiers needed to load the patient, response, and form.
     this.route.paramMap.pipe(
       takeUntilDestroyed(this.destroyRef),
+      // Read the identifiers used by the batch and saved-response requests.
       map(params => ({
         batchId: params.get('batchId'),
-        patientId: params.get('patientId'),
-        formName: params.get('formName'),
         questionnaireResponseId: params.get('questionnaireResponseId')
       })),
-      filter(params => !!params.batchId && !!params.patientId && !!params.formName && !!params.questionnaireResponseId),
-      // Load the patient and saved answers together before loading the form.
-      switchMap(params =>
+      filter(params => !!params.batchId && !!params.questionnaireResponseId),
+      // Load the batch bundle to obtain the patient and form metadata needed
+      // to construct the active form context.
+      switchMap(params => this.rcApiInterfaceService.getBatchJobById(params.batchId!).pipe(
+        map((batchJob: Bundle) => {
+          const patient = this.getPatientFromBatchJob(batchJob);
+          const formName = this.getFormNameFromBatchJob(batchJob);
+
+          if (!patient) {
+            throw new Error('Batch job response is missing its Patient resource.');
+          }
+          if (!formName) {
+            throw new Error('Batch job response is missing a form name in its observations.');
+          }
+
+          return new ActiveFormSummary(patient, {
+            batchId: params.batchId!,
+            jobPackage: formName,
+            questionnaireResponseId: params.questionnaireResponseId!
+          } as PatientGrid);
+        })
+      )),
+      // The response ID is route-backed; the form name is batch-backed. Load
+      // both resources after the batch response has established the context.
+      switchMap(activeFormSummary =>
         forkJoin({
-          patient: this.rcApiInterfaceService.getPatient(params.patientId!),
-          questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(params.questionnaireResponseId!)
+          questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(
+            activeFormSummary.questionnaireResponseId
+          ),
+          questionnaire: this.rcApiInterfaceService.getJobPackage({
+            key: 'name',
+            value: activeFormSummary.formName
+          })
         }).pipe(
-          map(({patient, questionnaireResponse}) => ({params, patient, questionnaireResponse}))
+          map(({questionnaireResponse, questionnaire}) => ({
+            activeFormSummary,
+            questionnaireResponse,
+            questionnaire
+          }))
         )
       ),
-      tap(({params, patient, questionnaireResponse}) => {
-        // Store the route-backed form context for the viewer and API calls.
-        this.activeFormSummary.set(new ActiveFormSummary(patient, {
-          batchId: params.batchId!,
-          jobPackage: params.formName!,
-          questionnaireResponseId: params.questionnaireResponseId!
-        } as PatientGrid));
+      tap(({activeFormSummary, questionnaireResponse}) => {
+        // Save the context before results loading starts. fetchResults() uses
+        // the batch ID from activeFormSummary.
+        this.activeFormSummary.set(activeFormSummary);
         this.pendingQuestionnaireResponse = questionnaireResponse;
-        this.questionnaireResponseId = questionnaireResponse.id;
+        this.questionnaireResponseId = questionnaireResponse.id ?? activeFormSummary.questionnaireResponseId;
         this.questionnaireResponseStatus.set(questionnaireResponse.status);
       }),
-      // Fetch the questionnaire definition after the route context is ready.
-      mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
-        key: 'name',
-        value: params.formName!
-      })),
-      map(response => Array.isArray(response) ? (response[0] ?? null) : response),
-      // Mark the first section as selected before rendering the questionnaire.
+      map(({questionnaire}) => Array.isArray(questionnaire) ? (questionnaire[0] ?? null) : questionnaire),
+      // Add UI-only selection state without mutating the API questionnaire.
       map((result: Questionnaire | null) => result ? {
         ...result,
         item: result.item?.map((item, index) => ({
@@ -210,13 +240,17 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       } : null)
     ).subscribe({
       next: result => {
+        // The questionnaire structure must exist before saved answers can be
+        // mapped into the answer dictionary.
         this.questionnaire.set(result ?? undefined);
         this.answerDictionary.set(new FormAnswers(this.questionnaire()));
         this.captureAnswersSnapshot();
-        // Apply persisted answers after the questionnaire structure is ready.
+        // Apply persisted answers only after the form structure is ready.
         if (this.pendingQuestionnaireResponse) {
           this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
         }
+        // Results use the active batch context and are loaded after form state
+        // has been initialized so evidence can be selected safely.
         this.refreshTrigger$.next(1);
       },
       error: err => {
@@ -224,6 +258,30 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.initialLoadComplete.set(true);
       }
     });
+  }
+
+  /** Finds the Patient resource embedded in a batch-job result bundle. */
+  private getPatientFromBatchJob(batchJob: Bundle) {
+    return batchJob.entry?.find(
+      entry => entry.resource?.resourceType === 'Patient'
+    )?.resource;
+  }
+
+  /**
+   * Extracts the job-package name from an answer Observation's coding system.
+   * For example, `urn:gtri:heat:form:SETNETSyphilisPregnantWoman` becomes
+   * `SETNETSyphilisPregnantWoman`.
+   */
+  private getFormNameFromBatchJob(batchJob: Bundle): string | undefined {
+    const formCoding = batchJob.entry
+      ?.map(entry => entry.resource)
+      .filter(resource => resource?.resourceType === 'Observation')
+      .flatMap(resource => resource?.['code']?.['coding'] ?? [])
+      .find((coding: { system?: string }) =>
+        coding.system?.startsWith(FormViewerComponent.FORM_SYSTEM_PREFIX)
+      );
+
+    return formCoding?.system?.slice(FormViewerComponent.FORM_SYSTEM_PREFIX.length);
   }
 
   private fetchResults() {
