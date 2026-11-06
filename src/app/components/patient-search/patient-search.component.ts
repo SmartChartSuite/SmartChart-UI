@@ -6,7 +6,6 @@ import { FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } 
 import {PatientSummary} from "../../models/patient-summary";
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {PatientSearchParameters} from "../../models/rc-api/patient-search-parameters";
-import {UtilsService} from "../../services/utils/utils.service";
 import { MatLabel, MatFormField, MatError, MatSuffix, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
@@ -35,8 +34,7 @@ export class PatientSearchComponent implements OnInit {
   patientSummaryData = signal<PatientSummary[]>([]);
 
   constructor(
-    private rcApiInterfaceService: RcApiInterfaceService,
-    private utilsService: UtilsService
+    private rcApiInterfaceService: RcApiInterfaceService
   ){
     // Initialize single form with all controls including selectedSearchCriteria
     this.searchForm = new FormGroup({
@@ -166,7 +164,6 @@ export class PatientSearchComponent implements OnInit {
         },
         error: err => {
           console.error(err);
-          this.utilsService.showErrorMessage();
           this.isLoading.set(false);
         }
       });

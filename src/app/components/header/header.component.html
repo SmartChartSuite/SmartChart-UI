@@ -11,18 +11,20 @@
     <div class="logo-subtitle">Form-based Chart Abstraction</div>
   </div>
   @if (oauthService.hasValidAccessToken()) {
-    <nav class="horizontal-nav">
+    <nav class="horizontal-nav" aria-label="Main">
       <button mat-button class="nav-item"
               (click)="onPathSelected('/')"
-              [ngClass]="{'active': currentRoute() === '/'}">
-        <mat-icon>home</mat-icon>
+              [class.active]="currentRoute() === '/'"
+              [attr.aria-current]="currentRoute() === '/' ? 'page' : null">
+        <mat-icon aria-hidden="true">home</mat-icon>
         <span>Home</span>
       </button>
 
       <button mat-button class="nav-item"
               (click)="onPathSelected('/jobs-forms')"
-              [ngClass]="{'active': currentRoute() === '/jobs-forms'}">
-        <mat-icon>grading</mat-icon>
+              [class.active]="currentRoute() === '/jobs-forms'"
+              [attr.aria-current]="currentRoute() === '/jobs-forms' ? 'page' : null">
+        <mat-icon aria-hidden="true">grading</mat-icon>
          <span>Forms</span>
       </button>
     </nav>

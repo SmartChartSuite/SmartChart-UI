@@ -1,19 +1,52 @@
 :host {
-  display: contents;
+  display: block;
+  flex: 0 0 auto;
 }
 
-.error-message{
+.error-message {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background-color: #FBE3E2;
-  padding: 8px;
-  margin: 4px;
-  border: 1px solid #E6615C;
-  border-radius: 4px;
-  >.error-text {
-    margin-right: 16px;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  background-color: #fbe3e2;
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: var(--spacing-sm);
+  border: 1px solid #e6615c;
+  border-radius: var(--radius-sm);
+  color: var(--color-error);
+
+  .error-content {
+    min-width: 0;
+  }
+
+  .error-title {
+    margin-bottom: var(--spacing-xs);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .error-text {
     font-size: 1em;
+    font-weight: 500;
+  }
+
+  .dismiss-button {
+    flex: 0 0 auto;
+    border: 0;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-xs);
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
     font-weight: 600;
+    text-decoration: underline;
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
   }
 }

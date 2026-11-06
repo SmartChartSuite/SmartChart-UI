@@ -2,7 +2,7 @@
   <!-- Search By Label and Radio Buttons on Same Line -->
   <div class="flex-row-simple mb-md" style="align-items: center;">
     <div class="label-text mr-md">
-      <mat-label>Search by:</mat-label>
+      <span id="select-form-label">Search by:</span>
     </div>
     <mat-radio-group aria-labelledby="select-form-label"
                      type="button"
@@ -61,9 +61,6 @@
     </button>
   </div>
 </form>
-<!--    </mat-card-content>-->
-<!--  </mat-card>-->
-
 
 <div class="mb-md">
   @if (searchExecuted()) {
@@ -87,4 +84,3 @@
   [searchExecuted]="searchExecuted()"
 >
 </app-patient-summary-table>
-

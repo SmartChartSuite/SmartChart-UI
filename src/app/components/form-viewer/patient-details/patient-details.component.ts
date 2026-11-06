@@ -38,7 +38,11 @@ export class PatientDetailsComponent implements OnChanges {
             this.changeDetectorRef.detectChanges();
           }
         }
+      },
+      error: error => {
+        console.error(error);
       }
     })
   }
+
 }

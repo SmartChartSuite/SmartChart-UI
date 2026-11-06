@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, forkJoin, interval, map, mergeMap, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, finalize, forkJoin, interval, map, Observable, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -25,10 +25,9 @@ import {MatDialog} from "@angular/material/dialog";
 import {PatientDetailsComponent} from "./patient-details/patient-details.component";
 import {MatProgressSpinner} from "@angular/material/progress-spinner";
 import {MatButton} from "@angular/material/button";
-import {MatNavList} from "@angular/material/list";
-import {NgClass} from "@angular/common";
 import {QuestionnaireIndexDirective} from "../../directives/questionnaire-index.directive";
 import {MatRadioGroup, MatRadioButton} from "@angular/material/radio";
+import {MatOption, MatSelect} from "@angular/material/select";
 import {MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {FhirDateTimeComponent} from "../fhir-date-time/fhir-date-time.component";
@@ -40,7 +39,14 @@ import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionna
 import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
-import {PatientGrid} from "../../models/patient-grid";
+import {Parameters} from "../../models/fhir/fhir.parameters.resource";
+import {QuestionnaireProgressService} from "../../services/helper/questionnaire-progress.service";
+
+type FormLoadContext = {
+  activeFormSummary: ActiveFormSummary;
+  questionnaireResponse: QuestionnaireResponse;
+  questionnaire: Questionnaire | Questionnaire[] | null | undefined;
+};
 
 @Component({
   selector: 'app-form-viewer',
@@ -51,12 +57,12 @@ import {PatientGrid} from "../../models/patient-grid";
     PatientDetailsComponent,
     MatProgressSpinner,
     MatButton,
-    MatNavList,
-    NgClass,
     QuestionnaireIndexDirective,
     MatRadioGroup,
     FormsModule,
     MatRadioButton,
+    MatSelect,
+    MatOption,
     MatFormField,
     MatInput,
     MatLabel,
@@ -76,6 +82,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private readonly outputMapper = inject(FormOutputMappingService);
   private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly questionnaireProgress = inject(QuestionnaireProgressService);
 
   protected readonly QuestionnaireItemType = QuestionnaireItemType;
 
@@ -111,6 +118,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   evidenceReviewActive = false;
   lastSavedAt = signal<Date | undefined>(undefined);
   lastSavedLabel = signal('');
+  isSaving = signal(false);
 
   results = signal<Results | undefined>(undefined);
 
@@ -150,80 +158,125 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       if (this.selectedEvidenceIndex === null) {
         this.selectFirstQuestion(this.selectedMenuItemIndex);
       }
-    }, () => {
+    }, (error) => {
       this.initialLoadComplete.set(true);
-      this.utilsService.showErrorMessage();
+      console.error(error);
     });
 
     this.loadFormFromRoute();
   }
 
   /**
-   * Loads the form from the route so /form-viewer remains deep-linkable and
-   * does not depend on in-memory or session state.
+   * Loads the batch context and initializes the form viewer.
+   *
+   * Form loading sequence:
+   * 1. Read the batch ID from the URL.
+   * 2. Load patient, form, and response metadata from the batch-status response.
+   * 3. Load the saved response and questionnaire definition in parallel.
+   * 4. Initialize the questionnaire before applying saved answers or results.
    */
   private loadFormFromRoute(): void {
-    // Read all identifiers needed to load the patient, response, and form.
-    this.route.paramMap.pipe(
+    this.readBatchIdFromRoute().pipe(
       takeUntilDestroyed(this.destroyRef),
-      map(params => ({
-        batchId: params.get('batchId'),
-        patientId: params.get('patientId'),
-        formName: params.get('formName'),
-        questionnaireResponseId: params.get('questionnaireResponseId')
-      })),
-      filter(params => !!params.batchId && !!params.patientId && !!params.formName && !!params.questionnaireResponseId),
-      // Load the patient and saved answers together before loading the form.
-      switchMap(params =>
-        forkJoin({
-          patient: this.rcApiInterfaceService.getPatient(params.patientId!),
-          questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(params.questionnaireResponseId!)
-        }).pipe(
-          map(({patient, questionnaireResponse}) => ({params, patient, questionnaireResponse}))
-        )
-      ),
-      tap(({params, patient, questionnaireResponse}) => {
-        // Store the route-backed form context for the viewer and API calls.
-        this.activeFormSummary.set(new ActiveFormSummary(patient, {
-          batchId: params.batchId!,
-          jobPackage: params.formName!,
-          questionnaireResponseId: params.questionnaireResponseId!
-        } as PatientGrid));
-        this.pendingQuestionnaireResponse = questionnaireResponse;
-        this.questionnaireResponseId = questionnaireResponse.id;
-        this.questionnaireResponseStatus.set(questionnaireResponse.status);
-      }),
-      // Fetch the questionnaire definition after the route context is ready.
-      mergeMap(({params}) => this.rcApiInterfaceService.getJobPackage({
-        key: 'name',
-        value: params.formName!
-      })),
-      map(response => Array.isArray(response) ? (response[0] ?? null) : response),
-      // Mark the first section as selected before rendering the questionnaire.
-      map((result: Questionnaire | null) => result ? {
-        ...result,
-        item: result.item?.map((item, index) => ({
-          ...item,
-          selected: index === 0
-        }))
-      } : null)
+      switchMap(batchId => this.loadBatchContext(batchId)),
+      switchMap(activeFormSummary => this.loadFormResources(activeFormSummary)),
+      tap(context => this.storeFormContext(context)),
+      map(context => this.prepareQuestionnaire(context.questionnaire))
     ).subscribe({
-      next: result => {
-        this.questionnaire.set(result ?? undefined);
-        this.answerDictionary.set(new FormAnswers(this.questionnaire()));
-        this.captureAnswersSnapshot();
-        // Apply persisted answers after the questionnaire structure is ready.
-        if (this.pendingQuestionnaireResponse) {
-          this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
-        }
-        this.refreshTrigger$.next(1);
-      },
-      error: err => {
-        console.error(err);
-        this.initialLoadComplete.set(true);
-        this.utilsService.showErrorMessage();
-      }
+      next: questionnaire => this.initializeForm(questionnaire),
+      error: error => this.handleFormLoadError(error)
     });
+  }
+
+  /** Reads the batch ID used to load the form context. */
+  private readBatchIdFromRoute(): Observable<string> {
+    return this.route.paramMap.pipe(
+      map(params => params.get('batchId')),
+      filter((batchId): batchId is string => !!batchId)
+    );
+  }
+
+  /**
+   * Loads the Parameters resource containing the patient, job package, and
+   * QuestionnaireResponse identifiers for the selected batch.
+   */
+  private loadBatchContext(batchId: string): Observable<ActiveFormSummary> {
+    return this.rcApiInterfaceService.getBatchJobStatusById(batchId).pipe(
+      map(parameters => this.createActiveFormSummary(parameters))
+    );
+  }
+
+  /** Converts the batch Parameters resource into the viewer's form context. */
+  private createActiveFormSummary(parameters: Parameters): ActiveFormSummary {
+    return new ActiveFormSummary(parameters);
+  }
+
+  /** Loads the saved answers and questionnaire definition for the form. */
+  private loadFormResources(activeFormSummary: ActiveFormSummary): Observable<FormLoadContext> {
+    return forkJoin({
+      questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(
+        activeFormSummary.questionnaireResponseId
+      ),
+      questionnaire: this.rcApiInterfaceService.getJobPackage({
+        key: 'name',
+        value: activeFormSummary.formName
+      }).pipe(
+        map(response => response as Questionnaire | Questionnaire[] | null | undefined)
+      )
+    }).pipe(
+      map(({questionnaireResponse, questionnaire}) => ({
+        activeFormSummary,
+        questionnaireResponse,
+        questionnaire
+      }))
+    );
+  }
+
+  /**
+   * Stores the loaded context before questionnaire initialization. Later
+   * operations use it to load results, apply saved answers, and save edits.
+   */
+  private storeFormContext(context: FormLoadContext): void {
+    this.activeFormSummary.set(context.activeFormSummary);
+    this.pendingQuestionnaireResponse = context.questionnaireResponse;
+    this.questionnaireResponseId = context.questionnaireResponse.id
+      ?? context.activeFormSummary.questionnaireResponseId;
+    this.questionnaireResponseStatus.set(context.questionnaireResponse.status);
+  }
+
+  /** Adds UI selection state to the questionnaire without changing API data. */
+  private prepareQuestionnaire(
+    questionnaire: Questionnaire | Questionnaire[] | null | undefined
+  ): Questionnaire | undefined {
+    const result = Array.isArray(questionnaire) ? questionnaire[0] : questionnaire;
+    if (!result) return undefined;
+
+    return {
+      ...result,
+      item: result.item?.map((item, index) => ({
+        ...item,
+        selected: index === 0
+      }))
+    };
+  }
+
+  /** Initializes answers and starts loading evidence after the form is ready. */
+  private initializeForm(questionnaire: Questionnaire | undefined): void {
+    this.questionnaire.set(questionnaire);
+    this.answerDictionary.set(new FormAnswers(questionnaire));
+    this.captureAnswersSnapshot();
+
+    if (this.pendingQuestionnaireResponse) {
+      this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
+    }
+
+    this.refreshTrigger$.next(1);
+  }
+
+  /** Completes the loading state and logs a route-dependent loading error. */
+  private handleFormLoadError(error: unknown): void {
+    console.error(error);
+    this.initialLoadComplete.set(true);
   }
 
   private fetchResults() {
@@ -233,7 +286,17 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
         this.status = value.status;
         this.completeCount = value.completeJobs;
         this.totalCount = value.totalJobs;
-        this.percentComplete = value.completeJobs / value.totalJobs * 100;
+
+        const completeJobs = Number(value.completeJobs);
+        const totalJobs = Number(value.totalJobs);
+
+        // Avoid NaN/Infinity for missing or zero totals, and keep backend
+        // inconsistencies from producing a progress value outside 0..100.
+        this.percentComplete = Number.isFinite(completeJobs) &&
+          Number.isFinite(totalJobs) &&
+          totalJobs > 0
+          ? Math.min(100, Math.max(0, (completeJobs / totalJobs) * 100))
+          : 0;
       })
     );
   }
@@ -468,10 +531,7 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   protected getQuestionCount(item: Item): number {
-    if (!item || !item.item?.length) {
-      return 0;
-    }
-    return item.item.filter(element => element?.type !== 'display').length;
+    return this.questionnaireProgress.countQuestions(item);
   }
 
   protected getQuestionNumber(section: Item, questionIndex: number): number {
@@ -482,38 +542,24 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   protected getAnsweredQuestionCount(item: Item): number {
-    return (item.item ?? []).filter(question => {
-      if (question.type === QuestionnaireItemType.display) {
-        return false;
-      }
-
-      const answer = this.answerDictionary()?.[question.linkId];
-      if (answer === undefined || answer === null || answer === '') {
-        return false;
-      }
-
-      return !Array.isArray(answer) || answer.length > 0;
-    }).length;
+    return this.questionnaireProgress.countAnswered(item, this.isAnswered);
   }
 
   protected getTotalQuestionCount(): number {
-    return (this.questionnaire()?.item ?? []).reduce(
-      (total, section) => total + this.getQuestionCount(section), 0
-    );
+    return this.questionnaireProgress.getProgress(this.questionnaire(), this.isAnswered).total;
   }
 
   protected getTotalAnsweredQuestionCount(): number {
-    return (this.questionnaire()?.item ?? []).reduce(
-      (total, section) => total + this.getAnsweredQuestionCount(section), 0
-    );
+    return this.questionnaireProgress.getProgress(this.questionnaire(), this.isAnswered).answered;
   }
 
   protected getOverallProgressPercent(): number {
-    const totalQuestions = this.getTotalQuestionCount();
-    return totalQuestions > 0
-      ? (this.getTotalAnsweredQuestionCount() / totalQuestions) * 100
-      : 0;
+    return this.questionnaireProgress.getProgress(this.questionnaire(), this.isAnswered).percent;
   }
+
+  /** Answer lookup against the in-memory (possibly unsaved) answers. */
+  private readonly isAnswered = (linkId: string): boolean =>
+    this.questionnaireProgress.hasAnswerValue(this.answerDictionary()?.[linkId]);
 
   protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
     if (!results || !linkId) {
@@ -528,22 +574,23 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       return 0;
     }
 
-    let questionsWithEvidenceCount = 0;
-    for (const childItem of item.item) {
-      const evidenceCount = this.getEvidenceCount(childItem.linkId, results);
-      if (typeof evidenceCount === 'number' && evidenceCount > 0) {
-        questionsWithEvidenceCount++;
-      }
-    }
-
-    return questionsWithEvidenceCount;
+    return item.item
+      .filter(childItem => childItem.type !== QuestionnaireItemType.display)
+      .map(childItem => this.getEvidenceCount(childItem.linkId, results))
+      .filter((evidenceCount): evidenceCount is number =>
+        typeof evidenceCount === 'number' && evidenceCount > 0
+      )
+      .length;
   }
 
   protected onSave(): void {
     const questionnaireResponse = this.outputMapper.mapQrToFhir(
       this.answerDictionary(), this.questionnaire(), this.activeFormSummary());
+    this.isSaving.set(true);
+
     this.rcApiInterfaceService.updateQuestionnaireResponse(questionnaireResponse, this.questionnaireResponseId).pipe(
-      takeUntilDestroyed(this.destroyRef)
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isSaving.set(false))
     ).subscribe({
       next: () => {
         this.captureAnswersSnapshot();
@@ -553,10 +600,10 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
       },
       error: (error) => {
         console.error(error);
-        this.utilsService.showErrorMessage("Error Saving Form");
       }
     });
   }
+
 
   protected updateLastSavedLabel(): void {
     const savedAt = this.lastSavedAt();

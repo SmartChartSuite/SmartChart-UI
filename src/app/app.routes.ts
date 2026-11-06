@@ -26,9 +26,7 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-    // Form viewer loaded directly from route params. All jobs have a saved
-    // QuestionnaireResponse, so every segment is required.
-    path: 'form-viewer/:batchId/:patientId/:formName/:questionnaireResponseId',
+    path: 'form-viewer/:batchId',
     component: FormViewerComponent,
     canActivate: [AuthGuard],
     canDeactivate: [unsavedChangesGuard]

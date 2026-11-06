@@ -4,7 +4,6 @@ import { PatientGroup } from '../../models/patient-group';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import { MatSelectChange, MatSelect, MatOption } from "@angular/material/select";
 import {FormManagerService} from "../../services/form-manager/form-manager.service";
-import {UtilsService} from "../../services/utils/utils.service";
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { PatientSummaryTableComponent } from '../patient-summary-table/patient-summary-table.component';
 
@@ -24,7 +23,6 @@ export class PatientGroupsComponent implements OnInit{
   constructor(
     private rcApiInterfaceService: RcApiInterfaceService,
     private formManagerService: FormManagerService,
-    private utilsService: UtilsService,
   ){}
 
 
@@ -38,7 +36,6 @@ export class PatientGroupsComponent implements OnInit{
         this.isLoading.set(false);
       },
       error: err => {
-        this.utilsService.showErrorMessage();
         console.error(err);
         this.isLoading.set(false);
       }

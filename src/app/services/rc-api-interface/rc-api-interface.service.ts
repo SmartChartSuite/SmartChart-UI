@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
 import {map, Observable, share, shareReplay} from "rxjs";
-import {HttpClient, HttpContext, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {FhirBaseResource} from "../../models/fhir/fhir.base.resource";
 import {StartJobsPostBody} from "../../models/rc-api/start-jobs-post-body";
 import {StartJobsPostResponse} from "../../models/rc-api/start-jobs-post-response";
@@ -13,10 +13,10 @@ import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {Results, ResultSet} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
-import {ShowLoading} from "../loading/show-loading";
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
 import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionnaireresponse";
+import {OAuthService} from "angular-oauth2-oidc";
 
 
 @Injectable({
@@ -27,20 +27,28 @@ export class RcApiInterfaceService {
   configEndpoint: string = `${this.base}config`;
   patientEndpoint: string = `${this.base}patient`; // FHIR Conformant.
   groupEndpoint: string = `${this.base}group`;
-  questionnaireEndpoint: string = `${this.base}jobpackage`;
+  formNamesEndpoint: string = `${this.base}jobpackage/title`;
   startJobsEndpoint: string = `${this.base}batchjob?include_patient=True`;
   getJobPackageEndpoint: string = `${this.base}jobpackage`;
   batchJobsEndpoint: string = `${this.base}batchjob`
   getResultsEndpoint: string = `${this.base}results`
 
-  getQuestionTypes$ = this.getSmartChartUiQuestionnaires().pipe(
-    map(response => response.sort((a, b) => a.title.localeCompare(b.title))),
+  private readonly config$ = this.http.get<RcApiConfig>(this.configEndpoint).pipe(
+    shareReplay({bufferSize: 1, refCount: true})
+  );
+  private readonly questionnaireCache = new Map<string, Observable<FhirBaseResource>>();
+  private readonly jobPackageCache = new Map<string, Observable<any>>();
+  private readonly patientCache = new Map<string, Observable<FhirBaseResource>>();
+
+  getFormNames$ = this.getFormNames().pipe(
+    map(response => [...response].sort((a, b) => a.title.localeCompare(b.title))),
     shareReplay(1)
   );
 
   constructor(private configService: ConfigService,
               private http: HttpClient,
-              private jobsFormsHelper: JobsFormsHelperService) {
+              private jobsFormsHelper: JobsFormsHelperService,
+              private oauthService: OAuthService) {
   }
 
   /**
@@ -48,7 +56,7 @@ export class RcApiInterfaceService {
    */
 
   getConfig(): Observable<RcApiConfig> {
-    return this.http.get<RcApiConfig>(this.configEndpoint);
+    return this.config$;
   }
 
   /**
@@ -56,7 +64,13 @@ export class RcApiInterfaceService {
    * @param id - The patient's FHIR ID.
    */
   getPatient(id: string): Observable<FhirBaseResource> {
-    return this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`);
+    const cached = this.patientCache.get(id);
+    if (cached) return cached;
+    const request$ = this.http.get<FhirBaseResource>(`${this.patientEndpoint}/${id}`).pipe(
+      shareReplay({bufferSize: 1, refCount: true})
+    );
+    this.patientCache.set(id, request$);
+    return request$;
   }
 
   /**
@@ -91,36 +105,70 @@ export class RcApiInterfaceService {
 
 
   getFormJobsPatientData(page: number = 0, size: number = 10, filters?: any): Observable<PatientData> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
-
-    if (filters) {
-      const mappings = {
-        patientName: 'patientName',
-        dobStartDate: 'dobStartDate',
-        dobEndDate: 'dobEndDate',
-        jobRunStartDate: 'jobRunStartDate',
-        jobRunEndDate: 'jobRunEndDate',
-        jobPackage: 'jobPackage',
-      };
-
-      Object.entries(mappings).forEach(([filterKey, paramKey]) => {
-        if (filters[filterKey]) {
-          params = params.set(paramKey, filters[filterKey]);
-        }
-      });
-
-      ['patientGender', 'questionnaireResponseStatus', 'batchJobStatus'].forEach((key) => {
-        if (filters[key]?.length) {
-          params = params.set(key, filters[key].join(','));
-        }
-      });
-    }
+    const params = this.buildFormJobsParams(page, size, filters);
 
     return this.http.get<Bundle>(`${this.batchJobsEndpoint}`, { params }).pipe(
       map(response => this.jobsFormsHelper.toPatientData(response))
     );
+  }
+
+  getFormJobsPatientDataStream(page = 0, size = 10, filters?: Record<string, any>): Observable<PatientData> {
+    const params = this.buildFormJobsParams(page, size, filters);
+    const url = `${this.base}batchjob/stream/?${params.toString()}`;
+
+    return new Observable<PatientData>(subscriber => {
+      const controller = new AbortController();
+      let active = true;
+      let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+      fetch(url, {
+        headers: {Accept: 'text/event-stream', Authorization: `Bearer ${this.oauthService.getAccessToken()}`},
+        signal: controller.signal
+      }).then(async response => {
+        if (!response.ok || !response.body) throw new Error(`Form list stream failed: ${response.status}`);
+        reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (active && !controller.signal.aborted) {
+          const {value, done} = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, {stream: true});
+          const events = buffer.split(/\r?\n\r?\n/);
+          buffer = events.pop() ?? '';
+          for (const event of events) {
+            const name = event.match(/^event:\s*(.+)$/m)?.[1]?.trim();
+            const data = event.match(/^data:\s*(.+)$/m)?.[1]?.trim();
+            if (active && name === 'form-list' && data) {
+              subscriber.next(this.jobsFormsHelper.toPatientData(JSON.parse(data) as Bundle));
+            }
+          }
+        }
+        if (active && !controller.signal.aborted) subscriber.complete();
+      }).catch(error => {
+        if (active && !controller.signal.aborted && error?.name !== 'AbortError') {
+          subscriber.error(error);
+        }
+      });
+      return () => {
+        active = false;
+        void reader?.cancel();
+        controller.abort();
+      };
+    });
+  }
+
+  private buildFormJobsParams(page: number, size: number, filters?: Record<string, any>): HttpParams {
+    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
+    const mappings = {
+      patientName: 'patientName', dobStartDate: 'dobStartDate', dobEndDate: 'dobEndDate',
+      jobRunStartDate: 'jobRunStartDate', jobRunEndDate: 'jobRunEndDate', jobPackage: 'jobPackage'
+    };
+    Object.entries(mappings).forEach(([key, param]) => {
+      if (filters?.[key]) params = params.set(param, filters[key]);
+    });
+    ['patientGender', 'questionnaireResponseStatus', 'batchJobStatus'].forEach(key => {
+      if (filters?.[key]?.length) params = params.set(key, filters[key].join(','));
+    });
+    return params;
   }
 
   private mapParameterKeysToFHIR(searchParameters: PatientSearchParameters): PatientSearchParameters {
@@ -153,16 +201,10 @@ export class RcApiInterfaceService {
   }
 
   /**
-   * Search SmartChart UI Questionnaire Resources. FHIR pass through for SmartChart UI. Returns a list of FormSummary objects. To get a full form/questionnaire, see getJobPackage.
+   * Get the available JobPackage form names from the dedicated title endpoint.
    */
-  getSmartChartUiQuestionnaires(): Observable<FormSummary[]> {
-    return this.http.get<FhirBaseResource[]>(`${this.questionnaireEndpoint}`).pipe(
-      map(resultsList => {
-        let formSummaryList: FormSummary[];
-        formSummaryList = resultsList.map(questionnaireResource=> new FormSummary(questionnaireResource));
-        return formSummaryList;
-      })
-    );
+  getFormNames(): Observable<FormSummary[]> {
+    return this.http.get<FormSummary[]>(this.formNamesEndpoint);
   }
 
   /**
@@ -178,6 +220,16 @@ export class RcApiInterfaceService {
   getJobPackage(parameters: { key: string; value: string }): Observable<any> {
     const params = { [parameters.key]: parameters.value };
 
+    if (parameters.key === 'name') {
+      const cached = this.jobPackageCache.get(parameters.value);
+      if (cached) return cached;
+      const request$ = this.http.get<FhirBaseResource>(this.getJobPackageEndpoint, {params}).pipe(
+        shareReplay({bufferSize: 1, refCount: true})
+      );
+      this.jobPackageCache.set(parameters.value, request$);
+      return request$;
+    }
+
     return this.http.get<FhirBaseResource>(this.getJobPackageEndpoint,
       { params }
     );
@@ -187,13 +239,23 @@ export class RcApiInterfaceService {
     // );
   }
 
+  getQuestionnaire(questionnaireId: string): Observable<FhirBaseResource> {
+    const cached = this.questionnaireCache.get(questionnaireId);
+    if (cached) return cached;
+    const request$ = this.http.get<FhirBaseResource>(`${this.getJobPackageEndpoint}/${questionnaireId}`).pipe(
+      shareReplay({bufferSize: 1, refCount: true})
+    );
+    this.questionnaireCache.set(questionnaireId, request$);
+    return request$;
+  }
+
   /**
    * Start Jobs Async
    * jobPackage = "name" in the FHIR Questionnaire
    */
   startJobs(patientId: string, jobPackage: string): Observable<StartJobsPostResponse> {
     const postBody = new StartJobsPostBody(patientId, jobPackage);
-    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody, {context: new HttpContext().set(ShowLoading, true)});
+    return this.http.post<StartJobsPostResponse>(this.startJobsEndpoint, postBody);
   }
 
   // /**
@@ -226,8 +288,21 @@ export class RcApiInterfaceService {
     );
   }
 
-  getBatchJobById(id: string) {
-    return this.http.get(this.batchJobsEndpoint + `/${id}?include_patient=True`)
+  /**
+   * Loads the complete result bundle for one batch job. The bundle includes
+   * the Patient resource and answer Observations used by the form viewer.
+   */
+  getBatchJobById(id: string): Observable<Bundle> {
+    return this.http.get<Bundle>(this.batchJobsEndpoint + `/${id}?include_patient=True`)
+  }
+
+  /**
+   * Loads the batch context used to open a form viewer. The Parameters
+   * response contains the patient, job-package, and QuestionnaireResponse
+   * references needed to initialize the form.
+   */
+  getBatchJobStatusById(id: string): Observable<Parameters> {
+    return this.http.get<Parameters>(`${this.batchJobsEndpoint}/${id}/status?include_patient=true`);
   }
 
   /**

@@ -1,19 +1,21 @@
-import { Component, computed, DestroyRef, inject, signal, ViewChild } from '@angular/core';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { Component, computed, DestroyRef, inject, linkedSignal, signal, ViewChild } from '@angular/core';
+import { DatePipe, DecimalPipe, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { form, FormField, FormRoot } from '@angular/forms/signals';
-import { catchError, of } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 
 import {MatButton, MatIconButton} from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatAutocomplete, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { RcApiInterfaceService } from '../../services/rc-api-interface/rc-api-interface.service';
@@ -22,17 +24,24 @@ import { FormStatus as JobStatus, JOB_STATUS_OPTIONS, PatientGrid } from '../../
 import { FormStatusDisplayPipe } from '../../pipe/form-status-display.pipe';
 import { GENDER_OPTIONS, PatientSearchData, PATIENT_SEARCH_DATA_DEFAULT } from '../../models/patient-search-data';
 import { PatientData } from '../../services/helper/jobs-forms-helper.service';
+import { ErrorMessage } from '../../models/error-message';
+import { Questionnaire } from '../../models/fhir/resources/fhir.questionnaire';
+import { FormDetails } from '../../models/form-details';
+import { FormDetailsHelperService } from '../../services/helper/form-details-helper.service';
 import { UtilsService } from '../../services/utils/utils.service';
-import {FormSummary} from "../../models/form-summary";
+import {FormSummary} from '../../models/form-summary';
 import {openStartNewJobModal} from "../start-new-job-modal/start-new-job-modal.component";
 import {MatDialog} from "@angular/material/dialog";
 import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog.component";
+import {ErrorMessageComponent} from '../error-message/error-message.component';
 
 @Component({
   selector: 'app-forms-jobs-grid',
   standalone: true,
   imports: [
     DatePipe,
+    DecimalPipe,
+    NgTemplateOutlet,
     FormsModule,
     ReactiveFormsModule,
     FormRoot,
@@ -44,15 +53,21 @@ import {openConfirmationDialog} from "../confirmation-dialog/confirmation-dialog
     MatInput,
     MatSelect,
     MatOption,
+    MatAutocomplete,
+    MatAutocompleteTrigger,
     MatDatepickerModule,
     MatNativeDateModule,
     MatTooltip,
     MatIcon,
+    MatMenu,
+    MatMenuItem,
+    MatMenuTrigger,
     MatTableModule,
     MatPaginatorModule,
     MatSuffix,
     TitleCasePipe,
-    MatIconButton
+    MatIconButton,
+    ErrorMessageComponent
   ],
   templateUrl: './jobs-forms-grid.component.html',
   styleUrl: './jobs-forms-grid.component.scss',
@@ -64,30 +79,58 @@ export class JobsFormsGridComponent {
   private readonly router = inject(Router);
   private readonly utilsService = inject(UtilsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly formDetailsHelper = inject(FormDetailsHelperService);
 
   private dialog: MatDialog = inject(MatDialog);
 
   protected readonly FormStatus = FormStatus;
+  protected readonly JobStatus = JobStatus;
   protected readonly GENDER_OPTIONS = [...GENDER_OPTIONS];
   protected readonly FORM_STATUS_OPTIONS = [...FORM_STATUS_OPTIONS];
   protected readonly JOB_STATUS_OPTIONS = [...JOB_STATUS_OPTIONS];
   protected readonly displayedColumns: string[] = [
-    'formStatus', 'actions', 'patient', 'patientDob',
-    'patientGender', 'jobPackage', 'batchJobStatus', 'dateRan',  'warning', 'buttons'
+    'formName', 'patient', 'responseStatus', 'lastUpdated'
   ];
+  protected readonly progressColumns = ['progress'];
 
   // Show/hide the filters form
   protected readonly filtersVisible = signal(false);
 
   // Value used for a data-driven multiselect
   protected readonly formNames = toSignal(
-    this.rcApiInterface.getQuestionTypes$.pipe(
-      catchError((err) => {
+    this.rcApiInterface.getFormNames$.pipe(
+      catchError(() => {
         return of([] as FormSummary[]);
       })
     ),
     { initialValue: [] as FormSummary[] }
   );
+
+  protected readonly formNameSearch = signal('');
+  protected readonly filteredFormNames = computed(() => {
+    const search = this.formNameSearch().trim().toLowerCase();
+
+    if (!search) {
+      return this.formNames();
+    }
+
+    return this.formNames().filter(formName =>
+      formName.name.toLowerCase().includes(search) ||
+      formName.title.toLowerCase().includes(search)
+    );
+  });
+
+  protected onFormNameInput(event: Event): void {
+    this.formNameSearch.set((event.target as HTMLInputElement).value);
+  }
+
+  protected displayFormName = (formName: string | null): string => {
+    if (!formName) {
+      return '';
+    }
+
+    return this.formNames().find(item => item.name === formName)?.title ?? formName;
+  };
 
   // Pagination & Search Signals
   protected readonly currentPage = signal(0);
@@ -103,7 +146,7 @@ export class JobsFormsGridComponent {
   });
 
   // Reactive Data Resource (Replaces loadPatients() & subscribe)
-  protected readonly patientResource = rxResource<
+  protected readonly formJobsList = rxResource<
     PatientData,
     { page: number; size: number; filters: Record<string, any> }
   >({
@@ -113,17 +156,87 @@ export class JobsFormsGridComponent {
       filters: this.activeSearchFilters()
     }),
     stream: ({ params }) =>
-      this.rcApiInterface.getFormJobsPatientData(params.page, params.size, params.filters).pipe(
-        catchError((err) => {
-          console.error('Error loading patients:', err);
-          return of({ patients: [], total: 0 });
-        })
-      )
+      this.rcApiInterface.getFormJobsPatientDataStream(params.page, params.size, params.filters)
   });
 
   // Computed Derived State
-  protected readonly patients = computed(() => this.patientResource.value()?.patients ?? []);
-  protected readonly totalRecords = computed(() => this.patientResource.value()?.total ?? 0);
+  protected readonly patients = computed(() =>
+    this.formJobsList.hasValue() ? this.formJobsList.value().patients : []
+  );
+  protected readonly totalRecords = computed(() =>
+    this.formJobsList.hasValue() ? this.formJobsList.value().total : 0
+  );
+  protected readonly formJobsError = computed<ErrorMessage | null>(() =>
+    this.formJobsList.error()
+      ? {
+        title: 'Form list unavailable',
+        message: 'The form list could not be loaded. Check your connection and try again.'
+      }
+      : null
+  );
+  protected readonly selectedBatchId = signal<string | undefined>(undefined);
+  protected readonly selectedForm = computed(() =>
+    this.patients().find(patient => patient.batchId === this.selectedBatchId())
+  );
+  protected readonly formDetailsExpanded = signal(false);
+
+  // Each stream snapshot replaces every row object, so compare by value: details
+  // only refetch when the selection or the saved response actually changes.
+  private readonly selectedFormDetailsParams = computed(() => {
+    const form = this.selectedForm();
+    return {
+      batchId: form?.batchId,
+      questionnaireId: form?.questionnaireId,
+      formName: form?.jobPackage,
+      questionnaireResponseId: form?.questionnaireResponseId,
+      patientId: form?.patientId,
+      responseLastUpdated: form?.responseLastUpdated,
+      responseStatus: form?.questionnaireResponseStatus
+    };
+  }, {
+    equal: (a, b) => (Object.keys(a) as (keyof typeof a)[]).every(key => a[key] === b[key])
+  });
+
+  protected readonly selectedFormDetails = rxResource<
+    FormDetails | undefined,
+    { batchId?: string; questionnaireId?: string; formName?: string; questionnaireResponseId?: string; patientId?: string }
+  >({
+    params: () => this.selectedFormDetailsParams(),
+    stream: ({ params }) => {
+      if (!params.batchId || (!params.questionnaireId && !params.formName) || !params.questionnaireResponseId) {
+        return of(undefined);
+      }
+
+      return forkJoin({
+        questionnaire: params.questionnaireId
+          ? this.rcApiInterface.getQuestionnaire(params.questionnaireId)
+          : this.rcApiInterface.getJobPackage({key: 'name', value: params.formName!}).pipe(
+              map(response => Array.isArray(response) ? (response[0] ?? undefined) : response)
+            ),
+        questionnaireResponse: this.rcApiInterface.getQuestionnaireResponse(params.questionnaireResponseId),
+        // Patient and identifier config are supplementary; a failure should not hide the form details.
+        patient: params.patientId
+          ? this.rcApiInterface.getPatient(params.patientId).pipe(catchError(() => of(undefined)))
+          : of(undefined),
+        config: this.rcApiInterface.getConfig().pipe(catchError(() => of(undefined)))
+      }).pipe(map(({questionnaire, questionnaireResponse, patient, config}) =>
+        this.formDetailsHelper.toFormDetails(params.batchId!, questionnaire as Questionnaire, questionnaireResponse, patient, config)
+      ));
+    }
+  });
+
+  // Holds the most recently loaded details, so a refresh of the same form
+  // updates the pane in place instead of blanking it to a loading message.
+  private readonly lastFormDetails = linkedSignal<FormDetails | undefined, FormDetails | undefined>({
+    source: () => this.selectedFormDetails.hasValue() ? this.selectedFormDetails.value() : undefined,
+    computation: (details, previous) => details ?? previous?.value
+  });
+
+  // Only show held details that belong to the currently selected row.
+  protected readonly displayedFormDetails = computed(() => {
+    const details = this.lastFormDetails();
+    return details?.batchId === this.selectedBatchId() ? details : undefined;
+  });
 
   protected onSearch(): void {
     this.currentPage.set(0);
@@ -144,19 +257,32 @@ export class JobsFormsGridComponent {
   }
 
   protected async onSelectRecord(row: PatientGrid): Promise<void> {
-    // Pass everything the form-viewer needs to load itself directly via the
-    // route params.
+    this.selectForm(row);
+    // The batch-status response supplies the remaining form identifiers.
     await this.router.navigate([
       '/form-viewer',
-      row.batchId,
-      row.patientId,
-      row.jobPackage,
-      row.questionnaireResponseId
+      row.batchId
     ]);
   }
 
+  protected selectForm(row: PatientGrid): void {
+    this.selectedBatchId.set(row.batchId);
+    this.formDetailsExpanded.set(false);
+  }
+
+  protected selectFormFromKeyboard(event: KeyboardEvent, row: PatientGrid): void {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    this.selectForm(row);
+  }
+
+  protected toggleFormDetails(): void {
+    this.formDetailsExpanded.update(expanded => !expanded);
+  }
+
   protected staleJobFound(patient: PatientGrid): boolean {
-    if (patient.batchJobStatus === JobStatus.COMPLETE || !patient.jobStartDateTime) {
+    if ((patient.batchJobStatus !== JobStatus.COMPLETE && patient.batchJobStatus !== JobStatus.PARTIAL)
+      || !patient.jobStartDateTime) {
       return false;
     }
 
@@ -165,6 +291,38 @@ export class JobsFormsGridComponent {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     return jobDate < thirtyDaysAgo;
+  }
+
+  protected isMainRow(): boolean {
+    return true;
+  }
+
+  protected isProgressRow(): boolean {
+    return true;
+  }
+
+  protected isActiveJob(patient: PatientGrid): boolean {
+    return patient.batchJobStatus === JobStatus.PENDING
+      || patient.batchJobStatus === JobStatus.RUNNING;
+  }
+
+  protected canOpenForm(patient: PatientGrid): boolean {
+    return !this.isActiveJob(patient) && patient.batchJobStatus !== JobStatus.ERROR;
+  }
+
+  protected openFormTooltip(patient: PatientGrid): string {
+    return patient.batchJobStatus === JobStatus.ERROR
+      ? 'The form cannot be opened because abstraction ended with an error.'
+      : 'Please wait for abstraction to finish before opening the form.';
+  }
+
+  protected jobStatusLabel(patient: PatientGrid): string {
+    return this.JOB_STATUS_OPTIONS.find(option => option.value === patient.batchJobStatus)?.display
+      ?? patient.batchJobStatus;
+  }
+
+  protected jobProgressPercent(patient: PatientGrid): number {
+    return Math.max(0, Math.min(100, patient.batchJobProgress ?? 0));
   }
 
   private buildFilterParams(): Record<string, any> {
@@ -200,10 +358,11 @@ export class JobsFormsGridComponent {
   }
 
   protected onStartNewJob() {
-    openStartNewJobModal(this.dialog).subscribe(value => {if(value?.refreshRequired) {
-      //TODO need to know what to trigger here
-      this.onClearFilters();
-    }});
+    openStartNewJobModal(this.dialog).subscribe(result => {
+      if (result?.refreshRequired) {
+        this.formJobsList.reload();
+      }
+    });
 
   }
 
@@ -213,12 +372,10 @@ export class JobsFormsGridComponent {
     ).subscribe({
       next: () => {
         this.utilsService.showSuccessMessage('Job/Form deleted successfully');
-        // Reload the grid so the deleted row is removed.
-        this.patientResource.reload();
+        this.formJobsList.reload();
       },
       error: (err) => {
         console.error('Error deleting job:', err);
-        this.utilsService.showErrorMessage('Error deleting Job/Form');
       }
     });
   }
