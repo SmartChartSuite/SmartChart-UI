@@ -288,8 +288,21 @@ export class RcApiInterfaceService {
     );
   }
 
-  getBatchJobById(id: string) {
-    return this.http.get(this.batchJobsEndpoint + `/${id}?include_patient=True`)
+  /**
+   * Loads the complete result bundle for one batch job. The bundle includes
+   * the Patient resource and answer Observations used by the form viewer.
+   */
+  getBatchJobById(id: string): Observable<Bundle> {
+    return this.http.get<Bundle>(this.batchJobsEndpoint + `/${id}?include_patient=True`)
+  }
+
+  /**
+   * Loads the batch context used to open a form viewer. The Parameters
+   * response contains the patient, job-package, and QuestionnaireResponse
+   * references needed to initialize the form.
+   */
+  getBatchJobStatusById(id: string): Observable<Parameters> {
+    return this.http.get<Parameters>(`${this.batchJobsEndpoint}/${id}/status?include_patient=true`);
   }
 
   /**

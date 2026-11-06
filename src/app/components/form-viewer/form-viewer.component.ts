@@ -12,7 +12,7 @@ import {
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {RcApiInterfaceService} from "../../services/rc-api-interface/rc-api-interface.service";
 import {ActivatedRoute} from "@angular/router";
-import {filter, finalize, forkJoin, interval, map, ReplaySubject, share, switchMap, tap} from "rxjs";
+import {filter, finalize, forkJoin, interval, map, Observable, ReplaySubject, share, switchMap, tap} from "rxjs";
 import {Results, ResultSet} from "../../models/results";
 import {UtilsService} from "../../services/utils/utils.service";
 import {EvidenceViewerService} from "../../services/evidence-viewer/evidence-viewer.service";
@@ -39,8 +39,14 @@ import {QuestionnaireResponse} from "../../models/fhir/resources/fhir.questionna
 import {QuestionnaireResponseStatus} from "../../models/fhir/valuesets/questionnaire-response-status";
 import {AnswerOption, Item, Questionnaire} from "../../models/fhir/resources/fhir.questionnaire";
 import {HasUnsavedChanges} from "../../guards/unsaved-changes.guard";
-import {PatientGrid} from "../../models/patient-grid";
+import {Parameters} from "../../models/fhir/fhir.parameters.resource";
 import {QuestionnaireProgressService} from "../../services/helper/questionnaire-progress.service";
+
+type FormLoadContext = {
+  activeFormSummary: ActiveFormSummary;
+  questionnaireResponse: QuestionnaireResponse;
+  questionnaire: Questionnaire | Questionnaire[] | null | undefined;
+};
 
 @Component({
   selector: 'app-form-viewer',
@@ -161,70 +167,116 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   }
 
   /**
-   * Loads the form from the route so /form-viewer remains deep-linkable and
-   * does not depend on in-memory or session state.
+   * Loads the batch context and initializes the form viewer.
+   *
+   * Form loading sequence:
+   * 1. Read the batch ID from the URL.
+   * 2. Load patient, form, and response metadata from the batch-status response.
+   * 3. Load the saved response and questionnaire definition in parallel.
+   * 4. Initialize the questionnaire before applying saved answers or results.
    */
   private loadFormFromRoute(): void {
-    // Read all identifiers needed to load the patient, response, and form.
-    this.route.paramMap.pipe(
+    this.readBatchIdFromRoute().pipe(
       takeUntilDestroyed(this.destroyRef),
-      map(params => ({
-        batchId: params.get('batchId'),
-        patientId: params.get('patientId'),
-        formName: params.get('formName'),
-        questionnaireResponseId: params.get('questionnaireResponseId')
-      })),
-      filter(params => !!params.batchId && !!params.patientId && !!params.formName && !!params.questionnaireResponseId),
-      // Load the patient and saved answers together before loading the form.
-      switchMap(params =>
-        forkJoin({
-          patient: this.rcApiInterfaceService.getPatient(params.patientId!),
-          questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(params.questionnaireResponseId!)
-        }).pipe(
-          map(({patient, questionnaireResponse}) => ({params, patient, questionnaireResponse}))
-        )
-      ),
-      tap(({params, patient, questionnaireResponse}) => {
-        // Store the route-backed form context for the viewer and API calls.
-        this.activeFormSummary.set(new ActiveFormSummary(patient, {
-          batchId: params.batchId!,
-          jobPackage: params.formName!,
-          questionnaireResponseId: params.questionnaireResponseId!
-        } as PatientGrid));
-        this.pendingQuestionnaireResponse = questionnaireResponse;
-        this.questionnaireResponseId = questionnaireResponse.id;
-        this.questionnaireResponseStatus.set(questionnaireResponse.status);
-      }),
-      // Fetch the questionnaire definition after the route context is ready.
-      switchMap(({params}) => this.rcApiInterfaceService.getJobPackage({
-        key: 'name',
-        value: params.formName!
-      })),
-      map(response => Array.isArray(response) ? (response[0] ?? null) : response),
-      // Mark the first section as selected before rendering the questionnaire.
-      map((result: Questionnaire | null) => result ? {
-        ...result,
-        item: result.item?.map((item, index) => ({
-          ...item,
-          selected: index === 0
-        }))
-      } : null)
+      switchMap(batchId => this.loadBatchContext(batchId)),
+      switchMap(activeFormSummary => this.loadFormResources(activeFormSummary)),
+      tap(context => this.storeFormContext(context)),
+      map(context => this.prepareQuestionnaire(context.questionnaire))
     ).subscribe({
-      next: result => {
-        this.questionnaire.set(result ?? undefined);
-        this.answerDictionary.set(new FormAnswers(this.questionnaire()));
-        this.captureAnswersSnapshot();
-        // Apply persisted answers after the questionnaire structure is ready.
-        if (this.pendingQuestionnaireResponse) {
-          this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
-        }
-        this.refreshTrigger$.next(1);
-      },
-      error: err => {
-        console.error(err);
-        this.initialLoadComplete.set(true);
-      }
+      next: questionnaire => this.initializeForm(questionnaire),
+      error: error => this.handleFormLoadError(error)
     });
+  }
+
+  /** Reads the batch ID used to load the form context. */
+  private readBatchIdFromRoute(): Observable<string> {
+    return this.route.paramMap.pipe(
+      map(params => params.get('batchId')),
+      filter((batchId): batchId is string => !!batchId)
+    );
+  }
+
+  /**
+   * Loads the Parameters resource containing the patient, job package, and
+   * QuestionnaireResponse identifiers for the selected batch.
+   */
+  private loadBatchContext(batchId: string): Observable<ActiveFormSummary> {
+    return this.rcApiInterfaceService.getBatchJobStatusById(batchId).pipe(
+      map(parameters => this.createActiveFormSummary(parameters))
+    );
+  }
+
+  /** Converts the batch Parameters resource into the viewer's form context. */
+  private createActiveFormSummary(parameters: Parameters): ActiveFormSummary {
+    return new ActiveFormSummary(parameters);
+  }
+
+  /** Loads the saved answers and questionnaire definition for the form. */
+  private loadFormResources(activeFormSummary: ActiveFormSummary): Observable<FormLoadContext> {
+    return forkJoin({
+      questionnaireResponse: this.rcApiInterfaceService.getQuestionnaireResponse(
+        activeFormSummary.questionnaireResponseId
+      ),
+      questionnaire: this.rcApiInterfaceService.getJobPackage({
+        key: 'name',
+        value: activeFormSummary.formName
+      }).pipe(
+        map(response => response as Questionnaire | Questionnaire[] | null | undefined)
+      )
+    }).pipe(
+      map(({questionnaireResponse, questionnaire}) => ({
+        activeFormSummary,
+        questionnaireResponse,
+        questionnaire
+      }))
+    );
+  }
+
+  /**
+   * Stores the loaded context before questionnaire initialization. Later
+   * operations use it to load results, apply saved answers, and save edits.
+   */
+  private storeFormContext(context: FormLoadContext): void {
+    this.activeFormSummary.set(context.activeFormSummary);
+    this.pendingQuestionnaireResponse = context.questionnaireResponse;
+    this.questionnaireResponseId = context.questionnaireResponse.id
+      ?? context.activeFormSummary.questionnaireResponseId;
+    this.questionnaireResponseStatus.set(context.questionnaireResponse.status);
+  }
+
+  /** Adds UI selection state to the questionnaire without changing API data. */
+  private prepareQuestionnaire(
+    questionnaire: Questionnaire | Questionnaire[] | null | undefined
+  ): Questionnaire | undefined {
+    const result = Array.isArray(questionnaire) ? questionnaire[0] : questionnaire;
+    if (!result) return undefined;
+
+    return {
+      ...result,
+      item: result.item?.map((item, index) => ({
+        ...item,
+        selected: index === 0
+      }))
+    };
+  }
+
+  /** Initializes answers and starts loading evidence after the form is ready. */
+  private initializeForm(questionnaire: Questionnaire | undefined): void {
+    this.questionnaire.set(questionnaire);
+    this.answerDictionary.set(new FormAnswers(questionnaire));
+    this.captureAnswersSnapshot();
+
+    if (this.pendingQuestionnaireResponse) {
+      this.populateAnswersFromQuestionnaireResponse(this.pendingQuestionnaireResponse);
+    }
+
+    this.refreshTrigger$.next(1);
+  }
+
+  /** Completes the loading state and logs a route-dependent loading error. */
+  private handleFormLoadError(error: unknown): void {
+    console.error(error);
+    this.initialLoadComplete.set(true);
   }
 
   private fetchResults() {
