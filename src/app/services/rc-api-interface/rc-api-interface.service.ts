@@ -407,16 +407,7 @@ export class RcApiInterfaceService {
     }
 
     if (observation['valueCodeableConcept']) {
-      const concept = observation['valueCodeableConcept'];
-      const coding = concept['coding']?.[0];
-      if (concept['text'] || coding) {
-        return {
-          display: concept['text'] ?? coding?.['display'] ?? coding?.['code'] ?? '',
-          system: coding?.['system'],
-          code: coding?.['code'],
-          codingDisplay: concept['text'] ? coding?.['display'] : undefined
-        };
-      }
+      return this.toSimpleAnswerFromCodeableConcept(observation['valueCodeableConcept']);
     }
 
     for (const key of ['valueDateTime', 'valueDate', 'valueTime']) {
@@ -433,6 +424,22 @@ export class RcApiInterfaceService {
       display: coding['display'] ?? coding['code'] ?? '',
       system: coding['system'],
       code: coding['code']
+    };
+  }
+
+  private toSimpleAnswerFromCodeableConcept(
+    concept: Record<string, any>
+  ): SimpleAnswer | undefined {
+    const coding = concept['coding']?.[0];
+    if (!concept['text'] && !coding) {
+      return undefined;
+    }
+
+    return {
+      display: concept['text'] ?? coding?.['display'] ?? coding?.['code'] ?? '',
+      system: coding?.['system'],
+      code: coding?.['code'],
+      codingDisplay: concept['text'] ? coding?.['display'] : undefined
     };
   }
 
