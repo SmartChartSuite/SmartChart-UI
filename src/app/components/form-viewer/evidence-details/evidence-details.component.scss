@@ -37,3 +37,46 @@ app-structured-evidence {
   display: block;
   margin-bottom: 8px;
 }
+
+.simple-answer-lane {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.simple-answer-list {
+  display: grid;
+  gap: 4px;
+  padding: 0 16px;
+}
+
+.simple-answer-row {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: 13px;
+}
+
+.simple-answer-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.simple-answer-value.coded {
+  display: grid;
+  align-items: start;
+  gap: 2px;
+}
+
+.simple-answer-code {
+  color: var(--color-text-secondary);
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+  font-weight: 400;
+}

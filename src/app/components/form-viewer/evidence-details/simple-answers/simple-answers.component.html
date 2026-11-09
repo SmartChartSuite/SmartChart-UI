@@ -1,0 +1,26 @@
+<section class="simple-answer-lane" aria-labelledby="simple-answers-heading">
+  <div class="evidence-lane-heading">
+    <span id="simple-answers-heading" class="evidence-lane-title">
+      Simple Answers <span>· {{ answers().length }} results</span>
+    </span>
+  </div>
+  <div class="simple-answer-list">
+    @for (answer of answers(); track $index) {
+      <div class="simple-answer-row">
+        <span class="simple-answer-value" [class.coded]="answer.system || answer.code">
+          <span>{{ answer.display }}</span>
+          @if (answer.system || answer.code || answer.codingDisplay) {
+            <span class="simple-answer-code">
+              @if (answer.system || answer.code) {
+                {{ answer.system || 'Unknown system' }} · {{ answer.code || 'Unknown code' }}
+              }
+              @if (answer.codingDisplay) {
+                · {{ answer.codingDisplay }}
+              }
+            </span>
+          }
+        </span>
+      </div>
+    }
+  </div>
+</section>

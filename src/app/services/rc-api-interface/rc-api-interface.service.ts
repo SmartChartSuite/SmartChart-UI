@@ -1,3 +1,4 @@
+import {formatDate} from '@angular/common';
 import {Injectable} from '@angular/core';
 import {ConfigService} from "../config/config.service";
 import {map, Observable, share, shareReplay} from "rxjs";
@@ -11,7 +12,7 @@ import {PatientGroup} from "../../models/patient-group";
 import {FormSummary} from "../../models/form-summary";
 import {ActiveFormSummary} from "../../models/active-form-summary";
 import {Parameters} from "../../models/fhir/fhir.parameters.resource";
-import {Results, ResultSet} from "../../models/results";
+import {Results, ResultSet, SimpleAnswer} from "../../models/results";
 import {Bundle, BundleEntryComponent} from "../../models/fhir/fhir.bundle.resource";
 import {RcApiConfig} from "../../models/rc-api/rc-api-config";
 import {JobsFormsHelperService, PatientData} from "../helper/jobs-forms-helper.service";
@@ -337,7 +338,10 @@ export class RcApiInterfaceService {
     for (const {resource: answerObservation} of answerEntries) {
       const resultSet = this.getOrCreateResultSet(results, this.getLinkId(answerObservation));
 
-      if (this.isNlpqlAnswer(answerObservation)) {
+      const simpleAnswer = this.getSimpleAnswer(answerObservation);
+      if (!this.hasFocus(answerObservation) && simpleAnswer) {
+        resultSet.simpleAnswers.push(simpleAnswer);
+      } else if (this.isNlpqlAnswer(answerObservation)) {
         resultSet.nlpAnswerObservations.push(answerObservation);
       } else {
         resultSet.cqlAnswer = answerObservation;
@@ -390,6 +394,70 @@ export class RcApiInterfaceService {
         resultSet.evidence.push(evidence);
       }
     }
+  }
+
+  /** Parses a direct value[x] answer that has no focused evidence resource. */
+  private getSimpleAnswer(observation: FhirBaseResource): SimpleAnswer | undefined {
+    if (typeof observation['valueString'] === 'string') {
+      return {display: observation['valueString']};
+    }
+
+    if (observation['valueCoding']) {
+      return this.toSimpleAnswerFromCoding(observation['valueCoding']);
+    }
+
+    if (observation['valueCodeableConcept']) {
+      return this.toSimpleAnswerFromCodeableConcept(observation['valueCodeableConcept']);
+    }
+
+    for (const key of ['valueDateTime', 'valueDate', 'valueTime']) {
+      if (typeof observation[key] === 'string') {
+        return {display: this.formatSimpleTemporalValue(key, observation[key])};
+      }
+    }
+
+    return undefined;
+  }
+
+  private toSimpleAnswerFromCoding(coding: Record<string, string | undefined>): SimpleAnswer {
+    return {
+      display: coding['display'] ?? coding['code'] ?? '',
+      system: coding['system'],
+      code: coding['code']
+    };
+  }
+
+  private toSimpleAnswerFromCodeableConcept(
+    concept: Record<string, any>
+  ): SimpleAnswer | undefined {
+    const coding = concept['coding']?.[0];
+    if (!concept['text'] && !coding) {
+      return undefined;
+    }
+
+    return {
+      display: concept['text'] ?? coding?.['display'] ?? coding?.['code'] ?? '',
+      system: coding?.['system'],
+      code: coding?.['code'],
+      codingDisplay: concept['text'] ? coding?.['display'] : undefined
+    };
+  }
+
+  private formatSimpleTemporalValue(valueType: string, value: string): string {
+    if (valueType === 'valueTime') {
+      return value;
+    }
+
+    const format = valueType === 'valueDateTime' ? 'MM/dd/yyyy, h:mm a' : 'MM/dd/yyyy';
+    try {
+      return formatDate(value, format, 'en-US');
+    } catch {
+      return value;
+    }
+  }
+
+  private hasFocus(observation: FhirBaseResource): boolean {
+    return this.createReferenceList(observation['focus']).length > 0;
   }
 
   /** The `focus` references of an answer Observation. */

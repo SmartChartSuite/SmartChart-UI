@@ -2,13 +2,16 @@
   color="primary"
   mat-stretch-tabs="false"
   [(selectedIndex)]="selectedTabIndex">
-  <mat-tab [label]="'Coded Records (' + structuredResultCount + ')'">
-    <div class="evidence-lane-heading">
-      <span class="evidence-lane-title">
-        Structured findings <span>· {{ structuredResultCount }} results</span>
-      </span>
-    </div>
+  <mat-tab [label]="'Coded Records (' + codedRecordCount + ')'">
+    @if (simpleAnswers.length) {
+      <app-simple-answers [answers]="simpleAnswers"></app-simple-answers>
+    }
     @if (structuredResultCount > 0) {
+      <div class="evidence-lane-heading">
+        <span class="evidence-lane-title">
+          Structured findings <span>· {{ structuredResultCount }} results</span>
+        </span>
+      </div>
       <div class="resource-type-filters" role="group" aria-label="Filter coded records by resource type">
         @for (filter of resourceTypeFilters; track filter.type ?? 'all') {
           <button type="button"
@@ -22,7 +25,7 @@
       </div>
     }
     <div class="evidence-tab-content">
-      @if (evidence.structured?.length) {
+      @if (evidence.structured?.length || simpleAnswers.length) {
         <mat-accordion multi>
           @for (structured of filteredStructuredEvidence; let i = $index; track i) {
             <app-structured-evidence
