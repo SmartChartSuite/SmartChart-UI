@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {EvidenceViewerService} from "../../../services/evidence-viewer/evidence-viewer.service";
-import {ResultSet} from "../../../models/results";
+import {ResultSet, SimpleAnswer} from "../../../models/results";
 import {FhirBaseResource} from "../../../models/fhir/fhir.base.resource";
 import {Evidence} from "../../../models/parsed-results";
 import {filter} from "rxjs";
@@ -11,6 +11,7 @@ import {MatTab, MatTabGroup} from "@angular/material/tabs";
 import {StructuredEvidenceHelperService} from "../../../services/evidence-viewer/structured-evidence-helper.service";
 import {UnstructuredEvidenceHelperService} from "../../../services/evidence-viewer/unstructured-evidence-helper.service";
 import {UnstructuredEvidenceComponent} from "./unstructured-evidence/unstructured-evidence.component";
+import {SimpleAnswersComponent} from "./simple-answers/simple-answers.component";
 
 /** Tab indexes in the order the tabs are declared in the template. */
 const STRUCTURED_TAB_INDEX = 0;
@@ -21,7 +22,7 @@ const UNSTRUCTURED_TAB_INDEX = 1;
   templateUrl: './evidence-details.component.html',
   styleUrl: './evidence-details.component.scss',
   changeDetection: ChangeDetectionStrategy.Eager,
-  imports: [StructuredEvidenceComponent, MatExpansionModule, UnstructuredEvidenceComponent, MatTabGroup, MatTab]
+  imports: [StructuredEvidenceComponent, SimpleAnswersComponent, MatExpansionModule, UnstructuredEvidenceComponent, MatTabGroup, MatTab]
 })
 export class EvidenceDetailsComponent implements OnChanges {
 
@@ -48,6 +49,12 @@ export class EvidenceDetailsComponent implements OnChanges {
       (total, group) => total + group.resources.length,
       0
     );
+  }
+
+  simpleAnswers: SimpleAnswer[] = [];
+
+  get codedRecordCount(): number {
+    return this.structuredResultCount + this.simpleAnswers.length;
   }
 
   get resourceTypeFilters(): { type: string | null; label: string; count: number }[] {
@@ -93,6 +100,7 @@ export class EvidenceDetailsComponent implements OnChanges {
         .subscribe({
           next: (resultSet: ResultSet) => {
             const evidenceList = resultSet.evidence ?? [];
+            this.simpleAnswers = resultSet.simpleAnswers ?? [];
             const [cqlResources, documentReferences] = evidenceList.reduce(
               ([cqlResources, documentReferences], resource) => {
                 (resource.resourceType === "DocumentReference" ? documentReferences : cqlResources)

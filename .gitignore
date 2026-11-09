@@ -1,9 +1,7 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# Do not commit the sensitive config file!
 /src/assets/config/config.json
-
-/Web-Prototype
-/Web-Prototype-2
 
 # Compiled output
 /dist

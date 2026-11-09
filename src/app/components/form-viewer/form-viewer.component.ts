@@ -561,12 +561,13 @@ export class FormViewerComponent implements OnInit, HasUnsavedChanges {
   private readonly isAnswered = (linkId: string): boolean =>
     this.questionnaireProgress.hasAnswerValue(this.answerDictionary()?.[linkId]);
 
-  protected getEvidenceCount(linkId: string, results: Results | undefined): number | string {
+  protected getEvidenceCount(linkId: string, results: Results | undefined): number {
     if (!results || !linkId) {
-      return 'ERROR';
+      return 0;
     }
-    const evidence = results[`link${linkId}`]?.['evidence'];
-    return evidence ? evidence.length : 'ERROR';
+
+    const resultSet = results[`link${linkId}`];
+    return (resultSet?.evidence?.length ?? 0) + (resultSet?.simpleAnswers?.length ?? 0);
   }
 
   protected getQuestionsWithEvidenceCount(item: Item, results: Results | undefined): number {

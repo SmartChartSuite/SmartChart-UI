@@ -122,7 +122,7 @@
                 <button
                   type="button"
                   class="question-header"
-                  [class.has-evidence]="results()?.['link' + childItem.linkId]?.['evidence']?.length"
+                  [class.has-evidence]="getEvidenceCount(childItem.linkId, results()) > 0"
                   [attr.aria-label]="'Select question: ' + (childItem.text || 'Question ' + getQuestionNumber(item, j))"
                   (click)="onQuestionHeaderSelected(j)"
                   (focus)="evidenceReviewActive = true">
@@ -132,7 +132,7 @@
                     </span>
                     <span class="question-title">{{ childItem.text }}</span>
                   </span>
-                  @if (results()?.['link' + childItem.linkId]?.['evidence']?.length) {
+                  @if (getEvidenceCount(childItem.linkId, results()) > 0) {
                     <span class="question-evidence-action">
                       @if (j === selectedEvidenceIndex) {
                         <span class="evidence-viewing-chip" role="status" aria-label="Viewing evidence">
