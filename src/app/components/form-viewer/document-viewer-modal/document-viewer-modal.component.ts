@@ -23,7 +23,7 @@ export class DocumentViewerModalComponent implements OnInit{
 
   content: any; // The content of the modal (the modal should render html)
   title: string = null; // The title of the modal
-  headerLabel = 'Document';
+  headerLabel: string;
   preformatted = false;
   htmlContent: SafeHtml;
   evidence: {
