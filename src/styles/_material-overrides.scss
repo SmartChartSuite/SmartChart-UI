@@ -106,6 +106,12 @@
   min-width: 300px;
 }
 
+// This app scrolls nested workspace panes while the document root stays fixed.
+// Prevent the CDK dialog scroll lock from forcing a root scrollbar gutter.
+html.cdk-global-scrollblock {
+  overflow-y: hidden;
+}
+
 // The dialog panel is rendered in the CDK overlay outside the component host,
 // so its surface styling belongs in the global stylesheet scope.
 .document-viewer-dialog .mat-mdc-dialog-surface {

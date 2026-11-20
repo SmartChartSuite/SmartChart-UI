@@ -68,6 +68,17 @@
           </td>
       </ng-container>
 
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          <button matButton="outlined" color="primary" type="button" class="raw-resource-button"
+                  matTooltip="View raw resource"
+                  aria-label="View raw resource"
+                  (click)="onViewRaw(resource)">
+            <span class="raw-resource-symbol" aria-hidden="true">{{ '{…}' }}</span>
+          </button>
+        </td>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="observationColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: observationColumns"></tr>
       </table>
@@ -100,6 +111,17 @@
         <td mat-cell *matCellDef="let resource">{{ displayStatus(resource.details.clinicalStatus) }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          <button matButton="outlined" color="primary" type="button" class="raw-resource-button"
+                  matTooltip="View raw resource"
+                  aria-label="View raw resource"
+                  (click)="onViewRaw(resource)">
+            <span class="raw-resource-symbol" aria-hidden="true">{{ '{…}' }}</span>
+          </button>
+        </td>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="conditionColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: conditionColumns"></tr>
       </table>
@@ -147,6 +169,17 @@
         <td mat-cell *matCellDef="let resource">{{ resource.details.reasonSystem }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          <button matButton="outlined" color="primary" type="button" class="raw-resource-button"
+                  matTooltip="View raw resource"
+                  aria-label="View raw resource"
+                  (click)="onViewRaw(resource)">
+            <span class="raw-resource-symbol" aria-hidden="true">{{ '{…}' }}</span>
+          </button>
+        </td>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="encounterColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: encounterColumns"></tr>
       </table>
@@ -179,6 +212,17 @@
            <td mat-cell *matCellDef="let resource">{{ displayStatus(resource.details.status) }}</td>
       </ng-container>
 
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let resource" class="nowrap">
+          <button matButton="outlined" color="primary" type="button" class="raw-resource-button"
+                  matTooltip="View raw resource"
+                  aria-label="View raw resource"
+                  (click)="onViewRaw(resource)">
+            <span class="raw-resource-symbol" aria-hidden="true">{{ '{…}' }}</span>
+          </button>
+        </td>
+      </ng-container>
       <tr mat-header-row *matHeaderRowDef="medicationColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: medicationColumns"></tr>
       </table>
@@ -211,6 +255,17 @@
           <td mat-cell *matCellDef="let resource">{{ resource.details.reason }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let resource" class="nowrap">
+            <button matButton="outlined" color="primary" type="button" class="raw-resource-button"
+                    matTooltip="View raw resource"
+                    aria-label="View raw resource"
+                    (click)="onViewRaw(resource)">
+              <span class="raw-resource-symbol" aria-hidden="true">{{ '{…}' }}</span>
+            </button>
+          </td>
+        </ng-container>
         <tr mat-header-row *matHeaderRowDef="procedureColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: procedureColumns"></tr>
       </table>

@@ -105,7 +105,8 @@ export class StructuredEvidenceHelperService {
       name: this.getName(resource, coding),
       system: this.getSystemFromEnum(coding?.system),
       code: coding?.code,
-      dateForSorting: this.getDateForSorting(resource)
+      dateForSorting: this.getDateForSorting(resource),
+      rawResource: resource
     };
     const resourceType = resource?.resourceType;
 
