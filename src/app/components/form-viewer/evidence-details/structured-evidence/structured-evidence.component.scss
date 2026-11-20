@@ -232,6 +232,18 @@ mat-expansion-panel-header:hover {
   white-space: nowrap;
 }
 
+.raw-resource-button {
+  min-width: 40px;
+  padding-inline: 6px;
+}
+
+.raw-resource-symbol {
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
 .nowrap {
   white-space: nowrap;
 }

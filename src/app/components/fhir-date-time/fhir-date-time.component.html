@@ -47,7 +47,7 @@
       <mat-label>Date</mat-label>
       <input matInput [matDatepicker]="datePicker" formControlName='date'
              [attr.aria-label]="labelPrefix + 'date'">
-      <mat-hint>Date Format: MM/DD/YYYY</mat-hint>
+      <mat-hint class="date-format-hint">Date Format: MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="datePicker"
                              [attr.aria-label]="'Open calendar for ' + labelPrefix + 'date'"></mat-datepicker-toggle>
       <mat-datepicker #datePicker (opened)="onPickerOpened.emit()"></mat-datepicker>

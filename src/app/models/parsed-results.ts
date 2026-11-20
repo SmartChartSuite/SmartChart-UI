@@ -54,6 +54,8 @@ interface ParsedResourceBase {
   code?: string;
   /** The date used for sorting this resource (ISO string). */
   dateForSorting?: string;
+  /** The original FHIR resource represented by this row. */
+  rawResource: FhirBaseResource;
 }
 
 export interface ParsedObservation extends ParsedResourceBase {

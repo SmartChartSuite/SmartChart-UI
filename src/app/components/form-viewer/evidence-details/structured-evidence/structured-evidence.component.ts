@@ -1,11 +1,14 @@
-import {Component, computed, input, Input, signal} from '@angular/core';
+import {Component, computed, inject, input, Input, signal} from '@angular/core';
 import {formatDate} from "@angular/common";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatMenu, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import {ParsedCodeGroup} from "../../../../models/parsed-results";
+import {ParsedCodeGroup, ParsedResource} from "../../../../models/parsed-results";
 import {PatientSummary} from "../../../../models/patient-summary";
+import {MatDialog} from "@angular/material/dialog";
+import {MatButton} from "@angular/material/button";
+import {openDocumentViewerModal} from "../../document-viewer-modal/document-viewer-modal.component";
 
 @Component({
   selector: 'app-structured-evidence',
@@ -15,7 +18,8 @@ import {PatientSummary} from "../../../../models/patient-summary";
     MatTooltipModule,
     MatMenu,
     MatMenuItem,
-    MatMenuTrigger
+    MatMenuTrigger,
+    MatButton
   ],
   templateUrl: './structured-evidence.component.html',
   styleUrl: './structured-evidence.component.scss',
@@ -25,17 +29,34 @@ export class StructuredEvidenceComponent {
   @Input() patientSummary?: PatientSummary;
   readonly pageSize = 5;
   readonly currentPage = signal(0);
-  readonly observationColumns = ['date', 'value'];
-  readonly conditionColumns = ['onset', 'abatement', 'clinicalStatus'];
-  readonly encounterColumns = ['start', 'end', 'type', 'reasonText'];
-  readonly medicationColumns = ['date', 'dosage', 'status'];
-  readonly procedureColumns = ['performed', 'status', 'category', 'reason'];
+  readonly observationColumns = ['date', 'value', 'actions'];
+  readonly conditionColumns = ['onset', 'abatement', 'clinicalStatus', 'actions'];
+  readonly encounterColumns = ['start', 'end', 'type', 'reasonText', 'actions'];
+  readonly medicationColumns = ['date', 'dosage', 'status', 'actions'];
+  readonly procedureColumns = ['performed', 'status', 'category', 'reason', 'actions'];
+
+  private readonly dialog = inject(MatDialog);
 
   readonly totalPages = computed(() => Math.ceil(this.evidence().resources.length / this.pageSize));
   readonly pagedResources = computed(() => {
     const start = this.currentPage() * this.pageSize;
     return this.evidence().resources.slice(start, start + this.pageSize);
   });
+
+  protected onViewRaw(resource: ParsedResource): void {
+    const rawResource = resource.rawResource;
+
+    openDocumentViewerModal(this.dialog, {
+      headerLabel: 'Resource',
+      title: rawResource.id ? `${rawResource.resourceType}/${rawResource.id}` : rawResource.resourceType,
+      content: JSON.stringify(rawResource, null, 2),
+      preformatted: true,
+      size: {
+        minWidth: '50em',
+        minHeight: '50em'
+      }
+    }).subscribe();
+  }
 
   previousPage(): void {
     this.currentPage.update(page => Math.max(0, page - 1));

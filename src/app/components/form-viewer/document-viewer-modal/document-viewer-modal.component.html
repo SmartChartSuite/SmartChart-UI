@@ -1,6 +1,6 @@
 <div mat-dialog-title class="document-modal-header">
   <div class="document-modal-title">
-    <span class="document-modal-label">Document</span>
+    <span class="document-modal-label">{{ headerLabel }}</span>
     {{ evidence?.source || title }}
   </div>
   @if (evidence) {
@@ -17,7 +17,9 @@
 </div>
 <mat-dialog-content class="mat-typography">
   <div class="document-modal-body">
-    @if (htmlContent) {
+    @if (preformatted) {
+      <pre>{{ content }}</pre>
+    } @else if (htmlContent) {
       <pre [innerHTML]="htmlContent"></pre>
     } @else {
       <div>{{ content }}</div>
