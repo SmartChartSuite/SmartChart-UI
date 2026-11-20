@@ -23,6 +23,8 @@ export class DocumentViewerModalComponent implements OnInit{
 
   content: any; // The content of the modal (the modal should render html)
   title: string = null; // The title of the modal
+  headerLabel: string;
+  preformatted = false;
   htmlContent: SafeHtml;
   evidence: {
     source?: string;
@@ -38,7 +40,9 @@ export class DocumentViewerModalComponent implements OnInit{
   ngOnInit(): void {
     this.content = this.dialogData.content;
     this.title = this.dialogData.title;
-    this.htmlContent = this.dialogData.htmlContent
+    this.headerLabel = this.dialogData.headerLabel ?? 'Document';
+    this.preformatted = this.dialogData.preformatted ?? false;
+    this.htmlContent = this.dialogData.htmlContent;
     this.evidence = this.dialogData.evidence;
   }
 }
